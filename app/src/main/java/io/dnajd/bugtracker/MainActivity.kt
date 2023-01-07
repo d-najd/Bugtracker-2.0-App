@@ -1,17 +1,36 @@
 package io.dnajd.bugtracker
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import io.dnajd.bugtracker.ui.theme.Bugtracker20Theme
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Router
+import io.dnajd.bugtracker.databinding.MainActivityBinding
 
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: MainActivityBinding
+    private lateinit var router: Router
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val container: ViewGroup = binding.controllerContainer
+        router = Conductor.attachRouter(this, container, savedInstanceState)
+            .setPopRootControllerMode(Router.PopRootControllerMode.NEVER)
+
+        // if there is no controller (in other words starting the app) set a root controller
+        // TODO SET ROOT
+        if(router.backstack.firstOrNull() == null) {
+            // router.setRoot(AnalyticsController(auth = Auth.mockInstance()))
+            // router.setRoot(LoginController())
+        }
+    }
+}
+
+/*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,3 +60,4 @@ fun DefaultPreview() {
         Greeting("Android")
     }
 }
+ */

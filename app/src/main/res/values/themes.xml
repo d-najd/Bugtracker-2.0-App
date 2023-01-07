@@ -1,5 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
 
-    <style name="Theme.Bugtracker20" parent="android:Theme.Material.Light.NoActionBar" />
+<resources>
+    <style name="Theme.Bugtracker" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/bugtracker_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/bugtracker_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/bugtracker_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/bugtracker_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/bugtracker_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/bugtracker_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/bugtracker_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/bugtracker_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/bugtracker_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/bugtracker_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/bugtracker_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/bugtracker_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/bugtracker_theme_light_error</item>
+        <item name="colorOnError">@color/bugtracker_theme_light_onError</item>
+        <item name="colorErrorContainer">@color/bugtracker_theme_light_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/bugtracker_theme_light_onErrorContainer</item>
+        <item name="colorOutline">@color/bugtracker_theme_light_outline</item>
+        <item name="android:colorBackground">@color/bugtracker_theme_light_background</item>
+        <item name="colorOnBackground">@color/bugtracker_theme_light_onBackground</item>
+        <item name="colorSurface">@color/bugtracker_theme_light_surface</item>
+        <item name="colorOnSurface">@color/bugtracker_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/bugtracker_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/bugtracker_theme_light_onSurfaceVariant</item>
+        <item name="colorSurfaceInverse">@color/bugtracker_theme_light_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/bugtracker_theme_light_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/bugtracker_theme_light_inversePrimary</item>
+    </style>
 </resources>
