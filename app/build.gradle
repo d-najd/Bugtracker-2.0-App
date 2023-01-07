@@ -68,7 +68,13 @@ dependencies {
     implementation "androidx.compose.ui:ui:1.4.0-alpha03"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    //noinspection GradleDependency
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // Compose dialogs not official
     // implementation "io.github.vanpra.compose-material-dialogs:core:0.9.0"
