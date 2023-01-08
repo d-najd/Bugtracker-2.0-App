@@ -38,6 +38,8 @@ object LibraryScreen : Screen {
 
         LibraryScreenContent(
             presenter = successState,
+
+            //onProjectClicked = { router.setRoot() }
         )
 
         LaunchedEffect(Unit) {

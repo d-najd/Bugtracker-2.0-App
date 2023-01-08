@@ -11,7 +11,7 @@ import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object ProjectRepositoryImpl : ProjectRepository{
+object ProjectRepositoryImpl : ProjectRepository {
     private var factory: LibraryRepositoryApi? = null
 
     @Synchronized

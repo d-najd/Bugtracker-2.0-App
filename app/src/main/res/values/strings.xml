@@ -7,4 +7,6 @@
     <string name="error_network">Request could not be executed due to a connectivity problem</string>
     <string name="error_auth">Authentication failed</string>
     <string name="error_duplicate_entry">Duplicate Entry</string>
+    <string name="label_all_projects">All Projects</string>
+    <string name="label_projects">Projects</string>
 </resources>
