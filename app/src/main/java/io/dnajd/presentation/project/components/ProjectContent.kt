@@ -22,6 +22,7 @@ import io.dnajd.bugtracker.ui.project.ProjectScreenState
 fun ProjectContent(
     state: ProjectScreenState.Success,
     contentPadding: PaddingValues,
+    onProjectClicked: (Long) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -41,6 +42,7 @@ fun ProjectContent(
         for(project in state.projects) {
             ProjectItemContent(
                 project = project,
+                onProjectClicked = onProjectClicked,
             )
         }
     }

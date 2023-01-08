@@ -7,6 +7,8 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.base.controller.pushController
+import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.util.LocalRouter
@@ -26,17 +28,13 @@ object ProjectScreen : Screen {
             return
         }
 
-        /**
-         * attempt to see if the user has internet connection and if the server is connected before
-         * continuing, if not return
-         */
-
         val successState = state as ProjectScreenState.Success
 
         ProjectScreenContent(
-            presenter = successState,
-
-            //onProjectClicked = { router.setRoot() }
+            state = successState,
+            onProjectClicked = { router.pushController(ProjectTableController(it)) },
+            onCreateProjectClicked = { },
+            onFilterByNameClicked = { },
         )
 
         /*

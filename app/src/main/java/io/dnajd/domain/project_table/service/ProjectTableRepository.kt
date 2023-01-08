@@ -1,6 +1,6 @@
-package io.dnajd.domain.project_content.service
+package io.dnajd.domain.project_table.service
 
-import io.dnajd.domain.project_content.model.ProjectTable
+import io.dnajd.domain.project_table.model.ProjectTable
 
 interface ProjectTableRepository {
 

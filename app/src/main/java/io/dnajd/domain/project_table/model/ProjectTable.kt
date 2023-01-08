@@ -1,4 +1,4 @@
-package io.dnajd.domain.project_content.model
+package io.dnajd.domain.project_table.model
 
 
 import com.google.gson.annotations.SerializedName

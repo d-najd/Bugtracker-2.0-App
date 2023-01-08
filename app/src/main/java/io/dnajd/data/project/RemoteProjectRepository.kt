@@ -1,5 +1,6 @@
 package io.dnajd.data.project
 
+import io.dnajd.data.utils.Urls
 import io.dnajd.data.utils.processRequest
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectHolder
@@ -11,7 +12,7 @@ import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object ProjectRepositoryImpl : ProjectRepository {
+object RemoteProjectRepository : ProjectRepository {
     private var factory: ProjectRepositoryApi? = null
 
     @Synchronized
@@ -29,7 +30,7 @@ object ProjectRepositoryImpl : ProjectRepository {
 
 private interface ProjectRepositoryApi {
 
-    @GET("user/{username}")
+    @GET("${Urls.PROJECT_RAW}/user/{username}")
     fun getProjectsByUsername(@Path("username") username: String): Call<ProjectHolder>
 
 }

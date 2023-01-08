@@ -10,7 +10,7 @@ data class ProjectHolder(
 )
 
 data class Project(
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: Long,
     @SerializedName("owner") val owner: String,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String?,

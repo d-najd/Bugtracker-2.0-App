@@ -2,6 +2,7 @@ package io.dnajd.presentation.project.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -18,13 +19,15 @@ import io.dnajd.presentation.components.ProjectIconFactory
 
 @Composable
 fun ProjectItemContent(
-    project: Project,
+project: Project,
+    onProjectClicked: (Long) -> Unit,
 ){
     Row(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 4.dp)
             .fillMaxWidth()
-            .height(42.dp),
+            .height(42.dp)
+            .clickable { onProjectClicked(project.id) },
     ) {
         Column(
             modifier = Modifier

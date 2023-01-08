@@ -4,7 +4,7 @@ package io.dnajd.data.utils
 object Urls {
 
     //region main
-    const val API = "https://localhost:8080/"
+    const val API = "http://192.168.1.150:8080/"
     const val PROJECT_RAW = "project-service/api"
     const val PROJECT_TABLE_RAW = "project-table-service/api"
     const val PROJECT_TABLE_ISSUE_RAW = "project-table-issue-service/api"

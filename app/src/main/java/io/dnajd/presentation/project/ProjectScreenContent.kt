@@ -16,7 +16,10 @@ import io.dnajd.presentation.project.components.ProjectContent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectScreenContent(
-    presenter: ProjectScreenState.Success,
+    state: ProjectScreenState.Success,
+    onProjectClicked: (Long) -> Unit,
+    onCreateProjectClicked: () -> Unit,
+    onFilterByNameClicked: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -52,8 +55,9 @@ fun ProjectScreenContent(
         }
     ) { contentPadding ->
         ProjectContent(
-            state = presenter,
+            state = state,
             contentPadding = contentPadding,
+            onProjectClicked = onProjectClicked,
         )
     }
 }

@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_content
+package io.dnajd.bugtracker.ui.project_table
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -8,37 +8,31 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
+import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.util.LocalRouter
 
-object ProjectContentScreen : Screen {
+class ProjectTableScreen(
+    private val projectId: Long,
+) : Screen {
     @Composable
     override fun Content() {
         // val navigator = LocalNavigator.currentOrThrow
         val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
-        val screenModel = rememberScreenModel { ProjectScreenModel(context) }
+        val screenModel = rememberScreenModel { ProjectTableScreenModel(context, projectId) }
 
         val state by screenModel.state.collectAsState()
 
-        if (state is ProjectScreenState.Loading){
+        if (state is ProjectTableScreenState.Loading) {
             LoadingScreen()
             return
         }
 
-        /**
-         * attempt to see if the user has internet connection and if the server is connected before
-         * continuing, if not return
-         */
+        val successState = state as ProjectTableScreenState.Success
 
-        val successState = state as ProjectScreenState.Success
-
-        /*
-        LibraryScreenContent(
-            presenter = successState,
-
-            //onProjectClicked = { router.setRoot() }
+        ProjectTableScreenContent(
+            state = successState,
+            onBackClicked = router::popCurrentController,
         )
-         */
-
     }
 }
