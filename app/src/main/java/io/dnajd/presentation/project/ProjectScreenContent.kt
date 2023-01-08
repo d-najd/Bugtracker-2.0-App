@@ -1,10 +1,6 @@
-package io.dnajd.presentation.library
+package io.dnajd.presentation.project
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Search
@@ -14,13 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.library.LibraryScreenState
-import io.dnajd.presentation.library.components.LibraryContent
+import io.dnajd.bugtracker.ui.project.ProjectScreenState
+import io.dnajd.presentation.project.components.ProjectContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreenContent(
-    presenter: LibraryScreenState.Success,
+fun ProjectScreenContent(
+    presenter: ProjectScreenState.Success,
 ) {
     Scaffold(
         topBar = {
@@ -55,7 +51,7 @@ fun LibraryScreenContent(
             )
         }
     ) { contentPadding ->
-        LibraryContent(
+        ProjectContent(
             state = presenter,
             contentPadding = contentPadding,
         )

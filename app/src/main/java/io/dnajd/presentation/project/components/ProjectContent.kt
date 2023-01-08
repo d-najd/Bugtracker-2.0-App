@@ -1,4 +1,4 @@
-package io.dnajd.presentation.library.components
+package io.dnajd.presentation.project.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -17,11 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.library.LibraryScreenState
+import io.dnajd.bugtracker.ui.project.ProjectScreenState
 
 @Composable
-fun LibraryContent(
-    state: LibraryScreenState.Success,
+fun ProjectContent(
+    state: ProjectScreenState.Success,
     contentPadding: PaddingValues,
 ) {
     Column(
@@ -40,7 +39,7 @@ fun LibraryContent(
         )
 
         for(project in state.projects) {
-            LibraryProjectItem(
+            ProjectItemContent(
                 project = project,
             )
         }

@@ -1,4 +1,4 @@
-package io.dnajd.data.library
+package io.dnajd.data.project
 
 import io.dnajd.data.utils.processRequest
 import io.dnajd.domain.project.model.Project
@@ -12,12 +12,12 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object ProjectRepositoryImpl : ProjectRepository {
-    private var factory: LibraryRepositoryApi? = null
+    private var factory: ProjectRepositoryApi? = null
 
     @Synchronized
-    private fun getFactory(): LibraryRepositoryApi {
+    private fun getFactory(): ProjectRepositoryApi {
         if(factory == null){
-            factory = Injekt.get<Retrofit>().create(LibraryRepositoryApi::class.java)
+            factory = Injekt.get<Retrofit>().create(ProjectRepositoryApi::class.java)
         }
         return factory!!;
     }
@@ -27,7 +27,7 @@ object ProjectRepositoryImpl : ProjectRepository {
 
 }
 
-private interface LibraryRepositoryApi {
+private interface ProjectRepositoryApi {
 
     @GET("user/{username}")
     fun getProjectsByUsername(@Path("username") username: String): Call<ProjectHolder>

@@ -1,4 +1,4 @@
-package io.dnajd.presentation.library.components
+package io.dnajd.presentation.project.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,7 @@ import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.ProjectIconFactory
 
 @Composable
-fun LibraryProjectItem(
+fun ProjectItemContent(
     project: Project,
 ){
     Row(

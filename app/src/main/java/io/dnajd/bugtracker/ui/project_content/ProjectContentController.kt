@@ -1,14 +1,14 @@
-package io.dnajd.bugtracker.ui.library
+package io.dnajd.bugtracker.ui.project_content
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import io.dnajd.bugtracker.ui.base.controller.FullComposeController
 
-class LibraryController: FullComposeController() {
+class ProjectContentController: FullComposeController() {
 
     @Composable
     override fun ComposeContent() {
-        Navigator(screen = LibraryScreen)
+        Navigator(screen = ProjectContentScreen)
     }
 
 }

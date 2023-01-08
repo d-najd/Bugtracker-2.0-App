@@ -1,8 +1,8 @@
 package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
-import io.dnajd.data.library.FakeLibraryRepository
-import io.dnajd.data.library.ProjectRepositoryImpl
+import io.dnajd.data.project.FakeProjectRepository
+import io.dnajd.data.project.ProjectRepositoryImpl
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.interactor.GetProjects
 import io.dnajd.domain.project.service.ProjectRepository
@@ -44,7 +44,7 @@ class DomainModule : InjektModule {
         
         when (USE_FAKES) {
             true -> {
-                addSingletonFactory<ProjectRepository> { FakeLibraryRepository }
+                addSingletonFactory<ProjectRepository> { FakeProjectRepository }
             }
             false -> {
                 addSingletonFactory<ProjectRepository> { ProjectRepositoryImpl }
