@@ -23,16 +23,16 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = listOf(
                         ProjectLabel(
                             id = 1,
-                            label = "LABEL 1"
+                            label = "LABEL 1",
                         ),
                         ProjectLabel(
                             id = 2,
-                            label = "LABEL 2"
+                            label = "LABEL 2",
                         ),
                     ),
                     childIssues = listOf(
                         ProjectTableChildTask(id = 2),
-                        ProjectTableChildTask(id = 4)
+                        ProjectTableChildTask(id = 4),
                     ),
                 ),
                 ProjectTableTask(
@@ -43,7 +43,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     position = 1,
                     labels = emptyList(),
                     childIssues = listOf(
-                        ProjectTableChildTask(id = 3)
+                        ProjectTableChildTask(id = 3),
                     )
                 ),
                 ProjectTableTask(
@@ -53,7 +53,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     severity = 3,
                     position = 2,
                     labels = emptyList(),
-                    childIssues = emptyList()
+                    childIssues = emptyList(),
                 ),
         )),
         ProjectTable(
@@ -68,7 +68,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     severity = 2,
                     position = 0,
                     labels = emptyList(),
-                    childIssues = emptyList()
+                    childIssues = emptyList(),
                 ),
             ),
         ),
@@ -76,7 +76,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
             id = 3,
             title = "Table 3",
             position = 2,
-            issues = emptyList()
+            issues = emptyList(),
         ),
     )
 }
