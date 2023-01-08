@@ -20,7 +20,7 @@ class ProjectTableController: FullComposeController {
         bundle.getLong(PROJECT_ID_EXTRA),
     )
 
-    val projectId: Long
+    private val projectId: Long
         get() = args.getLong(PROJECT_ID_EXTRA)
 
     @Composable
