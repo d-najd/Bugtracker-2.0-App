@@ -27,7 +27,7 @@ class ProjectTableScreenModel(
             val projectTables = getProjectTables.await(projectId)
             mutableState.update {
                 ProjectTableScreenState.Success(
-                    projectTables = projectTables,
+                    projectTables = projectTables.sortedBy { it.position },
                 )
             }
         }
@@ -43,6 +43,6 @@ sealed class ProjectTableScreenState {
     @Immutable
     data class Success(
         val projectTables: List<ProjectTable>,
-    ) : ProjectTableScreenState()
+    ): ProjectTableScreenState()
 
 }

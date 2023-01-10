@@ -9,4 +9,5 @@
     <string name="error_duplicate_entry">Duplicate Entry</string>
     <string name="label_all_projects">All Projects</string>
     <string name="label_projects">Projects</string>
+    <string name="action_create">Create</string>
 </resources>

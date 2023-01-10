@@ -11,5 +11,5 @@ data class ProjectTable(
     @SerializedName("id") val id: Long,
     @SerializedName("title") val title: String,
     @SerializedName("position") val position: Int,
-    @SerializedName("issues") val issues: List<ProjectTableTask>,
+    @SerializedName("issues") val tasks: List<ProjectTableTask>,
 )
