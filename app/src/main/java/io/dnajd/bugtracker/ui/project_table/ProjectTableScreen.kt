@@ -34,6 +34,7 @@ class ProjectTableScreen(
             state = successState,
             onBackClicked = router::popCurrentController,
             onTableRename = screenModel::renameTable,
+            onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
     }
 }

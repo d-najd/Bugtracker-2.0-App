@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -22,11 +23,12 @@ import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun ProjectTableCard(
+    state: ProjectTableScreenState.Success,
     projectTable: ProjectTable,
     index: Int,
-    projectTableLength: Int,
 
     onTableRename: (Long, String) -> Unit,
+    onSwitchDropdownMenuClicked: (Int) -> Unit,
 ){
     Card(
         modifier = Modifier
@@ -35,20 +37,12 @@ fun ProjectTableCard(
     ) {
         ProjectTableCardTop(
             modifier = Modifier.fillMaxWidth(),
-            title = projectTable.title,
-            taskCount = projectTable.tasks.size,
+            state = state,
+            projectTable = projectTable,
             index = index,
-            projectTableLength = projectTableLength,
             onTableRename = onTableRename,
+            onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
-
-        /*
-        val state = rememberReorderableLazyListState(onMove = { from, to ->
-            data.value = data.value.toMutableList().apply {
-                add(to.index, removeAt(from.index))
-            }
-        })
-         */
 
         var reorderableList by remember { mutableStateOf(projectTable.tasks) }
         val reorderableState = rememberReorderableLazyListState(
@@ -59,11 +53,6 @@ fun ProjectTableCard(
             },
             onDragEnd = { from, to ->
                 reorderableList = projectTable.tasks
-                /*
-                reorderableList.value = reorderableList.value.toMutableList().apply {
-                    add(to, removeAt(from))
-                }
-                 */
             },
         )
 
@@ -99,12 +88,12 @@ fun ProjectTableCard(
 @Composable
 private fun ProjectTableCardTop(
     modifier: Modifier = Modifier,
-    title: String,
-    taskCount: Int,
+    state: ProjectTableScreenState.Success,
+    projectTable: ProjectTable,
     index: Int,
-    projectTableLength: Int,
 
     onTableRename: (Long, String) -> Unit,
+    onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -113,17 +102,16 @@ private fun ProjectTableCardTop(
         Text(
             modifier = Modifier
                 .padding(start = 8.dp),
-            text = title,
+            text = projectTable.title,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
         )
         Text(
             modifier = Modifier.padding(start = 12.dp),
-            text = taskCount.toString(),
+            text = projectTable.tasks.size.toString(),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
         )
-        var enabled by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -131,7 +119,7 @@ private fun ProjectTableCardTop(
         ) {
             IconButton(
                 onClick = {
-                    enabled = !enabled
+                    onSwitchDropdownMenuClicked(index)
                 }
             ) {
                 Icon(
@@ -146,9 +134,9 @@ private fun ProjectTableCardTop(
                 .fillMaxWidth()
         ) {
             DropdownMenu(
-                expanded = enabled, onDismissRequest = {
-                enabled = false
-            }) {
+                expanded = index == state.dropdownDialogIndex,
+                onDismissRequest = { onSwitchDropdownMenuClicked(-1) }
+            ) {
                 DropdownMenuItem(text = {
                     Text(text = stringResource(R.string.action_rename_column))
                 }, onClick = {
@@ -159,13 +147,13 @@ private fun ProjectTableCardTop(
                         Text(text = stringResource(R.string.action_move_column_left))
                     }, onClick = { /*TODO*/ })
                 }
-                if(index+1 < projectTableLength) {
+                if(index + 1 in state.projectTables.indices) {
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_right))
                     }, onClick = { /*TODO*/ })
                 }
                 DropdownMenuItem(text = {
-                    Text(text = stringResource(R.string.action_delete_column))
+                    Text(text = stringResource(R.string.action_delete_table))
                 }, onClick = { /*TODO*/ })
             }
         }

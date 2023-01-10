@@ -14,6 +14,7 @@ fun ProjectTableContent(
     contentPadding: PaddingValues,
 
     onTableRename: (Long, String) -> Unit,
+    onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -24,10 +25,11 @@ fun ProjectTableContent(
     ) {
         for ((index, projectTable) in state.projectTables.sortedBy { it.position }.withIndex()) {
             ProjectTableCard(
+                state = state,
                 projectTable = projectTable,
                 index = index,
-                projectTableLength = state.projectTables.size,
                 onTableRename = onTableRename,
+                onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
             )
         }
     }

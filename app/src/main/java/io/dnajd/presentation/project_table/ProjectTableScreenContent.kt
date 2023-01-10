@@ -14,6 +14,7 @@ fun ProjectTableScreenContent(
     onBackClicked: () -> Unit,
 
     onTableRename: (Long, String) -> Unit,
+    onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Scaffold { contentPadding ->
         BackHandler { onBackClicked() }
@@ -22,6 +23,7 @@ fun ProjectTableScreenContent(
             state = state,
             contentPadding = contentPadding,
             onTableRename = onTableRename,
+            onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
     }
 }

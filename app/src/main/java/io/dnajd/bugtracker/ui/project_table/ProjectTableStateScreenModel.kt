@@ -6,9 +6,9 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.model.copy
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
+import io.dnajd.util.launchUI
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -54,6 +54,20 @@ class ProjectTableScreenModel(
         }
     }
 
+    /**
+     * switches the dropdown menu to the selected index, if the given index matches the one that is
+     * already stored then the index will be set to -1 instead
+     */
+    fun switchDropdownMenu(index: Int) {
+        coroutineScope.launchUI {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
+            mutableState.update {
+                state.copy(
+                    dropdownDialogIndex = if(state.dropdownDialogIndex == index) -1 else index
+                )
+            }
+        }
+    }
 }
 
 sealed class ProjectTableScreenState {
@@ -64,6 +78,7 @@ sealed class ProjectTableScreenState {
     @Immutable
     data class Success(
         val projectTables: List<ProjectTable>,
+        val dropdownDialogIndex: Int = -1,
     ): ProjectTableScreenState()
 
 }
