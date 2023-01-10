@@ -1,6 +1,7 @@
 package io.dnajd.presentation.project_table.components
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -45,8 +46,8 @@ fun ProjectTableCardContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(elevation.value)
-                .detectReorderAfterLongPress(reorderableState),
-                //.clickable { },
+                .detectReorderAfterLongPress(reorderableState)
+                .clickable { },
         ) {
 
             // TODO onclick open dialog that lets you change title
