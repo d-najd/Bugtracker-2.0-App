@@ -23,6 +23,8 @@ import org.burnoutcrew.reorderable.reorderable
 @Composable
 fun ProjectTableCard(
     projectTable: ProjectTable,
+    projectTableLength: Int,
+    index: Int,
 ){
     Card(
         modifier = Modifier
@@ -32,7 +34,9 @@ fun ProjectTableCard(
         ProjectTableCardTop(
             modifier = Modifier.fillMaxWidth(),
             title = projectTable.title,
-            count = projectTable.tasks.size,
+            taskCount = projectTable.tasks.size,
+            index = index,
+            projectTableLength = projectTableLength,
         )
 
         /*
@@ -93,7 +97,9 @@ fun ProjectTableCard(
 private fun ProjectTableCardTop(
     modifier: Modifier = Modifier,
     title: String,
-    count: Int,
+    taskCount: Int,
+    index: Int,
+    projectTableLength: Int,
 ) {
     Row(
         modifier = modifier,
@@ -108,22 +114,52 @@ private fun ProjectTableCardTop(
         )
         Text(
             modifier = Modifier.padding(start = 12.dp),
-            text = count.toString(),
+            text = taskCount.toString(),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
         )
+        var enabled by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.End,
         ) {
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = {
+                    enabled = !enabled
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.MoreVert,
                     contentDescription = "",
                 )
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            DropdownMenu(
+                expanded = enabled, onDismissRequest = {
+                enabled = false
+            }) {
+                DropdownMenuItem(text = {
+                    Text(text = stringResource(R.string.action_rename_column))
+                }, onClick = { /*TODO*/ })
+                if(index != 0) {
+                    DropdownMenuItem(text = {
+                        Text(text = stringResource(R.string.action_move_column_left))
+                    }, onClick = { /*TODO*/ })
+                }
+                if(index+1 < projectTableLength) {
+                    DropdownMenuItem(text = {
+                        Text(text = stringResource(R.string.action_move_column_right))
+                    }, onClick = { /*TODO*/ })
+                }
+                DropdownMenuItem(text = {
+                    Text(text = stringResource(R.string.action_delete_column))
+                }, onClick = { /*TODO*/ })
             }
         }
     }

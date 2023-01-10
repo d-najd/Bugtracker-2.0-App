@@ -21,9 +21,11 @@ fun ProjectTableContent(
             .verticalScroll(rememberScrollState())
             .padding(contentPadding),
     ) {
-        for (projectTable in state.projectTables.sortedBy { it.position }) {
+        for ((index, projectTable) in state.projectTables.sortedBy { it.position }.withIndex()) {
             ProjectTableCard(
                 projectTable = projectTable,
+                projectTableLength = state.projectTables.size,
+                index = index,
             )
         }
     }

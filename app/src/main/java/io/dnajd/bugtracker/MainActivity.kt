@@ -8,6 +8,7 @@ import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
 import io.dnajd.bugtracker.ui.project.ProjectController
+import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.domain.DomainModule
 import uy.kohesive.injekt.Injekt
 
@@ -31,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         // if there is no controller (in other words starting the app) set a root controller
         // TODO SET ROOT
         if(router.backstack.firstOrNull() == null) {
-            router.setRoot(ProjectController())
+            router.setRoot(ProjectTableController(1))
+            //router.setRoot(ProjectController())
             // router.setRoot(AnalyticsController(auth = Auth.mockInstance()))
             // router.setRoot(LoginController())
         }

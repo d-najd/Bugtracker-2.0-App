@@ -10,4 +10,8 @@
     <string name="label_all_projects">All Projects</string>
     <string name="label_projects">Projects</string>
     <string name="action_create">Create</string>
+    <string name="action_rename_column">Rename Column</string>
+    <string name="action_move_column_left">Move column left</string>
+    <string name="action_move_column_right">Move column right</string>
+    <string name="action_delete_column">Delete column</string>
 </resources>
