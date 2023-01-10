@@ -13,3 +13,10 @@ data class ProjectTable(
     @SerializedName("position") val position: Int,
     @SerializedName("issues") val tasks: List<ProjectTableTask>,
 )
+
+fun ProjectTable.copy(): ProjectTable = ProjectTable(
+    id = this.id,
+    title = this.title,
+    position = this.position,
+    tasks = this.tasks.map { it.copy() }
+)

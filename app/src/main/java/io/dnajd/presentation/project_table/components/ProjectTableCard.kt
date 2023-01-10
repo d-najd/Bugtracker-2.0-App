@@ -23,8 +23,10 @@ import org.burnoutcrew.reorderable.reorderable
 @Composable
 fun ProjectTableCard(
     projectTable: ProjectTable,
-    projectTableLength: Int,
     index: Int,
+    projectTableLength: Int,
+
+    onTableRename: (Long, String) -> Unit,
 ){
     Card(
         modifier = Modifier
@@ -37,6 +39,7 @@ fun ProjectTableCard(
             taskCount = projectTable.tasks.size,
             index = index,
             projectTableLength = projectTableLength,
+            onTableRename = onTableRename,
         )
 
         /*
@@ -100,6 +103,8 @@ private fun ProjectTableCardTop(
     taskCount: Int,
     index: Int,
     projectTableLength: Int,
+
+    onTableRename: (Long, String) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -146,7 +151,9 @@ private fun ProjectTableCardTop(
             }) {
                 DropdownMenuItem(text = {
                     Text(text = stringResource(R.string.action_rename_column))
-                }, onClick = { /*TODO*/ })
+                }, onClick = {
+                    onTableRename(1, "Title 3")
+                })
                 if(index != 0) {
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_left))

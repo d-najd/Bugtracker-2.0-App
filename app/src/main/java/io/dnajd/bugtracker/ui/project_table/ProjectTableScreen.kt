@@ -33,6 +33,7 @@ class ProjectTableScreen(
         ProjectTableScreenContent(
             state = successState,
             onBackClicked = router::popCurrentController,
+            onTableRename = screenModel::renameTable,
         )
     }
 }

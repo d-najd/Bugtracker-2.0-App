@@ -12,6 +12,8 @@ import io.dnajd.presentation.project_table.components.ProjectTableContent
 fun ProjectTableScreenContent(
     state: ProjectTableScreenState.Success,
     onBackClicked: () -> Unit,
+
+    onTableRename: (Long, String) -> Unit,
 ) {
     Scaffold { contentPadding ->
         BackHandler { onBackClicked() }
@@ -19,6 +21,7 @@ fun ProjectTableScreenContent(
         ProjectTableContent(
             state = state,
             contentPadding = contentPadding,
+            onTableRename = onTableRename,
         )
     }
 }

@@ -4,6 +4,7 @@ import io.dnajd.domain.project_table.model.ProjectTable
 
 interface ProjectTableRepository {
 
-    suspend fun getProjectTables(projectId: Long): List<ProjectTable>
+    suspend fun getTables(projectId: Long): List<ProjectTable>
 
+    suspend fun renameTable(id: Long, newTitle: String): ProjectTable?
 }
