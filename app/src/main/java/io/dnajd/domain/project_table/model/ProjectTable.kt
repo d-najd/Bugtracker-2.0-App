@@ -2,6 +2,7 @@ package io.dnajd.domain.project_table.model
 
 
 import com.google.gson.annotations.SerializedName
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
 
 data class ProjectTableHolder(
     @SerializedName("data") val `data`: List<ProjectTable>

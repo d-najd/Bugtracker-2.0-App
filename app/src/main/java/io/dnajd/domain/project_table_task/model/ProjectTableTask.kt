@@ -1,4 +1,4 @@
-package io.dnajd.domain.project_table.model
+package io.dnajd.domain.project_table_task.model
 
 
 import com.google.gson.annotations.SerializedName
@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProjectTableTask(
     @SerializedName("id") val id: Long,
     @SerializedName("title") val title: String,
+    @SerializedName("tableId") val tableId: Long,
     @SerializedName("parentIssueId") val parentTaskId: Long?,
     @SerializedName("severity") val severity: Int,
     @SerializedName("position") val position: Int,

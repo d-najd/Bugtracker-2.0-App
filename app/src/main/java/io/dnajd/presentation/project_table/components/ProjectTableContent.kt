@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 
@@ -15,6 +16,7 @@ fun ProjectTableContent(
 
     onTableRename: (Long, String) -> Unit,
     onSwapTablePositions: (Long, Long) -> Unit,
+    onSwapTableTaskPositions: (Long, Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
@@ -31,6 +33,7 @@ fun ProjectTableContent(
                 index = index,
                 onTableRename = onTableRename,
                 onSwapTablePositions = onSwapTablePositions,
+                onSwapTableTaskPositions = onSwapTableTaskPositions,
                 onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
             )
         }

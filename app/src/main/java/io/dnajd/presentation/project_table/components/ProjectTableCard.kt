@@ -15,8 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.project_table.ProjectTableEvent
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
+import kotlinx.coroutines.flow.collectLatest
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -29,6 +31,7 @@ fun ProjectTableCard(
 
     onTableRename: (Long, String) -> Unit,
     onSwapTablePositions: (Long, Long) -> Unit,
+    onSwapTableTaskPositions: (Long, Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ){
     Card(
@@ -46,7 +49,10 @@ fun ProjectTableCard(
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
 
-        var reorderableList by remember { mutableStateOf(projectTable.tasks) }
+        val test = projectTable.tasks.sortedBy { it.position }
+
+        // TODO THE ORDER OF THESE SEEMS TO BE WRONG
+        var reorderableList by remember { mutableStateOf(test) }
         // a list is being stored in case the user moves multiple table items
         val reorderableState = rememberReorderableLazyListState(
             onMove = { from, to ->
@@ -55,15 +61,37 @@ fun ProjectTableCard(
                 }
             },
             onDragEnd = { from, to ->
-                // onSwapTablePositions(state.projectTables[from].id, state.projectTables[to].id )
-                // reorderedTableItemsIds.add(Pair(state.projectTables[from].id, state.projectTables[to].id))
+                if(from != to) {
+                    onSwapTableTaskPositions(
+                        projectTable.id,
+                        reorderableList[from].id,
+                        reorderableList[to].id
+                    )
+                }
             },
         )
 
         // refresh when project tables get altered
         LaunchedEffect(state.projectTables){
-            reorderableList = projectTable.tasks
+            reorderableList = projectTable.tasks.sortedBy { it.position }
         }
+
+        /*
+        LaunchedEffect(Unit){
+            state.events.collectLatest { event ->
+                when(event) {
+                    is ProjectTableEvent.TasksSwapped -> {
+                        if(projectTable.id == event.tableId ) {
+                            val tas = projectTable.tasks
+                            val e = tas[0].id
+                            reorderableList = projectTable.tasks
+                        }
+                    }
+                    else -> { }
+                }
+            }
+        }
+         */
 
         LazyColumn(
             state = reorderableState.listState,

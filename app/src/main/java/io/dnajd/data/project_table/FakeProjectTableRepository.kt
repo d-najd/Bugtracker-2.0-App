@@ -1,9 +1,9 @@
 package io.dnajd.data.project_table
 
-import io.dnajd.domain.project_table.model.ProjectLabel
+import io.dnajd.domain.project_table_task.model.ProjectLabel
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.model.ProjectTableChildTask
-import io.dnajd.domain.project_table.model.ProjectTableTask
+import io.dnajd.domain.project_table_task.model.ProjectTableChildTask
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
@@ -16,6 +16,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                 ProjectTableTask(
                     id = 1,
                     title = "Issue 1",
+                    tableId = 1,
                     parentTaskId = null,
                     severity = 1,
                     position = 0,
@@ -37,6 +38,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                 ProjectTableTask(
                     id = 2,
                     title = "Issue 2",
+                    tableId = 1,
                     parentTaskId = 1,
                     severity = 3,
                     position = 1,
@@ -48,6 +50,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                 ProjectTableTask(
                     id = 3,
                     title = "Issue 3",
+                    tableId = 1,
                     parentTaskId = 2,
                     severity = 3,
                     position = 2,
@@ -64,6 +67,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                 ProjectTableTask(
                     id = 4,
                     title = "Issue 4",
+                    tableId = 1,
                     parentTaskId = 1,
                     severity = 2,
                     position = 0,

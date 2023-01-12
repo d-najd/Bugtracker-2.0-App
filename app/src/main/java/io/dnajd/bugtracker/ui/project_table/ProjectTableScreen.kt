@@ -35,6 +35,7 @@ class ProjectTableScreen(
             onBackClicked = router::popCurrentController,
             onTableRename = screenModel::renameTable,
             onSwapTablePositions = screenModel::swapTablePositions,
+            onSwapTableTaskPositions = screenModel::swapTableTaskPositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
     }

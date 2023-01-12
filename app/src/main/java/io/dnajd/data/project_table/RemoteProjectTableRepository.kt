@@ -17,7 +17,6 @@ import uy.kohesive.injekt.api.get
 object RemoteProjectTableRepository : ProjectTableRepository {
     private var factory: ProjectTableRepositoryApi? = null
 
-    @Synchronized
     private fun getFactory(): ProjectTableRepositoryApi {
         if(factory == null){
             factory = Injekt.get<Retrofit>().create(ProjectTableRepositoryApi::class.java)
