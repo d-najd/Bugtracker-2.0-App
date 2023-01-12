@@ -7,7 +7,6 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
-import io.dnajd.bugtracker.ui.project.ProjectController
 import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.domain.DomainModule
 import uy.kohesive.injekt.Injekt

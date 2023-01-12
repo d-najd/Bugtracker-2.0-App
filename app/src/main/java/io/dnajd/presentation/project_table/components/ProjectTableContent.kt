@@ -14,6 +14,7 @@ fun ProjectTableContent(
     contentPadding: PaddingValues,
 
     onTableRename: (Long, String) -> Unit,
+    onSwapTablePositions: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
@@ -29,6 +30,7 @@ fun ProjectTableContent(
                 projectTable = projectTable,
                 index = index,
                 onTableRename = onTableRename,
+                onSwapTablePositions = onSwapTablePositions,
                 onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
             )
         }

@@ -7,8 +7,3 @@ data class ProjectLabel(
     @SerializedName("id") val id: Long,
     @SerializedName("label") val label: String,
 )
-
-fun ProjectLabel.copy(): ProjectLabel = ProjectLabel(
-    id = this.id,
-    label = this.label
-)

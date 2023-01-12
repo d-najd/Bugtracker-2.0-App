@@ -81,8 +81,9 @@ object FakeProjectTableRepository : ProjectTableRepository {
     )
 
     @Suppress("RedundantNullableReturnType")
-    override suspend fun renameTable(id: Long, newTitle: String): Boolean {
-        return true
-    }
+    override suspend fun renameTable(id: Long, newTitle: String): Boolean = true
+
+    override suspend fun swapTablePositions(fId: Long, sId: Long): Boolean = true
+
 }
 

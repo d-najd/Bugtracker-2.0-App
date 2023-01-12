@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
+import io.dnajd.domain.project_table.interactor.SwapProjectTablePositions
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
@@ -15,12 +16,12 @@ import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
     context: Context,
-    projectId: Long,
+    private val projectId: Long,
 
     private val getProjectTables: GetProjectTables = Injekt.get(),
     private val renameProjectTable: RenameProjectTable = Injekt.get(),
+    private val swapProjectTablePositions: SwapProjectTablePositions = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
-
     init {
         requestTables(projectId)
     }
@@ -36,11 +37,12 @@ class ProjectTableScreenModel(
         }
     }
 
-    fun renameTable(tableId: Long, newName: String) {
+    fun renameTable(id: Long, newName: String) {
         coroutineScope.launchIO {
             val state = (mutableState.value as ProjectTableScreenState.Success)
-            state.projectTables.find { table -> table.id == tableId }!!.let { originalTable ->
-                if(renameProjectTable.await(tableId, newName)) {
+            state.projectTables.find { table -> table.id == id }!!.let { originalTable ->
+                if(renameProjectTable.await(id, newName)) {
+                    // doing it this way so that state changes get updated for sure
                     mutableState.update {
                         val projectTables = state.projectTables.toMutableList()
                         projectTables.remove(originalTable)
@@ -48,6 +50,40 @@ class ProjectTableScreenModel(
                         ProjectTableScreenState.Success(
                             projectTables = projectTables
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * swaps the positions of 2 tables
+     * @param fId id of the first table
+     * @param sId id of the second table
+     */
+    fun swapTablePositions(fId: Long, sId: Long){
+        coroutineScope.launchIO {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
+            state.projectTables.find { table -> table.id == sId }!!.let { fTable ->
+                state.projectTables.find { table -> table.id == fId }!!.let { sTable ->
+                    if(swapProjectTablePositions.await(fId, sId)) {
+                        // doing it this way so that state changes get updated for sure
+                        mutableState.update {
+                            val projectTables = state.projectTables.toMutableList()
+                            projectTables.remove(fTable)
+                            projectTables.remove(sTable)
+                            val newFTable = fTable.copy(
+                                position = sTable.position
+                            )
+                            val newSTable = sTable.copy(
+                                position = fTable.position
+                            )
+                            projectTables.add(newFTable)
+                            projectTables.add(newSTable)
+                            ProjectTableScreenState.Success(
+                                projectTables = projectTables,
+                            )
+                        }
                     }
                 }
             }

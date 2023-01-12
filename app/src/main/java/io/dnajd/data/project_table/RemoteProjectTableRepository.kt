@@ -29,7 +29,10 @@ object RemoteProjectTableRepository : ProjectTableRepository {
         getFactory().getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
 
     override suspend fun renameTable(id: Long, newTitle: String): Boolean =
-        getFactory().renameProject(id, newTitle).processVoidRequest()
+        getFactory().renameTable(id, newTitle).processVoidRequest()
+
+    override suspend fun swapTablePositions(fId: Long, sId: Long): Boolean =
+        getFactory().swapTablePositions(id = fId, sId = sId).processVoidRequest()
 
 }
 
@@ -39,9 +42,15 @@ private interface ProjectTableRepositoryApi {
     fun getTablesByProjectId(@Path("projectId") projectId: Long): Call<ProjectTableHolder>
 
     @PATCH("${Urls.PROJECT_TABLE_RAW}/{id}/title/{newTitle}")
-    fun renameProject(
+    fun renameTable(
         @Path("id") id: Long,
         @Path("newTitle") newTitle: String
+    ): Call<Void>
+
+    @PATCH("${Urls.PROJECT_TABLE_RAW}/{id}/swapPositionWith/{sId}")
+    fun swapTablePositions(
+        @Path("id") id: Long,
+        @Path("sId") sId: Long,
     ): Call<Void>
 
 }
