@@ -9,7 +9,8 @@ import uy.kohesive.injekt.api.get
 import java.io.IOException
 
 
-fun <T> Call<T>.processRequest(): T? {
+inline fun <reified T> Call<T>.processRequest(): T? {
+    if(T::class.java == Void::class.java) throw IllegalStateException("Use Call<T>.processVoidRequest for void requests")
     try{
         val response = execute()
         if(response.isSuccessful && response.code() == 200){
@@ -28,4 +29,25 @@ fun <T> Call<T>.processRequest(): T? {
         }
     }
     return null
+}
+
+fun <T> Call<T>.processVoidRequest(): Boolean {
+    try{
+        val response = execute()
+        if(response.isSuccessful){
+            return true
+        } else if (response.code() == 401){
+            Injekt.get<ContextHolder>().composeToast(R.string.error_auth)
+        } else if (response.code() == 409) {
+            Injekt.get<ContextHolder>().composeToast(R.string.error_duplicate_entry)
+        }
+
+    } catch (e: Exception){
+        e.printStackTrace()
+        when(e){
+            is IOException -> Injekt.get<ContextHolder>().composeToast(R.string.error_network)
+            else -> throw e
+        }
+    }
+    return false
 }

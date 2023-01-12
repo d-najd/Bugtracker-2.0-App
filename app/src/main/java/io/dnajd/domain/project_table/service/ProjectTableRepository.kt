@@ -6,5 +6,6 @@ interface ProjectTableRepository {
 
     suspend fun getTables(projectId: Long): List<ProjectTable>
 
-    suspend fun renameTable(id: Long, newTitle: String): ProjectTable?
+    suspend fun renameTable(id: Long, newTitle: String): Boolean
+
 }

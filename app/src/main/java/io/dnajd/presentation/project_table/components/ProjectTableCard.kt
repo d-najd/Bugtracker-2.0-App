@@ -140,7 +140,7 @@ private fun ProjectTableCardTop(
                 DropdownMenuItem(text = {
                     Text(text = stringResource(R.string.action_rename_column))
                 }, onClick = {
-                    onTableRename(1, "Title 3")
+                    onTableRename(1, "Title1")
                 })
                 if(index != 0) {
                     DropdownMenuItem(text = {

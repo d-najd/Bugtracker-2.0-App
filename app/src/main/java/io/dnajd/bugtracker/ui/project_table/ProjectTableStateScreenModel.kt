@@ -40,11 +40,11 @@ class ProjectTableScreenModel(
         coroutineScope.launchIO {
             val state = (mutableState.value as ProjectTableScreenState.Success)
             state.projectTables.find { table -> table.id == tableId }!!.let { originalTable ->
-                renameProjectTable.await(tableId, newName)?.let { updatedTable ->
+                if(renameProjectTable.await(tableId, newName)) {
                     mutableState.update {
                         val projectTables = state.projectTables.toMutableList()
                         projectTables.remove(originalTable)
-                        projectTables.add(updatedTable)
+                        projectTables.add(originalTable.copy(title = newName))
                         ProjectTableScreenState.Success(
                             projectTables = projectTables
                         )

@@ -2,6 +2,7 @@ package io.dnajd.data.project_table
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.data.utils.processRequest
+import io.dnajd.data.utils.processVoidRequest
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableHolder
 import io.dnajd.domain.project_table.service.ProjectTableRepository
@@ -27,8 +28,8 @@ object RemoteProjectTableRepository : ProjectTableRepository {
     override suspend fun getTables(projectId: Long): List<ProjectTable> =
         getFactory().getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
 
-    override suspend fun renameTable(id: Long, newTitle: String): ProjectTable? =
-        getFactory().renameProject(id, newTitle).processRequest()
+    override suspend fun renameTable(id: Long, newTitle: String): Boolean =
+        getFactory().renameProject(id, newTitle).processVoidRequest()
 
 }
 
@@ -41,6 +42,6 @@ private interface ProjectTableRepositoryApi {
     fun renameProject(
         @Path("id") id: Long,
         @Path("newTitle") newTitle: String
-    ): Call<ProjectTable>
+    ): Call<Void>
 
 }
