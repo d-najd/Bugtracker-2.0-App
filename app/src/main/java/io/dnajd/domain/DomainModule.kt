@@ -14,7 +14,7 @@ import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
 import io.dnajd.domain.project_table.interactor.SwapProjectTablePositions
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTaskPositions
+import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTaskPositions
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
@@ -69,6 +69,6 @@ class DomainModule : InjektModule {
         addFactory { GetProjectTables(get()) }
         addFactory { RenameProjectTable(get()) }
         addFactory { SwapProjectTablePositions(get()) }
-        addFactory { SwapProjectTableTaskPositions(get()) }
+        addFactory { MoveProjectTableTaskPositions(get()) }
     }
 }

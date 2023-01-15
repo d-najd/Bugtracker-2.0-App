@@ -57,6 +57,16 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = emptyList(),
                     childTasks = emptyList(),
                 ),
+                ProjectTableTask(
+                    id = 4,
+                    title = "Issue 4",
+                    tableId = 1,
+                    parentTaskId = 2,
+                    severity = 3,
+                    position = 3,
+                    labels = emptyList(),
+                    childTasks = emptyList(),
+                ),
             )
         ),
         ProjectTable(
@@ -65,8 +75,8 @@ object FakeProjectTableRepository : ProjectTableRepository {
             position = 1,
             tasks = listOf(
                 ProjectTableTask(
-                    id = 4,
-                    title = "Issue 4",
+                    id = 5,
+                    title = "Issue 5",
                     tableId = 1,
                     parentTaskId = 1,
                     severity = 2,

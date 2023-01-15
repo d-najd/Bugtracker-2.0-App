@@ -20,7 +20,7 @@ object RemoteProjectTableTaskRepository : ProjectTableTaskRepository {
         return factory!!
     }
 
-    override suspend fun swapTaskPositions(fId: Long, sId: Long): Boolean =
+    override suspend fun moveTasks(fId: Long, sId: Long): Boolean =
         getFactory().swapTaskPositions(id = fId, sId = sId).processVoidRequest()
 }
 

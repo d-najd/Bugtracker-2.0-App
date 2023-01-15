@@ -15,10 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.ProjectTableEvent
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
-import kotlinx.coroutines.flow.collectLatest
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -31,7 +29,7 @@ fun ProjectTableCard(
 
     onTableRename: (Long, String) -> Unit,
     onSwapTablePositions: (Long, Long) -> Unit,
-    onSwapTableTaskPositions: (Long, Long, Long) -> Unit,
+    onMoveTableTasks: (Long, Int, Int) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ){
     Card(
@@ -49,10 +47,7 @@ fun ProjectTableCard(
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
 
-        val test = projectTable.tasks.sortedBy { it.position }
-
-        // TODO THE ORDER OF THESE SEEMS TO BE WRONG
-        var reorderableList by remember { mutableStateOf(test) }
+        var reorderableList by remember { mutableStateOf(projectTable.tasks) }
         // a list is being stored in case the user moves multiple table items
         val reorderableState = rememberReorderableLazyListState(
             onMove = { from, to ->
@@ -62,36 +57,29 @@ fun ProjectTableCard(
             },
             onDragEnd = { from, to ->
                 if(from != to) {
-                    onSwapTableTaskPositions(
+                    onMoveTableTasks(
                         projectTable.id,
-                        reorderableList[from].id,
-                        reorderableList[to].id
+                        from,
+                        to,
                     )
                 }
             },
         )
 
+
         // refresh when project tables get altered
         LaunchedEffect(state.projectTables){
-            reorderableList = projectTable.tasks.sortedBy { it.position }
+            reorderableList = projectTable.tasks
         }
 
         /*
-        LaunchedEffect(Unit){
-            state.events.collectLatest { event ->
-                when(event) {
-                    is ProjectTableEvent.TasksSwapped -> {
-                        if(projectTable.id == event.tableId ) {
-                            val tas = projectTable.tasks
-                            val e = tas[0].id
-                            reorderableList = projectTable.tasks
-                        }
-                    }
-                    else -> { }
-                }
-            }
-        }
+             refresh when an task gets moved, for some reason moving tasks does not count as state
+             change and events are not reliable so I am stuck with this
          */
+
+        LaunchedEffect(state.taskMoved) {
+            reorderableList = projectTable.tasks
+        }
 
         LazyColumn(
             state = reorderableState.listState,

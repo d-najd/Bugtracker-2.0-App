@@ -15,7 +15,7 @@ fun ProjectTableScreenContent(
 
     onTableRename: (Long, String) -> Unit,
     onSwapTablePositions: (Long, Long) -> Unit,
-    onSwapTableTaskPositions: (Long, Long, Long) -> Unit,
+    onMoveTableTasks: (Long, Int, Int) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Scaffold { contentPadding ->
@@ -26,7 +26,7 @@ fun ProjectTableScreenContent(
             contentPadding = contentPadding,
             onTableRename = onTableRename,
             onSwapTablePositions = onSwapTablePositions,
-            onSwapTableTaskPositions = onSwapTableTaskPositions,
+            onMoveTableTasks = onMoveTableTasks,
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
     }
