@@ -24,6 +24,7 @@ fun ProjectTableCardContent(
     id: Long,
     reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(onMove = {_, _ -> }),
     isDragging: Boolean = false,
+    onTaskClicked: (Long) -> Unit,
 ) {
     val elevation = animateDpAsState(if (isDragging) 4.dp else 0.dp)
 
@@ -43,7 +44,7 @@ fun ProjectTableCardContent(
                 .fillMaxWidth()
                 .shadow(elevation.value)
                 .detectReorderAfterLongPress(reorderableState)
-                .clickable { },
+                .clickable { onTaskClicked(id) },
         ) {
 
             // TODO onclick open dialog that lets you change title

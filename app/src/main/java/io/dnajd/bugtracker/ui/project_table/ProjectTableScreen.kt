@@ -7,6 +7,8 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.base.controller.pushController
+import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.util.LocalRouter
@@ -34,8 +36,9 @@ class ProjectTableScreen(
             state = successState,
             onBackClicked = router::popCurrentController,
             onTableRename = screenModel::renameTable,
-            onSwapTablePositions = screenModel::swapTablePositions,
             onMoveTableTasks = screenModel::moveTableTasks,
+            onTaskClicked = { router.pushController(TableTaskController(it)) },
+            onSwapTablePositionsClicked = screenModel::swapTablePositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
     }

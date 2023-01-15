@@ -1,6 +1,6 @@
 package io.dnajd.presentation.project_table_task.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,16 +67,17 @@ fun TableTaskContent(
         )
 
         Card(
-            modifier = Modifier.padding(top = 18.dp),
+            modifier = Modifier
+                .padding(top = 18.dp)
+                .clickable {  },
             shape = RoundedCornerShape(4.dp),
         ) {
             BugtrackerMultipurposeMenu(
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 8.dp, start = 4.dp, end = 2.dp),
-                text = state.tableTitle,
+                text = "INSERT PROJECT TITLE",
                 includeDropdownArrow = true,
                 includeDivider = false,
-                onClick = { }
             )
         }
 

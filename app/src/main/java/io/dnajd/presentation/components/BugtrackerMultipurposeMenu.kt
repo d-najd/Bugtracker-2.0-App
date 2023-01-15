@@ -35,7 +35,7 @@ fun BugtrackerMultipurposeMenu(
     text: String,
     includeDropdownArrow: Boolean = false,
     includeDivider: Boolean = true,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier
@@ -50,11 +50,14 @@ fun BugtrackerMultipurposeMenu(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(bottom = 5.dp)
-                .clickable {
-                    onClick()
-                },
+            modifier = Modifier.padding(bottom = 5.dp).let {
+                if(onClick != null){
+                    it.clickable {
+                        onClick()
+                    }
+                }
+                it
+            }
         ) {
             Text(
                 modifier = Modifier

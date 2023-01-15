@@ -8,14 +8,10 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
-import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.project_table_task.TableTaskScreenContent
 import io.dnajd.presentation.util.LocalRouter
 
 class TableTaskScreen(
-    private val projectId: Long,
-    private val tableId: Long,
-    private val tableTitle: String,
     private val taskId: Long
 ) : Screen {
     @Composable
@@ -25,9 +21,6 @@ class TableTaskScreen(
         val context = LocalContext.current
         val screenModel = rememberScreenModel { TableTaskStateScreenModel(
             context = context,
-            projectId = projectId,
-            tableId = tableId,
-            tableTitle = tableTitle,
             taskId = taskId,
         ) }
 

@@ -28,8 +28,9 @@ fun ProjectTableCard(
     index: Int,
 
     onTableRename: (Long, String) -> Unit,
-    onSwapTablePositions: (Long, Long) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
+    onTaskClicked: (Long) -> Unit,
+    onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ){
     Card(
@@ -43,7 +44,7 @@ fun ProjectTableCard(
             projectTable = projectTable,
             index = index,
             onTableRename = onTableRename,
-            onSwapTablePositions = onSwapTablePositions,
+            onSwapTablePositionsClicked = onSwapTablePositionsClicked,
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
         )
 
@@ -65,7 +66,6 @@ fun ProjectTableCard(
                 }
             },
         )
-
 
         // refresh when project tables get altered
         LaunchedEffect(state.projectTables){
@@ -96,6 +96,7 @@ fun ProjectTableCard(
                         id = task.id,
                         reorderableState = reorderableState,
                         isDragging = isDragging,
+                        onTaskClicked = onTaskClicked,
                     )
                 }
             }
@@ -117,7 +118,7 @@ private fun ProjectTableCardTop(
     index: Int,
 
     onTableRename: (Long, String) -> Unit,
-    onSwapTablePositions: (Long, Long) -> Unit,
+    onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
@@ -166,24 +167,29 @@ private fun ProjectTableCardTop(
                     Text(text = stringResource(R.string.action_rename_column))
                 }, onClick = {
                     onTableRename(1, "Title1")
+                    onSwitchDropdownMenuClicked(-1)
                 })
                 if(index != 0) {
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_left))
                     }, onClick = {
-                        onSwapTablePositions(projectTable.id, state.projectTables.find { it.position == projectTable.position - 1 }!!.id)
+                        onSwapTablePositionsClicked(projectTable.id, state.projectTables.find { it.position == projectTable.position - 1 }!!.id)
+                        onSwitchDropdownMenuClicked(-1)
                     })
                 }
                 if(index + 1 in state.projectTables.indices) {
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_right))
                     }, onClick = {
-                        onSwapTablePositions(projectTable.id, state.projectTables.find { it.position == projectTable.position + 1 }!!.id)
+                        onSwapTablePositionsClicked(projectTable.id, state.projectTables.find { it.position == projectTable.position + 1 }!!.id)
+                        onSwitchDropdownMenuClicked(-1)
                     })
                 }
                 DropdownMenuItem(text = {
                     Text(text = stringResource(R.string.action_delete_table))
-                }, onClick = { /*TODO*/ })
+                }, onClick = {
+                    onSwitchDropdownMenuClicked(-1)
+                })
             }
         }
     }

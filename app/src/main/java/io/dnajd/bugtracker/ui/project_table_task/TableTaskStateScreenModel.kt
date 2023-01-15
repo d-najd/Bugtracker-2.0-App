@@ -13,10 +13,6 @@ import uy.kohesive.injekt.api.get
 
 class TableTaskStateScreenModel(
     context: Context,
-    projectId: Long,
-    /* TODO get rid of this by adding the field to get request for issue along with project title  */
-    private val tableTitle: String,
-    tableId: Long,
     taskId: Long,
 
     private val getProjectTableTasks: GetProjectTableTasks = Injekt.get(),
@@ -32,7 +28,6 @@ class TableTaskStateScreenModel(
                 mutableState.update {
                     TableTaskScreenState.Success(
                         task = task,
-                        tableTitle = tableTitle,
                     )
                 }
             }
@@ -51,7 +46,6 @@ sealed class TableTaskScreenState {
     @Immutable
     data class Success(
         val task: ProjectTableTask,
-        val tableTitle: String,
     ): TableTaskScreenState()
 
 }

@@ -14,8 +14,9 @@ fun ProjectTableContent(
     contentPadding: PaddingValues,
 
     onTableRename: (Long, String) -> Unit,
-    onSwapTablePositions: (Long, Long) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
+    onTaskClicked: (Long) -> Unit,
+    onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Row(
@@ -31,8 +32,9 @@ fun ProjectTableContent(
                 projectTable = projectTable,
                 index = index,
                 onTableRename = onTableRename,
-                onSwapTablePositions = onSwapTablePositions,
                 onMoveTableTasks = onMoveTableTasks,
+                onTaskClicked = onTaskClicked,
+                onSwapTablePositionsClicked = onSwapTablePositionsClicked,
                 onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
             )
         }
