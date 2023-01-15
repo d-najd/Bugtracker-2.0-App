@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         // if there is no controller (in other words starting the app) set a root controller
         // TODO SET ROOT
         if(router.backstack.firstOrNull() == null) {
-            router.setRoot(TableTaskController(1L, 1L, 1L))
+            router.setRoot(TableTaskController(1L, 1L, "Table Title", 1L))
             // router.setRoot(ProjectTableController(1))
             // router.setRoot(ProjectController())
         }

@@ -14,4 +14,14 @@
     <string name="action_move_column_left">Move column left</string>
     <string name="action_move_column_right">Move column right</string>
     <string name="action_delete_table">Delete table</string>
+    <string name="label_task">Task</string>
+    <string name="action_confirm">confirm</string>
+    <string name="label_description">Description</string>
+    <string name="info_add_description">Press to add a description..</string>
+    <string name="label_reporter">Reporter</string>
+    <string name="label_labels">Labels</string>
+    <string name="label_created">Created</string>
+    <string name="label_updated">Updated</string>
+    <string name="label_never">Never</string>
+    <string name="label_project">Project</string>
 </resources>

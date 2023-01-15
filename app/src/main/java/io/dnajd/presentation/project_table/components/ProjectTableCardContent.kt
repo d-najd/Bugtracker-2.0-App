@@ -2,22 +2,18 @@ package io.dnajd.presentation.project_table.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.dnajd.bugtracker.R
 import org.burnoutcrew.reorderable.ReorderableLazyListState
-import org.burnoutcrew.reorderable.ReorderableState
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 
@@ -85,7 +81,7 @@ fun ProjectTableCardContent(
                 Text(
                     modifier = Modifier
                         .padding(start = 4.dp),
-                    text = "TASK-${id}"
+                    text = "${stringResource(R.string.label_task).uppercase()}-$id"
                 )
             }
         }

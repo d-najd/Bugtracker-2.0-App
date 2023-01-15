@@ -15,6 +15,7 @@ import io.dnajd.presentation.util.LocalRouter
 class TableTaskScreen(
     private val projectId: Long,
     private val tableId: Long,
+    private val tableTitle: String,
     private val taskId: Long
 ) : Screen {
     @Composable
@@ -26,6 +27,7 @@ class TableTaskScreen(
             context = context,
             projectId = projectId,
             tableId = tableId,
+            tableTitle = tableTitle,
             taskId = taskId,
         ) }
 
