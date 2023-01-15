@@ -1,6 +1,11 @@
 package io.dnajd.domain.project_table_task.service
 
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
+
 interface ProjectTableTaskRepository {
+
+    suspend fun get(taskId: Long): ProjectTableTask?
+
     /**
      * moves task from one position to another, this is different from moving tasks
      * @param fId id of the first task

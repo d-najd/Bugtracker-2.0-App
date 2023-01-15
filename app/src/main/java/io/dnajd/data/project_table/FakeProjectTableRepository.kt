@@ -2,8 +2,8 @@ package io.dnajd.data.project_table
 
 import io.dnajd.domain.project_table_task.model.ProjectLabel
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.model.ProjectTableChildTask
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.project_table_task.model.ProjectTableChildTaskBasic
+import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
@@ -13,7 +13,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
             title = "Table 1",
             position = 0,
             tasks = listOf(
-                ProjectTableTask(
+                ProjectTableTaskBasic(
                     id = 1,
                     title = "Issue 1",
                     tableId = 1,
@@ -31,11 +31,11 @@ object FakeProjectTableRepository : ProjectTableRepository {
                         ),
                     ),
                     childTasks = listOf(
-                        ProjectTableChildTask(id = 2),
-                        ProjectTableChildTask(id = 4),
+                        ProjectTableChildTaskBasic(id = 2),
+                        ProjectTableChildTaskBasic(id = 4),
                     ),
                 ),
-                ProjectTableTask(
+                ProjectTableTaskBasic(
                     id = 2,
                     title = "Issue 2",
                     tableId = 1,
@@ -44,10 +44,10 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     position = 1,
                     labels = emptyList(),
                     childTasks = listOf(
-                        ProjectTableChildTask(id = 3),
+                        ProjectTableChildTaskBasic(id = 3),
                     )
                 ),
-                ProjectTableTask(
+                ProjectTableTaskBasic(
                     id = 3,
                     title = "Issue 3",
                     tableId = 1,
@@ -57,7 +57,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = emptyList(),
                     childTasks = emptyList(),
                 ),
-                ProjectTableTask(
+                ProjectTableTaskBasic(
                     id = 4,
                     title = "Issue 4",
                     tableId = 1,
@@ -74,7 +74,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
             title = "Table 2",
             position = 1,
             tasks = listOf(
-                ProjectTableTask(
+                ProjectTableTaskBasic(
                     id = 5,
                     title = "Issue 5",
                     tableId = 1,
