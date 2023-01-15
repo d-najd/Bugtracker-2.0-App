@@ -6,7 +6,7 @@ import java.util.*
 
 object FakeProjectRepository : ProjectRepository {
 
-    override suspend fun getProjects(username: String): List<Project> = listOf(
+    override suspend fun getAll(username: String): List<Project> = listOf(
         Project(1, "user1", "Example Title", null, Date()),
         Project(2, "user2", "Title 2", "Example Description", Date())
     )

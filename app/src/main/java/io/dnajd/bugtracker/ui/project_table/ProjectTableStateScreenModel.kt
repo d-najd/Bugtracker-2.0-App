@@ -5,9 +5,10 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
-import io.dnajd.domain.project_table.interactor.SwapProjectTablePositions
+import io.dnajd.domain.project_table.interactor.SwapProjectTables
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTaskPositions
+import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
+import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
@@ -21,8 +22,8 @@ class ProjectTableScreenModel(
 
     private val getProjectTables: GetProjectTables = Injekt.get(),
     private val renameProjectTable: RenameProjectTable = Injekt.get(),
-    private val swapProjectTablePositions: SwapProjectTablePositions = Injekt.get(),
-    private val swapProjectTableTaskPositions: MoveProjectTableTaskPositions = Injekt.get(),
+    private val swapProjectTables: SwapProjectTables = Injekt.get(),
+    private val moveProjectTableTask: MoveProjectTableTask = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
 
     init {
@@ -73,7 +74,7 @@ class ProjectTableScreenModel(
             val state = (mutableState.value as ProjectTableScreenState.Success)
             state.projectTables.find { table -> table.id == sId }!!.let { fTable ->
                 state.projectTables.find { table -> table.id == fId }!!.let { sTable ->
-                    if(swapProjectTablePositions.await(fId, sId)) {
+                    if(swapProjectTables.await(fId, sId)) {
                         // doing it this way so that state changes get updated for sure
                         mutableState.update {
                             val projectTables = state.projectTables.toMutableList()
@@ -114,7 +115,7 @@ class ProjectTableScreenModel(
             state.projectTables.find { table -> table.id == tableId }!!.let { table ->
                 table.tasks[fIndex].let { fTask ->
                     table.tasks[sIndex].let { sTask ->
-                        if(swapProjectTableTaskPositions.await(fTask.id, sTask.id)) {
+                        if(moveProjectTableTask.await(fTask.id, sTask.id)) {
                             val projectTables = state.projectTables.toMutableList()
                             projectTables.remove(table)
                             var tasks = table.tasks.toMutableList()

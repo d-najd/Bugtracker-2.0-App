@@ -7,7 +7,7 @@ import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
-    override suspend fun getTables(projectId: Long): List<ProjectTable> = listOf(
+    override suspend fun getAll(projectId: Long): List<ProjectTable> = listOf(
         ProjectTable(
             id = 1,
             title = "Table 1",
@@ -95,9 +95,9 @@ object FakeProjectTableRepository : ProjectTableRepository {
     )
 
     @Suppress("RedundantNullableReturnType")
-    override suspend fun renameTable(id: Long, newTitle: String): Boolean = true
+    override suspend fun changeTitle(id: Long, newTitle: String): Boolean = true
 
-    override suspend fun swapTablePositions(fId: Long, sId: Long): Boolean = true
+    override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean = true
 
 }
 

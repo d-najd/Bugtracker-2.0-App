@@ -22,7 +22,7 @@ object RemoteProjectRepository : ProjectRepository {
         return factory!!;
     }
 
-    override suspend fun getProjects(username: String): List<Project> =
+    override suspend fun getAll(username: String): List<Project> =
         getFactory().getProjectsByUsername(username).processRequest()?.data ?: emptyList()
 
 }

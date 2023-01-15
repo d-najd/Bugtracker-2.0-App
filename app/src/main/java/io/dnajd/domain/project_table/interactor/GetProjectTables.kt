@@ -7,6 +7,6 @@ class GetProjectTables(
     private val repository: ProjectTableRepository,
 ) {
     suspend fun await(projectId: Long): List<ProjectTable> {
-        return repository.getTables(projectId)
+        return repository.getAll(projectId)
     }
 }

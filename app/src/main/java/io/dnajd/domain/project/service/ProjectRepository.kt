@@ -4,6 +4,6 @@ import io.dnajd.domain.project.model.Project
 
 interface ProjectRepository {
 
-    suspend fun getProjects(username: String): List<Project>
+    suspend fun getAll(username: String): List<Project>
 
 }

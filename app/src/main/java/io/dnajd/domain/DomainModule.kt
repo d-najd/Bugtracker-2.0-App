@@ -12,9 +12,10 @@ import io.dnajd.domain.project.interactor.GetProjects
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
-import io.dnajd.domain.project_table.interactor.SwapProjectTablePositions
+import io.dnajd.domain.project_table.interactor.SwapProjectTables
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTaskPositions
+import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
+import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
@@ -26,7 +27,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = true
+        private const val USE_FAKES = false
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -68,7 +69,8 @@ class DomainModule : InjektModule {
         addFactory { GetProjects(get()) }
         addFactory { GetProjectTables(get()) }
         addFactory { RenameProjectTable(get()) }
-        addFactory { SwapProjectTablePositions(get()) }
-        addFactory { MoveProjectTableTaskPositions(get()) }
+        addFactory { SwapProjectTables(get()) }
+        addFactory { SwapProjectTableTasks(get()) }
+        addFactory { MoveProjectTableTask(get()) }
     }
 }

@@ -7,6 +7,6 @@ class GetProjects(
     private val repository: ProjectRepository,
 ) {
     suspend fun await(username: String): List<Project> {
-        return repository.getProjects(username)
+        return repository.getAll(username)
     }
 }

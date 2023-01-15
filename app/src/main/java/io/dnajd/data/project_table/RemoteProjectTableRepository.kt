@@ -24,13 +24,13 @@ object RemoteProjectTableRepository : ProjectTableRepository {
         return factory!!
     }
 
-    override suspend fun getTables(projectId: Long): List<ProjectTable> =
+    override suspend fun getAll(projectId: Long): List<ProjectTable> =
         getFactory().getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
 
-    override suspend fun renameTable(id: Long, newTitle: String): Boolean =
+    override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
         getFactory().renameTable(id, newTitle).processVoidRequest()
 
-    override suspend fun swapTablePositions(fId: Long, sId: Long): Boolean =
+    override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
         getFactory().swapTablePositions(id = fId, sId = sId).processVoidRequest()
 
 }

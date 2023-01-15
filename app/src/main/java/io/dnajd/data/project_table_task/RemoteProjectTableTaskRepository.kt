@@ -20,14 +20,25 @@ object RemoteProjectTableTaskRepository : ProjectTableTaskRepository {
         return factory!!
     }
 
-    override suspend fun moveTasks(fId: Long, sId: Long): Boolean =
+    override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
         getFactory().swapTaskPositions(id = fId, sId = sId).processVoidRequest()
+
+    override suspend fun movePositionTo(fId: Long, sId: Long): Boolean =
+        getFactory().moveTaskPositions(id = fId, sId = sId).processVoidRequest()
+
 }
 
 private interface ProjectTableTaskRepositoryApi {
 
     @PATCH("${Urls.PROJECT_TABLE_TASK_RAW}/{id}/swapPositionWith/{sId}")
     fun swapTaskPositions(
+        @Path("id") id: Long,
+        @Path("sId") sId: Long,
+    ): Call<Void>
+
+
+    @PATCH("${Urls.PROJECT_TABLE_TASK_RAW}/{id}/movePositionTo/{sId}")
+    fun moveTaskPositions(
         @Path("id") id: Long,
         @Path("sId") sId: Long,
     ): Call<Void>
