@@ -35,6 +35,18 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
         description = "This is an example description",
         createdAt = Date(),
         updatedAt = null,
+        assigned = listOf(
+            ProjectTableIssueAssigne(
+                1L,
+                "user1",
+                "user2",
+            ),
+            ProjectTableIssueAssigne(
+                1L,
+                "user1",
+                "user1",
+            )
+        ),
         comments = listOf(
             ProjectTableTaskComment(
                 id = 1L,
@@ -58,6 +70,7 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
                 editedAt = Date(),
             )
         )
+
     )
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean = true
