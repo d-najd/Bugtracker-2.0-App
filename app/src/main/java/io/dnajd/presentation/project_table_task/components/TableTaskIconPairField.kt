@@ -28,7 +28,7 @@ import io.dnajd.presentation.components.BugtrackerCard
 @Composable
 fun TableTaskIconPairField(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String? = null,
     text: String? = null,
     onClick: (() -> Unit)? = null,
     content: (@Composable RowScope.() -> Unit)? = null,
@@ -36,13 +36,14 @@ fun TableTaskIconPairField(
     Column(
         modifier = if(onClick != null) modifier.clickable(onClick = onClick) else modifier,
     ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-        )
-
+        if(title != null) {
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+            )
+        }
         Row(
-            modifier = Modifier.padding(top = 6.dp),
+            modifier = Modifier.padding(top = if(title != null) 6.dp else 0.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             content?.let { content() }
@@ -51,7 +52,7 @@ fun TableTaskIconPairField(
                 Text(
                     modifier = Modifier.padding(start = textPadding),
                     text = text,
-                    fontSize = 14.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Thin,
                 )
             }

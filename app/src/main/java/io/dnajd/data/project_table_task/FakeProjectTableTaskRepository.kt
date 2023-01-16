@@ -50,22 +50,22 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
                 id = 1L,
                 user = "user1",
                 message ="This is a basic comment",
-                createdAt = Date(),
+                createdAt = Date(Date().time - 3600000),
                 editedAt = null,
             ),
             ProjectTableTaskComment(
                 id = 2L,
                 user = "user1",
                 message = "This is a edited comment",
-                createdAt = Date(),
-                editedAt = Date(),
+                createdAt = Date(Date().time - 3600000),
+                editedAt = Date(Date().time - 1800000),
             ),
             ProjectTableTaskComment(
                 id = 3L,
                 user = "user2",
                 message = "This is a edited comment by another user",
-                createdAt = Date(),
-                editedAt = Date(),
+                createdAt = Date(Date().time - 1800000),
+                editedAt = Date(Date().time - 900000),
             )
         )
     )

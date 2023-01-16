@@ -24,4 +24,9 @@
     <string name="label_updated">Updated</string>
     <string name="label_never">Never</string>
     <string name="label_project">Project</string>
+    <string name="field_activity">Activity</string>
+    <string name="field_comments">Comments</string>
+    <string name="info_comment_first">Leave the first comment</string>
+    <string name="label_ago">Ago</string>
+    <string name="label_edited">Edited</string>
 </resources>

@@ -33,7 +33,7 @@ class BugtrackerDateFormat{
          */
         @Composable
         @OptIn(ExperimentalComposeUiApi::class)
-        fun generateStringFromTime(timeSeconds: Long): String{
+        fun generateStringFromTimeWithDecimal(timeSeconds: Long): String{
             return when (timeSeconds){
                 in 3600 .. Long.MAX_VALUE -> {
                     val hours = timeSeconds/3600f
@@ -54,7 +54,32 @@ class BugtrackerDateFormat{
                 }
             }
         }
-        
+
+        @Composable
+        @OptIn(ExperimentalComposeUiApi::class)
+        fun generateStringFromTime(timeSeconds: Long): String{
+            return when (timeSeconds){
+                in 86400 .. Long.MAX_VALUE -> {
+                    val days = timeSeconds/86400f
+                    "${days.roundToInt()} ${pluralStringResource(id = R.plurals.days, count = days.roundToInt())}"
+                }
+                in 3600 .. 86399 -> {
+                    val hours = timeSeconds/3600f
+                    "${hours.roundToInt()} ${pluralStringResource(id = R.plurals.hours, count = hours.roundToInt())}"
+                }
+                in 60..3599 -> {
+                    val minutes = timeSeconds/60f
+                    "${minutes.roundToInt()} ${pluralStringResource(id = R.plurals.minutes, count = minutes.roundToInt())}"
+                }
+                in 0 .. 59 -> {
+                    "$timeSeconds ${pluralStringResource(id = R.plurals.seconds, count = timeSeconds.toInt())}"
+                }
+                else -> {
+                    throw IllegalArgumentException("Given seconds must be { seconds >= 0 }")
+                }
+            }
+        }
+
         private const val DEFAULT_APP_DATE_FORMAT = "d MMM yyyy"
         private const val DEFAULT_API_DATE_FORMAT = "yyyy-MM-d HH:mm:ss"
     }
