@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.project_table_task.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -6,25 +6,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
-import io.dnajd.util.BugtrackerDateFormat
+import io.dnajd.presentation.project_table_task.content.comment.TableTaskActivityContent
 
 @ExperimentalMaterial3Api
 @Composable
@@ -98,6 +92,8 @@ fun TableTaskContent(
         TableTaskDescriptionField(state = state)
 
         TableTaskChildIssuesField(state = state)
+
+        
 
         // TODO add dropdown menu for child issues and assignees like the dropdown menu for child issues in jira
 

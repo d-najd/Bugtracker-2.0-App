@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.project_table_task.content
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.project_table_task.content
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
+import io.dnajd.presentation.project_table_task.components.TableTaskExpandableMenu
+import io.dnajd.presentation.project_table_task.components.TableTaskIconPairField
 
 @Composable
 fun TableTaskChildIssuesField(

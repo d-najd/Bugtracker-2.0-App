@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.project_table_task.content.comment
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
+import io.dnajd.presentation.project_table_task.content.comment.TableTaskCommentsContent
+import io.dnajd.presentation.project_table_task.content.comment.TableTaskNoCommentsContent
 
 @Composable
 fun TableTaskActivityContent(state: TableTaskScreenState.Success){
