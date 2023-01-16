@@ -16,7 +16,7 @@ fun TableTaskDescriptionField(
     state: TableTaskScreenState.Success,
 ) {
     Text(
-        modifier = Modifier.padding(top = 32.dp),
+        modifier = Modifier.padding(top = 28.dp),
         text = stringResource(R.string.label_description),
         color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
     )

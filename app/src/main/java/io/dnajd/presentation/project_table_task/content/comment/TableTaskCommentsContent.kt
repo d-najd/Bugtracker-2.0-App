@@ -25,7 +25,7 @@ import java.util.*
 fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
     for(comment in state.task.comments) {
         TableTaskIconPairField(
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp, bottom = 3.dp),
             iconContent = {
                 Icon(
                     modifier = Modifier.size(30.dp),
@@ -63,7 +63,7 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
                     }
                 }
                 Text(
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(top = 5.dp),
                     text = comment.message,
                     fontWeight = FontWeight.Light,
                     fontFamily = FontFamily.SansSerif,
