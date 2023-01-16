@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +34,10 @@ fun TableTaskContent(
             .padding(horizontal = 12.dp, vertical = 36.dp),
     ) {
         val task = state.task
+
+        Card() {
+
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -71,16 +75,25 @@ fun TableTaskContent(
             modifier = Modifier
                 .padding(top = 18.dp)
                 .clickable { },
-            shape = RoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(6.dp),
         ) {
             BugtrackerMultipurposeMenu(
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 8.dp, start = 4.dp, end = 2.dp),
-                text = "INSERT PROJECT TITLE",
+                text = {
+                    Text(
+                        modifier = Modifier.padding(start = 3.5.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        text = "INSERT PROJECT TITLE",
+                    )
+                },
                 includeDropdownArrow = true,
                 includeDivider = false,
             )
         }
+
+
 
         Text(
             modifier = Modifier.padding(top = 32.dp),
@@ -94,6 +107,47 @@ fun TableTaskContent(
                 .height(70.dp),
             text = stringResource(R.string.info_add_description),
             color = MaterialTheme.colorScheme.onSurface.copy(0.4f),
+        )
+
+        var expanded by remember { mutableStateOf(false) }
+        TableTaskExpandableMenu(
+            modifier = Modifier.clickable { expanded = !expanded },
+            expanded = expanded,
+            menuContent = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(start = 3.5.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        text = stringResource(R.string.field_child_issues),
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = state.task.childTasks.size.toString(),
+                            color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+                        )
+
+                        Icon(
+                            modifier = Modifier.padding(start = 3.dp, end = 4.dp),
+                            tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = ""
+                        )
+                    }
+                }
+            },
+            expandableContent = {
+                Column() {
+                    
+                }
+            }
         )
 
 

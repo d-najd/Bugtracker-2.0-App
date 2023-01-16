@@ -29,4 +29,5 @@
     <string name="info_comment_first">Leave the first comment</string>
     <string name="label_ago">Ago</string>
     <string name="label_edited">Edited</string>
+    <string name="field_child_issues">Child issues</string>
 </resources>

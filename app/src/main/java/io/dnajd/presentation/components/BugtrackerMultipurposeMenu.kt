@@ -8,9 +8,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -21,21 +23,25 @@ import io.dnajd.bugtracker.R
  *
  * @param modifier modifier for the entire composable
  * @param title optional title located on top of [text]
- * @param text the text of the menu
+ * @param text the text of the menu, this is a composable
  * @param includeDropdownArrow if enabled an dropdown arrow will be put at the end, this arrow will
  * point downwards, off by default
  * @param includeDivider if enabled will include divider under the text, on by default
  * @param onClick gets triggered when [text] is clicked
  * @sample BugtrackerMultipurposeMenuPreview()
+ *
+ * TODO dropdown arrow doesn't align to end if custom width is is set
  */
 @Composable
 fun BugtrackerMultipurposeMenu(
     modifier: Modifier = Modifier,
     title: String? = null,
-    text: String,
     includeDropdownArrow: Boolean = false,
     includeDivider: Boolean = true,
+    dividerThickness: Dp = DividerDefaults.Thickness,
+    dividerColor: Color = DividerDefaults.color,
     onClick: (() -> Unit)? = null,
+    text: @Composable RowScope.() -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -50,30 +56,25 @@ fun BugtrackerMultipurposeMenu(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 5.dp).let {
-                if(onClick != null){
-                    it.clickable {
-                        onClick()
+            modifier = Modifier
+                .padding(bottom = 5.dp)
+                .let {
+                    if(onClick != null){
+                        it.clickable {
+                            onClick()
+                        }
                     }
-                }
-                it
-            }
+                    it
+                },
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        start = MULTIPURPOSE_MENU_TEXT_START_PADDING + 1.dp
-                    ),
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                text = text,
-            )
-
+            text()
             if (includeDropdownArrow) {
-                Box(
-                    contentAlignment = Alignment.CenterEnd
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End
                 ) {
                     Icon(
+                        modifier = Modifier.align(Alignment.End),
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = ""
                     )
@@ -83,7 +84,8 @@ fun BugtrackerMultipurposeMenu(
 
         if(includeDivider) {
             Divider(
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = dividerColor,
+                thickness = dividerThickness,
             )
         }
     }
@@ -91,7 +93,6 @@ fun BugtrackerMultipurposeMenu(
 
 /** start padding for the text so the text isn't right at the beginning */
 private val MULTIPURPOSE_MENU_TEXT_START_PADDING = 2.5.dp
-
 
 @Preview(
     widthDp = 300,
@@ -103,7 +104,14 @@ private fun BugtrackerMultipurposeMenuPreview(){
 
     BugtrackerCard(title = "Example") {
         BugtrackerMultipurposeMenu(
-            text = "Show Dialog",
+            text = {
+                Text(
+                    modifier = Modifier.padding(start = 3.5.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    text = "Show Dialog",
+                )
+            },
             includeDropdownArrow = false,
             onClick = {
                 displayDialog = !displayDialog

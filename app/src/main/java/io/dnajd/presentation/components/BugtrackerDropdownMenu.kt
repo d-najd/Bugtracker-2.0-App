@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * extension of [DropdownMenu] with the style of [BugtrackerMultipurposeMenu]
@@ -30,7 +32,8 @@ import androidx.compose.ui.unit.dp
  * @see [DropdownMenu]
  * @sample BugtrackerDropdownMenuPreview()
  *
- * TODO animate the arrow
+ * TODO this requires reworking
+ *  and also animate the arrow
  */
 @Composable
 fun BugtrackerDropdownMenu(
@@ -48,7 +51,14 @@ fun BugtrackerDropdownMenu(
     Column {
         BugtrackerMultipurposeMenu(
             modifier = modifier,
-            text = text,
+            text = {
+                Text(
+                    modifier = Modifier.padding(start = 3.5.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    text = text,
+                )
+            },
             title = title,
             includeDropdownArrow = includeDropdownArrow,
             onClick = onClick,
