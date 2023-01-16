@@ -54,7 +54,7 @@ fun TableTaskIconPairField(
         ) {
             iconContent?.let { iconContent() }
 
-            val textPadding = if (textContent != null) 8.dp else 0.dp
+            val textPadding = if ((textContent != null || text != null) && iconContent != null) 8.dp else 0.dp
             Column(
                 modifier = Modifier.padding(start = textPadding),
                 verticalArrangement = Arrangement.Center,
