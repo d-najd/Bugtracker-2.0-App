@@ -37,7 +37,7 @@ fun TableTaskExpandableMenu(
     ) {
         BugtrackerMultipurposeMenu(
             dividerThickness = 4.dp,
-            onClick = onClick
+            onClick = onClick,
         ) {
             menuContent()
         }

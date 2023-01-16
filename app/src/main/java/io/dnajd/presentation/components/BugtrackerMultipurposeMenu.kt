@@ -54,39 +54,34 @@ fun BugtrackerMultipurposeMenu(
             )
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(bottom = 5.dp)
-                .let {
-                    if(onClick != null){
-                        it.clickable {
-                            onClick()
-                        }
-                    }
-                    it
-                },
+        Column(
+            modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier,
         ) {
-            text()
-            if (includeDropdownArrow) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.End
-                ) {
-                    Icon(
-                        modifier = Modifier.align(Alignment.End),
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = ""
-                    )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 5.dp),
+            ) {
+                text()
+                if (includeDropdownArrow) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Icon(
+                            modifier = Modifier.align(Alignment.End),
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
-        }
 
-        if(includeDivider) {
-            Divider(
-                color = dividerColor,
-                thickness = dividerThickness,
-            )
+            if (includeDivider) {
+                Divider(
+                    color = dividerColor,
+                    thickness = dividerThickness,
+                )
+            }
         }
     }
 }

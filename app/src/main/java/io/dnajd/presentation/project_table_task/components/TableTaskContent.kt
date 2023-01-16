@@ -2,17 +2,22 @@ package io.dnajd.presentation.project_table_task.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,14 +35,11 @@ fun TableTaskContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(contentPadding)
             .padding(horizontal = 12.dp, vertical = 36.dp),
     ) {
         val task = state.task
-
-        Card() {
-
-        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -93,101 +95,13 @@ fun TableTaskContent(
             )
         }
 
+        TableTaskDescriptionField(state = state)
 
-
-        Text(
-            modifier = Modifier.padding(top = 32.dp),
-            text = stringResource(R.string.label_description),
-            color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
-        )
-
-        Text(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .height(70.dp),
-            text = stringResource(R.string.info_add_description),
-            color = MaterialTheme.colorScheme.onSurface.copy(0.4f),
-        )
-
-        var expanded by remember { mutableStateOf(false) }
-        TableTaskExpandableMenu(
-            modifier = Modifier.clickable { expanded = !expanded },
-            expanded = expanded,
-            menuContent = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = 3.5.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        text = stringResource(R.string.field_child_issues),
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = state.task.childTasks.size.toString(),
-                            color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-                        )
-
-                        Icon(
-                            modifier = Modifier.padding(start = 3.dp, end = 4.dp),
-                            tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = ""
-                        )
-                    }
-                }
-            },
-            expandableContent = {
-                Column() {
-                    
-                }
-            }
-        )
-
+        TableTaskChildIssuesField(state = state)
 
         // TODO add dropdown menu for child issues and assignees like the dropdown menu for child issues in jira
 
-        /* TODO finish this
-        TableTaskIconPairField(
-            modifier = Modifier.padding(top = 12.dp),
-            title = stringResource(R.string.label_labels),
-            onClick = { /*TODO*/ }
-        ) {
-
-        }
-         */
-
-        TableTaskIconPairField(
-            modifier = Modifier.padding(top = 16.dp),
-            title = stringResource(R.string.label_reporter),
-            text = task.reporter,
-        ) {
-            Box(
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "")
-            }
-        }
-
-        TableTaskIconPairField(
-            modifier = Modifier.padding(top = 16.dp),
-            title = stringResource(R.string.label_created),
-            text = BugtrackerDateFormat.defaultRequestDateFormat().format(task.createdAt),
-        )
-
-        TableTaskIconPairField(
-            modifier = Modifier.padding(top = 16.dp),
-            title = stringResource(R.string.label_updated),
-            text = if(task.updatedAt != null)
-                BugtrackerDateFormat.defaultRequestDateFormat().format(task.updatedAt)
-                else "${stringResource(R.string.label_never)} TM",
-        )
+        TableTaskIconPairFields(state = state)
 
         TableTaskActivityContent(state = state)
 
