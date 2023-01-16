@@ -30,4 +30,5 @@
     <string name="label_ago">Ago</string>
     <string name="label_edited">Edited</string>
     <string name="field_child_issues">Child issues</string>
+    <string name="field_assigned">Assigned</string>
 </resources>

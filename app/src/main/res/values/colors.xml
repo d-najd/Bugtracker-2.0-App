@@ -61,4 +61,6 @@
     <color name="bugtracker_theme_dark_outlineVariant">#49454F</color>
     <color name="bugtracker_theme_dark_scrim">#000000</color>
     <color name="seed">#6750A4</color>
+
+    <color name="coral">#FF7F50</color>
 </resources>

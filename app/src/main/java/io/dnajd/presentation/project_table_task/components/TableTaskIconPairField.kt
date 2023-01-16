@@ -39,7 +39,7 @@ fun TableTaskIconPairField(
     textContent: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
     ) {
         if(title != null) {
             Text(
@@ -55,7 +55,8 @@ fun TableTaskIconPairField(
 
             val textPadding = if (textContent != null || text != null) 8.dp else 0.dp
             Column(
-                modifier = Modifier.padding(start = textPadding)
+                modifier = Modifier.padding(start = textPadding),
+                verticalArrangement = Arrangement.Center,
             ) {
                 textContent?.let { textContent() }
                 if (text != null) {

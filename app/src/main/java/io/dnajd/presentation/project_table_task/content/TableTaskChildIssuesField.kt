@@ -11,9 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -60,40 +62,38 @@ fun TableTaskChildIssuesField(
             }
         },
         expandableContent = {
-            Column {
-                for (childTask in state.task.childTasks) {
-                    TableTaskIconPairField(
-                        modifier = Modifier.padding(top = 6.dp),
-                        iconContent = {
-                            Icon(
-                                imageVector = Icons.Default.TaskAlt,
-                                tint = MaterialTheme.colorScheme.primary,
-                                contentDescription = ""
+            for (childTask in state.task.childTasks) {
+                TableTaskIconPairField(
+                    modifier = Modifier.padding(top = 6.dp),
+                    iconContent = {
+                        Icon(
+                            imageVector = Icons.Default.TaskAlt,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = ""
+                        )
+                    },
+                    textContent = {
+                        Text(text = childTask.title)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "${stringResource(R.string.label_task).uppercase()}-${childTask.id}",
+                                color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
                             )
-                        },
-                        textContent = {
-                            Text(text = childTask.title)
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = "${stringResource(R.string.label_task).uppercase()}-${childTask.id}",
-                                    color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-                                )
-                                Text(
-                                    text = " = ",
-                                    color = Color.Yellow,
-                                    fontFamily = FontFamily.SansSerif,
-                                    fontSize = 26.sp,
-                                )
-                                Text(
-                                    text = "INSERT TABLE NAME",
-                                    color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-                                )
-                            }
+                            Text(
+                                text = " = ",
+                                color = colorResource(R.color.coral),
+                                fontFamily = FontFamily.SansSerif,
+                                fontSize = 26.sp,
+                            )
+                            Text(
+                                text = "INSERT TABLE NAME",
+                                color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+                            )
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     )

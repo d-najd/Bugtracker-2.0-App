@@ -34,6 +34,7 @@ fun TableTaskExpandableMenu(
 ) {
     Column(
         modifier = modifier,
+        verticalArrangement = Arrangement.Center,
     ) {
         BugtrackerMultipurposeMenu(
             dividerThickness = 4.dp,
@@ -47,7 +48,11 @@ fun TableTaskExpandableMenu(
             enter = enter,
             exit = exit,
         ) {
-            expandableContent()
+            Column(
+                verticalArrangement = Arrangement.Center,
+            ) {
+                expandableContent()
+            }
         }
 
         Divider(
