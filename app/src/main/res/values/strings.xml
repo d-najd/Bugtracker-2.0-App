@@ -43,5 +43,8 @@
     <string name="field_board">Board</string>
     <string name="action_board">Board</string>
     <string name="action_settings">Settings</string>
+    <string name="action_add">Add</string>
+    <string name="field_add_column">Add Column</string>
+    <string name="field_column_name">Column name</string>
 
 </resources>

@@ -37,44 +37,14 @@ class MainActivity : AppCompatActivity() {
         // TODO SET ROOT
         if(router.backstack.firstOrNull() == null) {
             // router.setRoot(TableTaskController(1L))
+            /*
             router.setRoot(ProjectTableController(Project(
                 id = 1,
                 owner = "user1",
                 title = "ProjectTitle",
             )))
-            // router.setRoot(ProjectController())
+             */
+            router.setRoot(ProjectController())
         }
     }
 }
-
-/*
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            Bugtracker20Theme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    Bugtracker20Theme {
-        Greeting("Android")
-    }
-}
- */

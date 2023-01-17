@@ -22,7 +22,12 @@ fun ProjectTableScreenContent(
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
     Scaffold(
-        topBar = { ProjectTableTopAppBar(state) }
+        topBar = {
+            ProjectTableTopAppBar(
+                state = state,
+                onBackClicked = onBackClicked,
+            )
+        }
     ) { contentPadding ->
         BackHandler { onBackClicked() }
 
