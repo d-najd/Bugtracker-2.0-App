@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class ProjectTableChildTask(
-    @SerializedName("id") val id: Long,
+    @SerializedName("id") val id: Long = -1,
     @SerializedName("title") val title: String,
     @SerializedName("tableId") val tableId: Long,
 )
@@ -19,5 +19,5 @@ fun ProjectTableChildTask.toBasic(): ProjectTableChildTaskBasic = ProjectTableCh
  * that much data
  */
 data class ProjectTableChildTaskBasic(
-    @SerializedName("id") val id: Long,
+    @SerializedName("id") val id: Long = -1,
 )

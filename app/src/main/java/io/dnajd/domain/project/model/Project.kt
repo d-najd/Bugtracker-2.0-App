@@ -6,29 +6,13 @@ import java.util.Date
 
 
 data class ProjectHolder(
-    @SerializedName("data") val `data`: List<Project>
+    @SerializedName("data") val `data`: List<Project> = emptyList()
 )
 
 data class Project(
-    @SerializedName("id") val id: Long,
+    @SerializedName("id") val id: Long = -1,
     @SerializedName("owner") val owner: String,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String? = null,
-    @SerializedName("createdAt") val createdAt: Date,
-) {
-    companion object {
-        fun apiBase(
-            id: Long = -1,
-            owner: String,
-            title: String,
-            description: String? = null,
-            createdAt: Date = Date(),
-        ): Project = Project(
-            id = id,
-            owner = owner,
-            title = title,
-            description = description,
-            createdAt = createdAt,
-        )
-    }
-}
+    @SerializedName("createdAt") val createdAt: Date = Date(),
+)

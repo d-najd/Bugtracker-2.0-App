@@ -4,20 +4,20 @@ import com.google.gson.annotations.SerializedName
 import java.util.Date
 
 data class ProjectTableTask (
-    @SerializedName("id") val id: Long,
+    @SerializedName("id") val id: Long = -1,
     @SerializedName("title") val title: String,
     @SerializedName("tableId") val tableId: Long,
     @SerializedName("reporter") val reporter: String,
-    @SerializedName("parentIssueId") val parentTaskId: Long?,
+    @SerializedName("parentIssueId") val parentTaskId: Long? = null,
     @SerializedName("severity") val severity: Int,
     @SerializedName("position") val position: Int,
-    @SerializedName("description") val description: String?,
+    @SerializedName("description") val description: String? = null,
     @SerializedName("createdAt") val createdAt: Date,
     @SerializedName("updatedAt") val updatedAt: Date?,
-    @SerializedName("comments") val comments: List<ProjectTableTaskComment>,
-    @SerializedName("labels") val labels: List<ProjectLabel>,
-    @SerializedName("assigned") val assigned: List<ProjectTableIssueAssignee>,
-    @SerializedName("childIssues") val childTasks: List<ProjectTableChildTask>
+    @SerializedName("comments") val comments: List<ProjectTableTaskComment> = emptyList(),
+    @SerializedName("labels") val labels: List<ProjectLabel> = emptyList(),
+    @SerializedName("assigned") val assigned: List<ProjectTableIssueAssignee> = emptyList(),
+    @SerializedName("childIssues") val childTasks: List<ProjectTableChildTask> = emptyList(),
 )
 
 fun ProjectTableTask.toBasic(): ProjectTableTaskBasic = ProjectTableTaskBasic(
@@ -36,12 +36,12 @@ fun ProjectTableTask.toBasic(): ProjectTableTaskBasic = ProjectTableTaskBasic(
  * that much data
  */
 data class ProjectTableTaskBasic(
-    @SerializedName("id") val id: Long,
+    @SerializedName("id") val id: Long = -1,
     @SerializedName("title") val title: String,
     @SerializedName("tableId") val tableId: Long,
-    @SerializedName("parentIssueId") val parentTaskId: Long?,
+    @SerializedName("parentIssueId") val parentTaskId: Long? = null,
     @SerializedName("severity") val severity: Int,
     @SerializedName("position") val position: Int,
-    @SerializedName("labels") val labels: List<ProjectLabel>,
-    @SerializedName("childIssues") val childTasks: List<ProjectTableChildTaskBasic>,
+    @SerializedName("labels") val labels: List<ProjectLabel> = emptyList(),
+    @SerializedName("childIssues") val childTasks: List<ProjectTableChildTaskBasic> = emptyList(),
 )

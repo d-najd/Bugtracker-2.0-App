@@ -25,7 +25,7 @@ fun CreateProjectDialog(
             TextButton(
                 enabled = title.isNotBlank(),
                 onClick = {
-                val project = Project.apiBase(
+                val project = Project(
                     owner = "user1",
                     title = title,
                 )
