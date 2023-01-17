@@ -12,6 +12,7 @@ import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
+import io.dnajd.presentation.project_table.dialogs.CreateProjectTableDialog
 import io.dnajd.presentation.util.LocalRouter
 
 class ProjectTableScreen(
@@ -38,9 +39,21 @@ class ProjectTableScreen(
             onBackClicked = router::popCurrentController,
             onTableRename = screenModel::renameTable,
             onMoveTableTasks = screenModel::moveTableTasks,
+            onCreateProjectClicked = { screenModel.showDialog(ProjectTableDialog.CreateTable()) },
             onTaskClicked = { router.pushController(TableTaskController(it)) },
             onSwapTablePositionsClicked = screenModel::swapTablePositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
+
+
+        when(successState.dialog) {
+            null -> {}
+            is ProjectTableDialog.CreateTable -> {
+                CreateProjectTableDialog(
+                    onDismissRequest = screenModel::dismissDialog,
+                    onCreateTableClicked = screenModel::createTable
+                )
+            }
+        }
     }
 }

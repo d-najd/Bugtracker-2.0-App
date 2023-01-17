@@ -37,7 +37,7 @@ object ProjectScreen : Screen {
                 val project = successState.projects.find { project -> project.id == it }!!
                 router.pushController(ProjectTableController(project))
                                },
-            onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject(title = "")) },
+            onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
             onFilterByNameClicked = { },
         )
 

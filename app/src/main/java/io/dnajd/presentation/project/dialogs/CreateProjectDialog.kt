@@ -1,17 +1,14 @@
 package io.dnajd.presentation.project.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.BugtrackerTextField
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProjectDialog(
     onDismissRequest: () -> Unit,

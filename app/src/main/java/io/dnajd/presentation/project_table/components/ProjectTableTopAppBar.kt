@@ -22,11 +22,14 @@ import io.dnajd.presentation.util.bottomBorder
 fun ProjectTableTopAppBar(
     state: ProjectTableScreenState.Success,
     onBackClicked: () -> Unit,
+
+    onCreateProjectClicked: () -> Unit,
 ) {
     Column {
         TopContent(
             state = state,
             onBackClicked = onBackClicked,
+            onCreateProjectClicked = onCreateProjectClicked,
         )
         BottomContent(
             state = state,
@@ -39,6 +42,8 @@ fun ProjectTableTopAppBar(
 private fun TopContent(
     state: ProjectTableScreenState.Success,
     onBackClicked: () -> Unit,
+
+    onCreateProjectClicked: () -> Unit,
 ) {
     TopAppBar(
         modifier = Modifier.shadow(elevation = 4.dp),
@@ -66,7 +71,7 @@ private fun TopContent(
                     contentDescription = ""
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { onCreateProjectClicked() }) {
                 Icon(
                     modifier = Modifier
                         .padding(horizontal = 6.dp),

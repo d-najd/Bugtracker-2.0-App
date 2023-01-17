@@ -5,7 +5,5 @@ import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 class MoveProjectTableTask(
     private val repository: ProjectTableTaskRepository,
 ){
-    suspend fun await(fId: Long, sId: Long): Boolean {
-        return repository.movePositionTo(fId, sId)
-    }
+    suspend fun await(fId: Long, sId: Long): Boolean = repository.movePositionTo(fId, sId)
 }

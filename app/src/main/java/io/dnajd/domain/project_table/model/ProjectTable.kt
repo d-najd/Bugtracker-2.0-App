@@ -10,6 +10,7 @@ data class ProjectTableHolder(
 
 data class ProjectTable(
     @SerializedName("id") val id: Long = -1,
+    @SerializedName("projectId") val projectId: Long? = null,
     @SerializedName("title") val title: String,
     @SerializedName("position") val position: Int,
     @SerializedName("issues") val tasks: List<ProjectTableTaskBasic> = emptyList(),

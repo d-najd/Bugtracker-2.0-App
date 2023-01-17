@@ -5,7 +5,5 @@ import io.dnajd.domain.project_table.service.ProjectTableRepository
 class RenameProjectTable(
     private val repository: ProjectTableRepository,
 ) {
-    suspend fun await(id: Long, newTitle: String): Boolean {
-        return repository.changeTitle(id, newTitle)
-    }
+    suspend fun await(id: Long, newTitle: String): Boolean = repository.changeTitle(id, newTitle)
 }

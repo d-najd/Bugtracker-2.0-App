@@ -6,7 +6,5 @@ import io.dnajd.domain.project.service.ProjectRepository
 class GetProjects(
     private val repository: ProjectRepository,
 ) {
-    suspend fun await(username: String): List<Project> {
-        return repository.getAll(username)
-    }
+    suspend fun await(username: String): List<Project> = repository.getAll(username)
 }

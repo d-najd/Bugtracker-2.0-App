@@ -42,7 +42,6 @@ class ProjectScreenModel(
 
     fun createProject(project: Project) {
         val state = (state.value as ProjectScreenState.Success)
-
         coroutineScope.launchIO {
             createProject.awaitOne(project)?.let { persistedProject ->
                 mutableState.update {
@@ -52,14 +51,13 @@ class ProjectScreenModel(
                         projects = projects
                     )
                 }
-                dismissDialog()
             }
+            dismissDialog()
         }
     }
 
     fun showDialog(dialog: ProjectDialog) {
         val state = (state.value as ProjectScreenState.Success)
-
         when (dialog) {
             is ProjectDialog.CreateProject -> {
                 coroutineScope.launchUI {
@@ -92,7 +90,7 @@ class ProjectScreenModel(
 }
 
 sealed class ProjectDialog {
-    data class CreateProject(val title: String) : ProjectDialog()
+    data class CreateProject(val title: String = "") : ProjectDialog()
 }
 
 

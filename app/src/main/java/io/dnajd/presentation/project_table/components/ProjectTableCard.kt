@@ -68,7 +68,7 @@ fun ProjectTableCard(
         )
 
         // refresh when project tables get altered
-        LaunchedEffect(state.projectTables){
+        LaunchedEffect(state.tables){
             reorderableList = projectTable.tasks
         }
 
@@ -173,15 +173,15 @@ private fun ProjectTableCardTop(
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_left))
                     }, onClick = {
-                        onSwapTablePositionsClicked(projectTable.id, state.projectTables.find { it.position == projectTable.position - 1 }!!.id)
+                        onSwapTablePositionsClicked(projectTable.id, state.tables.find { it.position == projectTable.position - 1 }!!.id)
                         onSwitchDropdownMenuClicked(-1)
                     })
                 }
-                if(index + 1 in state.projectTables.indices) {
+                if(index + 1 in state.tables.indices) {
                     DropdownMenuItem(text = {
                         Text(text = stringResource(R.string.action_move_column_right))
                     }, onClick = {
-                        onSwapTablePositionsClicked(projectTable.id, state.projectTables.find { it.position == projectTable.position + 1 }!!.id)
+                        onSwapTablePositionsClicked(projectTable.id, state.tables.find { it.position == projectTable.position + 1 }!!.id)
                         onSwitchDropdownMenuClicked(-1)
                     })
                 }
