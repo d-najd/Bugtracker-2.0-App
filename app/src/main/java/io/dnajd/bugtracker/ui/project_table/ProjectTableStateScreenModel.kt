@@ -3,12 +3,12 @@ package io.dnajd.bugtracker.ui.project_table
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.GetProjectTables
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
 import io.dnajd.domain.project_table.interactor.SwapProjectTables
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
@@ -18,7 +18,7 @@ import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
     context: Context,
-    projectId: Long,
+    project: Project,
 
     private val getProjectTables: GetProjectTables = Injekt.get(),
     private val renameProjectTable: RenameProjectTable = Injekt.get(),
@@ -27,18 +27,19 @@ class ProjectTableScreenModel(
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
 
     init {
-        requestTables(projectId)
+        requestTables(project)
     }
 
-    private fun requestTables(projectId: Long) {
+    private fun requestTables(project: Project) {
         coroutineScope.launchIO {
-            val projectTables = getProjectTables.await(projectId).sortedBy { it.position }.map { table ->
+            val projectTables = getProjectTables.await(project.id).sortedBy { it.position }.map { table ->
                 table.copy(
                     tasks = table.tasks.sortedBy { it.position }
                 )
             }
             mutableState.update {
                 ProjectTableScreenState.Success(
+                    project = project,
                     projectTables = projectTables,
                 )
             }
@@ -194,6 +195,7 @@ sealed class ProjectTableScreenState {
      */
     @Immutable
     data class Success(
+        val project: Project,
         val projectTables: List<ProjectTable>,
         val taskMoved: Int = -1,
         val dropdownDialogIndex: Int = -1,
