@@ -35,7 +35,7 @@ fun ProjectScreenContent(
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             modifier = Modifier
-                                .padding(horizontal = 8.dp),
+                                .padding(horizontal = 6.dp),
                             imageVector  = Icons.Rounded.Search,
                             contentDescription = ""
                         )
@@ -43,7 +43,7 @@ fun ProjectScreenContent(
                     IconButton(onClick = { onCreateProjectClicked() }) {
                         Icon(
                             modifier = Modifier
-                                .padding(horizontal = 8.dp),
+                                .padding(horizontal = 6.dp),
                             imageVector = Icons.Rounded.Add,
                             contentDescription = ""
                         )

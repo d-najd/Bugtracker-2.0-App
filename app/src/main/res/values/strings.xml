@@ -40,5 +40,8 @@
     <string name="error_duplicate_entry">Duplicate Entry</string>
     <string name="action_cancel">Cancel</string>
     <string name="field_project_title">Project title</string>
+    <string name="field_board">Board</string>
+    <string name="action_board">Board</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

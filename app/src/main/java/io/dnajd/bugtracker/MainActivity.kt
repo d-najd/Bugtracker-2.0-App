@@ -37,8 +37,12 @@ class MainActivity : AppCompatActivity() {
         // TODO SET ROOT
         if(router.backstack.firstOrNull() == null) {
             // router.setRoot(TableTaskController(1L))
-            // router.setRoot(ProjectTableController(1))
-            router.setRoot(ProjectController())
+            router.setRoot(ProjectTableController(Project(
+                id = 1,
+                owner = "user1",
+                title = "ProjectTitle",
+            )))
+            // router.setRoot(ProjectController())
         }
     }
 }

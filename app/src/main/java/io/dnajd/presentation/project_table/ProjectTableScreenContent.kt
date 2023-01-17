@@ -1,11 +1,13 @@
 package io.dnajd.presentation.project_table
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.presentation.project_table.components.ProjectTableContent
+import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,7 +21,9 @@ fun ProjectTableScreenContent(
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
 ) {
-    Scaffold { contentPadding ->
+    Scaffold(
+        topBar = { ProjectTableTopAppBar(state) }
+    ) { contentPadding ->
         BackHandler { onBackClicked() }
 
         ProjectTableContent(
