@@ -1,5 +1,6 @@
 package io.dnajd.presentation.project_table.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -7,10 +8,12 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.presentation.util.bottomBorder
@@ -79,34 +82,40 @@ private fun BottomContent(
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val colorDisabled = MaterialTheme.colorScheme.onSurface.copy(.5f)
         val colorEnabled = MaterialTheme.colorScheme.primary
 
-        TextButton(
-            modifier = if(state.topBarSelectedIndex == 0) Modifier.bottomBorder(color = MaterialTheme.colorScheme.primary) else Modifier,
-            colors = ButtonDefaults.textButtonColors(
-                contentColor = if(state.topBarSelectedIndex == 0) colorEnabled else colorDisabled
-            ),
-            onClick = { /*TODO*/ }
+        val boardIndex = 0
+        val settingsIndex = 1
+        var boardModifier = Modifier.clickable { }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
+        var settingsModifier = Modifier.clickable {  }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
+        boardModifier = if(state.topBarSelectedIndex == boardIndex)
+            boardModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else boardModifier
+        settingsModifier = if(state.topBarSelectedIndex == settingsIndex)
+            settingsModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else settingsModifier
+
+        Column(
+            modifier = boardModifier,
         ) {
             Text(
-                text = stringResource(id = R.string.action_board)
+                color = if(state.topBarSelectedIndex == boardIndex) colorEnabled else colorDisabled,
+                text = stringResource(id = R.string.action_board),
+                fontSize = 15.sp,
             )
+            Box(modifier = Modifier.height(6.dp))
         }
 
-        TextButton(
-            modifier = if(state.topBarSelectedIndex == 1)
-                Modifier.bottomBorder(color = MaterialTheme.colorScheme.primary).padding(start = 12.dp)
-            else Modifier.padding(start = 12.dp),
-            colors = ButtonDefaults.textButtonColors(
-                contentColor = if(state.topBarSelectedIndex == 1) colorEnabled else colorDisabled
-            ),
-            onClick = { /*TODO*/ }
+        Column(
+            modifier = settingsModifier
         ) {
             Text(
-                text = stringResource(id = R.string.action_settings)
+                color = if(state.topBarSelectedIndex == settingsIndex) colorEnabled else colorDisabled,
+                text = stringResource(id = R.string.action_settings),
+                fontSize = 15.sp,
             )
+            Box(modifier = Modifier.height(6.dp))
         }
     }
     Divider()
