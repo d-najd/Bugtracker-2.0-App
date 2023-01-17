@@ -89,6 +89,7 @@ class ProjectTableScreenModel(
                             ))
                             state.copy(
                                 projectTables = projectTables.sortedBy { it.position },
+                                dropdownDialogIndex = -1,
                             )
                         }
                     }

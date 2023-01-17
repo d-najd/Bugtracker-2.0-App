@@ -2,6 +2,7 @@ package io.dnajd.presentation.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // TODO document this and make it easy to use
@@ -29,7 +31,7 @@ fun BugtrackerTextField(
         }
 
         BasicTextField(
-            modifier = modifierText,
+            modifier = modifierText.padding(top = 8.dp, bottom = 3.dp),
             value = title,
             onValueChange = { onTitleChange(it) },
             textStyle = TextStyle(

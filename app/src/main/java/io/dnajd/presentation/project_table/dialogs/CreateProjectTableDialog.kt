@@ -1,10 +1,15 @@
 package io.dnajd.presentation.project_table.dialogs
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
+import io.dnajd.presentation.components.BugtrackerTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +43,14 @@ fun CreateProjectDialog(
             }
         },
         text = {
+            BugtrackerTextField(
+                modifierText = Modifier
+                    .fillMaxWidth(),
+                label = stringResource(R.string.field_project_title),
+                title = title,
+                onTitleChange = { title = it }
+            )
+
             TextField(
                 singleLine = true,
                 label = {

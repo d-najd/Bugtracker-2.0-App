@@ -51,7 +51,6 @@ fun CreateProjectDialog(
         text = {
             BugtrackerTextField(
                 modifierText = Modifier
-                    .padding(top = 8.dp, bottom = 3.dp)
                     .fillMaxWidth(),
                 label = stringResource(R.string.field_project_title),
                 title = title,
