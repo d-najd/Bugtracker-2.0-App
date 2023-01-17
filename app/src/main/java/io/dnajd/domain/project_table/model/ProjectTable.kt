@@ -13,4 +13,4 @@ data class ProjectTable(
     @SerializedName("title") val title: String,
     @SerializedName("position") val position: Int,
     @SerializedName("issues") val tasks: List<ProjectTableTaskBasic> = emptyList(),
-)
+) : java.io.Serializable

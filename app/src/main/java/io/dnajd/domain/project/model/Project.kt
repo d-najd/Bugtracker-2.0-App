@@ -14,4 +14,4 @@ data class Project(
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String? = null,
     @SerializedName("createdAt") val createdAt: Date = Date(),
-)
+) : java.io.Serializable
