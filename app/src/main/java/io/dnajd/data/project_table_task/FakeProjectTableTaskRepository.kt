@@ -36,11 +36,11 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
         createdAt = Date(),
         updatedAt = null,
         assigned = listOf(
-            ProjectTableIssueAssigne(
+            ProjectTableIssueAssignee(
                 assignedUsername = "user1",
                 assignerUsername = "user2",
             ),
-            ProjectTableIssueAssigne(
+            ProjectTableIssueAssignee(
                 assignedUsername = "user1",
                 assignerUsername = "user1",
             )

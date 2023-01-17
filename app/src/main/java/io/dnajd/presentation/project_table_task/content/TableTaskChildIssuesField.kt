@@ -10,12 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -78,7 +76,7 @@ fun TableTaskChildIssuesField(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "${stringResource(R.string.label_task).uppercase()}-${childTask.id}",
+                                text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
                                 color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
                             )
                             Text(

@@ -16,7 +16,7 @@ data class ProjectTableTask (
     @SerializedName("updatedAt") val updatedAt: Date?,
     @SerializedName("comments") val comments: List<ProjectTableTaskComment>,
     @SerializedName("labels") val labels: List<ProjectLabel>,
-    @SerializedName("assigned") val assigned: List<ProjectTableIssueAssigne>,
+    @SerializedName("assigned") val assigned: List<ProjectTableIssueAssignee>,
     @SerializedName("childIssues") val childTasks: List<ProjectTableChildTask>
 )
 

@@ -11,5 +11,8 @@ object FakeProjectRepository : ProjectRepository {
         Project(2, "user2", "Title 2", "Example Description", Date())
     )
 
+    @Suppress("RedundantNullableReturnType")
+    override suspend fun create(project: Project): Project? = project
+
 }
 

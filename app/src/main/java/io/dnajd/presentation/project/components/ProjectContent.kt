@@ -32,7 +32,7 @@ fun ProjectContent(
     ) {
         Text(
             modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp),
-            text = stringResource(R.string.label_all_projects),
+            text = stringResource(R.string.field_all_projects),
             color = MaterialTheme.colorScheme.onSurface.copy(.5f),
             fontSize = 14.sp,
             fontFamily = FontFamily.SansSerif,

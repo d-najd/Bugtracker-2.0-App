@@ -7,6 +7,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
@@ -24,13 +25,10 @@ fun ProjectScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    titleContentColor = MaterialTheme.colorScheme.primary.copy(.9f),
-                    actionIconContentColor = MaterialTheme.colorScheme.inversePrimary,
-                ),
+                modifier = Modifier.shadow(elevation = 4.dp),
                 title = {
                     Text(
-                        text = stringResource(R.string.label_projects),
+                        text = stringResource(R.string.field_projects),
                     )
                 },
                 actions = {
@@ -42,7 +40,7 @@ fun ProjectScreenContent(
                             contentDescription = ""
                         )
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { onCreateProjectClicked() }) {
                         Icon(
                             modifier = Modifier
                                 .padding(horizontal = 8.dp),

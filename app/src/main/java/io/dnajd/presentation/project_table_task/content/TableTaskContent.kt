@@ -6,25 +6,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
-import io.dnajd.presentation.project_table_task.components.TableTaskExpandableMenu
 import io.dnajd.presentation.project_table_task.content.comment.TableTaskActivityContent
 
 @ExperimentalMaterial3Api
@@ -57,7 +50,7 @@ fun TableTaskContent(
                 modifier = Modifier
                     .padding(start = 12.dp)
                     .fillMaxWidth(),
-                text = "${stringResource(R.string.label_task).uppercase()}-${task.id}",
+                text = "${stringResource(R.string.field_task).uppercase()}-${task.id}",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
             )

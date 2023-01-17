@@ -82,7 +82,7 @@ fun ProjectTableCardContent(
                 Text(
                     modifier = Modifier
                         .padding(start = 4.dp),
-                    text = "${stringResource(R.string.label_task).uppercase()}-$id"
+                    text = "${stringResource(R.string.field_task).uppercase()}-$id"
                 )
             }
         }

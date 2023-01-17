@@ -47,7 +47,7 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
                     val dateString = if(dateSeconds > 0) BugtrackerDateFormat.generateStringFromTime(timeSeconds = dateSeconds) else "Invalid Date"
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = "$dateString ${stringResource(R.string.label_ago).lowercase()}",
+                        text = "$dateString ${stringResource(R.string.field_ago).lowercase()}",
                         color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
                         fontSize = fontSize,
                         fontWeight = fontWeight,
@@ -55,7 +55,7 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
 
                     if(comment.editedAt != null) {
                         Text(
-                            text = " - ${stringResource(R.string.label_edited).lowercase()}",
+                            text = " - ${stringResource(R.string.field_edited).lowercase()}",
                             color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
                             fontSize = fontSize,
                             fontWeight = fontWeight,

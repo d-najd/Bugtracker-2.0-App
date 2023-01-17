@@ -32,7 +32,7 @@ fun TableTaskIconPairFields(
 
     TableTaskIconPairField(
         modifier = Modifier.padding(top = 16.dp),
-        title = stringResource(R.string.label_reporter),
+        title = stringResource(R.string.field_reporter),
         text = task.reporter,
         iconContent = {
             Icon(
@@ -45,15 +45,15 @@ fun TableTaskIconPairFields(
 
     TableTaskIconPairField(
         modifier = Modifier.padding(top = 16.dp),
-        title = stringResource(R.string.label_created),
+        title = stringResource(R.string.field_created),
         text = BugtrackerDateFormat.defaultRequestDateFormat().format(task.createdAt),
     )
 
     TableTaskIconPairField(
         modifier = Modifier.padding(top = 16.dp),
-        title = stringResource(R.string.label_updated),
+        title = stringResource(R.string.field_updated),
         text = if(task.updatedAt != null)
             BugtrackerDateFormat.defaultRequestDateFormat().format(task.updatedAt)
-        else "${stringResource(R.string.label_never)} TM",
+        else "${stringResource(R.string.field_never)} TM",
     )
 }

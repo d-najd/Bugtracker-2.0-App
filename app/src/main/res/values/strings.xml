@@ -1,34 +1,44 @@
 <resources>
     <string name="app_name">Bugtracker 2.0</string>
 
+    <!-- field -->
+    <string name="field_all_projects">All Projects</string>
+    <string name="field_projects">Projects</string>
+    <string name="field_task">Task</string>
+    <string name="field_description">Description</string>
+    <string name="field_reporter">Reporter</string>
+    <string name="field_labels">Labels</string>
+    <string name="field_created">Created</string>
+    <string name="field_updated">Updated</string>
+    <string name="field_never">Never</string>
+    <string name="field_project">Project</string>
+    <string name="field_activity">Activity</string>
+    <string name="field_comments">Comments</string>
+    <string name="field_ago">Ago</string>
+    <string name="field_edited">Edited</string>
+    <string name="field_child_issues">Child issues</string>
+    <string name="field_assigned">Assigned</string>
+    <string name="field_create_project">Create project</string>
+
+    <!-- action -->
+    <string name="action_create">Create</string>
+    <string name="action_rename_column">Rename Column</string>
+    <string name="action_move_column_left">Move column left</string>
+    <string name="action_move_column_right">Move column right</string>
+    <string name="action_delete_table">Delete table</string>
+    <string name="action_confirm">confirm</string>
+
+    <!-- info -->
+    <string name="info_add_description">Press to add a description..</string>
+    <string name="info_comment_first">Be the first to comment</string>
+
     <!-- error -->
     <string name="error_password_do_not_match">Passwords don\'t match</string>
     <string name="error_empty_field">Empty Field/s</string>
     <string name="error_network">Request could not be executed due to a connectivity problem</string>
     <string name="error_auth">Authentication failed</string>
     <string name="error_duplicate_entry">Duplicate Entry</string>
-    <string name="label_all_projects">All Projects</string>
-    <string name="label_projects">Projects</string>
-    <string name="action_create">Create</string>
-    <string name="action_rename_column">Rename Column</string>
-    <string name="action_move_column_left">Move column left</string>
-    <string name="action_move_column_right">Move column right</string>
-    <string name="action_delete_table">Delete table</string>
-    <string name="label_task">Task</string>
-    <string name="action_confirm">confirm</string>
-    <string name="label_description">Description</string>
-    <string name="info_add_description">Press to add a description..</string>
-    <string name="label_reporter">Reporter</string>
-    <string name="label_labels">Labels</string>
-    <string name="label_created">Created</string>
-    <string name="label_updated">Updated</string>
-    <string name="label_never">Never</string>
-    <string name="label_project">Project</string>
-    <string name="field_activity">Activity</string>
-    <string name="field_comments">Comments</string>
-    <string name="info_comment_first">Leave the first comment</string>
-    <string name="label_ago">Ago</string>
-    <string name="label_edited">Edited</string>
-    <string name="field_child_issues">Child issues</string>
-    <string name="field_assigned">Assigned</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="field_project_title">Project title</string>
+
 </resources>

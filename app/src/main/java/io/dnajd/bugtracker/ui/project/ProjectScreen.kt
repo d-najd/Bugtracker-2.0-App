@@ -11,6 +11,7 @@ import io.dnajd.bugtracker.ui.base.controller.pushController
 import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
+import io.dnajd.presentation.project.dialogs.CreateProjectDialog
 import io.dnajd.presentation.util.LocalRouter
 
 object ProjectScreen : Screen {
@@ -33,9 +34,19 @@ object ProjectScreen : Screen {
         ProjectScreenContent(
             state = successState,
             onProjectClicked = { router.pushController(ProjectTableController(it)) },
-            onCreateProjectClicked = { },
+            onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject(title = "")) },
             onFilterByNameClicked = { },
         )
+
+        when(successState.dialog) {
+            null -> {}
+            is ProjectDialog.CreateProject -> {
+                CreateProjectDialog(
+                    onDismissRequest = screenModel::dismissDialog,
+                    onCreateProjectClicked = screenModel::createProject
+                )
+            }
+        }
 
         /*
         LaunchedEffect(Unit) {

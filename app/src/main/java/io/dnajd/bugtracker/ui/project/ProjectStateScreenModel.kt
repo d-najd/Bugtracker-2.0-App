@@ -3,18 +3,21 @@ package io.dnajd.bugtracker.ui.project
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.domain.project.interactor.CreateProject
 import io.dnajd.domain.project.interactor.GetProjects
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
+import io.dnajd.util.launchUI
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectScreenModel(
-    private val context: Context,
+    context: Context,
 
     private val getProjects: GetProjects = Injekt.get(),
+    private val createProject: CreateProject = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectScreenState>(context, ProjectScreenState.Loading) {
 
     /*
@@ -37,6 +40,48 @@ class ProjectScreenModel(
         }
     }
 
+    fun createProject(project: Project) {
+        val state = (state.value as ProjectScreenState.Success)
+
+        coroutineScope.launchIO {
+            createProject.awaitOne(project)?.let { persistedProject ->
+                mutableState.update {
+                    val projects = state.projects.toMutableList()
+                    projects.add(persistedProject)
+                    state.copy(
+                        projects = projects
+                    )
+                }
+                dismissDialog()
+            }
+        }
+    }
+
+    fun showDialog(dialog: ProjectDialog) {
+        val state = (state.value as ProjectScreenState.Success)
+
+        when (dialog) {
+            is ProjectDialog.CreateProject -> {
+                coroutineScope.launchUI {
+                    mutableState.update {
+                        state.copy(
+                            dialog = dialog,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun dismissDialog() {
+        mutableState.update {
+            when (it) {
+                is ProjectScreenState.Success -> it.copy(dialog = null)
+                else -> it
+            }
+        }
+    }
+
     /*
     fun showLocalizedEvent(event: LibraryEvent.LocalizedMessage) {
         coroutineScope.launch{
@@ -46,11 +91,10 @@ class ProjectScreenModel(
      */
 }
 
-/*
-sealed class LibraryEvent {
-    sealed class LocalizedMessage(@StringRes val stringRes: Int) : LibraryEvent()
+sealed class ProjectDialog {
+    data class CreateProject(val title: String) : ProjectDialog()
 }
- */
+
 
 sealed class ProjectScreenState {
     
@@ -60,6 +104,7 @@ sealed class ProjectScreenState {
     @Immutable
     data class Success(
         val projects: List<Project>,
+        val dialog: ProjectDialog? = null,
     ) : ProjectScreenState()
 
 }

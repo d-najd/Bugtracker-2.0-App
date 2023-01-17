@@ -8,6 +8,7 @@ import io.dnajd.data.project_table.RemoteProjectTableRepository
 import io.dnajd.data.project_table_task.FakeProjectTableTaskRepository
 import io.dnajd.data.project_table_task.RemoteProjectTableTaskRepository
 import io.dnajd.data.utils.Urls
+import io.dnajd.domain.project.interactor.CreateProject
 import io.dnajd.domain.project.interactor.GetProjects
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.GetProjectTables
@@ -28,7 +29,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = true
+        private const val USE_FAKES = false
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -46,10 +47,11 @@ class DomainModule : InjektModule {
                 .create()
         }
 
+
         addSingletonFactory {
             Retrofit.Builder()
                 .baseUrl(Urls.API)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(Injekt.get()))
                 .client(Injekt.get())
                 .build()
         }
@@ -68,6 +70,7 @@ class DomainModule : InjektModule {
         }
 
         addFactory { GetProjects(get()) }
+        addFactory { CreateProject(get()) }
 
         addFactory { GetProjectTables(get()) }
         addFactory { RenameProjectTable(get()) }
