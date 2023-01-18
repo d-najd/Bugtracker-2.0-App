@@ -17,13 +17,14 @@ import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+
 class ProjectTableScreenModel(
     context: Context,
     project: Project,
 
     private val getTables: GetProjectTables = Injekt.get(),
     private val createTable: CreateProjectTable = Injekt.get(),
-    private val renameTable: RenameProjectTable = Injekt.get(),
+    private val renameTables: RenameProjectTable = Injekt.get(),
     private val swapTables: SwapProjectTables = Injekt.get(),
     private val moveTableTask: MoveProjectTableTask = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
@@ -34,7 +35,7 @@ class ProjectTableScreenModel(
 
     private fun requestTables(project: Project) {
         coroutineScope.launchIO {
-            val projectTables = getTables.await(project.id).sortedBy { it.position }.map { table ->
+            val tables = getTables.await(project.id).sortedBy { it.position }.map { table ->
                 table.copy(
                     tasks = table.tasks.sortedBy { it.position }
                 )
@@ -42,27 +43,8 @@ class ProjectTableScreenModel(
             mutableState.update {
                 ProjectTableScreenState.Success(
                     project = project,
-                    tables = projectTables,
+                    tables = tables,
                 )
-            }
-        }
-    }
-
-    fun renameTable(id: Long, newName: String) {
-        val state = (mutableState.value as ProjectTableScreenState.Success)
-        coroutineScope.launchIO {
-            state.tables.find { table -> table.id == id }!!.let { originalTable ->
-                if(renameTable.await(id, newName)) {
-                    // doing it this way so that state changes get updated for sure
-                    mutableState.update {
-                        val projectTables = state.tables.toMutableList()
-                        projectTables.remove(originalTable)
-                        projectTables.add(originalTable.copy(title = newName))
-                        state.copy(
-                            tables = projectTables
-                        )
-                    }
-                }
             }
         }
     }
@@ -81,30 +63,49 @@ class ProjectTableScreenModel(
         }
     }
 
+    fun renameTable(id: Long, newName: String) {
+        coroutineScope.launchIO {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
+            state.tables.find { table -> table.id == id }!!.let { originalTable ->
+                if(renameTables.await(id, newName)) {
+                    // doing it this way so that state changes get updated for sure
+                    mutableState.update {
+                        val tables = state.tables.toMutableList()
+                        tables.remove(originalTable)
+                        tables.add(originalTable.copy(title = newName))
+                        state.copy(
+                            tables = tables
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * swaps the positions of 2 tables
      * @param fId id of the first table
      * @param sId id of the second table
      */
     fun swapTablePositions(fId: Long, sId: Long) {
-        val state = (mutableState.value as ProjectTableScreenState.Success)
         coroutineScope.launchIO {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
             state.tables.find { table -> table.id == sId }!!.let { fTable ->
                 state.tables.find { table -> table.id == fId }!!.let { sTable ->
                     if(swapTables.await(fId, sId)) {
                         // doing it this way so that state changes get updated for sure
                         mutableState.update {
-                            val projectTables = state.tables.toMutableList()
-                            projectTables.remove(fTable)
-                            projectTables.remove(sTable)
-                            projectTables.add(fTable.copy(
+                            val tables = state.tables.toMutableList()
+                            tables.remove(fTable)
+                            tables.remove(sTable)
+                            tables.add(fTable.copy(
                                 position = sTable.position
                             ))
-                            projectTables.add(sTable.copy(
+                            tables.add(sTable.copy(
                                 position = fTable.position
                             ))
                             state.copy(
-                                tables = projectTables.sortedBy { it.position },
+                                tables = tables.sortedBy { it.position },
                                 dropdownDialogIndex = -1,
                             )
                         }
@@ -128,14 +129,14 @@ class ProjectTableScreenModel(
         if(fIndex == sIndex) {
             throw IllegalArgumentException("fIndex and sIndex can't be the same")
         }
-        val state = (mutableState.value as ProjectTableScreenState.Success)
         coroutineScope.launchIO {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
             state.tables.find { table -> table.id == tableId }!!.let { table ->
                 table.tasks[fIndex].let { fTask ->
                     table.tasks[sIndex].let { sTask ->
                         if(moveTableTask.await(fTask.id, sTask.id)) {
-                            val projectTables = state.tables.toMutableList()
-                            projectTables.remove(table)
+                            val tables = state.tables.toMutableList()
+                            tables.remove(table)
                             var tasks = table.tasks.toMutableList()
                             tasks = if (sIndex > fIndex) {
                                 tasks.mapIndexed { index, it ->
@@ -162,14 +163,14 @@ class ProjectTableScreenModel(
                                     }
                                 }.toMutableList()
                             }
-                            projectTables.add(
+                            tables.add(
                                 table.copy(
                                     tasks = tasks.sortedBy { it.position },
                                 )
                             )
                             mutableState.update {
                                 state.copy(
-                                    tables = projectTables.sortedBy { it.position },
+                                    tables = tables.sortedBy { it.position },
                                     taskMoved = state.taskMoved + 1
                                 )
                             }
@@ -215,8 +216,8 @@ class ProjectTableScreenModel(
      * already stored then the index will be set to -1 instead
      */
     fun switchDropdownMenu(index: Int) {
-        val state = (mutableState.value as ProjectTableScreenState.Success)
         coroutineScope.launchUI {
+            val state = (mutableState.value as ProjectTableScreenState.Success)
             mutableState.update {
                 state.copy(
                     dropdownDialogIndex = if(state.dropdownDialogIndex == index) -1 else index
