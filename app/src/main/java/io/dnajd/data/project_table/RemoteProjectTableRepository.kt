@@ -3,7 +3,6 @@ package io.dnajd.data.project_table
 import io.dnajd.data.utils.Urls
 import io.dnajd.data.utils.processRequest
 import io.dnajd.data.utils.processVoidRequest
-import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableHolder
 import io.dnajd.domain.project_table.service.ProjectTableRepository
@@ -35,6 +34,9 @@ object RemoteProjectTableRepository : ProjectTableRepository {
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
         getFactory().swapTablePositions(id = fId, sId = sId).processVoidRequest()
 
+    override suspend fun delete(id: Long): Boolean =
+        getFactory().deleteTable(id).processVoidRequest()
+
 }
 
 private interface ProjectTableRepositoryApi {
@@ -57,4 +59,6 @@ private interface ProjectTableRepositoryApi {
         @Path("sId") sId: Long,
     ): Call<Void>
 
+    @DELETE("${Urls.PROJECT_TABLE_RAW}/{id}")
+    fun deleteTable(@Path("id") id: Long) : Call<Void>
 }

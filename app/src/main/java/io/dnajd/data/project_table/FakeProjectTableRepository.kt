@@ -102,5 +102,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean = true
 
+    override suspend fun delete(id: Long): Boolean = true
+
 }
 

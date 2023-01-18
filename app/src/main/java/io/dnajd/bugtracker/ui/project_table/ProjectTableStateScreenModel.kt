@@ -184,7 +184,7 @@ class ProjectTableScreenModel(
     }
 
     fun removeTable(tableId: Long) {
-        
+
     }
 
     fun showDialog(dialog: ProjectTableDialog) {
