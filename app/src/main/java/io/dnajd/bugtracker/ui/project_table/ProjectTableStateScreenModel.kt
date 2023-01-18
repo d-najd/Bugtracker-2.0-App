@@ -53,13 +53,14 @@ class ProjectTableScreenModel(
         val state = (mutableState.value as ProjectTableScreenState.Success)
         coroutineScope.launchIO {
             createTable.awaitOne(table)?.let { persistedTable ->
-                val tables = state.tables.toMutableList()
+                val tables = state.tables.toMutableList(madoka magica ed 3madoka magmadoka magica ed 3ica ed 3)
                 tables.add(persistedTable)
-                state.copy(
-                    tables = tables
-                )
+                mutableState.update {
+                    state.copy(
+                        tables = tables,
+                    )
+                }
             }
-            dismissDialog()
         }
     }
 

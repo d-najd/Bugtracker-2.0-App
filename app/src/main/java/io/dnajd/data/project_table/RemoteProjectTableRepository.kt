@@ -29,7 +29,6 @@ object RemoteProjectTableRepository : ProjectTableRepository {
     override suspend fun create(table: ProjectTable): ProjectTable? =
         getFactory().createTable(table).processRequest()
 
-
     override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
         getFactory().renameTable(id, newTitle).processVoidRequest()
 

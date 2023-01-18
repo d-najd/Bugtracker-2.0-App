@@ -9,7 +9,7 @@ data class ProjectHolder(
 )
 
 data class Project(
-    @SerializedName("id") val id: Long = -1,
+    @SerializedName("id") val id: Long = -1L,
     @SerializedName("owner") val owner: String,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String? = null,

@@ -45,13 +45,16 @@ class ProjectTableScreen(
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
 
-
         when(successState.dialog) {
             null -> {}
             is ProjectTableDialog.CreateTable -> {
                 CreateProjectTableDialog(
+                    state = successState,
                     onDismissRequest = screenModel::dismissDialog,
-                    onCreateTableClicked = screenModel::createTable
+                    onCreateTableClicked = {
+                        screenModel.createTable(table = it)
+                        screenModel.dismissDialog()
+                    }
                 )
             }
         }

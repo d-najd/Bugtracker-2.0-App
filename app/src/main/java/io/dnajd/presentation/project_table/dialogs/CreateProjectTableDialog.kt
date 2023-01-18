@@ -6,12 +6,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.presentation.components.BugtrackerTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProjectTableDialog(
+    state: ProjectTableScreenState.Success,
+
     onDismissRequest: () -> Unit,
     onCreateTableClicked: (ProjectTable) -> Unit,
 ) {
@@ -28,13 +32,14 @@ fun CreateProjectTableDialog(
             TextButton(
                 enabled = title.isNotBlank(),
                 onClick = {
-                    // TODO finish this
-                    /*
-                    val table = ProjectTable(
-                        title = title,
+                    onCreateTableClicked(
+                        ProjectTable(
+                            projectId = state.project.id,
+                            title = title,
+                        )
                     )
-                     */
-            }) {
+                }
+            ) {
                 Text(
                     text = stringResource(R.string.action_add).uppercase()
                 )
