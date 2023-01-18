@@ -41,13 +41,12 @@ class ProjectScreenModel(
     }
 
     fun createProject(project: Project) {
-        val state = (state.value as ProjectScreenState.Success)
         coroutineScope.launchIO {
             createProject.awaitOne(project)?.let { persistedProject ->
                 mutableState.update {
-                    val projects = state.projects.toMutableList()
+                    val projects = (mutableState.value as ProjectScreenState.Success).projects.toMutableList()
                     projects.add(persistedProject)
-                    state.copy(
+                    (mutableState.value as ProjectScreenState.Success).copy(
                         projects = projects
                     )
                 }
@@ -57,12 +56,11 @@ class ProjectScreenModel(
     }
 
     fun showDialog(dialog: ProjectDialog) {
-        val state = (state.value as ProjectScreenState.Success)
         when (dialog) {
             is ProjectDialog.CreateProject -> {
                 coroutineScope.launchUI {
                     mutableState.update {
-                        state.copy(
+                        (mutableState.value as ProjectScreenState.Success).copy(
                             dialog = dialog,
                         )
                     }
