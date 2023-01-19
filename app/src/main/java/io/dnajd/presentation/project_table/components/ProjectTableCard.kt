@@ -30,6 +30,7 @@ fun ProjectTableCard(
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
+    onCreateTableTaskClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
@@ -108,6 +109,7 @@ fun ProjectTableCard(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth(),
+            onCreateTableTaskClicked = onCreateTableTaskClicked,
         )
     }
 }
@@ -226,6 +228,7 @@ private fun ProjectTableDropdownMenu(
 private fun ProjectTableCardBottom(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    onCreateTableTaskClicked: (Long) -> Unit,
 ) {
     if(enabled) {
         Row(
