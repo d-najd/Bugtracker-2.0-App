@@ -260,7 +260,7 @@ sealed class ProjectTableScreenState {
          * this is used on the bottom portion of the table specifically the create button.
          */
         val createTableItemIndex: Int? = null,
-        val taskMoved: Int = -1,
+        val taskMoved: Int = 0,
         val dialog: ProjectTableDialog? = null,
     ): ProjectTableScreenState()
 
