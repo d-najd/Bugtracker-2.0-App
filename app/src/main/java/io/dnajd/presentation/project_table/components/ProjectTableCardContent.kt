@@ -47,7 +47,6 @@ fun ProjectTableCardContent(
                 .clickable { onTaskClicked(id) },
         ) {
 
-            // TODO onclick open dialog that lets you change title
             Text(
                 modifier = Modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp),
                 text = title,

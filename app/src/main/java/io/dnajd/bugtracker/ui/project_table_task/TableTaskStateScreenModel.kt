@@ -40,9 +40,6 @@ sealed class TableTaskScreenState {
     @Immutable
     object Loading : TableTaskScreenState()
 
-    /**
-     * TODO find a way to get rid of taskMoved, using events does not work properly
-     */
     @Immutable
     data class Success(
         val task: ProjectTableTask,

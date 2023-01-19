@@ -22,7 +22,7 @@ fun ProjectTableScreenContent(
     onCreateTableTaskMenuClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int?) -> Unit,
+    onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
     Scaffold(
         topBar = {

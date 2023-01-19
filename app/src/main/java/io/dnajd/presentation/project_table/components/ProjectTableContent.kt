@@ -20,7 +20,7 @@ fun ProjectTableContent(
     onCreateTableTaskMenuClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int?) -> Unit,
+    onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
     Row(
         modifier = Modifier

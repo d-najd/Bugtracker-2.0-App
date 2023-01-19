@@ -35,7 +35,7 @@ fun ProjectTableCard(
     onCreateTableTaskMenuClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int?) -> Unit,
+    onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ){
     Card(
         modifier = Modifier
@@ -128,7 +128,7 @@ private fun ProjectTableCardTop(
     onTableRename: (Long, String) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int?) -> Unit,
+    onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -154,7 +154,7 @@ private fun ProjectTableCardTop(
         ) {
             IconButton(
                 onClick = {
-                    onSwitchDropdownMenuClicked(index) // TODO replace this with table id
+                    onSwitchDropdownMenuClicked(table.id)
                 }
             ) {
                 Icon(
@@ -185,7 +185,7 @@ private fun ProjectTableDropdownMenu(
     onTableRename: (Long, String) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int?) -> Unit,
+    onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ){
     Column(
         horizontalAlignment = Alignment.End,
@@ -193,7 +193,7 @@ private fun ProjectTableDropdownMenu(
             .fillMaxWidth()
     ) {
         DropdownMenu(
-            expanded = index == state.dropdownDialogSelectedTableId,
+            expanded = table.id == state.dropdownDialogSelectedTableId,
             onDismissRequest = { onSwitchDropdownMenuClicked(null) }
         ) {
             DropdownMenuItem(text = {

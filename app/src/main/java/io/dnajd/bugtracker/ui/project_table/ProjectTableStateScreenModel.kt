@@ -229,16 +229,12 @@ class ProjectTableScreenModel(
         }
     }
 
-    /**
-     * switches the dropdown menu to the selected index, if the given index matches the one that is
-     * already stored then the index will be set to -1 instead
-     */
-    fun switchDropdownMenu(index: Int?) {
+    fun switchDropdownMenu(tableId: Long?) {
         coroutineScope.launchUI {
             mutableState.update {
                 (mutableState.value as ProjectTableScreenState.Success).copy(
                     dropdownDialogSelectedTableId = if((mutableState.value as ProjectTableScreenState.Success)
-                            .dropdownDialogSelectedTableId == index) null else index
+                            .dropdownDialogSelectedTableId == tableId) null else tableId
                 )
             }
         }
@@ -263,12 +259,8 @@ sealed class ProjectTableScreenState {
         val project: Project,
         val tables: List<ProjectTable>,
         val topBarSelected: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
-        val dropdownDialogSelectedTableId: Int? = null,
-        /**
-         * index of the table that is being created item on,
-         *
-         * this is used on the bottom portion of the table specifically the create button.
-         */
+        val dropdownDialogSelectedTableId: Long? = null,
+        /** This is used in the bottom portion of the table specifically the create button */
         val createTableItemSelectedTableId: Long? = null,
         val taskMoved: Int = 0,
         val dialog: ProjectTableDialog? = null,

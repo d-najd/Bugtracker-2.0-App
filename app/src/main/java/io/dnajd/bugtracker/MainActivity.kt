@@ -33,8 +33,6 @@ class MainActivity : AppCompatActivity() {
         router = Conductor.attachRouter(this, container, savedInstanceState)
             .setPopRootControllerMode(Router.PopRootControllerMode.NEVER)
 
-        // if there is no controller (in other words starting the app) set a root controller
-        // TODO SET ROOT
         if(router.backstack.firstOrNull() == null) {
             // router.setRoot(TableTaskController(1L))
             router.setRoot(ProjectTableController(Project(
