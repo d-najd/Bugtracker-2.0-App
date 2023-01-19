@@ -16,6 +16,7 @@ fun ProjectTableContent(
 
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
+    onDeleteTableClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
@@ -28,13 +29,14 @@ fun ProjectTableContent(
             .padding(contentPadding)
             .padding(5.dp),
     ) {
-        for ((index, projectTable) in state.tables.sortedBy { it.position }.withIndex()) {
+        for ((index, table) in state.tables.sortedBy { it.position }.withIndex()) {
             ProjectTableCard(
                 state = state,
-                projectTable = projectTable,
+                table = table,
                 index = index,
                 onTableRename = onTableRename,
                 onMoveTableTasks = onMoveTableTasks,
+                onDeleteTableClicked = onDeleteTableClicked,
                 onTaskClicked = onTaskClicked,
                 onSwapTablePositionsClicked = onSwapTablePositionsClicked,
                 onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,

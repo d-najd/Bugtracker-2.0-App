@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.presentation.project_table.components.ProjectTableContent
 import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,6 +18,7 @@ fun ProjectTableScreenContent(
 
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
+    onDeleteTableClicked: (Long) -> Unit,
     onCreateTableClicked: () -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
@@ -38,6 +40,7 @@ fun ProjectTableScreenContent(
             contentPadding = contentPadding,
             onTableRename = onTableRename,
             onMoveTableTasks = onMoveTableTasks,
+            onDeleteTableClicked = onDeleteTableClicked,
             onTaskClicked = onTaskClicked,
             onSwapTablePositionsClicked = onSwapTablePositionsClicked,
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,

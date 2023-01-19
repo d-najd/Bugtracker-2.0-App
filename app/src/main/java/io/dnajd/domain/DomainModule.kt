@@ -53,7 +53,7 @@ class DomainModule : InjektModule {
                 .client(Injekt.get())
                 .build()
         }
-        
+
         when (USE_FAKES) {
             true -> {
                 addSingletonFactory<ProjectRepository> { FakeProjectRepository }

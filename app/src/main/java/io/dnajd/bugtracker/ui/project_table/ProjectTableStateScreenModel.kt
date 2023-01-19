@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project_table.interactor.CreateProjectTable
-import io.dnajd.domain.project_table.interactor.GetProjectTables
-import io.dnajd.domain.project_table.interactor.RenameProjectTable
-import io.dnajd.domain.project_table.interactor.SwapProjectTables
+import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
@@ -26,6 +23,7 @@ class ProjectTableScreenModel(
     private val renameTables: RenameProjectTable = Injekt.get(),
     private val swapTables: SwapProjectTables = Injekt.get(),
     private val moveTableTask: MoveProjectTableTask = Injekt.get(),
+    private val deleteTable: DeleteProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
 
     init {
@@ -183,8 +181,18 @@ class ProjectTableScreenModel(
         }
     }
 
-    fun removeTable(tableId: Long) {
-
+    fun deleteTable(tableId: Long) {
+        coroutineScope.launchIO {
+            if(deleteTable.awaitOne(tableId)) {
+                mutableState.update {
+                    val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+                    tables.removeIf { it.id == tableId }
+                    (mutableState.value as ProjectTableScreenState.Success).copy(
+                        tables = tables
+                    )
+                }
+            }
+        }
     }
 
     fun showDialog(dialog: ProjectTableDialog) {
