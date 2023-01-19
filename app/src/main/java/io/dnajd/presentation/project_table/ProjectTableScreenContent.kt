@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.presentation.project_table.components.ProjectTableContent
 import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
-import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +22,7 @@ fun ProjectTableScreenContent(
     onCreateTableTaskClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int) -> Unit,
+    onSwitchDropdownMenuClicked: (Int?) -> Unit,
 ) {
     Scaffold(
         topBar = {

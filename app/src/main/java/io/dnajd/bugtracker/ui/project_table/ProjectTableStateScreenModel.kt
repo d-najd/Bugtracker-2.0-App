@@ -101,7 +101,7 @@ class ProjectTableScreenModel(
                             ))
                             (mutableState.value as ProjectTableScreenState.Success).copy(
                                 tables = tables.sortedBy { it.position },
-                                dropdownDialogIndex = -1,
+                                dropdownDialogIndex = null,
                             )
                         }
                     }
@@ -228,7 +228,7 @@ class ProjectTableScreenModel(
             mutableState.update {
                 (mutableState.value as ProjectTableScreenState.Success).copy(
                     dropdownDialogIndex = if((mutableState.value as ProjectTableScreenState.Success)
-                            .dropdownDialogIndex == index) -1 else index
+                            .dropdownDialogIndex == index) null else index
                 )
             }
         }
@@ -253,7 +253,7 @@ sealed class ProjectTableScreenState {
         val project: Project,
         val tables: List<ProjectTable>,
         val topBarSelectedIndex: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
-        val dropdownDialogIndex: Int = -1,
+        val dropdownDialogIndex: Int? = null,
         /**
          * index of the table that is being created item on,
          *

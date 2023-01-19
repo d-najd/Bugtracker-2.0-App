@@ -33,7 +33,7 @@ fun ProjectTableCard(
     onCreateTableTaskClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int) -> Unit,
+    onSwitchDropdownMenuClicked: (Int?) -> Unit,
 ){
     Card(
         modifier = Modifier
@@ -126,7 +126,7 @@ private fun ProjectTableCardTop(
     onTableRename: (Long, String) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int) -> Unit,
+    onSwitchDropdownMenuClicked: (Int?) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -183,7 +183,7 @@ private fun ProjectTableDropdownMenu(
     onTableRename: (Long, String) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
-    onSwitchDropdownMenuClicked: (Int) -> Unit,
+    onSwitchDropdownMenuClicked: (Int?) -> Unit,
 ){
     Column(
         horizontalAlignment = Alignment.End,
@@ -192,20 +192,20 @@ private fun ProjectTableDropdownMenu(
     ) {
         DropdownMenu(
             expanded = index == state.dropdownDialogIndex,
-            onDismissRequest = { onSwitchDropdownMenuClicked(-1) }
+            onDismissRequest = { onSwitchDropdownMenuClicked(null) }
         ) {
             DropdownMenuItem(text = {
                 Text(text = stringResource(R.string.action_rename_column))
             }, onClick = {
                 onTableRename(table.id, table.title)
-                onSwitchDropdownMenuClicked(-1)
+                onSwitchDropdownMenuClicked(null)
             })
             if(index != 0) {
                 DropdownMenuItem(text = {
                     Text(text = stringResource(R.string.action_move_column_left))
                 }, onClick = {
                     onSwapTablePositionsClicked(table.id, state.tables.find { it.position == table.position - 1 }!!.id)
-                    onSwitchDropdownMenuClicked(-1)
+                    onSwitchDropdownMenuClicked(null)
                 })
             }
             if(index + 1 in state.tables.indices) {
@@ -213,14 +213,14 @@ private fun ProjectTableDropdownMenu(
                     Text(text = stringResource(R.string.action_move_column_right))
                 }, onClick = {
                     onSwapTablePositionsClicked(table.id, state.tables.find { it.position == table.position + 1 }!!.id)
-                    onSwitchDropdownMenuClicked(-1)
+                    onSwitchDropdownMenuClicked(null)
                 })
             }
             DropdownMenuItem(text = {
                 Text(text = stringResource(R.string.action_delete_table))
             }, onClick = {
                 onDeleteTableClicked(table.id)
-                onSwitchDropdownMenuClicked(-1)
+                onSwitchDropdownMenuClicked(null)
             })
         }
     }
@@ -237,7 +237,7 @@ private fun ProjectTableCardBottom(
 ) {
     if(index == state.createTableItemIndex) {
         Text(text = "Hello")
-    } else if {}
+    } else {}
     /*
     if(true) {
         Row(
