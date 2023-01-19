@@ -60,7 +60,7 @@ class ProjectTableScreenModel(
         }
     }
 
-    fun showCreateTaskMenu(tableId: Long) {
+    fun showCreateTaskMenu(tableId: Long?) {
         coroutineScope.launchUI {
             mutableState.update {
                 (mutableState.value as ProjectTableScreenState.Success).copy(

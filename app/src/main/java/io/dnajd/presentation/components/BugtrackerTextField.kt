@@ -22,6 +22,7 @@ fun BugtrackerTextField(
     title: String,
     onTitleChange: (String) -> Unit,
     label: String? = null,
+    includeDivider: Boolean = true,
 ) {
     Column(
         modifier = modifier,
@@ -41,7 +42,9 @@ fun BugtrackerTextField(
             singleLine = true
         )
 
-        Divider(color = MaterialTheme.colorScheme.onSurface)
+        if(!includeDivider) {
+            Divider(color = MaterialTheme.colorScheme.onSurface)
+        }
     }
 
 }

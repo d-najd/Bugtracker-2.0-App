@@ -17,7 +17,7 @@ fun ProjectTableContent(
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
-    onCreateTableTaskMenuClicked: (Long) -> Unit,
+    onCreateTableTaskMenuClicked: (Long?) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,

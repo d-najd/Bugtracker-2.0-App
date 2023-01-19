@@ -32,7 +32,7 @@ fun ProjectTableCard(
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
-    onCreateTableTaskMenuClicked: (Long) -> Unit,
+    onCreateTableTaskMenuClicked: (Long?) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,
@@ -96,9 +96,9 @@ fun ProjectTableCard(
             items(reorderableList, { task -> task.id }) { task ->
                 ReorderableItem(reorderableState = reorderableState, key = task.id) { isDragging ->
                     ProjectTableCardContent(
-                        title = task.title,
+                        value = task.title,
                         labels = task.labels.map { it.label },
-                        id = task.id,
+                        taskId = task.id,
                         reorderableState = reorderableState,
                         isDragging = isDragging,
                         onTaskClicked = onTaskClicked,
@@ -234,10 +234,20 @@ private fun ProjectTableCardBottom(
     state: ProjectTableScreenState.Success,
     table: ProjectTable,
 
-    onCreateTableTaskMenuClicked: (Long) -> Unit,
+    onCreateTableTaskMenuClicked: (Long?) -> Unit,
 ) {
     if(table.id == state.createTableItemSelectedTableId) {
-        Text(text = "Hello")
+        var title by remember { mutableStateOf("") }
+        ProjectTableTextFieldCardContent(
+            value = title,
+            onValueChange = { title = it },
+            onKeyboardStateChange = {
+                if(!it) {
+                   onCreateTableTaskMenuClicked(null)
+                }
+            }
+        )
+        Box(modifier = Modifier.height(4.dp))
     } else if (state.createTableItemSelectedTableId == null) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -260,6 +270,6 @@ private fun ProjectTableCardBottom(
             )
         }
     } else {
-        Divider(color = Color.Transparent)
+        Box(modifier = Modifier.height(4.dp))
     }
 }
