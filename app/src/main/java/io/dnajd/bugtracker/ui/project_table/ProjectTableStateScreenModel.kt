@@ -254,7 +254,12 @@ sealed class ProjectTableScreenState {
         val tables: List<ProjectTable>,
         val topBarSelectedIndex: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
         val dropdownDialogIndex: Int = -1,
-        val createItemSelectedIndex: Int = -1,
+        /**
+         * index of the table that is being created item on,
+         *
+         * this is used on the bottom portion of the table specifically the create button.
+         */
+        val createTableItemIndex: Int? = null,
         val taskMoved: Int = -1,
         val dialog: ProjectTableDialog? = null,
     ): ProjectTableScreenState()

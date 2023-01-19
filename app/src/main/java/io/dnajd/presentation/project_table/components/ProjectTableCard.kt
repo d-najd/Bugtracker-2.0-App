@@ -110,6 +110,7 @@ fun ProjectTableCard(
                 .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth(),
             state = state,
+            index = index,
             onCreateTableTaskClicked = onCreateTableTaskClicked,
         )
     }
@@ -229,11 +230,16 @@ private fun ProjectTableDropdownMenu(
 private fun ProjectTableCardBottom(
     modifier: Modifier = Modifier,
     state: ProjectTableScreenState.Success,
-    enabled: Boolean = true,
+    index: Int,
+
+
     onCreateTableTaskClicked: (Long) -> Unit,
 ) {
-
-    if(enabled) {
+    if(index == state.createTableItemIndex) {
+        Text(text = "Hello")
+    } else if {}
+    /*
+    if(true) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier,
@@ -255,4 +261,5 @@ private fun ProjectTableCardBottom(
             )
         }
     }
+     */
 }
