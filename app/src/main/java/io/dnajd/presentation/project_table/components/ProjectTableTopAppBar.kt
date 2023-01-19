@@ -23,13 +23,13 @@ fun ProjectTableTopAppBar(
     state: ProjectTableScreenState.Success,
     onBackClicked: () -> Unit,
 
-    onCreateProjectClicked: () -> Unit,
+    onCreateTableClicked: () -> Unit,
 ) {
     Column {
         TopContent(
             state = state,
             onBackClicked = onBackClicked,
-            onCreateProjectClicked = onCreateProjectClicked,
+            onCreateTableClicked = onCreateTableClicked,
         )
         BottomContent(
             state = state,
@@ -43,7 +43,7 @@ private fun TopContent(
     state: ProjectTableScreenState.Success,
     onBackClicked: () -> Unit,
 
-    onCreateProjectClicked: () -> Unit,
+    onCreateTableClicked: () -> Unit,
 ) {
     TopAppBar(
         modifier = Modifier.shadow(elevation = 4.dp),
@@ -71,7 +71,7 @@ private fun TopContent(
                     contentDescription = ""
                 )
             }
-            IconButton(onClick = { onCreateProjectClicked() }) {
+            IconButton(onClick = { onCreateTableClicked() }) {
                 Icon(
                     modifier = Modifier
                         .padding(horizontal = 6.dp),

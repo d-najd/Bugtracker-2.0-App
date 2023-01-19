@@ -17,7 +17,7 @@ fun ProjectTableScreenContent(
 
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
-    onCreateProjectClicked: () -> Unit,
+    onCreateTableClicked: () -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int) -> Unit,
@@ -27,7 +27,7 @@ fun ProjectTableScreenContent(
             ProjectTableTopAppBar(
                 state = state,
                 onBackClicked = onBackClicked,
-                onCreateProjectClicked = onCreateProjectClicked,
+                onCreateTableClicked = onCreateTableClicked,
             )
         }
     ) { contentPadding ->
