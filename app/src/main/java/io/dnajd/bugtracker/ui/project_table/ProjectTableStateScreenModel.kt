@@ -223,7 +223,7 @@ class ProjectTableScreenModel(
      * switches the dropdown menu to the selected index, if the given index matches the one that is
      * already stored then the index will be set to -1 instead
      */
-    fun switchDropdownMenu(index: Int) {
+    fun switchDropdownMenu(index: Int?) {
         coroutineScope.launchUI {
             mutableState.update {
                 (mutableState.value as ProjectTableScreenState.Success).copy(

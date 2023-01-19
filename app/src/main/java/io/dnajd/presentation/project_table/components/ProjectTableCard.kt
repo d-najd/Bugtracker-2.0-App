@@ -232,7 +232,6 @@ private fun ProjectTableCardBottom(
     state: ProjectTableScreenState.Success,
     index: Int,
 
-
     onCreateTableTaskClicked: (Long) -> Unit,
 ) {
     if(index == state.createTableItemIndex) {
