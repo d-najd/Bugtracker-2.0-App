@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.bugtracker.ui.project_table.ProjectTableSelectedTab
 import io.dnajd.presentation.util.bottomBorder
 
 @Composable
@@ -99,16 +100,16 @@ private fun BottomContent(
         val settingsIndex = 1
         var boardModifier = Modifier.clickable { }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
         var settingsModifier = Modifier.clickable {  }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
-        boardModifier = if(state.topBarSelectedIndex == boardIndex)
+        boardModifier = if(state.topBarSelectedIndex == ProjectTableSelectedTab.BOARD)
             boardModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else boardModifier
-        settingsModifier = if(state.topBarSelectedIndex == settingsIndex)
+        settingsModifier = if(state.topBarSelectedIndex == ProjectTableSelectedTab.SETTINGS)
             settingsModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else settingsModifier
 
         Column(
             modifier = boardModifier,
         ) {
             Text(
-                color = if(state.topBarSelectedIndex == boardIndex) colorEnabled else colorDisabled,
+                color = if(state.topBarSelectedIndex == ProjectTableSelectedTab.BOARD) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_board),
                 fontSize = 15.sp,
             )
@@ -119,7 +120,7 @@ private fun BottomContent(
             modifier = settingsModifier
         ) {
             Text(
-                color = if(state.topBarSelectedIndex == settingsIndex) colorEnabled else colorDisabled,
+                color = if(state.topBarSelectedIndex == ProjectTableSelectedTab.SETTINGS) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_settings),
                 fontSize = 15.sp,
             )
