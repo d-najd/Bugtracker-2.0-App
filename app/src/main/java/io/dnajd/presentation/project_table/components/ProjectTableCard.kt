@@ -1,5 +1,6 @@
 package io.dnajd.presentation.project_table.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,7 +32,7 @@ fun ProjectTableCard(
     onTableRename: (Long, String) -> Unit,
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
-    onCreateTableTaskClicked: (Long) -> Unit,
+    onCreateTableTaskMenuClicked: (Long) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Int?) -> Unit,
@@ -110,8 +112,8 @@ fun ProjectTableCard(
                 .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth(),
             state = state,
-            index = index,
-            onCreateTableTaskClicked = onCreateTableTaskClicked,
+            table = table,
+            onCreateTableTaskMenuClicked = onCreateTableTaskMenuClicked,
         )
     }
 }
@@ -152,7 +154,7 @@ private fun ProjectTableCardTop(
         ) {
             IconButton(
                 onClick = {
-                    onSwitchDropdownMenuClicked(index)
+                    onSwitchDropdownMenuClicked(index) // TODO replace this with table id
                 }
             ) {
                 Icon(
@@ -191,7 +193,7 @@ private fun ProjectTableDropdownMenu(
             .fillMaxWidth()
     ) {
         DropdownMenu(
-            expanded = index == state.dropdownDialogIndex,
+            expanded = index == state.dropdownDialogSelectedTableId,
             onDismissRequest = { onSwitchDropdownMenuClicked(null) }
         ) {
             DropdownMenuItem(text = {
@@ -230,18 +232,16 @@ private fun ProjectTableDropdownMenu(
 private fun ProjectTableCardBottom(
     modifier: Modifier = Modifier,
     state: ProjectTableScreenState.Success,
-    index: Int,
+    table: ProjectTable,
 
-    onCreateTableTaskClicked: (Long) -> Unit,
+    onCreateTableTaskMenuClicked: (Long) -> Unit,
 ) {
-    if(index == state.createTableItemIndex) {
+    if(table.id == state.createTableItemSelectedTableId) {
         Text(text = "Hello")
-    } else {}
-    /*
-    if(true) {
+    } else if (state.createTableItemSelectedTableId == null) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier,
+            modifier = modifier.clickable { onCreateTableTaskMenuClicked(table.id) },
         ) {
             Icon(
                 modifier = Modifier
@@ -259,6 +259,7 @@ private fun ProjectTableCardBottom(
                     .fillMaxWidth(),
             )
         }
+    } else {
+        Divider(color = Color.Transparent)
     }
-     */
 }

@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                 owner = "user1",
                 title = "ProjectTitle",
             )))
-            router.setRoot(ProjectController())
+            //router.setRoot(ProjectController())
         }
     }
 }

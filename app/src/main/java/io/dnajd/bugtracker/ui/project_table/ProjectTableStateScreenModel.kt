@@ -60,6 +60,16 @@ class ProjectTableScreenModel(
         }
     }
 
+    fun showCreateTaskMenu(tableId: Long) {
+        coroutineScope.launchUI {
+            mutableState.update {
+                (mutableState.value as ProjectTableScreenState.Success).copy(
+                    createTableItemSelectedTableId = tableId,
+                )
+            }
+        }
+    }
+
     fun renameTable(id: Long, newName: String) {
         coroutineScope.launchIO {
             (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == id }!!.let { originalTable ->
@@ -101,7 +111,7 @@ class ProjectTableScreenModel(
                             ))
                             (mutableState.value as ProjectTableScreenState.Success).copy(
                                 tables = tables.sortedBy { it.position },
-                                dropdownDialogIndex = null,
+                                dropdownDialogSelectedTableId = null,
                             )
                         }
                     }
@@ -227,8 +237,8 @@ class ProjectTableScreenModel(
         coroutineScope.launchUI {
             mutableState.update {
                 (mutableState.value as ProjectTableScreenState.Success).copy(
-                    dropdownDialogIndex = if((mutableState.value as ProjectTableScreenState.Success)
-                            .dropdownDialogIndex == index) null else index
+                    dropdownDialogSelectedTableId = if((mutableState.value as ProjectTableScreenState.Success)
+                            .dropdownDialogSelectedTableId == index) null else index
                 )
             }
         }
@@ -252,14 +262,14 @@ sealed class ProjectTableScreenState {
     data class Success(
         val project: Project,
         val tables: List<ProjectTable>,
-        val topBarSelectedIndex: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
-        val dropdownDialogIndex: Int? = null,
+        val topBarSelected: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
+        val dropdownDialogSelectedTableId: Int? = null,
         /**
          * index of the table that is being created item on,
          *
          * this is used on the bottom portion of the table specifically the create button.
          */
-        val createTableItemIndex: Int? = null,
+        val createTableItemSelectedTableId: Long? = null,
         val taskMoved: Int = 0,
         val dialog: ProjectTableDialog? = null,
     ): ProjectTableScreenState()

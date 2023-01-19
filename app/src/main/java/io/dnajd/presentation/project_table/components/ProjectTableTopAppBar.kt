@@ -100,16 +100,16 @@ private fun BottomContent(
         val settingsIndex = 1
         var boardModifier = Modifier.clickable { }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
         var settingsModifier = Modifier.clickable {  }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
-        boardModifier = if(state.topBarSelectedIndex == ProjectTableSelectedTab.BOARD)
+        boardModifier = if(state.topBarSelected == ProjectTableSelectedTab.BOARD)
             boardModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else boardModifier
-        settingsModifier = if(state.topBarSelectedIndex == ProjectTableSelectedTab.SETTINGS)
+        settingsModifier = if(state.topBarSelected == ProjectTableSelectedTab.SETTINGS)
             settingsModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else settingsModifier
 
         Column(
             modifier = boardModifier,
         ) {
             Text(
-                color = if(state.topBarSelectedIndex == ProjectTableSelectedTab.BOARD) colorEnabled else colorDisabled,
+                color = if(state.topBarSelected == ProjectTableSelectedTab.BOARD) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_board),
                 fontSize = 15.sp,
             )
@@ -120,7 +120,7 @@ private fun BottomContent(
             modifier = settingsModifier
         ) {
             Text(
-                color = if(state.topBarSelectedIndex == ProjectTableSelectedTab.SETTINGS) colorEnabled else colorDisabled,
+                color = if(state.topBarSelected == ProjectTableSelectedTab.SETTINGS) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_settings),
                 fontSize = 15.sp,
             )

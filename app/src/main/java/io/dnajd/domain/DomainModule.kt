@@ -27,7 +27,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = false
+        private const val USE_FAKES = true
     }
     
     override fun InjektRegistrar.registerInjectables() {
