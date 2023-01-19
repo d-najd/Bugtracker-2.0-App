@@ -252,8 +252,12 @@ sealed class ProjectTableScreenState {
     data class Success(
         val project: Project,
         val tables: List<ProjectTable>,
+        /**
+         * index of the selected menu, Board by default
+         */
         val topBarSelectedIndex: Int = 0,
         val dropdownDialogIndex: Int = -1,
+        val createItemSelectedIndex: Int = -1,
         val taskMoved: Int = -1,
         val dialog: ProjectTableDialog? = null,
     ): ProjectTableScreenState()

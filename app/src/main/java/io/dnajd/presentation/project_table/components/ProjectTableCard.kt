@@ -109,6 +109,7 @@ fun ProjectTableCard(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth(),
+            state = state,
             onCreateTableTaskClicked = onCreateTableTaskClicked,
         )
     }
@@ -227,9 +228,11 @@ private fun ProjectTableDropdownMenu(
 @Composable
 private fun ProjectTableCardBottom(
     modifier: Modifier = Modifier,
+    state: ProjectTableScreenState.Success,
     enabled: Boolean = true,
     onCreateTableTaskClicked: (Long) -> Unit,
 ) {
+
     if(enabled) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
