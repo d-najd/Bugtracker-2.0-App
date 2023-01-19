@@ -13,29 +13,22 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectTableRepository : ProjectTableRepository {
-    private var factory: ProjectTableRepositoryApi? = null
-
-    private fun getFactory(): ProjectTableRepositoryApi {
-        if(factory == null){
-            factory = Injekt.get<Retrofit>().create(ProjectTableRepositoryApi::class.java)
-        }
-        return factory!!
-    }
+    private var factory: ProjectTableRepositoryApi = Injekt.get<Retrofit>().create(ProjectTableRepositoryApi::class.java)
 
     override suspend fun getAll(projectId: Long): List<ProjectTable> =
-        getFactory().getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
+        factory.getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
 
     override suspend fun create(table: ProjectTable): ProjectTable? =
-        getFactory().createTable(table).processRequest()
+        factory.createTable(table).processRequest()
 
     override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
-        getFactory().renameTable(id, newTitle).processVoidRequest()
+        factory.renameTable(id, newTitle).processVoidRequest()
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
-        getFactory().swapTablePositions(id = fId, sId = sId).processVoidRequest()
+        factory.swapTablePositions(id = fId, sId = sId).processVoidRequest()
 
     override suspend fun delete(id: Long): Boolean =
-        getFactory().deleteTable(id).processVoidRequest()
+        factory.deleteTable(id).processVoidRequest()
 
 }
 

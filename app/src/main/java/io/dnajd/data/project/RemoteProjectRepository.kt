@@ -15,20 +15,13 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectRepository : ProjectRepository {
-    private var factory: ProjectRepositoryApi? = null
-
-    private fun getFactory(): ProjectRepositoryApi {
-        if(factory == null){
-            factory = Injekt.get<Retrofit>().create(ProjectRepositoryApi::class.java)
-        }
-        return factory!!
-    }
+    private var factory: ProjectRepositoryApi = Injekt.get<Retrofit>().create(ProjectRepositoryApi::class.java)
 
     override suspend fun getAll(username: String): List<Project> =
-        getFactory().getProjectsByUsername(username).processRequest()?.data ?: emptyList()
+        factory.getProjectsByUsername(username).processRequest()?.data ?: emptyList()
 
     override suspend fun create(project: Project): Project? =
-        getFactory().createProject(project).processRequest()
+        factory.createProject(project).processRequest()
 
 }
 

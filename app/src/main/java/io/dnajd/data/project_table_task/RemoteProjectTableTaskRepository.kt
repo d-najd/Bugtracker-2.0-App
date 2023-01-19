@@ -17,26 +17,19 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectTableTaskRepository : ProjectTableTaskRepository {
-    private var factory: ProjectTableTaskRepositoryApi? = null
-
-    private fun getFactory(): ProjectTableTaskRepositoryApi {
-        if (factory == null) {
-            factory = Injekt.get<Retrofit>().create(ProjectTableTaskRepositoryApi::class.java)
-        }
-        return factory!!
-    }
+    private var factory: ProjectTableTaskRepositoryApi = Injekt.get<Retrofit>().create(ProjectTableTaskRepositoryApi::class.java)
 
     override suspend fun get(taskId: Long): ProjectTableTask? =
-        getFactory().get(taskId).processRequest()
+        factory.get(taskId).processRequest()
 
     override suspend fun create(task: ProjectTableTask): ProjectTableTask? =
-        getFactory().create(task).processRequest()
+        factory.create(task).processRequest()
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
-        getFactory().swapTaskPositions(id = fId, sId = sId).processVoidRequest()
+        factory.swapTaskPositions(id = fId, sId = sId).processVoidRequest()
 
     override suspend fun movePositionTo(fId: Long, sId: Long): Boolean =
-        getFactory().moveTaskPositions(id = fId, sId = sId).processVoidRequest()
+        factory.moveTaskPositions(id = fId, sId = sId).processVoidRequest()
 
 }
 

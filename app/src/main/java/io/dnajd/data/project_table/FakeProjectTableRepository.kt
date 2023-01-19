@@ -7,6 +7,7 @@ import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
+
     override suspend fun getAll(projectId: Long): List<ProjectTable> = listOf(
         ProjectTable(
             id = 1,
