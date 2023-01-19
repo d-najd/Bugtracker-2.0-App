@@ -70,6 +70,9 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
         )
     )
 
+    @Suppress("RedundantNullableReturnType")
+    override suspend fun create(task: ProjectTableTask): ProjectTableTask? = task
+
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean = true
 
     override suspend fun movePositionTo(fId: Long, sId: Long): Boolean = true

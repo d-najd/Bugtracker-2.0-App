@@ -13,6 +13,7 @@ import io.dnajd.domain.project.interactor.GetProjects
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
+import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.GetProjectTableTasks
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
@@ -77,6 +78,7 @@ class DomainModule : InjektModule {
         addFactory { DeleteProjectTable(get()) }
 
         addFactory { GetProjectTableTasks(get()) }
+        addFactory { CreateProjectTableTask(get()) }
         addFactory { SwapProjectTableTasks(get()) }
         addFactory { MoveProjectTableTask(get()) }
     }
