@@ -17,7 +17,8 @@ class ProjectTableController: FullComposeController {
         )
     )
 
-    // TODO this is not a great idea
+    /* TODO this is not a great idea, it forces the class to be serializable or the app will crash
+        when being closed */
     constructor(project: Project) : super(
         bundleOf(
             PROJECT_ID_EXTRA to Injekt.get<Gson>().toJson(project),

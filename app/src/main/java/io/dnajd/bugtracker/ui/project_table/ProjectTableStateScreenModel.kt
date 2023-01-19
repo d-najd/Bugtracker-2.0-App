@@ -20,7 +20,7 @@ class ProjectTableScreenModel(
 
     private val getTables: GetProjectTables = Injekt.get(),
     private val createTable: CreateProjectTable = Injekt.get(),
-    private val renameTables: RenameProjectTable = Injekt.get(),
+    private val renameTable: RenameProjectTable = Injekt.get(),
     private val swapTables: SwapProjectTables = Injekt.get(),
     private val moveTableTask: MoveProjectTableTask = Injekt.get(),
     private val deleteTable: DeleteProjectTable = Injekt.get(),
@@ -63,7 +63,7 @@ class ProjectTableScreenModel(
     fun renameTable(id: Long, newName: String) {
         coroutineScope.launchIO {
             (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == id }!!.let { originalTable ->
-                if(renameTables.await(id, newName)) {
+                if(renameTable.await(id, newName)) {
                     // doing it this way so that state changes get updated for sure
                     mutableState.update {
                         val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
@@ -196,12 +196,13 @@ class ProjectTableScreenModel(
     }
 
     fun showDialog(dialog: ProjectTableDialog) {
+        @Suppress("UNUSED_EXPRESSION")
         when (dialog) {
-            is ProjectTableDialog.CreateTable -> {
+            else -> {
                 coroutineScope.launchUI {
                     mutableState.update {
                         (mutableState.value as ProjectTableScreenState.Success).copy(
-                            dialog = dialog
+                            dialog = dialog,
                         )
                     }
                 }
@@ -236,6 +237,7 @@ class ProjectTableScreenModel(
 
 sealed class ProjectTableDialog {
     data class CreateTable(val title: String = "") : ProjectTableDialog()
+    data class RenameTable(val id: Long, val title: String = "") : ProjectTableDialog()
 }
 
 sealed class ProjectTableScreenState {

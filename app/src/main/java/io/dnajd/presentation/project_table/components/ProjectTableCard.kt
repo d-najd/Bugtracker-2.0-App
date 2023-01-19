@@ -193,7 +193,7 @@ private fun ProjectTableDropdownMenu(
             DropdownMenuItem(text = {
                 Text(text = stringResource(R.string.action_rename_column))
             }, onClick = {
-                onTableRename(1, "Title1")
+                onTableRename(table.id, table.title)
                 onSwitchDropdownMenuClicked(-1)
             })
             if(index != 0) {

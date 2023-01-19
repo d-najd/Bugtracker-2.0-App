@@ -1,46 +1,37 @@
 package io.dnajd.presentation.project_table.dialogs
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
-import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.presentation.components.BugtrackerTextField
 
 @Composable
-fun CreateProjectTableDialog(
-    state: ProjectTableScreenState.Success,
+fun RenameProjectTableDialog(
+    originalTitle: String,
 
-    placeholderTitle: String,
     onDismissRequest: () -> Unit,
-    onCreateTableClicked: (ProjectTable) -> Unit,
+    onRenameProjectTableClicked: (String) -> Unit,
 ) {
     // I am aware that storing stuff like this is a bad idea but the alternative is recomposing
     // the entire screen each time a letter is modified
-    var title by remember { mutableStateOf(placeholderTitle) }
+    var newTitle by remember { mutableStateOf(originalTitle) }
 
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
         title = {
-            Text(text = stringResource(R.string.field_add_column))
+            Text(text = stringResource(R.string.field_rename_column))
         },
         confirmButton = {
             TextButton(
-                enabled = title.isNotBlank(),
+                enabled = newTitle.isNotBlank() && newTitle != originalTitle,
                 onClick = {
-                    onCreateTableClicked(
-                        ProjectTable(
-                            projectId = state.project.id,
-                            title = title,
-                        )
-                    )
+                    onRenameProjectTableClicked(newTitle)
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.action_add).uppercase()
+                    text = stringResource(R.string.action_rename).uppercase()
                 )
             }
         },
@@ -56,8 +47,8 @@ fun CreateProjectTableDialog(
                 modifierText = Modifier
                     .fillMaxWidth(),
                 label = stringResource(R.string.field_column_name),
-                title = title,
-                onTitleChange = { title = it }
+                title = newTitle,
+                onTitleChange = { newTitle = it }
             )
         }
     )
