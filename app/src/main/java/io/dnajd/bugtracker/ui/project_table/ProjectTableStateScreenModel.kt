@@ -88,6 +88,7 @@ class ProjectTableScreenModel(
                 mutableState.update {
                     (mutableState.value as ProjectTableScreenState.Success).copy(
                         tables = tables,
+                        createTableItemSelectedTableId = null,
                     )
                 }
             }
