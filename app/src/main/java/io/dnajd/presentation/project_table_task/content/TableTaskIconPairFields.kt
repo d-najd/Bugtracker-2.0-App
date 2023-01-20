@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
-import io.dnajd.presentation.project_table_task.components.TableTaskIconPairField
+import io.dnajd.presentation.components.BugtrackerIconPairField
 import io.dnajd.util.BugtrackerDateFormat
 
 @Composable
@@ -30,7 +30,7 @@ fun TableTaskIconPairFields(
     }
      */
 
-    TableTaskIconPairField(
+    BugtrackerIconPairField(
         modifier = Modifier.padding(top = 16.dp),
         title = stringResource(R.string.field_reporter),
         text = task.reporter,
@@ -43,13 +43,13 @@ fun TableTaskIconPairFields(
         }
     )
 
-    TableTaskIconPairField(
+    BugtrackerIconPairField(
         modifier = Modifier.padding(top = 16.dp),
         title = stringResource(R.string.field_created),
         text = BugtrackerDateFormat.defaultRequestDateFormat().format(task.createdAt),
     )
 
-    TableTaskIconPairField(
+    BugtrackerIconPairField(
         modifier = Modifier.padding(top = 16.dp),
         title = stringResource(R.string.field_updated),
         text = if(task.updatedAt != null)

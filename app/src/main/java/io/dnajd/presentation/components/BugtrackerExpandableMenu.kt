@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.components
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -14,15 +14,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project_table_task.model.ProjectTableChildTask
-import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
 
 /**
  * @param modifier modifier for the entire composable
  * @param expanded if true the content will be expanded and vice versa
+ * @param displayMainDivider if true will display divider located below [menuContent]
+ * @param displaySecondaryDivider if true will display divider which moves when the composable is
+ * expanded and collapsed, located under [expandableContent]
+ * @param mainDividerThickness thickness of the main divider
  * @param enter EnterTransition(s) used for the appearing animation, fading in while expanding
  *              vertically by default
  * @param exit ExitTransition(s) used for the disappearing animation, fading out while
@@ -31,12 +35,15 @@ import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
  *                because the entire composable could be made clickable using [modifier]
  * @param menuContent menu that functions similarly to dropdown menu
  * @param expandableContent the content that will get expanded when [expanded] is true
- * @sample TableTaskExpandableMenuPreview()
+ * @sample BugtrackerExpandableMenuPreview()
  */
 @Composable
-fun TableTaskExpandableMenu(
+fun BugtrackerExpandableMenu(
     modifier: Modifier = Modifier,
     expanded: Boolean,
+    displayMainDivider: Boolean = true,
+    displaySecondaryDivider: Boolean = true,
+    mainDividerThickness: Dp = 4.dp,
     enter: EnterTransition = fadeIn() + expandVertically(),
     exit: ExitTransition = fadeOut() + shrinkVertically(),
     onClick: (() -> Unit)? = null,
@@ -48,7 +55,8 @@ fun TableTaskExpandableMenu(
         verticalArrangement = Arrangement.Center,
     ) {
         BugtrackerMultipurposeMenu(
-            dividerThickness = 4.dp,
+            dividerThickness = mainDividerThickness,
+            includeDivider = displayMainDivider,
             onClick = onClick,
         ) {
             menuContent()
@@ -66,15 +74,17 @@ fun TableTaskExpandableMenu(
             }
         }
 
-        Divider(
-            modifier = Modifier.padding(top = 14.dp)
-        )
+        if(displaySecondaryDivider) {
+            Divider(
+                modifier = Modifier.padding(top = 14.dp)
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-fun TableTaskExpandableMenuPreview() {
+private fun BugtrackerExpandableMenuPreview() {
     var expanded by remember { mutableStateOf(false) }
     val childTasks = listOf(
         ProjectTableChildTask(
@@ -89,7 +99,7 @@ fun TableTaskExpandableMenuPreview() {
         )
     )
 
-    TableTaskExpandableMenu(
+    BugtrackerExpandableMenu(
         onClick = { expanded = !expanded },
         expanded = expanded,
         menuContent = {
@@ -124,7 +134,7 @@ fun TableTaskExpandableMenuPreview() {
         },
         expandableContent = {
             for (childTask in childTasks) {
-                TableTaskIconPairField(
+                BugtrackerIconPairField(
                     modifier = Modifier.padding(top = 6.dp),
                     iconContent = {
                         Icon(

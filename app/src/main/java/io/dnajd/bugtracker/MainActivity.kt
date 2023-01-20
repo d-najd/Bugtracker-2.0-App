@@ -8,7 +8,10 @@ import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
 import io.dnajd.bugtracker.ui.project.ProjectController
+import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsController
+import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.domain.DomainModule
+import io.dnajd.domain.project.model.Project
 import uy.kohesive.injekt.Injekt
 
 class MainActivity : AppCompatActivity() {
@@ -29,14 +32,15 @@ class MainActivity : AppCompatActivity() {
             .setPopRootControllerMode(Router.PopRootControllerMode.NEVER)
 
         if(router.backstack.firstOrNull() == null) {
-            // router.setRoot(TableTaskController(1L))
-            /*
-            router.setRoot(ProjectTableController(Project(
+            val projectFake = Project(
                 id = 1,
                 owner = "user1",
-                title = "ProjectTitle",
-            )))
-             */
+                title = "Project Title",
+            )
+
+            // router.setRoot(ProjectSettingsController(projectFake))
+            // router.setRoot(TableTaskController(1L))
+            // router.setRoot(ProjectTableController(projectFake))
             router.setRoot(ProjectController())
         }
     }

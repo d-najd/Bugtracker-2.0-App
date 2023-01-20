@@ -10,8 +10,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.base.controller.pushController
 import io.dnajd.bugtracker.ui.base.getController
+import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
 import io.dnajd.domain.project.model.Project
-import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
 import io.dnajd.presentation.util.LocalRouter
 
@@ -36,13 +36,8 @@ class ProjectSettingsScreen(
                     router.pushController(it.getController(project))
                 }
             },
+            onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project)) },
+            onUserManagementClicked = { },
         )
-
-        if(state is ProjectSettingsScreenState.Success) {
-            val successState = state as ProjectSettingsScreenState.Success
-            when (val dialog = successState.dialog) {
-                null -> {}
-            }
-        }
     }
 }

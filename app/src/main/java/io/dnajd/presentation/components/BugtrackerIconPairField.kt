@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.components
+package io.dnajd.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,19 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.presentation.components.BugtrackerCard
 
 /**
  * @param modifier modifier for the composable
  * @param title title located on top of [text]
  * @param text optional text located right of the [textContent]
  * @param textContent "icon content", this is optional content located to the left of [text]
- * @sample TableTaskIconPairFieldPreview()
+ * @sample BugtrackerIconPairFieldPreview()
  *
  * TODO rework this
  */
 @Composable
-fun TableTaskIconPairField(
+fun BugtrackerIconPairField(
     modifier: Modifier = Modifier,
     title: String? = null,
     text: String? = null,
@@ -73,10 +72,10 @@ fun TableTaskIconPairField(
 
 @Preview
 @Composable
-fun TableTaskIconPairFieldPreview() {
+fun BugtrackerIconPairFieldPreview() {
     Column {
         BugtrackerCard {
-            TableTaskIconPairField(
+            BugtrackerIconPairField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { },
@@ -92,7 +91,7 @@ fun TableTaskIconPairFieldPreview() {
             )
         }
         BugtrackerCard {
-            TableTaskIconPairField(
+            BugtrackerIconPairField(
                 iconContent = {
                     Icon(
                         imageVector = Icons.Default.TaskAlt,

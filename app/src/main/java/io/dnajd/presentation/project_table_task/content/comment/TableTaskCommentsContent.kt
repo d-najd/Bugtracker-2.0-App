@@ -17,14 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
-import io.dnajd.presentation.project_table_task.components.TableTaskIconPairField
+import io.dnajd.presentation.components.BugtrackerIconPairField
 import io.dnajd.util.BugtrackerDateFormat
 import java.util.*
 
 @Composable
 fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
     for(comment in state.task.comments) {
-        TableTaskIconPairField(
+        BugtrackerIconPairField(
             modifier = Modifier.padding(top = 12.dp, bottom = 3.dp),
             iconContent = {
                 Icon(

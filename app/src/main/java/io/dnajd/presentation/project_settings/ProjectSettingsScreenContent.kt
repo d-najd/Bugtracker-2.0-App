@@ -17,6 +17,8 @@ fun ProjectSettingsScreenContent(
     onBackClicked: () -> Unit,
 
     onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
+    onProjectDetailsClicked: () -> Unit,
+    onUserManagementClicked: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -25,7 +27,6 @@ fun ProjectSettingsScreenContent(
                 onBackClicked = onBackClicked,
                 onSwitchScreenTabClicked = onSwitchScreenTabClicked,
             )
-
         }
     ) { contentPadding ->
         BackHandler { onBackClicked() }
@@ -40,6 +41,8 @@ fun ProjectSettingsScreenContent(
         ProjectSettingsContent(
             state = successState,
             contentPadding = contentPadding,
+            onProjectDetailsClicked = onProjectDetailsClicked,
+            onUserManagementClicked = onUserManagementClicked,
         )
     }
 }

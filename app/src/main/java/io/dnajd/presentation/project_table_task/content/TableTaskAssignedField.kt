@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
-import io.dnajd.presentation.project_table_task.components.TableTaskExpandableMenu
+import io.dnajd.presentation.components.BugtrackerExpandableMenu
 
 @Composable
 fun TableTaskAssignedField(
     state: TableTaskScreenState.Success,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    TableTaskExpandableMenu(
+    BugtrackerExpandableMenu(
         modifier = Modifier.padding(top = 24.dp),
         expanded = expanded,
         onClick = { expanded = !expanded },

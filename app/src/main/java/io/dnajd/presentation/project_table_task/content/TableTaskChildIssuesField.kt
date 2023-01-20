@@ -18,15 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
-import io.dnajd.presentation.project_table_task.components.TableTaskExpandableMenu
-import io.dnajd.presentation.project_table_task.components.TableTaskIconPairField
+import io.dnajd.presentation.components.BugtrackerExpandableMenu
+import io.dnajd.presentation.components.BugtrackerIconPairField
 
 @Composable
 fun TableTaskChildIssuesField(
     state: TableTaskScreenState.Success,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    TableTaskExpandableMenu(
+    BugtrackerExpandableMenu(
         onClick = { expanded = !expanded },
         expanded = expanded,
         menuContent = {
@@ -61,7 +61,7 @@ fun TableTaskChildIssuesField(
         },
         expandableContent = {
             for (childTask in state.task.childTasks) {
-                TableTaskIconPairField(
+                BugtrackerIconPairField(
                     modifier = Modifier.padding(top = 6.dp),
                     iconContent = {
                         Icon(
