@@ -6,7 +6,10 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.project_table_task.model.toBasic
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
@@ -20,9 +23,10 @@ class ProjectTableScreenModel(
 
     private val getTables: GetProjectTables = Injekt.get(),
     private val createTable: CreateProjectTable = Injekt.get(),
+    private val createTask: CreateProjectTableTask = Injekt.get(),
     private val renameTable: RenameProjectTable = Injekt.get(),
     private val swapTables: SwapProjectTables = Injekt.get(),
-    private val moveTableTask: MoveProjectTableTask = Injekt.get(),
+    private val moveTask: MoveProjectTableTask = Injekt.get(),
     private val deleteTable: DeleteProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
 
@@ -66,6 +70,26 @@ class ProjectTableScreenModel(
                 (mutableState.value as ProjectTableScreenState.Success).copy(
                     createTableItemSelectedTableId = tableId,
                 )
+            }
+        }
+    }
+
+    fun createTask(task: ProjectTableTask) {
+        coroutineScope.launchIO {
+            createTask.awaitOne(task)?.let { persistedTask ->
+                val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+                val table = tables.find { it.id == task.tableId }!!
+                tables.remove(table)
+                val tasks = table.tasks.toMutableList()
+                tasks.add(persistedTask.toBasic())
+                tables.add(table.copy(
+                    tasks = tasks,
+                ))
+                mutableState.update {
+                    (mutableState.value as ProjectTableScreenState.Success).copy(
+                        tables = tables,
+                    )
+                }
             }
         }
     }
@@ -138,7 +162,7 @@ class ProjectTableScreenModel(
             (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == tableId }!!.let { table ->
                 table.tasks[fIndex].let { fTask ->
                     table.tasks[sIndex].let { sTask ->
-                        if(moveTableTask.await(fTask.id, sTask.id)) {
+                        if(moveTask.await(fTask.id, sTask.id)) {
                             val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
                             tables.remove(table)
                             var tasks = table.tasks.toMutableList()
@@ -175,13 +199,13 @@ class ProjectTableScreenModel(
                             mutableState.update {
                                 (mutableState.value as ProjectTableScreenState.Success).copy(
                                     tables = tables.sortedBy { it.position },
-                                    taskMoved = (mutableState.value as ProjectTableScreenState.Success).taskMoved + 1
+                                    manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
                                 )
                             }
                         } else {
                             mutableState.update {
                                 (mutableState.value as ProjectTableScreenState.Success).copy(
-                                    taskMoved = (mutableState.value as ProjectTableScreenState.Success).taskMoved + 1
+                                    manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
                                 )
                             }
                         }
@@ -262,7 +286,7 @@ sealed class ProjectTableScreenState {
         val dropdownDialogSelectedTableId: Long? = null,
         /** This is used in the bottom portion of the table specifically the create button */
         val createTableItemSelectedTableId: Long? = null,
-        val taskMoved: Int = 0,
+        val manualTableTasksRefresh: Int = 0,
         val dialog: ProjectTableDialog? = null,
     ): ProjectTableScreenState()
 

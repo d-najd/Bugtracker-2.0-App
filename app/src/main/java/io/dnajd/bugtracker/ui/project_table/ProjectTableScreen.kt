@@ -43,6 +43,7 @@ class ProjectTableScreen(
             onDeleteTableClicked = screenModel::deleteTable,
             onCreateTableClicked = { screenModel.showDialog(ProjectTableDialog.CreateTable()) },
             onCreateTableTaskMenuClicked = screenModel::showCreateTaskMenu,
+            onCreateTableTaskClicked = screenModel::createTask,
             onTaskClicked = { router.pushController(TableTaskController(it)) },
             onSwapTablePositionsClicked = screenModel::swapTablePositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,

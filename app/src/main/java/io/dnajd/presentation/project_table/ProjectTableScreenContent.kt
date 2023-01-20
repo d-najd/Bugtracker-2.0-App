@@ -6,6 +6,7 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.presentation.project_table.components.ProjectTableContent
 import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
 
@@ -20,6 +21,7 @@ fun ProjectTableScreenContent(
     onDeleteTableClicked: (Long) -> Unit,
     onCreateTableClicked: () -> Unit,
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
+    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,
@@ -42,6 +44,7 @@ fun ProjectTableScreenContent(
             onMoveTableTasks = onMoveTableTasks,
             onDeleteTableClicked = onDeleteTableClicked,
             onCreateTableTaskMenuClicked = onCreateTableTaskMenuClicked,
+            onCreateTableTaskClicked = onCreateTableTaskClicked,
             onTaskClicked = onTaskClicked,
             onSwapTablePositionsClicked = onSwapTablePositionsClicked,
             onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,

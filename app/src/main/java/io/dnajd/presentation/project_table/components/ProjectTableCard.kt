@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -33,6 +33,7 @@ fun ProjectTableCard(
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
+    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,
@@ -74,16 +75,15 @@ fun ProjectTableCard(
 
         // refresh when project tables get altered
         LaunchedEffect(state.tables){
-            reorderableList = table.tasks
+            reorderableList = table.tasks.sortedBy { it.position }
         }
 
         /*
-             refresh when an task gets moved, for some reason moving tasks does not count as state
-             change and events are not reliable so I am stuck with this
+            refresh when an task gets moved, for some reason moving tasks does not count as state
+            change and events are not reliable so I am stuck with this
          */
-
-        LaunchedEffect(state.taskMoved) {
-            reorderableList = table.tasks
+        LaunchedEffect(state.manualTableTasksRefresh) {
+            reorderableList = table.tasks.sortedBy { it.position }
         }
 
         LazyColumn(
@@ -114,6 +114,7 @@ fun ProjectTableCard(
             state = state,
             table = table,
             onCreateTableTaskMenuClicked = onCreateTableTaskMenuClicked,
+            onCreateTableTaskClicked = onCreateTableTaskClicked,
         )
     }
 }
@@ -235,12 +236,24 @@ private fun ProjectTableCardBottom(
     table: ProjectTable,
 
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
+    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
 ) {
     if(table.id == state.createTableItemSelectedTableId) {
         var title by remember { mutableStateOf("") }
         ProjectTableTextFieldCardContent(
             value = title,
-            onValueChange = { title = it },
+            onValueChange = {
+                if(it.last() == '\n'){
+                    onCreateTableTaskClicked(
+                        ProjectTableTask(
+                            title = title,
+                            tableId = table.id,
+                            reporter = "user1",
+                        )
+                    )
+                } else {
+                    title = it
+                } },
             onKeyboardStateChange = {
                 if(!it) {
                    onCreateTableTaskMenuClicked(null)
