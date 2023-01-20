@@ -243,7 +243,7 @@ private fun ProjectTableCardBottom(
         ProjectTableTextFieldCardContent(
             value = title,
             onValueChange = {
-                if(it.last() == '\n'){
+                if(it.isNotBlank() && it.last() == '\n'){
                     onCreateTableTaskClicked(
                         ProjectTableTask(
                             title = title,
