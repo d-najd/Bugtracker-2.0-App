@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table
+package io.dnajd.bugtracker.ui.project_table.board
 
 import android.content.Context
 import androidx.compose.runtime.Immutable
@@ -28,7 +28,9 @@ class ProjectTableScreenModel(
     private val swapTables: SwapProjectTables = Injekt.get(),
     private val moveTask: MoveProjectTableTask = Injekt.get(),
     private val deleteTable: DeleteProjectTable = Injekt.get(),
-) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading(project)) {
+) : BugtrackerStateScreenModel<ProjectTableScreenState>(context,
+    ProjectTableScreenState.Loading(project)
+) {
 
     init {
         requestTables(project)
@@ -287,7 +289,6 @@ sealed class ProjectTableScreenState(
     data class Success(
         override val project: Project,
         val tables: List<ProjectTable>,
-        val topBarSelected: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
         val dropdownDialogSelectedTableId: Long? = null,
         /** This is used in the bottom portion of the table specifically the create button */
         val createTableItemSelectedTableId: Long? = null,

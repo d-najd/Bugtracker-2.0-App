@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table
+package io.dnajd.bugtracker.ui.project_table.board
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,7 +36,12 @@ class ProjectTableScreen(
         ProjectTableScreenContent(
             state = state,
             onBackClicked = router::popCurrentController,
-            onTableRename = { id, title -> screenModel.showDialog(ProjectTableDialog.RenameTable(id = id, title = title)) },
+            onTableRename = { id, title -> screenModel.showDialog(
+                ProjectTableDialog.RenameTable(
+                    id = id,
+                    title = title
+                )
+            ) },
             onMoveTableTasks = screenModel::moveTableTasks,
             onDeleteTableClicked = screenModel::deleteTable,
             onCreateTableClicked = { screenModel.showDialog(ProjectTableDialog.CreateTable()) },

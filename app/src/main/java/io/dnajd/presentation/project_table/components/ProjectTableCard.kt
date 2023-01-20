@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.bugtracker.ui.project_table.board.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import org.burnoutcrew.reorderable.ReorderableItem

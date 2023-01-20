@@ -5,16 +5,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
-import com.google.gson.Gson
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
 import io.dnajd.bugtracker.ui.project.ProjectController
-import io.dnajd.bugtracker.ui.project_table.ProjectTableController
-import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
 import io.dnajd.domain.DomainModule
-import io.dnajd.domain.project.model.Project
 import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding

@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.bugtracker.ui.project_table.board.ProjectTableScreenState
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table.components.ProjectTableContent
