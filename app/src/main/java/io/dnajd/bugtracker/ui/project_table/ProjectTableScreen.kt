@@ -33,10 +33,8 @@ class ProjectTableScreen(
             return
         }
 
-        val successState = state as ProjectTableScreenState.Success
-
         ProjectTableScreenContent(
-            state = successState,
+            state = state,
             onBackClicked = router::popCurrentController,
             onTableRename = { id, title -> screenModel.showDialog(ProjectTableDialog.RenameTable(id = id, title = title)) },
             onMoveTableTasks = screenModel::moveTableTasks,
@@ -48,6 +46,8 @@ class ProjectTableScreen(
             onSwapTablePositionsClicked = screenModel::swapTablePositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
         )
+
+        val successState = state as ProjectTableScreenState.Success
 
         when(val dialog = successState.dialog) {
             null -> {}

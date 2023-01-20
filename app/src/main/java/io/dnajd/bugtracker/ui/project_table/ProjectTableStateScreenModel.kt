@@ -28,7 +28,7 @@ class ProjectTableScreenModel(
     private val swapTables: SwapProjectTables = Injekt.get(),
     private val moveTask: MoveProjectTableTask = Injekt.get(),
     private val deleteTable: DeleteProjectTable = Injekt.get(),
-) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading) {
+) : BugtrackerStateScreenModel<ProjectTableScreenState>(context, ProjectTableScreenState.Loading(project)) {
 
     init {
         requestTables(project)
@@ -271,17 +271,21 @@ sealed class ProjectTableDialog {
     data class RenameTable(val id: Long, val title: String = "") : ProjectTableDialog()
 }
 
-sealed class ProjectTableScreenState {
+sealed class ProjectTableScreenState(
+    open val project: Project,
+) {
     
     @Immutable
-    object Loading : ProjectTableScreenState()
+    data class Loading(
+        override val project: Project,
+    ) : ProjectTableScreenState(project)
 
     /**
      * TODO find a way to get rid of taskMoved, using events does not work properly
      */
     @Immutable
     data class Success(
-        val project: Project,
+        override val project: Project,
         val tables: List<ProjectTable>,
         val topBarSelected: ProjectTableSelectedTab = ProjectTableSelectedTab.BOARD,
         val dropdownDialogSelectedTableId: Long? = null,
@@ -289,6 +293,6 @@ sealed class ProjectTableScreenState {
         val createTableItemSelectedTableId: Long? = null,
         val manualTableTasksRefresh: Int = 0,
         val dialog: ProjectTableDialog? = null,
-    ): ProjectTableScreenState()
+    ): ProjectTableScreenState(project)
 
 }

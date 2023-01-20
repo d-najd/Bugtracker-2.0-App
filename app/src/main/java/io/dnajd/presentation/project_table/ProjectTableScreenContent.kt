@@ -7,13 +7,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table.components.ProjectTableContent
 import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectTableScreenContent(
-    state: ProjectTableScreenState.Success,
+    state: ProjectTableScreenState,
     onBackClicked: () -> Unit,
 
     onTableRename: (Long, String) -> Unit,
@@ -37,8 +38,15 @@ fun ProjectTableScreenContent(
     ) { contentPadding ->
         BackHandler { onBackClicked() }
 
+        if (state is ProjectTableScreenState.Loading) {
+            LoadingScreen()
+            return@Scaffold
+        }
+
+        val successState = state as ProjectTableScreenState.Success
+
         ProjectTableContent(
-            state = state,
+            state = successState,
             contentPadding = contentPadding,
             onTableRename = onTableRename,
             onMoveTableTasks = onMoveTableTasks,

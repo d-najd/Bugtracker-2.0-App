@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,7 @@ import io.dnajd.presentation.util.bottomBorder
 
 @Composable
 fun ProjectTableTopAppBar(
-    state: ProjectTableScreenState.Success,
+    state: ProjectTableScreenState,
     onBackClicked: () -> Unit,
 
     onCreateTableClicked: () -> Unit,
@@ -33,7 +34,7 @@ fun ProjectTableTopAppBar(
             onCreateTableClicked = onCreateTableClicked,
         )
         BottomContent(
-            state = state,
+            selectedTab = ProjectTableSelectedTab.BOARD,
         )
     }
 }
@@ -41,7 +42,7 @@ fun ProjectTableTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopContent(
-    state: ProjectTableScreenState.Success,
+    state: ProjectTableScreenState,
     onBackClicked: () -> Unit,
 
     onCreateTableClicked: () -> Unit,
@@ -86,7 +87,7 @@ private fun TopContent(
 
 @Composable
 private fun BottomContent(
-    state: ProjectTableScreenState.Success,
+    selectedTab: ProjectTableSelectedTab,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -96,20 +97,30 @@ private fun BottomContent(
         val colorDisabled = MaterialTheme.colorScheme.onSurface.copy(.5f)
         val colorEnabled = MaterialTheme.colorScheme.primary
 
-        val boardIndex = 0
-        val settingsIndex = 1
-        var boardModifier = Modifier.clickable { }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
-        var settingsModifier = Modifier.clickable {  }.padding(start = 8.dp, top = 2.dp, end = 8.dp)
-        boardModifier = if(state.topBarSelected == ProjectTableSelectedTab.BOARD)
-            boardModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else boardModifier
-        settingsModifier = if(state.topBarSelected == ProjectTableSelectedTab.SETTINGS)
-            settingsModifier.bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary) else settingsModifier
+        val boardModifier = Modifier
+            .clickable { }
+            .padding(start = 8.dp, top = 2.dp, end = 8.dp)
+            .composed {
+                if(selectedTab == ProjectTableSelectedTab.BOARD) {
+                    return@composed bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary)
+                }
+                this
+            }
+        val settingsModifier = Modifier
+            .clickable { }
+            .padding(start = 8.dp, top = 2.dp, end = 8.dp)
+            .composed {
+                if(selectedTab == ProjectTableSelectedTab.SETTINGS) {
+                    return@composed bottomBorder(strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary)
+                }
+                this
+            }
 
         Column(
             modifier = boardModifier,
         ) {
             Text(
-                color = if(state.topBarSelected == ProjectTableSelectedTab.BOARD) colorEnabled else colorDisabled,
+                color = if(selectedTab == ProjectTableSelectedTab.BOARD) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_board),
                 fontSize = 15.sp,
             )
@@ -120,7 +131,7 @@ private fun BottomContent(
             modifier = settingsModifier
         ) {
             Text(
-                color = if(state.topBarSelected == ProjectTableSelectedTab.SETTINGS) colorEnabled else colorDisabled,
+                color = if(selectedTab == ProjectTableSelectedTab.SETTINGS) colorEnabled else colorDisabled,
                 text = stringResource(id = R.string.action_settings),
                 fontSize = 15.sp,
             )
