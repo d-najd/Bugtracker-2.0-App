@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
+import androidx.compose.material3.TextButton
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreenState
 import io.dnajd.presentation.components.BugtrackerExpandableMenu
+import io.dnajd.presentation.components.BugtrackerTextFieldExpandable
 import io.dnajd.presentation.components.ProjectIconFactory
 
 @Composable
@@ -53,5 +55,27 @@ fun ProjectDetailsContent(
                )
            }
        }
+
+       /* TODO FINISH THIS
+       BugtrackerTextFieldExpandable(
+           modifierText = Modifier.fillMaxWidth(),
+           title = title,
+           onTitleChange = { title = it },
+           label = stringResource(R.string.field_project),
+       ) {
+           Row(
+               modifier = Modifier.fillMaxWidth(),
+               verticalAlignment = Alignment.CenterVertically,
+               horizontalArrangement = Arrangement.End,
+           ) {
+               TextButton(onClick = { /*TODO*/ }) {
+                   Text(text = stringResource(id = R.string.action_save))
+               }
+               TextButton(onClick = { /*TODO*/ }) {
+                   Text(text = stringResource(id = R.string.action_cancel))
+               }
+           }
+       }
+        */
    }
 }

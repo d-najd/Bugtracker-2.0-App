@@ -52,5 +52,6 @@
     <string name="action_user_management">User management</string>
     <string name="field_project_details">Project Details</string>
     <string name="action_change_avatar">Change avatar</string>
+    <string name="action_save">Save</string>
 
 </resources>
