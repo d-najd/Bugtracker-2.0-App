@@ -42,7 +42,7 @@ fun BugtrackerTextField(
             singleLine = true
         )
 
-        if(!includeDivider) {
+        if(includeDivider) {
             Divider(color = MaterialTheme.colorScheme.onSurface)
         }
     }
