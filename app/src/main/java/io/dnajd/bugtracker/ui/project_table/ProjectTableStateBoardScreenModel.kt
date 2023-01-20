@@ -3,6 +3,7 @@ package io.dnajd.bugtracker.ui.project_table
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.model.ProjectTable

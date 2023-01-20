@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.presentation.util.bottomBorder
 

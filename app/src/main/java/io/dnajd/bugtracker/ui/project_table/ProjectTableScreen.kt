@@ -7,7 +7,9 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.base.controller.pushController
+import io.dnajd.bugtracker.ui.base.getController
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
@@ -44,6 +46,12 @@ class ProjectTableScreen(
             onTaskClicked = { router.pushController(TableTaskController(it)) },
             onSwapTablePositionsClicked = screenModel::swapTablePositions,
             onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
+            onSwitchScreenTabClicked = {
+                if(it != ProjectTableSelectedTab.BOARD) {
+                    router.popCurrentController()
+                    router.pushController(it.getController(project))
+                }
+            },
         )
 
         if (state is ProjectTableScreenState.Success) {

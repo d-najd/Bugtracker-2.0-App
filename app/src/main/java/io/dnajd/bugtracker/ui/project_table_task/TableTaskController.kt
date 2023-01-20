@@ -7,7 +7,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import io.dnajd.bugtracker.ui.base.controller.FullComposeController
 
 class TableTaskController: FullComposeController {
-
     constructor(
         taskId: Long,
     ) : super(

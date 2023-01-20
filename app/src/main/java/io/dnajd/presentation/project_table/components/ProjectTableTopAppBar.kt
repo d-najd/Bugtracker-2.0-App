@@ -22,6 +22,7 @@ fun ProjectTableTopAppBar(
     onBackClicked: () -> Unit,
 
     onCreateTableClicked: () -> Unit,
+    onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
 ) {
     BugtrackerTwoAppBar(
         navigationIcon = {
@@ -60,11 +61,7 @@ fun ProjectTableTopAppBar(
         bottomContent = {
             BugtrackerTwoAppBarTableBar(
                 selectedTab = ProjectTableSelectedTab.BOARD,
-                onTabClicked = {
-                    if(it != ProjectTableSelectedTab.BOARD) {
-
-                    }
-                }
+                onTabClicked = onSwitchScreenTabClicked,
             )
         }
     )

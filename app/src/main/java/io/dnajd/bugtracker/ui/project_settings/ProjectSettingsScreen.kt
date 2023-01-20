@@ -7,6 +7,9 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
+import io.dnajd.bugtracker.ui.base.controller.pushController
+import io.dnajd.bugtracker.ui.base.getController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
@@ -27,6 +30,12 @@ class ProjectSettingsScreen(
         ProjectSettingsScreenContent(
             state = state,
             onBackClicked = router::popCurrentController,
+            onSwitchScreenTabClicked = {
+                if(it != ProjectTableSelectedTab.SETTINGS) {
+                    router.popCurrentController()
+                    router.pushController(it.getController(project))
+                }
+            },
         )
 
         if(state is ProjectSettingsScreenState.Success) {

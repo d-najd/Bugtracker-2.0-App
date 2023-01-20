@@ -18,6 +18,8 @@ import io.dnajd.presentation.components.BugtrackerTwoAppBarTableBar
 fun ProjectSettingsTopAppBar(
     state: ProjectSettingsScreenState,
     onBackClicked: () -> Unit,
+
+    onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
 ) {
     BugtrackerTwoAppBar(
         navigationIcon = {
@@ -38,11 +40,7 @@ fun ProjectSettingsTopAppBar(
         bottomContent = {
             BugtrackerTwoAppBarTableBar(
                 selectedTab = ProjectTableSelectedTab.SETTINGS,
-                onTabClicked = {
-                    if(it != ProjectTableSelectedTab.SETTINGS) {
-
-                    }
-                }
+                onTabClicked = onSwitchScreenTabClicked,
             )
 
         }
