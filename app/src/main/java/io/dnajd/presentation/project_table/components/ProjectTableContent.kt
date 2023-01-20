@@ -7,7 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.dnajd.bugtracker.ui.project_table.board.ProjectTableScreenState
+import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
 
 @Composable

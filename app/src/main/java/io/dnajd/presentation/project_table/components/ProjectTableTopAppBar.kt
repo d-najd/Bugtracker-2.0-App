@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.board.ProjectTableScreenState
+import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.bugtracker.ui.project_table.ProjectTableSelectedTab
 import io.dnajd.presentation.util.bottomBorder
 

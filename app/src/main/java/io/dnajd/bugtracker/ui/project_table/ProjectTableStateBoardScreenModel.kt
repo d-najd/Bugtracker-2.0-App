@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table.board
+package io.dnajd.bugtracker.ui.project_table
 
 import android.content.Context
 import androidx.compose.runtime.Immutable

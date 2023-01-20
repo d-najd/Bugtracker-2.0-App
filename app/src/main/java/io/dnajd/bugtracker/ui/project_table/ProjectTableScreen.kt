@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table.board
+package io.dnajd.bugtracker.ui.project_table
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
