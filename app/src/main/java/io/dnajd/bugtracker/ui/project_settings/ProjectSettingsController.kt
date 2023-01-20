@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table.settings
+package io.dnajd.bugtracker.ui.project_settings
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
@@ -10,7 +10,7 @@ import io.dnajd.domain.project.model.Project
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class ProjectTableSettingsController: FullComposeController {
+class ProjectSettingsController: FullComposeController {
     private constructor(projectString: String) : super(
         bundleOf(
             PROJECT_EXTRA to projectString
@@ -36,9 +36,8 @@ class ProjectTableSettingsController: FullComposeController {
 
     @Composable
     override fun ComposeContent() {
-        Navigator(screen = ProjectTableScreen(project))
+        Navigator(screen = ProjectSettingsScreen(project))
     }
-
 
     companion object{
         const val PROJECT_EXTRA = "project"

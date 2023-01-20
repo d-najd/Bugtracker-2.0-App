@@ -8,7 +8,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.base.controller.pushController
-import io.dnajd.bugtracker.ui.project_table.board.ProjectTableController
+import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
