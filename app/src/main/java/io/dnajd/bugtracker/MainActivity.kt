@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity() {
                 title = "Project Title",
             )
 
-            // router.setRoot(ProjectController())
+            router.setRoot(ProjectController())
             // router.setRoot(ProjectTableController(projectFake))
             // router.setRoot(TableTaskController(1L))
             // router.setRoot(ProjectSettingsController(projectFake))
-            router.setRoot(ProjectDetailsController(1L))
+            // router.setRoot(ProjectDetailsController(projectFake))
         }
     }
 }

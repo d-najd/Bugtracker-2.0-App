@@ -21,7 +21,7 @@ import uy.kohesive.injekt.api.get
 
 class ProjectDetailsScreenModel(
     context: Context,
-    projectId: Long,
+    project: Project,
 
     private val getProject: GetProject = Injekt.get(),
     private val deleteProject: DeleteProject = Injekt.get(),
@@ -34,7 +34,7 @@ class ProjectDetailsScreenModel(
 
     init {
         coroutineScope.launchIO {
-            val persistedProject = getProject.awaitOne(projectId)
+            val persistedProject = getProject.awaitOne(project.id)
             if(persistedProject != null) {
                 mutableState.update {
                     ProjectDetailsScreenState.Success(
@@ -48,7 +48,7 @@ class ProjectDetailsScreenModel(
     }
 
     fun deleteProject() {
-        coroutineScope.launch {
+        coroutineScope.launchIO {
             (mutableState.value as ProjectDetailsScreenState.Success).project.let { project ->
                 if(deleteProject.await(project.id)) {
                     _events.send(ProjectDetailsEvent.DeleteProject)
@@ -69,6 +69,7 @@ class ProjectDetailsScreenModel(
                             project = renamedProject,
                         )
                     }
+                    _events.send(ProjectDetailsEvent.ProjectModified(renamedProject))
                 }
             }
         }
@@ -81,6 +82,7 @@ sealed class ProjectDetailsEvent {
 
     object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
     object DeleteProject : ProjectDetailsEvent()
+    data class ProjectModified(val project: Project) : ProjectDetailsEvent()
 }
 
 sealed class ProjectDetailsScreenState {
