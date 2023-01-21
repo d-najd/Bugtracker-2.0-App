@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project_settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -14,6 +15,8 @@ import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
 import io.dnajd.presentation.util.LocalRouter
+import io.dnajd.util.toast
+import kotlinx.coroutines.flow.collectLatest
 
 class ProjectSettingsScreen(
     private val project: Project,
@@ -24,6 +27,14 @@ class ProjectSettingsScreen(
         val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel { ProjectSettingsScreenModel(context, project) }
+
+        LaunchedEffect(Unit) {
+            screenModel.events.collectLatest { event ->
+                if(event is ProjectSettingsEvent.LocalizedMessage) {
+                    context.toast(event.stringRes)
+                }
+            }
+        }
 
         val state by screenModel.state.collectAsState()
 
@@ -36,7 +47,7 @@ class ProjectSettingsScreen(
                     router.pushController(it.getController(project))
                 }
             },
-            onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project.id)) },
+            onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project)) },
             onUserManagementClicked = { },
         )
     }
