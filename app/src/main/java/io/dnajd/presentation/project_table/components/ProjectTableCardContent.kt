@@ -1,11 +1,14 @@
 package io.dnajd.presentation.project_table.components
 
+import android.annotation.SuppressLint
 import android.view.ViewTreeObserver
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,22 +49,31 @@ fun ProjectTableCardContent(
 
 @Composable
 fun ProjectTableTextFieldCardContent(
+    @SuppressLint("ModifierParameter") textModifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    onKeyboardStateChange: (Boolean) -> Unit
+    isKeyboardEnabled: ((Boolean) -> Unit)? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     ProjectTableCardContentLocal(
+        textModifier = textModifier,
         value = value,
         onValueChange = onValueChange,
-        onKeyboardStateChange = onKeyboardStateChange,
+        isKeyboardEnabled = isKeyboardEnabled,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
 @Composable
 private fun ProjectTableCardContentLocal(
+    @SuppressLint("ModifierParameter") textModifier: Modifier = Modifier,
     value: String,
     onValueChange: ((String) -> Unit)? = null,
-    onKeyboardStateChange: ((Boolean) -> Unit)? = null,
+    isKeyboardEnabled: ((Boolean) -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     labels: List<String> = emptyList(),
     taskId: Long? = null,
     reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(onMove = {_, _ -> }),
@@ -105,22 +117,24 @@ private fun ProjectTableCardContentLocal(
             } else {
                 val focusRequester = remember { FocusRequester() }
                 BasicTextField(
-                    modifier = Modifier
+                    modifier = textModifier
                         .padding(top = 8.dp, start = 12.dp, end = 12.dp)
                         .focusRequester(focusRequester),
                     value = value,
                     onValueChange = onValueChange,
                     maxLines = 1,
                     textStyle = TextStyle(fontSize = 14.sp),
+                    keyboardActions = keyboardActions,
+                    keyboardOptions = keyboardOptions,
                 )
 
-                if(onKeyboardStateChange != null) {
+                if(isKeyboardEnabled != null) {
                     val view = LocalView.current
                     DisposableEffect(view) {
                         val listener = ViewTreeObserver.OnGlobalLayoutListener {
-                            val isKeyboardEnabled = ViewCompat.getRootWindowInsets(view)
+                            val isKeyboardEnabledTemp = ViewCompat.getRootWindowInsets(view)
                                     ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
-                            onKeyboardStateChange(isKeyboardEnabled)
+                            isKeyboardEnabled(isKeyboardEnabledTemp)
                         }
                         view.viewTreeObserver.addOnGlobalLayoutListener(listener)
                         onDispose {
@@ -160,7 +174,6 @@ private fun ProjectTableCardContentLocal(
                         checked = true,
                         onCheckedChange = { }
                     )
-
                     Text(
                         modifier = Modifier,
                         text = "${stringResource(R.string.field_task).uppercase()}-$taskId"

@@ -18,6 +18,9 @@ import io.dnajd.presentation.project_details.components.ProjectDetailsContent
 fun ProjectDetailsScreenContent(
     state: ProjectDetailsScreenState.Success,
     onBackClicked: () -> Unit,
+
+    onRenameProjectClicked: (String) -> Unit,
+    onDeleteProjectClicked: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -44,6 +47,8 @@ fun ProjectDetailsScreenContent(
         ProjectDetailsContent(
             state = state,
             contentPadding = contentPadding,
+            onRenameProjectClicked = onRenameProjectClicked,
+            onDeleteProjectClicked = onDeleteProjectClicked,
         )
     }
 }

@@ -99,13 +99,13 @@ class ProjectTableScreenModel(
 
     fun renameTable(id: Long, newName: String) {
         coroutineScope.launchIO {
-            (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == id }!!.let { originalTable ->
+            (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == id }!!.let { persistedTable ->
                 if(renameTable.await(id, newName)) {
                     // doing it this way so that state changes get updated for sure
                     mutableState.update {
                         val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-                        tables.remove(originalTable)
-                        tables.add(originalTable.copy(title = newName))
+                        tables.remove(persistedTable)
+                        tables.add(persistedTable.copy(title = newName))
                         (mutableState.value as ProjectTableScreenState.Success).copy(
                             tables = tables
                         )

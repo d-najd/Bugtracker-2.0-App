@@ -37,7 +37,6 @@ fun ProjectSettingsScreenContent(
         }
 
         val successState = state as ProjectSettingsScreenState.Success
-
         ProjectSettingsContent(
             state = successState,
             contentPadding = contentPadding,

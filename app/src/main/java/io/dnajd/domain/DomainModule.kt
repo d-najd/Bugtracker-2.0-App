@@ -9,7 +9,9 @@ import io.dnajd.data.project_table_task.FakeProjectTableTaskRepository
 import io.dnajd.data.project_table_task.RemoteProjectTableTaskRepository
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.interactor.CreateProject
+import io.dnajd.domain.project.interactor.DeleteProject
 import io.dnajd.domain.project.interactor.GetProjects
+import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
@@ -28,7 +30,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = false
+        private const val USE_FAKES = true
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -69,6 +71,8 @@ class DomainModule : InjektModule {
 
         addFactory { GetProjects(get()) }
         addFactory { CreateProject(get()) }
+        addFactory { RenameProject(get()) }
+        addFactory { DeleteProject(get()) }
 
         addFactory { GetProjectTables(get()) }
         addFactory { CreateProjectTable(get()) }

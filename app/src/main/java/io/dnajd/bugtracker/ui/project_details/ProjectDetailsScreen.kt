@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project_details
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +12,7 @@ import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_details.ProjectDetailsScreenContent
 import io.dnajd.presentation.util.LocalRouter
+import kotlinx.coroutines.flow.collectLatest
 
 class ProjectDetailsScreen(
     private val project: Project,
@@ -34,6 +36,18 @@ class ProjectDetailsScreen(
         ProjectDetailsScreenContent(
             state = successState,
             onBackClicked = router::popCurrentController,
+            onRenameProjectClicked = screenModel::renameProject,
+            onDeleteProjectClicked = screenModel::deleteProject,
         )
+
+        LaunchedEffect(Unit) {
+            screenModel.events.collectLatest { event ->
+                when (event) {
+                    is ProjectDetailsEvent.DeleteProject -> {
+                        router.popToRoot()
+                    }
+                }
+            }
+        }
     }
 }

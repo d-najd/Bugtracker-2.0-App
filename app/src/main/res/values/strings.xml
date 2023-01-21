@@ -53,5 +53,6 @@
     <string name="field_project_details">Project Details</string>
     <string name="action_change_avatar">Change avatar</string>
     <string name="action_save">Save</string>
+    <string name="action_delete_project">Delete Project</string>
 
 </resources>

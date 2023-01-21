@@ -91,9 +91,8 @@ sealed class ProjectDialog {
     data class CreateProject(val title: String = "") : ProjectDialog()
 }
 
-
 sealed class ProjectScreenState {
-    
+
     @Immutable
     object Loading : ProjectScreenState()
 

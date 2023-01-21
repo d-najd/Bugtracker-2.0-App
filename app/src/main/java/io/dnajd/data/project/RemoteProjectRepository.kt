@@ -2,15 +2,13 @@ package io.dnajd.data.project
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.data.utils.processRequest
+import io.dnajd.data.utils.processVoidRequest
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectHolder
 import io.dnajd.domain.project.service.ProjectRepository
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -23,6 +21,12 @@ object RemoteProjectRepository : ProjectRepository {
     override suspend fun create(project: Project): Project? =
         factory.createProject(project).processRequest()
 
+    override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
+        factory.renameProject(id, newTitle).processVoidRequest()
+
+    override suspend fun delete(id: Long): Boolean =
+        factory.deleteProject(id).processVoidRequest()
+
 }
 
 private interface ProjectRepositoryApi {
@@ -32,5 +36,14 @@ private interface ProjectRepositoryApi {
 
     @POST(Urls.PROJECT_RAW)
     fun createProject(@Body project: Project): Call<Project>
+
+    @PATCH("${Urls.PROJECT_RAW}/{id}/title/{newTitle}")
+    fun renameProject(
+        @Path("id") id: Long,
+        @Path("newTitle") newTitle: String
+    ): Call<Void>
+
+    @DELETE("${Urls.PROJECT_RAW}/{id}")
+    fun deleteProject(@Path("id") id: Long) : Call<Void>
 
 }

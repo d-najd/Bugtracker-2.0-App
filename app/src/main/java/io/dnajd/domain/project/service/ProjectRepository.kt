@@ -18,4 +18,18 @@ interface ProjectRepository {
      */
     suspend fun create(project: Project): Project?
 
+    /**
+     * Changes the title on already existing project to a new title
+     * @param id id of the table
+     * @param newTitle the new title
+     * @return true if the request was successful false if it wasn't
+     */
+    suspend fun changeTitle(id: Long, newTitle: String): Boolean
+
+    /**
+     * Deletes a project with given id
+     * @param id id of the table
+     * @return true if the request was successful false if it wasn't
+     */
+    suspend fun delete(id: Long): Boolean
 }

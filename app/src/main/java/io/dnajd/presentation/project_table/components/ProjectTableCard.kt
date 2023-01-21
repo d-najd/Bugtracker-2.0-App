@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -242,8 +245,10 @@ private fun ProjectTableCardBottom(
         var title by remember { mutableStateOf("") }
         ProjectTableTextFieldCardContent(
             value = title,
-            onValueChange = {
-                if(it.isNotBlank() && it.last() == '\n'){
+            onValueChange = { title = it },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
                     onCreateTableTaskClicked(
                         ProjectTableTask(
                             title = title,
@@ -251,10 +256,9 @@ private fun ProjectTableCardBottom(
                             reporter = "user1",
                         )
                     )
-                } else {
-                    title = it
-                } },
-            onKeyboardStateChange = {
+                }
+            ),
+            isKeyboardEnabled = {
                 if(!it) {
                    onCreateTableTaskMenuClicked(null)
                 }

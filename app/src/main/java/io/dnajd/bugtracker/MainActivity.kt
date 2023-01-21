@@ -8,6 +8,7 @@ import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
 import io.dnajd.bugtracker.ui.project.ProjectController
+import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsController
 import io.dnajd.bugtracker.ui.project_table.ProjectTableController
 import io.dnajd.domain.DomainModule
@@ -38,10 +39,11 @@ class MainActivity : AppCompatActivity() {
                 title = "Project Title",
             )
 
-            // router.setRoot(ProjectSettingsController(projectFake))
-            // router.setRoot(TableTaskController(1L))
-            // router.setRoot(ProjectTableController(projectFake))
             router.setRoot(ProjectController())
+            // router.setRoot(ProjectTableController(projectFake))
+            // router.setRoot(TableTaskController(1L))
+            // router.setRoot(ProjectSettingsController(projectFake))
+            // router.setRoot(ProjectDetailsController(projectFake))
         }
     }
 }
