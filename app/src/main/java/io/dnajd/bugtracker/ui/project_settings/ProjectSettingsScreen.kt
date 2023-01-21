@@ -36,7 +36,7 @@ class ProjectSettingsScreen(
                     router.pushController(it.getController(project))
                 }
             },
-            onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project)) },
+            onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project.id)) },
             onUserManagementClicked = { },
         )
     }

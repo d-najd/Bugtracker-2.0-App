@@ -54,5 +54,6 @@
     <string name="action_change_avatar">Change avatar</string>
     <string name="action_save">Save</string>
     <string name="action_delete_project">Delete Project</string>
+    <string name="error_invalid_project_id">Project with given id does not exist</string>
 
 </resources>

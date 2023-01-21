@@ -18,6 +18,9 @@ object RemoteProjectRepository : ProjectRepository {
     override suspend fun getAll(username: String): List<Project> =
         factory.getProjectsByUsername(username).processRequest()?.data ?: emptyList()
 
+    override suspend fun get(id: Long): Project? =
+        factory.getProjectById(id).processRequest()
+
     override suspend fun create(project: Project): Project? =
         factory.createProject(project).processRequest()
 
@@ -33,6 +36,9 @@ private interface ProjectRepositoryApi {
 
     @GET("${Urls.PROJECT_RAW}/user/{username}")
     fun getProjectsByUsername(@Path("username") username: String): Call<ProjectHolder>
+
+    @GET("${Urls.PROJECT_RAW}/{id}")
+    fun getProjectById(@Path("id") id: Long) : Call<Project>
 
     @POST(Urls.PROJECT_RAW)
     fun createProject(@Body project: Project): Call<Project>

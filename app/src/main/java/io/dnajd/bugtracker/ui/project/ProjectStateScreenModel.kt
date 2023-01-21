@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.interactor.CreateProject
-import io.dnajd.domain.project.interactor.GetProjects
+import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
@@ -16,7 +16,7 @@ import uy.kohesive.injekt.api.get
 class ProjectScreenModel(
     context: Context,
 
-    private val getProjects: GetProjects = Injekt.get(),
+    private val getProject: GetProject = Injekt.get(),
     private val createProject: CreateProject = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectScreenState>(context, ProjectScreenState.Loading) {
 
@@ -31,7 +31,7 @@ class ProjectScreenModel(
 
     private fun requestProjects(username: String) {
         coroutineScope.launchIO {
-            val projects = getProjects.await(username)
+            val projects = getProject.await(username)
             mutableState.update {
                 ProjectScreenState.Success(
                     projects = projects,

@@ -6,41 +6,35 @@ import androidx.core.os.bundleOf
 import cafe.adriel.voyager.navigator.Navigator
 import com.google.gson.Gson
 import io.dnajd.bugtracker.ui.base.controller.FullComposeController
+import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
 import io.dnajd.domain.project.model.Project
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectDetailsController: FullComposeController {
-    private constructor(projectString: String) : super(
+    constructor(projectId: Long) : super(
         bundleOf(
-            PROJECT_EXTRA to projectString
+            PROJECT_ID_EXTRA to projectId
         )
-    )
-
-    /* TODO this is not a great idea, it forces the class to be serializable or the app will crash
-        when being closed */
-    constructor(project: Project) : super(
-        bundleOf(
-            PROJECT_EXTRA to Injekt.get<Gson>().toJson(project),
-        ),
     )
 
     // the constructor is necessary, removing it will result in a crash
     @Suppress("unused")
     constructor(bundle: Bundle) : this(
-        bundle.getString(PROJECT_EXTRA)!!,
+        bundle.getLong(PROJECT_ID_EXTRA)
     )
 
-    private val project: Project
-        get() = Injekt.get<Gson>().fromJson(args.getString(PROJECT_EXTRA), Project::class.java)!!
+
+    private val projectId: Long
+        get() = args.getLong(PROJECT_ID_EXTRA)
 
     @Composable
     override fun ComposeContent() {
-        Navigator(screen = ProjectDetailsScreen(project))
+        Navigator(screen = ProjectDetailsScreen(projectId))
     }
 
     companion object{
-        const val PROJECT_EXTRA = "project"
+        const val PROJECT_ID_EXTRA = "projectId"
     }
 
 }

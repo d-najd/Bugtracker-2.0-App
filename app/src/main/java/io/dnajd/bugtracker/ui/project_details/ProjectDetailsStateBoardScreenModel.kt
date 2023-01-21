@@ -1,9 +1,12 @@
 package io.dnajd.bugtracker.ui.project_details
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.interactor.DeleteProject
+import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
@@ -18,8 +21,9 @@ import uy.kohesive.injekt.api.get
 
 class ProjectDetailsScreenModel(
     context: Context,
-    project: Project,
+    projectId: Long,
 
+    private val getProject: GetProject = Injekt.get(),
     private val deleteProject: DeleteProject = Injekt.get(),
     private val renameProject: RenameProject = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectDetailsScreenState>(context,
@@ -29,11 +33,16 @@ class ProjectDetailsScreenModel(
     val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
 
     init {
-        coroutineScope.launch {
-            mutableState.update {
-                ProjectDetailsScreenState.Success(
-                    project = project,
-                )
+        coroutineScope.launchIO {
+            val persistedProject = getProject.awaitOne(projectId)
+            if(persistedProject != null) {
+                mutableState.update {
+                    ProjectDetailsScreenState.Success(
+                        project = persistedProject,
+                    )
+                }
+            } else {
+                _events.send(ProjectDetailsEvent.InvalidProjectId)
             }
         }
     }
@@ -50,9 +59,9 @@ class ProjectDetailsScreenModel(
 
     fun renameProject(title: String) {
         coroutineScope.launchIO {
-            (mutableState.value as ProjectDetailsScreenState.Success).project.let { persistedProject ->
-                if(renameProject.await(id = persistedProject.id, newTitle = title)) {
-                    val renamedProject = persistedProject.copy(
+            (mutableState.value as ProjectDetailsScreenState.Success).project.let { transientProject ->
+                if(renameProject.await(id = transientProject.id, newTitle = title)) {
+                    val renamedProject = transientProject.copy(
                         title = title,
                     )
                     mutableState.update {
@@ -60,7 +69,6 @@ class ProjectDetailsScreenModel(
                             project = renamedProject,
                         )
                     }
-                    _events.send(ProjectDetailsEvent.ProjectRenamed(renamedProject))
                 }
             }
         }
@@ -69,8 +77,10 @@ class ProjectDetailsScreenModel(
 
 
 sealed class ProjectDetailsEvent {
+    sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
+
+    object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
     object DeleteProject : ProjectDetailsEvent()
-    data class ProjectRenamed(val project: Project) : ProjectDetailsEvent()
 }
 
 sealed class ProjectDetailsScreenState {

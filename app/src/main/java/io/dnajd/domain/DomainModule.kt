@@ -10,7 +10,7 @@ import io.dnajd.data.project_table_task.RemoteProjectTableTaskRepository
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.interactor.CreateProject
 import io.dnajd.domain.project.interactor.DeleteProject
-import io.dnajd.domain.project.interactor.GetProjects
+import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
@@ -69,7 +69,7 @@ class DomainModule : InjektModule {
             }
         }
 
-        addFactory { GetProjects(get()) }
+        addFactory { GetProject(get()) }
         addFactory { CreateProject(get()) }
         addFactory { RenameProject(get()) }
         addFactory { DeleteProject(get()) }

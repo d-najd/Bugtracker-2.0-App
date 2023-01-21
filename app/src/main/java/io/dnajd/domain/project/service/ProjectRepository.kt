@@ -12,6 +12,13 @@ interface ProjectRepository {
     suspend fun getAll(username: String): List<Project>
 
     /**
+     * Gets single project by id
+     * @param id id of the table
+     * @return project associated with the id or null if it does not exist
+     */
+    suspend fun get(id: Long): Project?
+
+    /**
      * Creates project
      * @param project the pojo that is sent to the server
      * @return received project from the server or null if the request failed
