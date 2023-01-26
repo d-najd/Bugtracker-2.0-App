@@ -50,7 +50,8 @@ class ProjectDetailsScreen(
                         // pain
                         for((index, routerTransaction) in router.backstack.withIndex()){
                             when(routerTransaction.controller){
-                                // TODO this does not seem really expandable, create better system
+                                // TODO this does not really seem that expandable, create better
+                                //  system possibly using https://stackoverflow.com/questions/71417326/jetpack-compose-topappbar-with-dynamic-actions
                                 is ProjectSettingsController -> {
                                     router.setAtBackstack(index, ProjectSettingsController(event.project))
                                 }

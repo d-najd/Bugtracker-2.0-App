@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.domain.project.model.Project
+import io.dnajd.presentation.components.BugtrackerIconPairField
 import io.dnajd.presentation.components.ProjectIconFactory
 
 @Composable
@@ -22,29 +23,29 @@ fun ProjectItemContent(
 project: Project,
     onProjectClicked: (Long) -> Unit,
 ){
-    Row(
+    BugtrackerIconPairField(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 4.dp)
             .fillMaxWidth()
             .height(42.dp)
             .clickable { onProjectClicked(project.id) },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(2.dp)
-                .background(MaterialTheme.colorScheme.onBackground.copy(.75f), RoundedCornerShape(4.dp)),
-        ) {
-            Image(
+        iconContent = {
+            Column(
                 modifier = Modifier
-                    .padding(3.dp),
-                painter = painterResource(ProjectIconFactory.getRandom()),
-                contentDescription = "",
-            )
-        }
-
-        Column {
+                    .padding(2.dp)
+                    .background(MaterialTheme.colorScheme.onBackground.copy(.75f), RoundedCornerShape(4.dp)),
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(3.dp),
+                    painter = painterResource(ProjectIconFactory.getRandom()),
+                    contentDescription = "",
+                )
+            }
+        },
+        textContent = {
             Text(
-                modifier = Modifier.padding(start = 12.dp, top = 4.dp),
+                modifier = Modifier.padding(start = 2.dp),
                 text = project.title,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = (13.75).sp,
@@ -53,7 +54,7 @@ project: Project,
             )
 
             Text(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.padding(start = 2.dp),
                 text = "owner: ${project.owner}",
                 color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
                 fontSize = 12.sp,
@@ -61,5 +62,5 @@ project: Project,
                 fontFamily = FontFamily.SansSerif,
             )
         }
-    }
+    )
 }

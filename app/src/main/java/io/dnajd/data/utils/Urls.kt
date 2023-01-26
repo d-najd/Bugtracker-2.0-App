@@ -8,6 +8,7 @@ object Urls {
     const val PROJECT_RAW = "project-service/api"
     const val PROJECT_TABLE_RAW = "project-table-service/api"
     const val PROJECT_TABLE_TASK_RAW = "project-table-issue-service/api"
+    const val USER_AUTHORITY_RAW = "user-authority-service/api"
     //endregion
 
     /*

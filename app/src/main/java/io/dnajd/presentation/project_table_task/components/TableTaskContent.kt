@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.content
+package io.dnajd.presentation.project_table_task.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
-import io.dnajd.presentation.project_table_task.content.comment.TableTaskActivityContent
+import io.dnajd.presentation.project_table_task.components.comment.TableTaskActivityContent
 
 @ExperimentalMaterial3Api
 @Composable

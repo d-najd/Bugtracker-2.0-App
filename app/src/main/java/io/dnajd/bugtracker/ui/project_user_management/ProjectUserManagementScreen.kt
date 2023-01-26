@@ -1,5 +1,6 @@
 package io.dnajd.bugtracker.ui.project_user_management
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -10,6 +11,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table_task.TableTaskScreenContent
+import io.dnajd.presentation.project_user_management.ProjectUserManagementScreenContent
 import io.dnajd.presentation.util.LocalRouter
 
 class ProjectUserManagementScreen(
@@ -29,9 +31,9 @@ class ProjectUserManagementScreen(
             return
         }
 
-        val successState = state as TableTaskScreenState.Success
+        val successState = state as ProjectUserManagementScreenState.Success
 
-        TableTaskScreenContent(
+        ProjectUserManagementScreenContent(
             state = successState,
             onBackClicked = router::popCurrentController,
         )

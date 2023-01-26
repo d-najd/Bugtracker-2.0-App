@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.content.comment
+package io.dnajd.presentation.project_table_task.components.comment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

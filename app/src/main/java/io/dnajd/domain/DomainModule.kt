@@ -7,6 +7,8 @@ import io.dnajd.data.project_table.FakeProjectTableRepository
 import io.dnajd.data.project_table.RemoteProjectTableRepository
 import io.dnajd.data.project_table_task.FakeProjectTableTaskRepository
 import io.dnajd.data.project_table_task.RemoteProjectTableTaskRepository
+import io.dnajd.data.user_authority.FakeUserAuthorityRepository
+import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.interactor.CreateProject
 import io.dnajd.domain.project.interactor.DeleteProject
@@ -20,6 +22,8 @@ import io.dnajd.domain.project_table_task.interactor.GetProjectTableTasks
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
+import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
+import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,7 +34,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = true
+        private const val USE_FAKES = false
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -53,7 +57,11 @@ class DomainModule : InjektModule {
                 .baseUrl(Urls.API)
                 .addConverterFactory(GsonConverterFactory.create(Injekt.get()))
                 .client(Injekt.get())
-                .build()
+
+        }
+
+        addSingletonFactory {
+            Injekt.get<Retrofit.Builder>().build()
         }
 
         when (USE_FAKES) {
@@ -61,11 +69,13 @@ class DomainModule : InjektModule {
                 addSingletonFactory<ProjectRepository> { FakeProjectRepository }
                 addSingletonFactory<ProjectTableRepository> { FakeProjectTableRepository }
                 addSingletonFactory<ProjectTableTaskRepository> { FakeProjectTableTaskRepository }
+                addSingletonFactory<UserAuthorityRepository> { FakeUserAuthorityRepository }
             }
             false -> {
                 addSingletonFactory<ProjectRepository> { RemoteProjectRepository }
                 addSingletonFactory<ProjectTableRepository> { RemoteProjectTableRepository }
                 addSingletonFactory<ProjectTableTaskRepository> { RemoteProjectTableTaskRepository }
+                addSingletonFactory<UserAuthorityRepository> { RemoteUserAuthorityRepository }
             }
         }
 
@@ -84,5 +94,7 @@ class DomainModule : InjektModule {
         addFactory { CreateProjectTableTask(get()) }
         addFactory { SwapProjectTableTasks(get()) }
         addFactory { MoveProjectTableTask(get()) }
+
+        addFactory { GetUserAuthorities(get()) }
     }
 }

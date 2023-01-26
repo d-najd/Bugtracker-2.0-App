@@ -1,4 +1,4 @@
-package io.dnajd.presentation.project_table_task.content
+package io.dnajd.presentation.project_table_task.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -79,7 +79,6 @@ fun TableTaskAssignedField(
                             text = assigned.assignerUsername
                         )
                     }
-
 
                     Row(
                         modifier = Modifier.weight(1f),
