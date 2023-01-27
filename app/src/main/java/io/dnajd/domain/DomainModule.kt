@@ -22,6 +22,8 @@ import io.dnajd.domain.project_table_task.interactor.GetProjectTableTasks
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
+import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
+import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 import io.dnajd.util.BugtrackerDateFormat
@@ -34,7 +36,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = false
+        private const val USE_FAKES = true
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -57,7 +59,6 @@ class DomainModule : InjektModule {
                 .baseUrl(Urls.API)
                 .addConverterFactory(GsonConverterFactory.create(Injekt.get()))
                 .client(Injekt.get())
-
         }
 
         addSingletonFactory {
@@ -96,5 +97,7 @@ class DomainModule : InjektModule {
         addFactory { MoveProjectTableTask(get()) }
 
         addFactory { GetUserAuthorities(get()) }
+        addFactory { CreateUserAuthority(get()) }
+        addFactory { DeleteUserAuthority(get()) }
     }
 }

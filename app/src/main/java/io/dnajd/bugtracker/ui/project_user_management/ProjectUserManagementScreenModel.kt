@@ -3,6 +3,8 @@ package io.dnajd.bugtracker.ui.project_user_management
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
+import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
@@ -19,6 +21,8 @@ class ProjectUserManagementScreenModel(
     projectId: Long,
 
     private val getUserAuthorities: GetUserAuthorities = Injekt.get(),
+    private val createUserAuthority: CreateUserAuthority = Injekt.get(),
+    private val deleteUserAuthority: DeleteUserAuthority = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectUserManagementScreenState>(context,
     ProjectUserManagementScreenState.Loading
 ) {
@@ -35,7 +39,44 @@ class ProjectUserManagementScreenModel(
         }
     }
 
+    /**
+     * creates user authority if it does not exist or removes it if it does exist
+     */
+    fun invertAuthority(userAuthority: UserAuthority) {
+        if((mutableState.value as ProjectUserManagementScreenState.Success).authorities.contains(userAuthority)) {
+            deleteAuthority(userAuthority)
+        } else {
+            createAuthority(userAuthority)
+        }
+    }
 
+    private fun createAuthority(userAuthority: UserAuthority) {
+        coroutineScope.launchIO {
+            createUserAuthority.awaitOne(userAuthority)?.let { persistedUserAuthority ->
+                val authorities = (mutableState.value as ProjectUserManagementScreenState.Success).authorities.toMutableList()
+                authorities.add(persistedUserAuthority)
+                mutableState.update {
+                    (mutableState.value as ProjectUserManagementScreenState.Success).copy(
+                        authorities = authorities,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteAuthority(userAuthority: UserAuthority) {
+        coroutineScope.launchIO {
+            if (deleteUserAuthority.await(userAuthority)) {
+                val authorities = (mutableState.value as ProjectUserManagementScreenState.Success).authorities.toMutableList()
+                authorities.remove(userAuthority)
+                mutableState.update {
+                    (mutableState.value as ProjectUserManagementScreenState.Success).copy(
+                        authorities = authorities,
+                    )
+                }
+            }
+        }
+    }
 }
 
 sealed class ProjectUserManagementScreenState {

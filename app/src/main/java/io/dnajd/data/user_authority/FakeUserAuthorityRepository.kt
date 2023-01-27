@@ -12,4 +12,10 @@ object FakeUserAuthorityRepository : UserAuthorityRepository {
 		UserAuthority("user2", 1, UserAuthorityType.project_manage_users),
 		UserAuthority("user3", 1, UserAuthorityType.project_view),
 	)
+
+	@Suppress("RedundantNullableReturnType")
+	override suspend fun create(userAuthority: UserAuthority): UserAuthority? = userAuthority
+
+	override suspend fun delete(userAuthority: UserAuthority): Boolean = true
+
 }
