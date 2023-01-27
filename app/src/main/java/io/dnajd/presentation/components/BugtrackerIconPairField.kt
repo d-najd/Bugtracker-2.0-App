@@ -23,22 +23,33 @@ import io.dnajd.bugtracker.R
 /**
  * @param modifier modifier for the composable
  * @param title title located on top of [text]
+ * @param titleContent same principle as [title] but offers more flexibility
+ * @param iconContent "icon content", this is optional content located to the left of [text]
  * @param text optional text located right of the [textContent]
- * @param textContent "icon content", this is optional content located to the left of [text]
+ * @param textContent same principle as [text] but offers more flexibility
+ * @throws IllegalArgumentException if [title] and [titleContent] are both set or if [text] and
+ *  [textContent] are both set
  * @sample BugtrackerIconPairFieldPreview()
- *
- * TODO rework this
  */
 @Composable
 fun BugtrackerIconPairField(
     modifier: Modifier = Modifier,
     title: String? = null,
-    text: String? = null,
+    titleContent: (@Composable ColumnScope.() -> Unit)? = null,
     iconContent: (@Composable RowScope.() -> Unit)? = null,
+    text: String? = null,
     textContent: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
+    if (title != null && titleContent != null) {
+        throw IllegalArgumentException("title or titleContent must be null")
+    }
+    if(text != null && textContent != null) {
+        throw IllegalArgumentException("text or textContent must be null")
+    }
+
     Column(
         modifier = modifier,
+        verticalArrangement = Arrangement.Center
     ) {
         if(title != null) {
             Text(
@@ -46,6 +57,8 @@ fun BugtrackerIconPairField(
                 color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
             )
         }
+        titleContent?.let { titleContent() }
+
         Row(
             modifier = Modifier.padding(top = if(title != null) 6.dp else 0.dp),
             verticalAlignment = Alignment.CenterVertically,

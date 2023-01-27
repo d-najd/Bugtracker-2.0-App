@@ -76,7 +76,7 @@ fun BugtrackerExpandableMenu(
 
         if(displaySecondaryDivider) {
             Divider(
-                modifier = Modifier.padding(top = 14.dp)
+                modifier = Modifier.padding(top = if(displayMainDivider) 14.dp else 0.dp)
             )
         }
     }

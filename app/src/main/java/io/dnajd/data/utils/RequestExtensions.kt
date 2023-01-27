@@ -19,6 +19,8 @@ inline fun <reified T> Call<T>.processRequest(): T? {
             Injekt.get<ContextHolder>().composeToast(R.string.error_auth)
         } else if (response.code() == 409) {
             Injekt.get<ContextHolder>().composeToast(R.string.error_duplicate_entry)
+        } else {
+            Injekt.get<ContextHolder>().composeToast("Got code ${response.code()} message ${response.message()} and body ${response.body()}")
         }
 
     } catch (e: Exception){

@@ -56,4 +56,19 @@
     <string name="action_delete_project">Delete Project</string>
     <string name="error_invalid_project_id">Project with given id does not exist</string>
 
+    <!-- authority -->
+    <string name="authority_project_view">View</string>
+    <string name="authority_project_create">Create</string>
+    <string name="authority_project_delete">Delete</string>
+    <string name="authority_project_edit">Edit</string>
+    <string name="authority_manage_users">Manage Users</string>
+    <string name="authority_manage_managers">Manage Managers</string>
+    <string name="authority_owner">Owner</string>
+    <string name="info_authority_project_view">Ability to view tasks</string>
+    <string name="info_authority_project_create">Ability to create tasks</string>
+    <string name="info_authority_project_delete">Ability to delete tasks</string>
+    <string name="info_authority_project_edit">Ability to edit tasks</string>
+    <string name="info_authority_manage_users">Ability to manage users except for the owner and users with the same privilege</string>
+    <string name="info_authority_manage_owner">Ability to do anything with the project</string>
+
 </resources>

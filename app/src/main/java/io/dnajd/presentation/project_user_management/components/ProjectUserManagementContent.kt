@@ -20,10 +20,11 @@ fun ProjectUserManagementContent(
     Column(
         modifier = Modifier
             .padding(contentPadding)
+            .verticalScroll(rememberScrollState()),
     ) {
-        for(authority in state.authorities) {
+        for(userWithAuthorities in state.getUsersWithAuthorities()) {
             ProjectUserManagementItemContent(
-                authority = authority,
+                userWithAuthorities = userWithAuthorities,
             )
         }
     }

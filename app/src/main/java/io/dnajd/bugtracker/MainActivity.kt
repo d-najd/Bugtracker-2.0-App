@@ -11,9 +11,13 @@ import io.dnajd.bugtracker.ui.project.ProjectController
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsController
 import io.dnajd.bugtracker.ui.project_table.ProjectTableController
+import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementController
 import io.dnajd.domain.DomainModule
 import io.dnajd.domain.project.model.Project
+import io.dnajd.domain.user_authority.model.UserAuthority
+import io.dnajd.domain.user_authority.model.UserAuthorityType
 import uy.kohesive.injekt.Injekt
+import java.util.function.BiFunction
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding
@@ -36,14 +40,15 @@ class MainActivity : AppCompatActivity() {
             val projectFake = Project(
                 id = 1,
                 owner = "user1",
-                title = "Project Title",
+                title = "Fake Title",
             )
 
-            router.setRoot(ProjectController())
+            // router.setRoot(ProjectController())
             // router.setRoot(ProjectTableController(projectFake))
             // router.setRoot(TableTaskController(1L))
             // router.setRoot(ProjectSettingsController(projectFake))
             // router.setRoot(ProjectDetailsController(projectFake))
+            router.setRoot(ProjectUserManagementController(1L))
         }
     }
 }
