@@ -9,6 +9,7 @@ import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 import io.dnajd.domain.project_table_task.model.toBasic
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
@@ -99,11 +100,11 @@ class ProjectTableScreenModel(
 
     fun renameTable(id: Long, newName: String) {
         coroutineScope.launchIO {
-            (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == id }!!.let { transientTable ->
+            val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+            tables.find { table -> table.id == id }!!.let { transientTable ->
                 if(renameTable.await(id, newName)) {
                     // doing it this way so that state changes get updated for sure
                     mutableState.update {
-                        val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
                         tables.remove(transientTable)
                         tables.add(transientTable.copy(title = newName))
                         (mutableState.value as ProjectTableScreenState.Success).copy(
@@ -122,12 +123,12 @@ class ProjectTableScreenModel(
      */
     fun swapTablePositions(fId: Long, sId: Long) {
         coroutineScope.launchIO {
-            (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == sId }!!.let { fTable ->
-                (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == fId }!!.let { sTable ->
+            val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+            tables.find { table -> table.id == sId }!!.let { fTable ->
+                tables.find { table -> table.id == fId }!!.let { sTable ->
                     if(swapTables.await(fId, sId)) {
                         // doing it this way so that state changes get updated for sure
                         mutableState.update {
-                            val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
                             tables.remove(fTable)
                             tables.remove(sTable)
                             tables.add(fTable.copy(
@@ -162,49 +163,18 @@ class ProjectTableScreenModel(
             throw IllegalArgumentException("fIndex and sIndex can't be the same")
         }
         coroutineScope.launchIO {
-            (mutableState.value as ProjectTableScreenState.Success).tables.find { table -> table.id == tableId }!!.let { table ->
+            val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+            tables.find { table -> table.id == tableId }!!.let { table ->
                 table.tasks[fIndex].let { fTask ->
                     table.tasks[sIndex].let { sTask ->
                         if(moveTask.await(fTask.id, sTask.id)) {
-                            val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-                            tables.remove(table)
-                            var tasks = table.tasks.toMutableList()
-                            tasks = if (sIndex > fIndex) {
-                                tasks.mapIndexed { index, it ->
-                                    when (index) {
-                                        in (fIndex + 1)..sIndex -> it.copy(
-                                            position = it.position - 1
-                                        )
-                                        fIndex -> it.copy(
-                                            position = sTask.position
-                                        )
-                                        else -> it
-                                    }
-                                }.toMutableList()
-                            } else {
-                                tasks.mapIndexed { index, it ->
-                                    when (index) {
-                                        in sIndex until fIndex -> it.copy(
-                                            position = it.position + 1
-                                        )
-                                        fIndex -> it.copy(
-                                            position = sTask.position
-                                        )
-                                        else -> it
-                                    }
-                                }.toMutableList()
-                            }
-                            tables.add(
-                                table.copy(
-                                    tasks = tasks.sortedBy { it.position },
-                                )
+                            ifMoveTaskSuccess(
+                                tables = tables,
+                                table = table,
+                                sTask = sTask,
+                                fIndex = fIndex,
+                                sIndex = sIndex,
                             )
-                            mutableState.update {
-                                (mutableState.value as ProjectTableScreenState.Success).copy(
-                                    tables = tables.sortedBy { it.position },
-                                    manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
-                                )
-                            }
                         } else {
                             mutableState.update {
                                 (mutableState.value as ProjectTableScreenState.Success).copy(
@@ -215,6 +185,53 @@ class ProjectTableScreenModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun ifMoveTaskSuccess(
+        tables: MutableList<ProjectTable>,
+        table: ProjectTable,
+        sTask: ProjectTableTaskBasic,
+        fIndex: Int,
+        sIndex: Int,
+    ) {
+        tables.remove(table)
+        var tasks = table.tasks.toMutableList()
+        tasks = if (sIndex > fIndex) {
+            tasks.mapIndexed { index, it ->
+                when (index) {
+                    in (fIndex + 1)..sIndex -> it.copy(
+                        position = it.position - 1
+                    )
+                    fIndex -> it.copy(
+                        position = sTask.position
+                    )
+                    else -> it
+                }
+            }.toMutableList()
+        } else {
+            tasks.mapIndexed { index, it ->
+                when (index) {
+                    in sIndex until fIndex -> it.copy(
+                        position = it.position + 1
+                    )
+                    fIndex -> it.copy(
+                        position = sTask.position
+                    )
+                    else -> it
+                }
+            }.toMutableList()
+        }
+        tables.add(
+            table.copy(
+                tasks = tasks.sortedBy { it.position },
+            )
+        )
+        mutableState.update {
+            (mutableState.value as ProjectTableScreenState.Success).copy(
+                tables = tables.sortedBy { it.position },
+                manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
+            )
         }
     }
 

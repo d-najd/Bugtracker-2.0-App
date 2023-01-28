@@ -1,30 +1,37 @@
 package io.dnajd.presentation.project_user_management.components
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementScreenState
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.user_authority.model.UserAuthority
 
 @Composable
 fun ProjectUserManagementContent(
     state: ProjectUserManagementScreenState.Success,
     contentPadding: PaddingValues,
+
+    onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .padding(contentPadding)
             .verticalScroll(rememberScrollState()),
     ) {
-        for(userWithAuthorities in state.getUsersWithAuthorities()) {
+        var usersWithAuthorities by remember { mutableStateOf(state.getUsersWithAuthorities()) }
+        LaunchedEffect(state.authorities) {
+            usersWithAuthorities = state.getUsersWithAuthorities()
+        }
+
+        for(userWithAuthorities in usersWithAuthorities) {
             ProjectUserManagementItemContent(
+                state = state,
                 userWithAuthorities = userWithAuthorities,
+                onInvertAuthorityClicked = onInvertAuthorityClicked,
             )
         }
     }

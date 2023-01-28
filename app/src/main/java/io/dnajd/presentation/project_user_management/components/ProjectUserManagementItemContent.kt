@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementScreenState
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.presentation.components.BugtrackerExpandableMenu
@@ -20,7 +21,10 @@ import io.dnajd.presentation.components.BugtrackerIconPairField
 
 @Composable
 fun ProjectUserManagementItemContent(
+	state: ProjectUserManagementScreenState.Success,
 	userWithAuthorities: Map.Entry<String, List<UserAuthority>>,
+
+	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
 	var expanded by remember { mutableStateOf(false) }
 	BugtrackerExpandableMenu(
@@ -67,12 +71,24 @@ fun ProjectUserManagementItemContent(
 			)
 		},
 		expandableContent = {
+			val containsOwnerAuthority = userWithAuthorities.value.find {
+				it.authority == UserAuthorityType.project_owner
+			}
 			for(authorityType in UserAuthorityType.values()) {
 				ProjectUserManagementExpandableCardContent(
 					title = stringResource(authorityType.titleResId),
 					description = stringResource(authorityType.descriptionResId),
-					checked = userWithAuthorities.value.find { it.authority == authorityType } != null,
-					onClick = { },
+					checked = userWithAuthorities.value.find { it.authority == authorityType } != null || containsOwnerAuthority != null,
+					enabled = (containsOwnerAuthority == null || authorityType == UserAuthorityType.project_owner),
+					onClick = {
+						onInvertAuthorityClicked(
+							UserAuthority(
+								username = userWithAuthorities.key,
+								projectId = state.projectId,
+								authority = authorityType,
+							)
+						)
+					},
 				)
 			}
 		},
@@ -81,16 +97,21 @@ fun ProjectUserManagementItemContent(
 
 @Composable
 private fun ProjectUserManagementExpandableCardContent(
+	modifier: Modifier = Modifier,
 	title: String,
 	description: String,
 	checked: Boolean,
+	enabled: Boolean,
 	onClick: () -> Unit,
 ) {
+	var localModifier = modifier
+		.fillMaxWidth()
+		.padding(vertical = 4.dp)
+	if(enabled) {
+		localModifier = localModifier.clickable { onClick() }
+	}
 	Card(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(vertical = 4.dp)
-			.clickable { onClick() },
+		modifier = localModifier,
 		shape = RoundedCornerShape(4.dp),
 	) {
 		BugtrackerIconPairField(
@@ -104,6 +125,7 @@ private fun ProjectUserManagementExpandableCardContent(
 			},
 			iconContent = {
 				Checkbox(
+					enabled = enabled,
 					modifier = Modifier
 						.size(24.dp),
 					checked = checked,

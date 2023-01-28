@@ -3,6 +3,7 @@ package io.dnajd.bugtracker.ui.project_user_management
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.bugtracker.ui.project.ProjectScreenState
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
@@ -18,7 +19,7 @@ typealias UserAuthorityMap = MutableMap<String, List<UserAuthority>>
 
 class ProjectUserManagementScreenModel(
     context: Context,
-    projectId: Long,
+    val projectId: Long,
 
     private val getUserAuthorities: GetUserAuthorities = Injekt.get(),
     private val createUserAuthority: CreateUserAuthority = Injekt.get(),
@@ -32,6 +33,7 @@ class ProjectUserManagementScreenModel(
             if(authorities.isNotEmpty()) {
                 mutableState.update {
                     ProjectUserManagementScreenState.Success(
+                        projectId = projectId,
                         authorities = authorities,
                     )
                 }
@@ -64,10 +66,22 @@ class ProjectUserManagementScreenModel(
         }
     }
 
-    private fun deleteAuthority(userAuthority: UserAuthority) {
+    /**
+     * removes user authority from given project, if every authority is removed the user will be
+     * removed from the project as well, [agreed] must be true to prevent accidental removal of users
+     */
+    fun deleteAuthority(userAuthority: UserAuthority, agreed: Boolean = false) {
         coroutineScope.launchIO {
-            if (deleteUserAuthority.await(userAuthority)) {
-                val authorities = (mutableState.value as ProjectUserManagementScreenState.Success).authorities.toMutableList()
+            val successState = (mutableState.value as ProjectUserManagementScreenState.Success)
+
+            val authorities = successState.authorities.toMutableList()
+            if(!agreed && authorities.filter { it.username == userAuthority.username }.size <= 1) {
+                mutableState.update {
+                    (mutableState.value as ProjectUserManagementScreenState.Success).copy(
+                        dialog = ProjectUserManagementDialog.ConfirmLastAuthorityRemoval(userAuthority)
+                    )
+                }
+            } else if (deleteUserAuthority.await(userAuthority)) {
                 authorities.remove(userAuthority)
                 mutableState.update {
                     (mutableState.value as ProjectUserManagementScreenState.Success).copy(
@@ -77,6 +91,20 @@ class ProjectUserManagementScreenModel(
             }
         }
     }
+
+    fun dismissDialog() {
+        mutableState.update {
+            when (it) {
+                is ProjectUserManagementScreenState.Success -> it.copy(dialog = null)
+                else -> it
+            }
+        }
+    }
+}
+
+
+sealed class ProjectUserManagementDialog {
+    data class ConfirmLastAuthorityRemoval(val userAuthority: UserAuthority) : ProjectUserManagementDialog()
 }
 
 sealed class ProjectUserManagementScreenState {
@@ -86,7 +114,9 @@ sealed class ProjectUserManagementScreenState {
 
     @Immutable
     data class Success(
+        val projectId: Long,
         val authorities: List<UserAuthority>,
+        val dialog: ProjectUserManagementDialog? = null,
     ): ProjectUserManagementScreenState() {
         fun getUsersWithAuthorities(): Map<String, List<UserAuthority>> {
             val authorityMap: UserAuthorityMap = mutableMapOf()
@@ -100,7 +130,7 @@ sealed class ProjectUserManagementScreenState {
                     }
                 )
             }
-            return authorityMap
+            return authorityMap.toSortedMap()
         }
     }
 

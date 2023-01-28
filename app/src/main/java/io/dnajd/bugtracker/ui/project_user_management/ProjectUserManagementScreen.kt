@@ -1,6 +1,5 @@
 package io.dnajd.bugtracker.ui.project_user_management
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,10 +7,9 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.LoadingScreen
-import io.dnajd.presentation.project_table_task.TableTaskScreenContent
 import io.dnajd.presentation.project_user_management.ProjectUserManagementScreenContent
+import io.dnajd.presentation.project_user_management.dialogs.ConfirmLastAuthorityRemoval
 import io.dnajd.presentation.util.LocalRouter
 
 class ProjectUserManagementScreen(
@@ -36,6 +34,23 @@ class ProjectUserManagementScreen(
         ProjectUserManagementScreenContent(
             state = successState,
             onBackClicked = router::popCurrentController,
+            onInvertAuthorityClicked = screenModel::invertAuthority
         )
+
+        when(val dialog = successState.dialog) {
+            null -> {}
+            is ProjectUserManagementDialog.ConfirmLastAuthorityRemoval -> {
+                ConfirmLastAuthorityRemoval(
+                    onDismissRequest = screenModel::dismissDialog,
+                    onConfirmClicked = {
+                        screenModel.deleteAuthority(
+                            userAuthority = dialog.userAuthority,
+                            agreed = true
+                        )
+                        screenModel.dismissDialog()
+                    }
+                )
+            }
+        }
     }
 }

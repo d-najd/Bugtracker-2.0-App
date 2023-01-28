@@ -70,5 +70,8 @@
     <string name="info_authority_project_edit">Ability to edit tasks</string>
     <string name="info_authority_manage_users">Ability to manage users except for the owner and users with the same privilege</string>
     <string name="info_authority_manage_owner">Ability to do anything with the project</string>
+    <string name="field_remove_user">Remove User</string>
+    <string name="info_remove_last_authority">By removing the last remaining authority that the user possesses, the user will be removed from the project.</string>
+    <string name="info_do_you_wish_to_continue">Do you wish to continue?</string>
 
 </resources>

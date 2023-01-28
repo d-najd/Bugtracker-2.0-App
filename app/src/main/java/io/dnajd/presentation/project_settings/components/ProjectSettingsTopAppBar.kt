@@ -42,7 +42,6 @@ fun ProjectSettingsTopAppBar(
                 selectedTab = ProjectTableSelectedTab.SETTINGS,
                 onTabClicked = onSwitchScreenTabClicked,
             )
-
         }
     )
 }

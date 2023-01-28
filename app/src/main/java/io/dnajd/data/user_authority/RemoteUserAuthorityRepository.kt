@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
@@ -40,7 +41,11 @@ private interface UserAuthorityRepositoryApi {
 		@Body userAuthority: UserAuthority,
 	): Call<UserAuthority>
 
-	@DELETE(Urls.USER_AUTHORITY_RAW)
+	@HTTP(
+		method = "DELETE",
+		path = Urls.USER_AUTHORITY_RAW,
+		hasBody = true,
+	)
 	fun delete(
 		@Body userAuthority: UserAuthority,
 	): Call<Void>
