@@ -74,5 +74,6 @@
     <string name="info_remove_last_authority">By removing the last remaining authority that the user possesses, the user will be removed from the project.</string>
     <string name="info_do_you_wish_to_continue">Do you wish to continue?</string>
     <string name="field_user_management">User Management</string>
+    <string name="field_add_user_to_project">Add user to project</string>
 
 </resources>

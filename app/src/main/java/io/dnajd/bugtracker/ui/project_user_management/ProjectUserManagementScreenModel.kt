@@ -3,6 +3,7 @@ package io.dnajd.bugtracker.ui.project_user_management
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.bugtracker.ui.project.ProjectDialog
 import io.dnajd.bugtracker.ui.project.ProjectScreenState
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
@@ -10,6 +11,7 @@ import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
+import io.dnajd.util.launchUI
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -92,6 +94,16 @@ class ProjectUserManagementScreenModel(
         }
     }
 
+    fun showDialog(dialog: ProjectUserManagementDialog) {
+        coroutineScope.launchUI {
+            mutableState.update {
+                (mutableState.value as ProjectUserManagementScreenState.Success).copy(
+                    dialog = dialog,
+                )
+            }
+        }
+    }
+
     fun dismissDialog() {
         mutableState.update {
             when (it) {
@@ -105,6 +117,7 @@ class ProjectUserManagementScreenModel(
 
 sealed class ProjectUserManagementDialog {
     data class ConfirmLastAuthorityRemoval(val userAuthority: UserAuthority) : ProjectUserManagementDialog()
+    object AddUserToProject : ProjectUserManagementDialog()
 }
 
 sealed class ProjectUserManagementScreenState {

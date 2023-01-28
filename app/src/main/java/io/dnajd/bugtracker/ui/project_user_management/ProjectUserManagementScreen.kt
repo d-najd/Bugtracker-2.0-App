@@ -9,7 +9,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_user_management.ProjectUserManagementScreenContent
-import io.dnajd.presentation.project_user_management.dialogs.ConfirmLastAuthorityRemoval
+import io.dnajd.presentation.project_user_management.dialogs.AddUserToProjectDialog
+import io.dnajd.presentation.project_user_management.dialogs.ConfirmLastAuthorityRemovalDialog
 import io.dnajd.presentation.util.LocalRouter
 
 class ProjectUserManagementScreen(
@@ -34,13 +35,14 @@ class ProjectUserManagementScreen(
         ProjectUserManagementScreenContent(
             state = successState,
             onBackClicked = router::popCurrentController,
-            onInvertAuthorityClicked = screenModel::invertAuthority
+            onInvertAuthorityClicked = screenModel::invertAuthority,
+            onAddUserToProjectClicked = { screenModel.showDialog(ProjectUserManagementDialog.AddUserToProject) }
         )
 
         when(val dialog = successState.dialog) {
             null -> {}
             is ProjectUserManagementDialog.ConfirmLastAuthorityRemoval -> {
-                ConfirmLastAuthorityRemoval(
+                ConfirmLastAuthorityRemovalDialog(
                     onDismissRequest = screenModel::dismissDialog,
                     onConfirmClicked = {
                         screenModel.deleteAuthority(
@@ -48,6 +50,15 @@ class ProjectUserManagementScreen(
                             agreed = true
                         )
                         screenModel.dismissDialog()
+                    }
+                )
+            }
+            is ProjectUserManagementDialog.AddUserToProject -> {
+                AddUserToProjectDialog(
+                    onDismissRequest = screenModel::dismissDialog,
+                    projectId = successState.projectId,
+                    onConfirmClicked = {
+
                     }
                 )
             }
