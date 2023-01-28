@@ -43,12 +43,12 @@ class MainActivity : AppCompatActivity() {
                 title = "Fake Title",
             )
 
-            // router.setRoot(ProjectController())
+            router.setRoot(ProjectController())
             // router.setRoot(ProjectTableController(projectFake))
             // router.setRoot(TableTaskController(1L))
             // router.setRoot(ProjectSettingsController(projectFake))
             // router.setRoot(ProjectDetailsController(projectFake))
-            router.setRoot(ProjectUserManagementController(1L))
+            // router.setRoot(ProjectUserManagementController(1L))
         }
     }
 }

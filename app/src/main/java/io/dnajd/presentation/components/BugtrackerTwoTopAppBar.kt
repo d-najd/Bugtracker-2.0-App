@@ -27,7 +27,6 @@ fun BugtrackerTwoAppBar(
         modifier = modifier,
     ) {
         TopAppBar(
-            modifier = Modifier.shadow(elevation = 4.dp),
             navigationIcon = navigationIcon,
             title = title,
             actions = actions,

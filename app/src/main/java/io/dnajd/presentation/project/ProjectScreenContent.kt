@@ -25,7 +25,6 @@ fun ProjectScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.shadow(elevation = 4.dp),
                 title = {
                     Text(
                         text = stringResource(R.string.field_projects),
