@@ -52,21 +52,8 @@ interface ProjectRepositoryApi {
     @POST
     fun createProject(@Body project: Project): Call<Project>
 
-    /*
-    /**
-     * @see updateNoBody
-     */
-    @PUT("{id}")
-    fun update(
-        @Path("id") id: Long,
-        @Query("title") title: String? = null,
-        @Query("description") description: String? = null,
-    ): Call<Project>
-     */
-
     /**
      * Do not modify [returnBody]
-     * @see update
      */
     @PUT("{id}")
     fun updateNoBody(

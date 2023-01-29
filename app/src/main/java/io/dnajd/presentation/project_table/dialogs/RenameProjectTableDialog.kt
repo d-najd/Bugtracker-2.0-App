@@ -47,8 +47,8 @@ fun RenameProjectTableDialog(
                 modifierText = Modifier
                     .fillMaxWidth(),
                 label = stringResource(R.string.field_column_name),
-                title = newTitle,
-                onTitleChange = { newTitle = it }
+                value = newTitle,
+                onValueChange = { newTitle = it }
             )
         }
     )

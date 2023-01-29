@@ -50,8 +50,8 @@ fun CreateProjectDialog(
                 modifierText = Modifier
                     .fillMaxWidth(),
                 label = stringResource(R.string.field_project_title),
-                title = title,
-                onTitleChange = { title = it }
+                value = title,
+                onValueChange = { title = it }
             )
         }
     )

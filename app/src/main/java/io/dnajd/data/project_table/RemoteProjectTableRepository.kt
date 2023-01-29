@@ -63,20 +63,8 @@ private interface ProjectTableRepositoryApi {
     @POST
     fun createTable(@Body table: ProjectTable): Call<ProjectTable>
 
-    /*
-    /**
-     * @see updateNoBody
-     */
-    @PUT("{id}")
-    fun update(
-        @Path("id") id: Long,
-        @Query("title") title: String? = null,
-    ): Call<ProjectTable>
-     */
-
     /**
      * Do not modify [returnBody]
-     * @see update
      */
     @PUT("{id}")
     fun updateNoBody(

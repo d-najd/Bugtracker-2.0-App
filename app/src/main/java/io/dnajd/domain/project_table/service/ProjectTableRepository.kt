@@ -1,9 +1,6 @@
 package io.dnajd.domain.project_table.service
 
 import io.dnajd.domain.project_table.model.ProjectTable
-import retrofit2.Call
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ProjectTableRepository {
     /**

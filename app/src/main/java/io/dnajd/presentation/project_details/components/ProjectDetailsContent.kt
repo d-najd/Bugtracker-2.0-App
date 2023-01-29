@@ -8,7 +8,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -72,8 +71,8 @@ fun ProjectDetailsContent(
            modifierText = Modifier
                .fillMaxWidth()
                .onFocusChanged { expanded = it.isFocused },
-           title = projectTitle,
-           onTitleChange = { projectTitle = it },
+           value = projectTitle,
+           onValueChange = { projectTitle = it },
            expanded = expanded,
            label = stringResource(R.string.field_project_title),
            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

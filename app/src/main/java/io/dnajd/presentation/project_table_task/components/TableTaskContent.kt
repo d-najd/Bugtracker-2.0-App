@@ -5,19 +5,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
+import io.dnajd.presentation.components.BugtrackerExpandableTextField
+import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
 import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
+import io.dnajd.presentation.components.BugtrackerTextField
 import io.dnajd.presentation.project_table_task.components.comment.TableTaskActivityContent
 
 @ExperimentalMaterial3Api
@@ -31,7 +37,10 @@ fun TableTaskContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(contentPadding)
-            .padding(horizontal = 12.dp, vertical = 36.dp),
+            .padding(
+                horizontal = 12.dp,
+                vertical = 36.dp
+            ),
     ) {
         val task = state.task
 
@@ -56,16 +65,29 @@ fun TableTaskContent(
             )
         }
 
-        BasicTextField(
-            modifier = Modifier.padding(top = 13.dp),
+        var expanded by remember { mutableStateOf(false) }
+        var taskTitle = task.title
+
+        BugtrackerExpandableTextField(
+            modifier = Modifier
+                .padding(top = 13.dp)
+                .fillMaxWidth()
+                .onFocusChanged { expanded = it.isFocused },
             value = task.title,
-            onValueChange = { },
+            onValueChange =  { taskTitle = it },
+            expanded = expanded,
             textStyle = TextStyle(
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Thin,
             ),
-            maxLines = 2,
-        )
+            includeDivider = false,
+        ) {
+            BugtrackerExpandableTextFieldDefaults.Content(
+                onCancelClicked = { expanded = false },
+                onConfirmClicked = { },
+                confirmEnabled = taskTitle != task.title && taskTitle.isNotEmpty()
+            )
+        }
 
         Card(
             modifier = Modifier

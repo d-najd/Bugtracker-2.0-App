@@ -56,8 +56,8 @@ fun CreateProjectTableDialog(
                 modifierText = Modifier
                     .fillMaxWidth(),
                 label = stringResource(R.string.field_column_name),
-                title = title,
-                onTitleChange = { title = it }
+                value = title,
+                onValueChange = { title = it }
             )
         }
     )

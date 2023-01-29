@@ -2,7 +2,6 @@ package io.dnajd.presentation.components
 
 import android.annotation.SuppressLint
 import android.view.ViewTreeObserver
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,10 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextGeometricTransform
-import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,10 +27,11 @@ import io.dnajd.bugtracker.R
 fun BugtrackerTextField(
     @SuppressLint("ModifierParameter") modifierText: Modifier = Modifier,
     modifier: Modifier = Modifier,
-    title: String,
-    onTitleChange: (String) -> Unit,
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String? = null,
     includeDivider: Boolean = true,
+    textStyle: TextStyle? = null,
     dividerColor: Color = MaterialTheme.colorScheme.onSurface,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -49,9 +45,9 @@ fun BugtrackerTextField(
         }
         BasicTextField(
             modifier = modifierText.padding(top = 8.dp, bottom = 3.dp),
-            value = title,
-            onValueChange = { onTitleChange(it) },
-            textStyle = TextStyle(
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = textStyle ?: TextStyle(
                 fontSize = 15.sp,
             ),
             singleLine = true,
@@ -89,8 +85,8 @@ fun BugtrackerTextFieldPreview() {
             modifierText = Modifier
                 .fillMaxWidth(),
             label = stringResource(R.string.field_project_title),
-            title = title,
-            onTitleChange = { title = it }
+            value = title,
+            onValueChange = { title = it }
         )
     }
 }

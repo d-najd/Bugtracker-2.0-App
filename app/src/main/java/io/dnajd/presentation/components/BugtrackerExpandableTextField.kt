@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import io.dnajd.bugtracker.R
 
@@ -25,8 +26,10 @@ fun BugtrackerExpandableTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isKeyboardEnabled: ((Boolean) -> Unit)? = null,
-    title: String,
-    onTitleChange: (String) -> Unit,
+    textStyle: TextStyle? = null,
+    includeDivider: Boolean = true,
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String? = null,
     expanded: Boolean,
     enter: EnterTransition = fadeIn() + expandVertically(),
@@ -38,12 +41,14 @@ fun BugtrackerExpandableTextField(
     ) {
         BugtrackerTextField(
             modifierText = modifierText,
-            title = title,
-            onTitleChange = onTitleChange,
+            value = value,
+            onValueChange = onValueChange,
             label = label,
+            textStyle = textStyle,
             keyboardActions = keyboardActions,
             keyboardOptions = keyboardOptions,
             isKeyboardEnabled = isKeyboardEnabled,
+            includeDivider = includeDivider,
             dividerColor = if(expanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
         )
 
@@ -75,8 +80,8 @@ private fun BugtrackerExpandableTextFieldPreview() {
                 .fillMaxWidth()
                 .onFocusChanged { expanded = it.isFocused },
             expanded = expanded,
-            title = title,
-            onTitleChange = { title = it },
+            value = title,
+            onValueChange = { title = it },
             label = stringResource(R.string.field_project),
         ) {
             BugtrackerExpandableTextFieldDefaults.Content(
@@ -103,7 +108,9 @@ object BugtrackerExpandableTextFieldDefaults {
             horizontalArrangement = Arrangement.End,
         ) {
             TextButton(onClick = onCancelClicked) {
-                Text(text = cancelText)
+                Text(
+                    text = cancelText,
+                )
             }
             TextButton(
                 enabled = confirmEnabled,
