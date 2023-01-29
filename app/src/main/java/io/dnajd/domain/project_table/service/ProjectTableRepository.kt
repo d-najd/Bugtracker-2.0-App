@@ -1,6 +1,9 @@
 package io.dnajd.domain.project_table.service
 
 import io.dnajd.domain.project_table.model.ProjectTable
+import retrofit2.Call
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProjectTableRepository {
     /**
@@ -26,13 +29,10 @@ interface ProjectTableRepository {
      */
     suspend fun create(table: ProjectTable): ProjectTable?
 
-    /**
-     * Changes the title on already existing table to a new title
-     * @param id id of the table
-     * @param newTitle the new title
-     * @return true if the request was successful false if it wasn't
-     */
-    suspend fun changeTitle(id: Long, newTitle: String): Boolean
+    suspend fun updateNoBody(
+        id: Long,
+        title: String? = null,
+    ): Boolean
 
     /**
      * Swaps the positions of 2 tables

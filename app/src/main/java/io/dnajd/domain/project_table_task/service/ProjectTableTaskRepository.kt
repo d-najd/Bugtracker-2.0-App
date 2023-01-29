@@ -18,6 +18,13 @@ interface ProjectTableTaskRepository {
      */
     suspend fun create(task: ProjectTableTask): ProjectTableTask?
 
+    suspend fun updateNoBody(
+        id: Long,
+        title: String? = null,
+        description: String? = null,
+        severity: Int? = null
+    ): Boolean
+
     /**
      * moves task from one position to another, this is different from moving tasks
      * @param fId id of the first task

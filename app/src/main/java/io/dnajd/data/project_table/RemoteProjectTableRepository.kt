@@ -30,8 +30,13 @@ object RemoteProjectTableRepository : ProjectTableRepository {
     override suspend fun create(table: ProjectTable): ProjectTable? =
         factory.createTable(table).processRequest()
 
-    override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
-        factory.updateNoBody(id = id, title = newTitle).processVoidRequest()
+    override suspend fun updateNoBody(
+        id: Long,
+        title: String?
+    ): Boolean = factory.updateNoBody(
+        id = id,
+        title = title,
+    ).processVoidRequest()
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
         factory.swapTablePositions(id = fId, sId = sId).processVoidRequest()
@@ -58,6 +63,7 @@ private interface ProjectTableRepositoryApi {
     @POST
     fun createTable(@Body table: ProjectTable): Call<ProjectTable>
 
+    /*
     /**
      * @see updateNoBody
      */
@@ -66,6 +72,7 @@ private interface ProjectTableRepositoryApi {
         @Path("id") id: Long,
         @Query("title") title: String? = null,
     ): Call<ProjectTable>
+     */
 
     /**
      * Do not modify [returnBody]

@@ -18,7 +18,11 @@ object FakeProjectRepository : ProjectRepository {
     @Suppress("RedundantNullableReturnType")
     override suspend fun create(project: Project): Project? = project
 
-    override suspend fun changeTitle(id: Long, newTitle: String): Boolean = true
+    override suspend fun updateNoBody(
+        id: Long,
+        title: String?,
+        description: String?
+    ): Boolean = true
 
     override suspend fun delete(id: Long): Boolean = true
 

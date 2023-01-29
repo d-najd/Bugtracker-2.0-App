@@ -5,5 +5,5 @@ import io.dnajd.domain.project.service.ProjectRepository
 class RenameProject(
     private val repository: ProjectRepository,
 ) {
-    suspend fun await(id: Long, newTitle: String): Boolean = repository.changeTitle(id, newTitle)
+    suspend fun await(id: Long, newTitle: String): Boolean = repository.updateNoBody(id = id, title = newTitle)
 }

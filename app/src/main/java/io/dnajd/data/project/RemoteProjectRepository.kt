@@ -26,8 +26,15 @@ object RemoteProjectRepository : ProjectRepository {
     override suspend fun create(project: Project): Project? =
         factory.createProject(project).processRequest()
 
-    override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
-        factory.updateNoBody(id = id, title = newTitle).processVoidRequest()
+    override suspend fun updateNoBody(
+        id: Long,
+        title: String?,
+        description: String?
+    ): Boolean = factory.updateNoBody(
+        id = id,
+        title = title,
+        description = description
+    ).processVoidRequest()
 
     override suspend fun delete(id: Long): Boolean =
         factory.deleteProject(id).processVoidRequest()
@@ -45,6 +52,7 @@ interface ProjectRepositoryApi {
     @POST
     fun createProject(@Body project: Project): Call<Project>
 
+    /*
     /**
      * @see updateNoBody
      */
@@ -54,6 +62,7 @@ interface ProjectRepositoryApi {
         @Query("title") title: String? = null,
         @Query("description") description: String? = null,
     ): Call<Project>
+     */
 
     /**
      * Do not modify [returnBody]
