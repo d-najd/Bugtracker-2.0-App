@@ -87,6 +87,7 @@ class ProjectScreenModel(
      */
 }
 
+
 sealed class ProjectDialog {
     data class CreateProject(val title: String = "") : ProjectDialog()
 }

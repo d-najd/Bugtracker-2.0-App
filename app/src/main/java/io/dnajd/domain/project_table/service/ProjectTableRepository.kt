@@ -6,9 +6,18 @@ interface ProjectTableRepository {
     /**
      * Gets all tables associated with [projectId]
      * @param projectId id of the project in which the tables are located at
+     * @param ignoreTasks if true tasks wont be sent in the response
      * @return list of received tables, empty list will be returned if the request failed
      */
-    suspend fun getAll(projectId: Long): List<ProjectTable>
+    suspend fun getAll(projectId: Long, ignoreTasks: Boolean): List<ProjectTable>
+
+    /**
+     * Gets one table
+     * @param id id of the table
+     * @param ignoreTasks if true tasks wont be sent in the response
+     * @return list of received tables, empty list will be returned if the request failed
+     */
+    suspend fun getOne(id: Long, ignoreTasks: Boolean): ProjectTable?
 
     /**
      * Creates project table

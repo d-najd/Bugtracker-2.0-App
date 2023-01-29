@@ -18,7 +18,7 @@ import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.GetProjectTableTasks
+import io.dnajd.domain.project_table_task.interactor.GetProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
 import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
@@ -36,7 +36,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = true
+        private const val USE_FAKES = false
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -62,7 +62,8 @@ class DomainModule : InjektModule {
         }
 
         addSingletonFactory {
-            Injekt.get<Retrofit.Builder>().build()
+            Injekt.get<Retrofit.Builder>()
+                .build()
         }
 
         when (USE_FAKES) {
@@ -85,13 +86,13 @@ class DomainModule : InjektModule {
         addFactory { RenameProject(get()) }
         addFactory { DeleteProject(get()) }
 
-        addFactory { GetProjectTables(get()) }
+        addFactory { GetProjectTable(get()) }
         addFactory { CreateProjectTable(get()) }
         addFactory { RenameProjectTable(get()) }
         addFactory { SwapProjectTables(get()) }
         addFactory { DeleteProjectTable(get()) }
 
-        addFactory { GetProjectTableTasks(get()) }
+        addFactory { GetProjectTableTask(get()) }
         addFactory { CreateProjectTableTask(get()) }
         addFactory { SwapProjectTableTasks(get()) }
         addFactory { MoveProjectTableTask(get()) }

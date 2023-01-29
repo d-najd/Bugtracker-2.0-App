@@ -75,5 +75,10 @@
     <string name="info_do_you_wish_to_continue">Do you wish to continue?</string>
     <string name="field_user_management">User Management</string>
     <string name="field_add_user_to_project">Add user to project</string>
+    <string name="field_name_of_user">Name of user</string>
+    <string name="field_username">Username</string>
+    <string name="error_user_authority_does_not_exist">Unable to remove user authority since it does not exist</string>
+    <string name="error_user_authority_already_exists">Unable to create user authority since it already exists</string>
+    <string name="error_unhandled">Unhandled exception</string>
 
 </resources>

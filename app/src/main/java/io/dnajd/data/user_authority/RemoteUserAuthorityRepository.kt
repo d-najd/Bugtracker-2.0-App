@@ -9,7 +9,6 @@ import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
@@ -18,7 +17,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteUserAuthorityRepository: UserAuthorityRepository {
-	private var factory: UserAuthorityRepositoryApi = Injekt.get<Retrofit>().create(UserAuthorityRepositoryApi::class.java)
+	private val factory: UserAuthorityRepositoryApi =
+		Injekt.get<Retrofit.Builder>()
+			.baseUrl(Urls.apiAppend(Urls.USER_AUTHORITY_RAW)).build().create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): List<UserAuthority> =
 		factory.get(projectId).processRequest()?.data ?: emptyList()
@@ -31,12 +32,12 @@ object RemoteUserAuthorityRepository: UserAuthorityRepository {
 }
 
 private interface UserAuthorityRepositoryApi {
-	@GET("${Urls.USER_AUTHORITY_RAW}/projectId/{projectId}")
+	@GET("projectId/{projectId}")
 	fun get(
 		@Path("projectId") projectId: Long
 	): Call<UserAuthorityHolder>
 
-	@POST(Urls.USER_AUTHORITY_RAW)
+	@POST
 	fun create(
 		@Body userAuthority: UserAuthority,
 	): Call<UserAuthority>

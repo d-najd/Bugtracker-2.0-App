@@ -81,7 +81,7 @@ fun TableTaskContent(
                         modifier = Modifier.padding(start = 3.5.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        text = "INSERT PROJECT TITLE",
+                        text = state.parentTable.title,
                     )
                 },
                 includeDropdownArrow = true,

@@ -11,13 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
-import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreenState
 import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementScreenState
 import io.dnajd.domain.user_authority.model.UserAuthority
-import io.dnajd.presentation.components.LoadingScreen
-import io.dnajd.presentation.project_settings.components.ProjectSettingsContent
-import io.dnajd.presentation.project_settings.components.ProjectSettingsTopAppBar
 import io.dnajd.presentation.project_user_management.components.ProjectUserManagementContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +52,7 @@ fun ProjectUserManagementScreenContent(
                     }
                 }
             )
-        }
+        },
     ) { contentPadding ->
         BackHandler { onBackClicked() }
 

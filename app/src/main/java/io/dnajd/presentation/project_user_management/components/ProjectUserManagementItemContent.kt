@@ -62,7 +62,7 @@ fun ProjectUserManagementItemContent(
 
 					Text(
 						modifier = Modifier.padding(start = 2.dp),
-						text = "Display role CHANGE THIS",
+						text = "ROLE-CUSTOM",
 						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 						fontSize = 12.sp,
 						fontWeight = FontWeight.ExtraLight,

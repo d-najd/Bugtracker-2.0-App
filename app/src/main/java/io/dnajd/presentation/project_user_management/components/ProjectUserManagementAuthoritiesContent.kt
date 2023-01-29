@@ -20,13 +20,15 @@ import io.dnajd.presentation.components.BugtrackerIconPairField
 
 @Composable
 fun ProjectUserManagementAuthoritiesContent(
+	modifier: Modifier = Modifier,
 	projectId: Long,
 	username: String,
 	authorities: List<UserAuthority>,
 	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
-	Column {
-
+	Column(
+		modifier = modifier
+	) {
 		val containsOwnerAuthority = authorities.find {
 			it.authority == UserAuthorityType.project_owner
 		}

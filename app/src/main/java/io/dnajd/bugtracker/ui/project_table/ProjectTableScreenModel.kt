@@ -19,16 +19,16 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
-    context: Context,
-    project: Project,
+	context: Context,
+	project: Project,
 
-    private val getTables: GetProjectTables = Injekt.get(),
-    private val createTable: CreateProjectTable = Injekt.get(),
-    private val createTask: CreateProjectTableTask = Injekt.get(),
-    private val renameTable: RenameProjectTable = Injekt.get(),
-    private val swapTables: SwapProjectTables = Injekt.get(),
-    private val moveTask: MoveProjectTableTask = Injekt.get(),
-    private val deleteTable: DeleteProjectTable = Injekt.get(),
+	private val getTables: GetProjectTable = Injekt.get(),
+	private val createTable: CreateProjectTable = Injekt.get(),
+	private val createTask: CreateProjectTableTask = Injekt.get(),
+	private val renameTable: RenameProjectTable = Injekt.get(),
+	private val swapTables: SwapProjectTables = Injekt.get(),
+	private val moveTask: MoveProjectTableTask = Injekt.get(),
+	private val deleteTable: DeleteProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context,
     ProjectTableScreenState.Loading(project)
 ) {

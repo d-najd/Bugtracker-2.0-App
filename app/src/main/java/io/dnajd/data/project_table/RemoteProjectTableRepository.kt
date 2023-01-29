@@ -13,16 +13,25 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectTableRepository : ProjectTableRepository {
-    private var factory: ProjectTableRepositoryApi = Injekt.get<Retrofit>().create(ProjectTableRepositoryApi::class.java)
+    private val factory: ProjectTableRepositoryApi =
+        Injekt.get<Retrofit.Builder>()
+            .baseUrl(Urls.apiAppend(Urls.PROJECT_TABLE_RAW)).build().create(ProjectTableRepositoryApi::class.java)
 
-    override suspend fun getAll(projectId: Long): List<ProjectTable> =
-        factory.getTablesByProjectId(projectId).processRequest()?.data ?: emptyList()
+    override suspend fun getAll(
+        projectId: Long,
+        ignoreTasks: Boolean
+    ): List<ProjectTable> = factory.getTablesByProjectId(projectId, ignoreTasks).processRequest()?.data ?: emptyList()
+
+    override suspend fun getOne(
+        id: Long,
+        ignoreTasks: Boolean
+    ): ProjectTable? = factory.getById(id, ignoreTasks).processRequest()
 
     override suspend fun create(table: ProjectTable): ProjectTable? =
         factory.createTable(table).processRequest()
 
     override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
-        factory.renameTable(id, newTitle).processVoidRequest()
+        factory.updateNoBody(id = id, title = newTitle).processVoidRequest()
 
     override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
         factory.swapTablePositions(id = fId, sId = sId).processVoidRequest()
@@ -34,24 +43,47 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 
 private interface ProjectTableRepositoryApi {
 
-    @GET("${Urls.PROJECT_TABLE_RAW}/projectId/{projectId}")
-    fun getTablesByProjectId(@Path("projectId") projectId: Long): Call<ProjectTableHolder>
+    @GET("projectId/{projectId}")
+    fun getTablesByProjectId(
+        @Path("projectId") projectId: Long,
+        @Query("ignoreIssues") ignoreTasks: Boolean,
+    ): Call<ProjectTableHolder>
 
-    @POST(Urls.PROJECT_TABLE_RAW)
+    @GET("id/{id}")
+    fun getById(
+        @Path("id") id: Long,
+        @Query("ignoreIssues") ignoreTasks: Boolean,
+    ): Call<ProjectTable>
+
+    @POST
     fun createTable(@Body table: ProjectTable): Call<ProjectTable>
 
-    @PATCH("${Urls.PROJECT_TABLE_RAW}/{id}/title/{newTitle}")
-    fun renameTable(
+    /**
+     * @see updateNoBody
+     */
+    @PUT("{id}")
+    fun update(
         @Path("id") id: Long,
-        @Path("newTitle") newTitle: String
+        @Query("title") title: String? = null,
+    ): Call<ProjectTable>
+
+    /**
+     * Do not modify [returnBody]
+     * @see update
+     */
+    @PUT("{id}")
+    fun updateNoBody(
+        @Path("id") id: Long,
+        @Query("title") title: String? = null,
+        @Query("returnBody") returnBody: Boolean = false,
     ): Call<Void>
 
-    @PATCH("${Urls.PROJECT_TABLE_RAW}/{id}/swapPositionWith/{sId}")
+    @PATCH("{id}/swapPositionWith/{sId}")
     fun swapTablePositions(
         @Path("id") id: Long,
         @Path("sId") sId: Long,
     ): Call<Void>
 
-    @DELETE("${Urls.PROJECT_TABLE_RAW}/{id}")
+    @DELETE("{id}")
     fun deleteTable(@Path("id") id: Long) : Call<Void>
 }

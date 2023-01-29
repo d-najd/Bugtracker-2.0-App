@@ -4,7 +4,6 @@ import io.dnajd.data.utils.Urls
 import io.dnajd.data.utils.processRequest
 import io.dnajd.data.utils.processVoidRequest
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
-import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -17,7 +16,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectTableTaskRepository : ProjectTableTaskRepository {
-    private var factory: ProjectTableTaskRepositoryApi = Injekt.get<Retrofit>().create(ProjectTableTaskRepositoryApi::class.java)
+    private val factory: ProjectTableTaskRepositoryApi =
+        Injekt.get<Retrofit.Builder>()
+            .baseUrl(Urls.apiAppend(Urls.PROJECT_TABLE_TASK_RAW)).build().create(ProjectTableTaskRepositoryApi::class.java)
 
     override suspend fun get(taskId: Long): ProjectTableTask? =
         factory.get(taskId).processRequest()
@@ -35,23 +36,23 @@ object RemoteProjectTableTaskRepository : ProjectTableTaskRepository {
 
 private interface ProjectTableTaskRepositoryApi {
 
-    @GET("${Urls.PROJECT_TABLE_TASK_RAW}/{id}")
+    @GET("{id}")
     fun get(
         @Path("id") id: Long
     ): Call<ProjectTableTask>
 
-    @POST(Urls.PROJECT_TABLE_TASK_RAW)
+    @POST
     fun create(
         @Body task: ProjectTableTask,
     ): Call<ProjectTableTask>
 
-    @PATCH("${Urls.PROJECT_TABLE_TASK_RAW}/{id}/swapPositionWith/{sId}")
+    @PATCH("{id}/swapPositionWith/{sId}")
     fun swapTaskPositions(
         @Path("id") id: Long,
         @Path("sId") sId: Long,
     ): Call<Void>
 
-    @PATCH("${Urls.PROJECT_TABLE_TASK_RAW}/{id}/movePositionTo/{sId}")
+    @PATCH("{id}/movePositionTo/{sId}")
     fun moveTaskPositions(
         @Path("id") id: Long,
         @Path("sId") sId: Long,

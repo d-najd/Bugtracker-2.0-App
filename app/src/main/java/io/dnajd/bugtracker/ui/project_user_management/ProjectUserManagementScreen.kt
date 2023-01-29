@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project_user_management
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -12,6 +13,8 @@ import io.dnajd.presentation.project_user_management.ProjectUserManagementScreen
 import io.dnajd.presentation.project_user_management.dialogs.AddUserToProjectDialog
 import io.dnajd.presentation.project_user_management.dialogs.ConfirmLastAuthorityRemovalDialog
 import io.dnajd.presentation.util.LocalRouter
+import io.dnajd.util.toast
+import kotlinx.coroutines.flow.collectLatest
 
 class ProjectUserManagementScreen(
     private val projectId: Long
@@ -22,6 +25,14 @@ class ProjectUserManagementScreen(
         val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel { ProjectUserManagementScreenModel(context, projectId) }
+
+        LaunchedEffect(Unit) {
+            screenModel.events.collectLatest { event ->
+                if(event is ProjectUserManagementEvent.LocalizedMessage) {
+                    context.toast(event.stringRes)
+                }
+            }
+        }
 
         val state by screenModel.state.collectAsState()
 
@@ -57,9 +68,7 @@ class ProjectUserManagementScreen(
                 AddUserToProjectDialog(
                     onDismissRequest = screenModel::dismissDialog,
                     projectId = successState.projectId,
-                    onConfirmClicked = {
-
-                    }
+                    onConfirmClicked = screenModel::createAuthority
                 )
             }
         }

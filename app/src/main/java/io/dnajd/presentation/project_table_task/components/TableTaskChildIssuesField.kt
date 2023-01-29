@@ -66,8 +66,7 @@ fun TableTaskChildIssuesField(
                     iconContent = {
                         Icon(
                             imageVector = Icons.Default.TaskAlt,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                     },
                     textContent = {

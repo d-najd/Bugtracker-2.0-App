@@ -3,7 +3,6 @@ package io.dnajd.data.utils
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.util.view.ContextHolder
 import retrofit2.Call
-import retrofit2.Response
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.IOException
@@ -20,7 +19,8 @@ inline fun <reified T> Call<T>.processRequest(): T? {
         } else if (response.code() == 409) {
             Injekt.get<ContextHolder>().composeToast(R.string.error_duplicate_entry)
         } else {
-            Injekt.get<ContextHolder>().composeToast("Got code ${response.code()} message ${response.message()} and body ${response.body()}")
+            val contextHolder = Injekt.get<ContextHolder>()
+            contextHolder.composeToast("${contextHolder.getString(R.string.error_unhandled)} code ${response.code()}")
         }
 
     } catch (e: Exception){
@@ -33,6 +33,9 @@ inline fun <reified T> Call<T>.processRequest(): T? {
     return null
 }
 
+/**
+ * @return true for successful requests
+ */
 fun <T> Call<T>.processVoidRequest(): Boolean {
     try{
         val response = execute()
@@ -42,6 +45,9 @@ fun <T> Call<T>.processVoidRequest(): Boolean {
             Injekt.get<ContextHolder>().composeToast(R.string.error_auth)
         } else if (response.code() == 409) {
             Injekt.get<ContextHolder>().composeToast(R.string.error_duplicate_entry)
+        } else {
+            val contextHolder = Injekt.get<ContextHolder>()
+            contextHolder.composeToast("${contextHolder.getString(R.string.error_unhandled)} code ${response.code()}")
         }
 
     } catch (e: Exception){

@@ -8,12 +8,15 @@ import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
 
-    override suspend fun getAll(projectId: Long): List<ProjectTable> = listOf(
+    override suspend fun getAll(
+        projectId: Long,
+        ignoreTasks: Boolean
+    ): List<ProjectTable> = listOf(
         ProjectTable(
             id = 1,
             title = "Table 1",
             position = 0,
-            tasks = listOf(
+            tasks = if (!ignoreTasks) listOf(
                 ProjectTableTaskBasic(
                     id = 1,
                     title = "Issue 1",
@@ -68,13 +71,13 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = emptyList(),
                     childTasks = emptyList(),
                 ),
-            )
+            ) else emptyList()
         ),
         ProjectTable(
             id = 2,
             title = "Table 2",
             position = 1,
-            tasks = listOf(
+            tasks = if (!ignoreTasks) listOf(
                 ProjectTableTaskBasic(
                     id = 5,
                     title = "Issue 5",
@@ -85,7 +88,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = emptyList(),
                     childTasks = emptyList(),
                 ),
-            ),
+            ) else emptyList(),
         ),
         ProjectTable(
             id = 3,
@@ -93,6 +96,71 @@ object FakeProjectTableRepository : ProjectTableRepository {
             position = 2,
             tasks = emptyList(),
         ),
+    )
+
+    override suspend fun getOne(
+        id: Long,
+        ignoreTasks: Boolean
+    ) = ProjectTable(
+        id = 1,
+        title = "Table 1",
+        position = 0,
+        tasks = if (!ignoreTasks) listOf(
+            ProjectTableTaskBasic(
+                id = 1,
+                title = "Issue 1",
+                tableId = 1,
+                parentTaskId = null,
+                severity = 1,
+                position = 0,
+                labels = listOf(
+                    ProjectLabel(
+                        id = 1,
+                        label = "LABEL 1",
+                    ),
+                    ProjectLabel(
+                        id = 2,
+                        label = "LABEL 2",
+                    ),
+                ),
+                childTasks = listOf(
+                    ProjectTableChildTaskBasic(id = 2),
+                    ProjectTableChildTaskBasic(id = 4),
+                ),
+            ),
+            ProjectTableTaskBasic(
+                id = 2,
+                title = "Issue 2",
+                tableId = 1,
+                parentTaskId = 1,
+                severity = 3,
+                position = 1,
+                labels = emptyList(),
+                childTasks = listOf(
+                    ProjectTableChildTaskBasic(id = 3),
+                )
+            ),
+            ProjectTableTaskBasic(
+                id = 3,
+                title = "Issue 3",
+                tableId = 1,
+                parentTaskId = 2,
+                severity = 3,
+                position = 2,
+                labels = emptyList(),
+                childTasks = emptyList(),
+            ),
+            ProjectTableTaskBasic(
+                id = 4,
+                title = "Issue 4",
+                tableId = 1,
+                parentTaskId = 2,
+                severity = 3,
+                position = 3,
+                labels = emptyList(),
+                childTasks = emptyList(),
+            ),
+        ) else emptyList(),
     )
 
     @Suppress("RedundantNullableReturnType")

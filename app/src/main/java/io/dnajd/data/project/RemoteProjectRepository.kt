@@ -13,7 +13,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectRepository : ProjectRepository {
-    private var factory: ProjectRepositoryApi = Injekt.get<Retrofit>().create(ProjectRepositoryApi::class.java)
+    private val factory: ProjectRepositoryApi =
+        Injekt.get<Retrofit.Builder>()
+            .baseUrl(Urls.apiAppend(Urls.PROJECT_RAW)).build().create(ProjectRepositoryApi::class.java)
 
     override suspend fun getAll(username: String): List<Project> =
         factory.getProjectsByUsername(username).processRequest()?.data ?: emptyList()
@@ -25,31 +27,47 @@ object RemoteProjectRepository : ProjectRepository {
         factory.createProject(project).processRequest()
 
     override suspend fun changeTitle(id: Long, newTitle: String): Boolean =
-        factory.renameProject(id, newTitle).processVoidRequest()
+        factory.updateNoBody(id = id, title = newTitle).processVoidRequest()
 
     override suspend fun delete(id: Long): Boolean =
         factory.deleteProject(id).processVoidRequest()
 
 }
 
-private interface ProjectRepositoryApi {
+interface ProjectRepositoryApi {
 
-    @GET("${Urls.PROJECT_RAW}/user/{username}")
+    @GET("user/{username}")
     fun getProjectsByUsername(@Path("username") username: String): Call<ProjectHolder>
 
-    @GET("${Urls.PROJECT_RAW}/{id}")
+    @GET("{id}")
     fun getProjectById(@Path("id") id: Long) : Call<Project>
 
-    @POST(Urls.PROJECT_RAW)
+    @POST
     fun createProject(@Body project: Project): Call<Project>
 
-    @PATCH("${Urls.PROJECT_RAW}/{id}/title/{newTitle}")
-    fun renameProject(
+    /**
+     * @see updateNoBody
+     */
+    @PUT("{id}")
+    fun update(
         @Path("id") id: Long,
-        @Path("newTitle") newTitle: String
+        @Query("title") title: String? = null,
+        @Query("description") description: String? = null,
+    ): Call<Project>
+
+    /**
+     * Do not modify [returnBody]
+     * @see update
+     */
+    @PUT("{id}")
+    fun updateNoBody(
+        @Path("id") id: Long,
+        @Query("title") title: String? = null,
+        @Query("description") description: String? = null,
+        @Query("returnBody") returnBody: Boolean = false,
     ): Call<Void>
 
-    @DELETE("${Urls.PROJECT_RAW}/{id}")
+    @DELETE("{id}")
     fun deleteProject(@Path("id") id: Long) : Call<Void>
 
 }
