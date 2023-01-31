@@ -31,6 +31,8 @@ import io.dnajd.presentation.project_table_task.components.comment.TableTaskActi
 fun TableTaskContent(
     state: TableTaskScreenState.Success,
     contentPadding: PaddingValues,
+
+    onChangeTableClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -92,7 +94,7 @@ fun TableTaskContent(
         Card(
             modifier = Modifier
                 .padding(top = 18.dp)
-                .clickable { },
+                .clickable { onChangeTableClicked() },
             shape = RoundedCornerShape(6.dp),
         ) {
             BugtrackerMultipurposeMenu(

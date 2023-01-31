@@ -10,6 +10,7 @@ import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -20,7 +21,6 @@ class TableTaskStateScreenModel(
     private val getProjectTableTask: GetProjectTableTask = Injekt.get(),
     private val getProjectTable: GetProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<TableTaskScreenState>(context, TableTaskScreenState.Loading) {
-
     init {
         requestTaskData(taskId)
     }
@@ -45,6 +45,35 @@ class TableTaskStateScreenModel(
 
         }
     }
+
+    fun showDialog(dialog: TableTaskDialog) {
+        when(dialog) {
+            is TableTaskDialog.BottomNavDialog -> {
+                coroutineScope.launch {
+                    mutableState.update {
+                        (mutableState.value as TableTaskScreenState.Success).copy(
+                            dialog = dialog,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun dismissDialog() {
+        coroutineScope.launch {
+            mutableState.update {
+                (mutableState.value as TableTaskScreenState.Success).copy(
+                    dialog = null,
+                )
+            }
+        }
+    }
+
+}
+
+sealed class TableTaskDialog {
+    object BottomNavDialog : TableTaskDialog()
 }
 
 sealed class TableTaskScreenState {
@@ -56,6 +85,7 @@ sealed class TableTaskScreenState {
     data class Success(
         val task: ProjectTableTask,
         val parentTable: ProjectTable,
+        val dialog: TableTaskDialog? = null,
     ): TableTaskScreenState()
 
 }

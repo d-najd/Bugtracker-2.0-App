@@ -3,6 +3,7 @@ package io.dnajd.bugtracker
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.ExperimentalMaterialApi
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
@@ -41,9 +42,9 @@ class MainActivity : AppCompatActivity() {
                 title = "Fake Title",
             )
 
-            router.setRoot(ProjectController())
+            // router.setRoot(ProjectController())
             // router.setRoot(ProjectTableController(projectFake))
-            // router.setRoot(TableTaskController(1L))
+            router.setRoot(TableTaskController(1L))
             // router.setRoot(ProjectSettingsController(projectFake))
             // router.setRoot(ProjectDetailsController(projectFake))
             // router.setRoot(ProjectUserManagementController(1L))
