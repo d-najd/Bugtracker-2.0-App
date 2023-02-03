@@ -160,6 +160,7 @@ sealed class TableTaskScreenState {
         val dialog: TableTaskSheet? = null,
     ): TableTaskScreenState()
 
+    // TODO create another screen instead, this way has lots of issues
     @Immutable
     data class AlterTaskDescription(
         val task: ProjectTableTask,
