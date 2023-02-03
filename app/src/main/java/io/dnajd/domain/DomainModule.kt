@@ -17,10 +17,10 @@ import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.GetProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.SwapProjectTableTasks
+import io.dnajd.domain.project_table_task.interactor.CreateTableTask
+import io.dnajd.domain.project_table_task.interactor.GetTableTask
+import io.dnajd.domain.project_table_task.interactor.MoveTableTask
+import io.dnajd.domain.project_table_task.interactor.SwapTableTasks
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
@@ -92,10 +92,10 @@ class DomainModule : InjektModule {
         addFactory { SwapProjectTables(get()) }
         addFactory { DeleteProjectTable(get()) }
 
-        addFactory { GetProjectTableTask(get()) }
-        addFactory { CreateProjectTableTask(get()) }
-        addFactory { SwapProjectTableTasks(get()) }
-        addFactory { MoveProjectTableTask(get()) }
+        addFactory { GetTableTask(get()) }
+        addFactory { CreateTableTask(get()) }
+        addFactory { SwapTableTasks(get()) }
+        addFactory { MoveTableTask(get()) }
 
         addFactory { GetUserAuthorities(get()) }
         addFactory { CreateUserAuthority(get()) }

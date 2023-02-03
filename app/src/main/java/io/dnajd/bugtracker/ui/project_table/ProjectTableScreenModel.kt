@@ -6,8 +6,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.interactor.CreateProjectTableTask
-import io.dnajd.domain.project_table_task.interactor.MoveProjectTableTask
+import io.dnajd.domain.project_table_task.interactor.CreateTableTask
+import io.dnajd.domain.project_table_task.interactor.MoveTableTask
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 import io.dnajd.domain.project_table_task.model.toBasic
@@ -19,16 +19,16 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
-	context: Context,
-	project: Project,
+    context: Context,
+    project: Project,
 
-	private val getTables: GetProjectTable = Injekt.get(),
-	private val createTable: CreateProjectTable = Injekt.get(),
-	private val createTask: CreateProjectTableTask = Injekt.get(),
-	private val renameTable: RenameProjectTable = Injekt.get(),
-	private val swapTables: SwapProjectTables = Injekt.get(),
-	private val moveTask: MoveProjectTableTask = Injekt.get(),
-	private val deleteTable: DeleteProjectTable = Injekt.get(),
+    private val getTables: GetProjectTable = Injekt.get(),
+    private val createTable: CreateProjectTable = Injekt.get(),
+    private val createTask: CreateTableTask = Injekt.get(),
+    private val renameTable: RenameProjectTable = Injekt.get(),
+    private val swapTables: SwapProjectTables = Injekt.get(),
+    private val moveTask: MoveTableTask = Injekt.get(),
+    private val deleteTable: DeleteProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(context,
     ProjectTableScreenState.Loading(project)
 ) {
