@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,7 +13,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -23,7 +20,6 @@ import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerExpandableTextField
 import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
 import io.dnajd.presentation.components.BugtrackerMultipurposeMenu
-import io.dnajd.presentation.components.BugtrackerTextField
 import io.dnajd.presentation.project_table_task.components.comment.TableTaskActivityContent
 
 @ExperimentalMaterial3Api
@@ -32,7 +28,7 @@ fun TableTaskContent(
     state: TableTaskScreenState.Success,
     contentPadding: PaddingValues,
 
-    onChangeTableClicked: () -> Unit,
+    onChangeTableDialogClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -94,7 +90,7 @@ fun TableTaskContent(
         Card(
             modifier = Modifier
                 .padding(top = 18.dp)
-                .clickable { onChangeTableClicked() },
+                .clickable { onChangeTableDialogClicked() },
             shape = RoundedCornerShape(6.dp),
         ) {
             BugtrackerMultipurposeMenu(

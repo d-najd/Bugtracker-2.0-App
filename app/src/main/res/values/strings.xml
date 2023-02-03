@@ -80,5 +80,6 @@
     <string name="error_user_authority_does_not_exist">Unable to remove user authority since it does not exist</string>
     <string name="error_user_authority_already_exists">Unable to create user authority since it already exists</string>
     <string name="error_unhandled">Unhandled exception</string>
+    <string name="field_select_transition">Select a transition</string>
 
 </resources>

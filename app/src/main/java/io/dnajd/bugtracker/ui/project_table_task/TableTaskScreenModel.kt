@@ -48,11 +48,16 @@ class TableTaskStateScreenModel(
 
     fun showDialog(dialog: TableTaskDialog) {
         when(dialog) {
-            is TableTaskDialog.BottomNavDialog -> {
-                coroutineScope.launch {
+            is TableTaskDialog.BottomSheet -> {
+                coroutineScope.launchIO {
+                    val tables = dialog.tables.ifEmpty {
+                        getProjectTable.await((mutableState.value as TableTaskScreenState.Success).parentTable.projectId, ignoreTasks = true)
+                    }
                     mutableState.update {
                         (mutableState.value as TableTaskScreenState.Success).copy(
-                            dialog = dialog,
+                            dialog = dialog.copy(
+                                tables = tables,
+                            ),
                         )
                     }
                 }
@@ -73,7 +78,8 @@ class TableTaskStateScreenModel(
 }
 
 sealed class TableTaskDialog {
-    object BottomNavDialog : TableTaskDialog()
+    data class BottomSheet(val tables: List<ProjectTable> = emptyList()) : TableTaskDialog()
+    //object BottomSheet : TableTaskDialog()
 }
 
 sealed class TableTaskScreenState {
