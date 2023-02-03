@@ -94,6 +94,7 @@ class DomainModule : InjektModule {
         addFactory { SwapTableTasks(get()) }
         addFactory { MoveTableTask(get()) }
         addFactory { SwapTableTaskTable(get()) }
+        addFactory { UpdateTableTaskDescription(get()) }
 
         addFactory { GetUserAuthorities(get()) }
         addFactory { CreateUserAuthority(get()) }

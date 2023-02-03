@@ -11,9 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.ui.project.ProjectController
-import io.dnajd.bugtracker.ui.project_details.ProjectDetailsEvent
-import io.dnajd.bugtracker.ui.util.setAtBackstack
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table_task.TableTaskScreenContent
 import io.dnajd.presentation.util.LocalRouter
@@ -33,21 +30,19 @@ class TableTaskScreen(
         val screenModel = rememberScreenModel { TableTaskStateScreenModel(context, taskId) }
 
         val state by screenModel.state.collectAsState()
-
         if (state is TableTaskScreenState.Loading) {
             LoadingScreen()
             return
         }
 
-        val successState = state as TableTaskScreenState.Success
         val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
         TableTaskScreenContent(
-            state = successState,
+            state = state,
             bottomDialogState = bottomState,
             onBackClicked = router::popCurrentController,
             onChangeTableClicked = screenModel::swapTable,
-            onChangeTableDialogClicked = { screenModel.showDialog(TableTaskDialog.BottomSheet()) },
+            onChangeTableDialogClicked = { screenModel.showDialog(TableTaskSheet.BottomSheet()) },
         )
 
         LaunchedEffect(Unit) {
@@ -66,13 +61,16 @@ class TableTaskScreen(
             }
         }
 
-        LaunchedEffect(successState.dialog) {
-            when(successState.dialog) {
-                is TableTaskDialog.BottomSheet -> {
-                    bottomState.show()
-                }
-                else -> {
-                    bottomState.hide()
+        if(state is TableTaskScreenState.Success) {
+            val successState = (state as TableTaskScreenState.Success)
+            LaunchedEffect(successState.dialog) {
+                when (successState.dialog) {
+                    is TableTaskSheet.BottomSheet -> {
+                        bottomState.show()
+                    }
+                    else -> {
+                        bottomState.hide()
+                    }
                 }
             }
         }

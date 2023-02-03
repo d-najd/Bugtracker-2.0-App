@@ -5,12 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_details.ProjectDetailsEvent
-import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.GetProjectTable
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table_task.interactor.GetTableTask
 import io.dnajd.domain.project_table_task.interactor.SwapTableTaskTable
+import io.dnajd.domain.project_table_task.interactor.UpdateTableTaskDescription
 import io.dnajd.domain.project_table_task.model.ProjectTableTask
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
@@ -29,6 +28,7 @@ class TableTaskStateScreenModel(
     private val getTableTask: GetTableTask = Injekt.get(),
     private val getProjectTable: GetProjectTable = Injekt.get(),
     private val swapTableTaskTable: SwapTableTaskTable = Injekt.get(),
+    private val updateTableTaskDescription: UpdateTableTaskDescription = Injekt.get(),
 ) : BugtrackerStateScreenModel<TableTaskScreenState>(context, TableTaskScreenState.Loading) {
     private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
     val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
@@ -58,6 +58,27 @@ class TableTaskStateScreenModel(
         }
     }
 
+    /**
+     * must be called from [TableTaskScreenState.AlterTaskDescription]
+     */
+    fun updateDescription(newDescription: String) {
+        coroutineScope.launchIO {
+            val alterDescriptionState = (mutableState.value as TableTaskScreenState.AlterTaskDescription)
+            if(updateTableTaskDescription.await(id = alterDescriptionState.task.id, description = newDescription)) {
+                mutableState.update {
+                    TableTaskScreenState.Success(
+                        task = alterDescriptionState.task.copy(
+                            description = newDescription
+                        ),
+                        parentTable = alterDescriptionState.parentTable,
+                    )
+                }
+            } else {
+                _events.send(TableTaskEvent.FailedToUpdateDescription)
+            }
+        }
+    }
+
     fun swapTable(tableId: Long) {
         coroutineScope.launchIO {
             if(swapTableTaskTable.await(id = (mutableState.value as TableTaskScreenState.Success).task.id, tableId = tableId)) {
@@ -81,9 +102,9 @@ class TableTaskStateScreenModel(
         }
     }
 
-    fun showDialog(dialog: TableTaskDialog) {
+    fun showDialog(dialog: TableTaskSheet) {
         when(dialog) {
-            is TableTaskDialog.BottomSheet -> {
+            is TableTaskSheet.BottomSheet -> {
                 coroutineScope.launchIO {
                     val tables = dialog.tables.ifEmpty {
                         getProjectTable.await((mutableState.value as TableTaskScreenState.Success).parentTable.projectId, ignoreTasks = true)
@@ -114,19 +135,21 @@ class TableTaskStateScreenModel(
 
 
 
-sealed class TableTaskDialog {
-    data class BottomSheet(val tables: List<ProjectTable> = emptyList()) : TableTaskDialog()
+sealed class TableTaskSheet {
+    data class BottomSheet(val tables: List<ProjectTable> = emptyList()) : TableTaskSheet()
+    data class AlterDescriptionSheet(val description: String = ""): TableTaskSheet()
 }
 
 sealed class TableTaskEvent {
     sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
 
     object CanNotGetParentTable : LocalizedMessage(R.string.error_invalid_table_id)
-    object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
+    object FailedToSwapTable : LocalizedMessage(R.string.error_table_swap)
+    object FailedToUpdateDescription : LocalizedMessage(R.string.error_description_update)
 }
 
 sealed class TableTaskScreenState {
-    
+
     @Immutable
     object Loading : TableTaskScreenState()
 
@@ -134,7 +157,14 @@ sealed class TableTaskScreenState {
     data class Success(
         val task: ProjectTableTask,
         val parentTable: ProjectTable,
-        val dialog: TableTaskDialog? = null,
+        val dialog: TableTaskSheet? = null,
+    ): TableTaskScreenState()
+
+    @Immutable
+    data class AlterTaskDescription(
+        val task: ProjectTableTask,
+        val parentTable: ProjectTable,
+        val description: String = "",
     ): TableTaskScreenState()
 
 }
