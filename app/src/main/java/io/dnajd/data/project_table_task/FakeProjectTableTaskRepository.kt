@@ -84,4 +84,6 @@ object FakeProjectTableTaskRepository : ProjectTableTaskRepository {
 
     override suspend fun movePositionTo(fId: Long, sId: Long): Boolean = true
 
+    override suspend fun swapTable(id: Long, tableId: Long): Boolean = true
+
 }

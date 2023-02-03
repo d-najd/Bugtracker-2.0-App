@@ -42,4 +42,12 @@ interface ProjectTableTaskRepository {
      */
     suspend fun movePositionTo(fId: Long, sId: Long): Boolean
 
+    /**
+     * Swaps the table of a task
+     * @param id id of the task
+     * @param tableId id of the table which the task will be moved to
+     * @return true if the request was successful false if it wasn't
+     */
+    suspend fun swapTable(id: Long, tableId: Long): Boolean
+
 }

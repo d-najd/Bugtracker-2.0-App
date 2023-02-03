@@ -81,5 +81,7 @@
     <string name="error_user_authority_already_exists">Unable to create user authority since it already exists</string>
     <string name="error_unhandled">Unhandled exception</string>
     <string name="field_select_transition">Select a transition</string>
+    <string name="error_invalid_table_id">Can\'t get parent table</string>
+    <string name="error_failed_table_swap">Failed to swap table</string>
 
 </resources>

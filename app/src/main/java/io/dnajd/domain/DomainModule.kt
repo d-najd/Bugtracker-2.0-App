@@ -17,10 +17,7 @@ import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.project_table_task.interactor.CreateTableTask
-import io.dnajd.domain.project_table_task.interactor.GetTableTask
-import io.dnajd.domain.project_table_task.interactor.MoveTableTask
-import io.dnajd.domain.project_table_task.interactor.SwapTableTasks
+import io.dnajd.domain.project_table_task.interactor.*
 import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
@@ -36,7 +33,7 @@ import uy.kohesive.injekt.api.*
 
 class DomainModule : InjektModule {
     companion object {
-        private const val USE_FAKES = true
+        private const val USE_FAKES = false
     }
     
     override fun InjektRegistrar.registerInjectables() {
@@ -96,6 +93,7 @@ class DomainModule : InjektModule {
         addFactory { CreateTableTask(get()) }
         addFactory { SwapTableTasks(get()) }
         addFactory { MoveTableTask(get()) }
+        addFactory { SwapTableTaskTable(get()) }
 
         addFactory { GetUserAuthorities(get()) }
         addFactory { CreateUserAuthority(get()) }
