@@ -2,7 +2,7 @@ package io.dnajd.data.utils
 
 
 /**
- * enum is not used because it is 'not compile time constant' so I had to resort to using this, it is recommended to get the
+ * enum is not used because it is 'not compile time compliant' so I had to resort to using this, it is recommended to get the
  * fields using the interface [UrlsGetFields] where possible since it offers more flexibility
  */
 @Suppress("ClassName")

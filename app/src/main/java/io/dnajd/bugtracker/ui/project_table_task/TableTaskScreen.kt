@@ -27,23 +27,12 @@ class TableTaskScreen(
         // val navigator = LocalNavigator.currentOrThrow
         val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
-        val screenModel = rememberScreenModel { TableTaskStateScreenModel(context, taskId) }
-
-        val state by screenModel.state.collectAsState()
-        if (state is TableTaskScreenState.Loading) {
-            LoadingScreen()
-            return
+        val screenModel = rememberScreenModel {
+            TableTaskStateScreenModel(
+                context,
+                taskId
+            )
         }
-
-        val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-        TableTaskScreenContent(
-            state = state,
-            bottomDialogState = bottomState,
-            onBackClicked = router::popCurrentController,
-            onChangeTableClicked = screenModel::swapTable,
-            onChangeTableDialogClicked = { screenModel.showDialog(TableTaskSheet.BottomSheet()) },
-        )
 
         LaunchedEffect(Unit) {
             screenModel.events.collectLatest { event ->
@@ -61,21 +50,34 @@ class TableTaskScreen(
             }
         }
 
-        if(state is TableTaskScreenState.Success) {
-            val successState = (state as TableTaskScreenState.Success)
-            LaunchedEffect(successState.dialog) {
-                when (successState.dialog) {
-                    is TableTaskSheet.BottomSheet -> {
-                        bottomState.show()
-                    }
-                    else -> {
-                        bottomState.hide()
-                    }
+        val state by screenModel.state.collectAsState()
+        if (state is TableTaskScreenState.Loading) {
+            LoadingScreen()
+            return
+        }
+        val successState = (state as TableTaskScreenState.Success)
+        val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+        TableTaskScreenContent(
+            state = successState,
+            bottomDialogState = bottomState,
+            onBackClicked = router::popCurrentController,
+            onChangeTableClicked = screenModel::swapTable,
+            onChangeTableDialogClicked = { screenModel.showDialog(TableTaskSheet.BottomSheet()) },
+        )
+
+        LaunchedEffect(successState.dialog) {
+            when (successState.dialog) {
+                is TableTaskSheet.BottomSheet -> {
+                    bottomState.show()
+                }
+                else -> {
+                    bottomState.hide()
                 }
             }
         }
 
-        if(bottomState.progress.from == ModalBottomSheetValue.Expanded && bottomState.progress.to == ModalBottomSheetValue.Hidden) {
+        if (bottomState.progress.from == ModalBottomSheetValue.Expanded && bottomState.progress.to == ModalBottomSheetValue.Hidden) {
             screenModel.dismissDialog()
         }
     }

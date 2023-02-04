@@ -28,7 +28,6 @@ class TableTaskStateScreenModel(
     private val getTableTask: GetTableTask = Injekt.get(),
     private val getProjectTable: GetProjectTable = Injekt.get(),
     private val swapTableTaskTable: SwapTableTaskTable = Injekt.get(),
-    private val updateTableTaskDescription: UpdateTableTaskDescription = Injekt.get(),
 ) : BugtrackerStateScreenModel<TableTaskScreenState>(context, TableTaskScreenState.Loading) {
     private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
     val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
@@ -61,6 +60,7 @@ class TableTaskStateScreenModel(
     /**
      * must be called from [TableTaskScreenState.AlterTaskDescription]
      */
+    /*
     fun updateDescription(newDescription: String) {
         coroutineScope.launchIO {
             val alterDescriptionState = (mutableState.value as TableTaskScreenState.AlterTaskDescription)
@@ -78,6 +78,7 @@ class TableTaskStateScreenModel(
             }
         }
     }
+     */
 
     fun swapTable(tableId: Long) {
         coroutineScope.launchIO {
@@ -137,7 +138,6 @@ class TableTaskStateScreenModel(
 
 sealed class TableTaskSheet {
     data class BottomSheet(val tables: List<ProjectTable> = emptyList()) : TableTaskSheet()
-    data class AlterDescriptionSheet(val description: String = ""): TableTaskSheet()
 }
 
 sealed class TableTaskEvent {
@@ -145,7 +145,6 @@ sealed class TableTaskEvent {
 
     object CanNotGetParentTable : LocalizedMessage(R.string.error_invalid_table_id)
     object FailedToSwapTable : LocalizedMessage(R.string.error_table_swap)
-    object FailedToUpdateDescription : LocalizedMessage(R.string.error_description_update)
 }
 
 sealed class TableTaskScreenState {
@@ -158,14 +157,6 @@ sealed class TableTaskScreenState {
         val task: ProjectTableTask,
         val parentTable: ProjectTable,
         val dialog: TableTaskSheet? = null,
-    ): TableTaskScreenState()
-
-    // TODO create another screen instead, this way has lots of issues
-    @Immutable
-    data class AlterTaskDescription(
-        val task: ProjectTableTask,
-        val parentTable: ProjectTable,
-        val description: String = "",
     ): TableTaskScreenState()
 
 }

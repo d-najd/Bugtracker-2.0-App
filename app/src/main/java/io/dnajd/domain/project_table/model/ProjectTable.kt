@@ -2,6 +2,7 @@ package io.dnajd.domain.project_table.model
 
 
 import com.google.gson.annotations.SerializedName
+import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
 
 data class ProjectTableHolder(

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskSheet
 import io.dnajd.bugtracker.ui.project_table_task.TableTaskScreenState
-import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table_task.components.TableTaskContent
 import io.dnajd.presentation.project_table_task.dialogs.TableTaskBottomSheetContent
 
@@ -27,7 +26,7 @@ import io.dnajd.presentation.project_table_task.dialogs.TableTaskBottomSheetCont
 )
 @Composable
 fun TableTaskScreenContent(
-    state: TableTaskScreenState,
+    state: TableTaskScreenState.Success,
     bottomDialogState: ModalBottomSheetState,
     onBackClicked: () -> Unit,
     onChangeTableClicked: (Long) -> Unit,
@@ -45,11 +44,10 @@ fun TableTaskScreenContent(
                     .heightIn(min = 1.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
-                val successState = state as TableTaskScreenState.Success
-                if(successState.dialog is TableTaskSheet.BottomSheet) {
+                if(state.dialog is TableTaskSheet.BottomSheet) {
                     TableTaskBottomSheetContent(
-                        curTable = successState.parentTable,
-                        tables = successState.dialog.tables,
+                        curTable = state.parentTable,
+                        tables = state.dialog.tables,
                         onChangeTableClicked = onChangeTableClicked,
                     )
                 }
@@ -59,17 +57,11 @@ fun TableTaskScreenContent(
         Scaffold { contentPadding ->
             BackHandler { onBackClicked() }
 
-            if(state is TableTaskScreenState.Success) {
-                TableTaskContent(
-                    state = state,
-                    contentPadding = contentPadding,
-                    onChangeTableDialogClicked = onChangeTableDialogClicked,
-                )
-            } else if(state is TableTaskScreenState.AlterTaskDescription) {
-                TableTaskAlterDescriptionContent(
-                    state = state,
-                )
-            }
+            TableTaskContent(
+                state = state,
+                contentPadding = contentPadding,
+                onChangeTableDialogClicked = onChangeTableDialogClicked,
+            )
         }
     }
 }
