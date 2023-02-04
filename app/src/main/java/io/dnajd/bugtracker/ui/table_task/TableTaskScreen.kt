@@ -13,6 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.table_task.TableTaskScreenContent
+import io.dnajd.presentation.table_task.sheets.TableTaskAlterDescriptionSheet
 import io.dnajd.presentation.util.LocalRouter
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -43,9 +44,7 @@ class TableTaskScreen(
                     is TableTaskEvent.CanNotGetParentTable -> {
                         router.popCurrentController()
                     }
-                    is TableTaskEvent.LocalizedMessage -> {
-
-                    }
+                    is TableTaskEvent.LocalizedMessage -> { }
                 }
             }
         }
@@ -58,27 +57,51 @@ class TableTaskScreen(
         val successState = (state as TableTaskScreenState.Success)
         val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-        TableTaskScreenContent(
-            state = successState,
-            bottomDialogState = bottomState,
-            onBackClicked = router::popCurrentController,
-            onChangeTableClicked = screenModel::swapTable,
-            onChangeTableDialogClicked = { screenModel.showDialog(TableTaskSheet.BottomSheet()) },
-        )
+        if(successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
+            TableTaskScreenContent(
+                state = successState,
+                bottomDialogState = bottomState,
+                onBackClicked = router::popCurrentController,
+                onChangeTableClicked = screenModel::swapTable,
+                onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet()) },
+                onAlterDescriptionSheetClicked = {
+                    screenModel.showSheet(
+                        TableTaskSheet.AlterDescriptionSheet(
+                            description = successState.task.description ?: ""
+                        )
+                    )
+                }
+            )
+        }
 
-        LaunchedEffect(successState.dialog) {
-            when (successState.dialog) {
+        LaunchedEffect(successState.sheet) {
+            when (successState.sheet) {
                 is TableTaskSheet.BottomSheet -> {
                     bottomState.show()
                 }
                 else -> {
-                    bottomState.hide()
+                    if(bottomState.isVisible) {
+                        bottomState.hide()
+                    }
                 }
             }
         }
 
+        when(successState.sheet) {
+            is TableTaskSheet.BottomSheet -> {}
+            is TableTaskSheet.AlterDescriptionSheet -> {
+                TableTaskAlterDescriptionSheet(
+                    state = successState,
+                    description = successState.sheet.description,
+                    onDescriptionChange = screenModel::updateDescription,
+                    onBackClicked = screenModel::dismissSheet,
+                )
+            }
+            null -> { }
+        }
+
         if (bottomState.progress.from == ModalBottomSheetValue.Expanded && bottomState.progress.to == ModalBottomSheetValue.Hidden) {
-            screenModel.dismissDialog()
+            screenModel.dismissSheet()
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.dnajd.presentation.table_task.dialogs
+package io.dnajd.presentation.table_task.sheets
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable

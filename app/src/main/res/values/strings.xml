@@ -39,7 +39,6 @@
     <string name="action_add">Add</string>
 
     <!-- info -->
-    <string name="info_add_description">Press to add a description..</string>
     <string name="info_comment_first">Be the first to comment</string>
 
     <!-- error -->
@@ -84,5 +83,7 @@
     <string name="error_invalid_table_id">Can\'t get parent table</string>
     <string name="error_table_swap">Failed to swap table</string>
     <string name="error_description_update">Failed to update description</string>
+    <string name="field_edit_description">Edit Description</string>
+    <string name="action_tap_to_add_description">Tap to add description...</string>
 
 </resources>

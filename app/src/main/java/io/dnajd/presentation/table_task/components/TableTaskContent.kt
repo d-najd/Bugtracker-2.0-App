@@ -28,7 +28,8 @@ fun TableTaskContent(
     state: TableTaskScreenState.Success,
     contentPadding: PaddingValues,
 
-    onChangeTableDialogClicked: () -> Unit,
+    onChangeTableSheetClicked: () -> Unit,
+    onAlterDescriptionSheetClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -90,7 +91,7 @@ fun TableTaskContent(
         Card(
             modifier = Modifier
                 .padding(top = 18.dp)
-                .clickable { onChangeTableDialogClicked() },
+                .clickable { onChangeTableSheetClicked() },
             shape = RoundedCornerShape(6.dp),
         ) {
             BugtrackerMultipurposeMenu(
@@ -109,7 +110,10 @@ fun TableTaskContent(
             )
         }
 
-        TableTaskDescriptionField(state = state)
+        TableTaskDescriptionField(
+            state = state,
+            onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
+        )
 
         TableTaskChildIssuesField(state = state)
 

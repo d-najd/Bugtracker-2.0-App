@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.table_task.TableTaskSheet
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.presentation.table_task.components.TableTaskContent
-import io.dnajd.presentation.table_task.dialogs.TableTaskBottomSheetContent
+import io.dnajd.presentation.table_task.sheets.TableTaskBottomSheetContent
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -30,7 +30,8 @@ fun TableTaskScreenContent(
     bottomDialogState: ModalBottomSheetState,
     onBackClicked: () -> Unit,
     onChangeTableClicked: (Long) -> Unit,
-    onChangeTableDialogClicked: () -> Unit,
+    onChangeTableSheetClicked: () -> Unit,
+    onAlterDescriptionSheetClicked: () -> Unit,
 ) {
     ModalBottomSheetLayout(
         sheetState = bottomDialogState,
@@ -44,10 +45,10 @@ fun TableTaskScreenContent(
                     .heightIn(min = 1.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
-                if(state.dialog is TableTaskSheet.BottomSheet) {
+                if(state.sheet is TableTaskSheet.BottomSheet) {
                     TableTaskBottomSheetContent(
                         curTable = state.parentTable,
-                        tables = state.dialog.tables,
+                        tables = state.sheet.tables,
                         onChangeTableClicked = onChangeTableClicked,
                     )
                 }
@@ -60,7 +61,8 @@ fun TableTaskScreenContent(
             TableTaskContent(
                 state = state,
                 contentPadding = contentPadding,
-                onChangeTableDialogClicked = onChangeTableDialogClicked,
+                onChangeTableSheetClicked = onChangeTableSheetClicked,
+                onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
             )
         }
     }
