@@ -3,17 +3,11 @@ package io.dnajd.bugtracker
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.ExperimentalMaterialApi
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import io.dnajd.bugtracker.databinding.MainActivityBinding
 import io.dnajd.bugtracker.ui.base.controller.setRoot
 import io.dnajd.bugtracker.ui.project.ProjectController
-import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
-import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsController
-import io.dnajd.bugtracker.ui.project_table.ProjectTableController
-import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
-import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementController
 import io.dnajd.domain.DomainModule
 import io.dnajd.domain.project.model.Project
 import uy.kohesive.injekt.Injekt

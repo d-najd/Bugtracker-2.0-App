@@ -6,11 +6,11 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.interactor.CreateTableTask
-import io.dnajd.domain.project_table_task.interactor.MoveTableTask
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
-import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
-import io.dnajd.domain.project_table_task.model.toBasic
+import io.dnajd.domain.table_task.interactor.CreateTableTask
+import io.dnajd.domain.table_task.interactor.MoveTableTask
+import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.table_task.model.TableTaskBasic
+import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
@@ -77,7 +77,7 @@ class ProjectTableScreenModel(
         }
     }
 
-    fun createTask(task: ProjectTableTask) {
+    fun createTask(task: TableTask) {
         coroutineScope.launchIO {
             createTask.awaitOne(task)?.let { persistedTask ->
                 val tables = (mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
@@ -191,7 +191,7 @@ class ProjectTableScreenModel(
     private fun ifMoveTaskSuccess(
         tables: MutableList<ProjectTable>,
         table: ProjectTable,
-        sTask: ProjectTableTaskBasic,
+        sTask: TableTaskBasic,
         fIndex: Int,
         sIndex: Int,
     ) {

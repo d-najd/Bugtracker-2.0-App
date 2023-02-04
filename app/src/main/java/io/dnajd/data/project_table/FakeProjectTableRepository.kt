@@ -1,9 +1,9 @@
 package io.dnajd.data.project_table
 
-import io.dnajd.domain.project_table_task.model.ProjectLabel
+import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.model.ProjectTableChildTaskBasic
-import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
+import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
+import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
 object FakeProjectTableRepository : ProjectTableRepository {
@@ -17,7 +17,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
             title = "Table 1",
             position = 0,
             tasks = if (!ignoreTasks) listOf(
-                ProjectTableTaskBasic(
+                TableTaskBasic(
                     id = 1,
                     title = "Issue 1",
                     tableId = 1,
@@ -39,7 +39,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                         ProjectTableChildTaskBasic(id = 4),
                     ),
                 ),
-                ProjectTableTaskBasic(
+                TableTaskBasic(
                     id = 2,
                     title = "Issue 2",
                     tableId = 1,
@@ -51,7 +51,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                         ProjectTableChildTaskBasic(id = 3),
                     )
                 ),
-                ProjectTableTaskBasic(
+                TableTaskBasic(
                     id = 3,
                     title = "Issue 3",
                     tableId = 1,
@@ -61,7 +61,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     labels = emptyList(),
                     childTasks = emptyList(),
                 ),
-                ProjectTableTaskBasic(
+                TableTaskBasic(
                     id = 4,
                     title = "Issue 4",
                     tableId = 1,
@@ -78,7 +78,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
             title = "Table 2",
             position = 1,
             tasks = if (!ignoreTasks) listOf(
-                ProjectTableTaskBasic(
+                TableTaskBasic(
                     id = 5,
                     title = "Issue 5",
                     tableId = 1,
@@ -106,7 +106,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
         title = "Table 1",
         position = 0,
         tasks = if (!ignoreTasks) listOf(
-            ProjectTableTaskBasic(
+            TableTaskBasic(
                 id = 1,
                 title = "Issue 1",
                 tableId = 1,
@@ -128,7 +128,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     ProjectTableChildTaskBasic(id = 4),
                 ),
             ),
-            ProjectTableTaskBasic(
+            TableTaskBasic(
                 id = 2,
                 title = "Issue 2",
                 tableId = 1,
@@ -140,7 +140,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                     ProjectTableChildTaskBasic(id = 3),
                 )
             ),
-            ProjectTableTaskBasic(
+            TableTaskBasic(
                 id = 3,
                 title = "Issue 3",
                 tableId = 1,
@@ -150,7 +150,7 @@ object FakeProjectTableRepository : ProjectTableRepository {
                 labels = emptyList(),
                 childTasks = emptyList(),
             ),
-            ProjectTableTaskBasic(
+            TableTaskBasic(
                 id = 4,
                 title = "Issue 4",
                 tableId = 1,

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.table_task.model.TableTask
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -36,7 +36,7 @@ fun ProjectTableCard(
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
-    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
+    onCreateTableTaskClicked: (TableTask) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,
@@ -239,7 +239,7 @@ private fun ProjectTableCardBottom(
     table: ProjectTable,
 
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
-    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
+    onCreateTableTaskClicked: (TableTask) -> Unit,
 ) {
     if(table.id == state.createTableItemSelectedTableId) {
         var title by remember { mutableStateOf("") }
@@ -250,7 +250,7 @@ private fun ProjectTableCardBottom(
             keyboardActions = KeyboardActions(
                 onDone = {
                     onCreateTableTaskClicked(
-                        ProjectTableTask(
+                        TableTask(
                             title = title,
                             tableId = table.id,
                             reporter = "user1",

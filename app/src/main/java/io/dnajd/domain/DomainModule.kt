@@ -5,8 +5,8 @@ import io.dnajd.data.project.FakeProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
 import io.dnajd.data.project_table.FakeProjectTableRepository
 import io.dnajd.data.project_table.RemoteProjectTableRepository
-import io.dnajd.data.project_table_task.FakeProjectTableTaskRepository
-import io.dnajd.data.project_table_task.RemoteProjectTableTaskRepository
+import io.dnajd.data.table_task.FakeTableTaskRepository
+import io.dnajd.data.table_task.RemoteTableTaskRepository
 import io.dnajd.data.user_authority.FakeUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
 import io.dnajd.data.utils.Urls
@@ -17,8 +17,8 @@ import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.*
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.project_table_task.interactor.*
-import io.dnajd.domain.project_table_task.service.ProjectTableTaskRepository
+import io.dnajd.domain.table_task.interactor.*
+import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
@@ -67,13 +67,13 @@ class DomainModule : InjektModule {
             true -> {
                 addSingletonFactory<ProjectRepository> { FakeProjectRepository }
                 addSingletonFactory<ProjectTableRepository> { FakeProjectTableRepository }
-                addSingletonFactory<ProjectTableTaskRepository> { FakeProjectTableTaskRepository }
+                addSingletonFactory<TableTaskRepository> { FakeTableTaskRepository }
                 addSingletonFactory<UserAuthorityRepository> { FakeUserAuthorityRepository }
             }
             false -> {
                 addSingletonFactory<ProjectRepository> { RemoteProjectRepository }
                 addSingletonFactory<ProjectTableRepository> { RemoteProjectTableRepository }
-                addSingletonFactory<ProjectTableTaskRepository> { RemoteProjectTableTaskRepository }
+                addSingletonFactory<TableTaskRepository> { RemoteTableTaskRepository }
                 addSingletonFactory<UserAuthorityRepository> { RemoteUserAuthorityRepository }
             }
         }

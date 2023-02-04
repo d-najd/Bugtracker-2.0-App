@@ -12,7 +12,7 @@ import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.base.controller.pushController
 import io.dnajd.bugtracker.ui.base.getController
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsController
-import io.dnajd.bugtracker.ui.project_user_management.ProjectUserManagementController
+import io.dnajd.bugtracker.ui.user_management.UserManagementController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
 import io.dnajd.presentation.util.LocalRouter
@@ -49,7 +49,7 @@ class ProjectSettingsScreen(
                 }
             },
             onProjectDetailsClicked = { router.pushController(ProjectDetailsController(project)) },
-            onUserManagementClicked = { router.pushController(ProjectUserManagementController(project.id)) },
+            onUserManagementClicked = { router.pushController(UserManagementController(project.id)) },
         )
     }
 }

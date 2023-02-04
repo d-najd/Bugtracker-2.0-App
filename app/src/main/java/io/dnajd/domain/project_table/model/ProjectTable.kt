@@ -2,8 +2,7 @@ package io.dnajd.domain.project_table.model
 
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.data.utils.Urls
-import io.dnajd.domain.project_table_task.model.ProjectTableTaskBasic
+import io.dnajd.domain.table_task.model.TableTaskBasic
 
 data class ProjectTableHolder(
     @SerializedName("data") val `data`: List<ProjectTable> = emptyList()
@@ -14,5 +13,5 @@ data class ProjectTable(
     @SerializedName("projectId") val projectId: Long = -1L,
     @SerializedName("title") val title: String = "",
     @SerializedName("position") val position: Int = -1,
-    @SerializedName("issues") val tasks: List<ProjectTableTaskBasic> = emptyList(),
+    @SerializedName("issues") val tasks: List<TableTaskBasic> = emptyList(),
 ) : java.io.Serializable

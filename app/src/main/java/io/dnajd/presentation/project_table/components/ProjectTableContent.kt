@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.table_task.model.TableTask
 
 @Composable
 fun ProjectTableContent(
@@ -19,7 +19,7 @@ fun ProjectTableContent(
     onMoveTableTasks: (Long, Int, Int) -> Unit,
     onDeleteTableClicked: (Long) -> Unit,
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
-    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
+    onCreateTableTaskClicked: (TableTask) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,

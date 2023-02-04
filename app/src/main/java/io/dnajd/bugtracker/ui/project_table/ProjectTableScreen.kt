@@ -10,7 +10,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.base.controller.pushController
 import io.dnajd.bugtracker.ui.base.getController
-import io.dnajd.bugtracker.ui.project_table_task.TableTaskController
+import io.dnajd.bugtracker.ui.table_task.TableTaskController
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.project_table.dialogs.CreateProjectTableDialog

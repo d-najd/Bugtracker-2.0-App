@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project_table_task.model.ProjectTableChildTask
+import io.dnajd.domain.table_task.model.TableChildTask
 
 /**
  * @param modifier modifier for the entire composable
@@ -87,12 +87,12 @@ fun BugtrackerExpandableMenu(
 private fun BugtrackerExpandableMenuPreview() {
     var expanded by remember { mutableStateOf(false) }
     val childTasks = listOf(
-        ProjectTableChildTask(
+        TableChildTask(
             id = 1,
             title = "Title 1",
             tableId = 1,
         ),
-        ProjectTableChildTask(
+        TableChildTask(
             id = 2,
             title = "Title 2",
             tableId = 2,

@@ -7,7 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
-import io.dnajd.domain.project_table_task.model.ProjectTableTask
+import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_table.components.ProjectTableContent
 import io.dnajd.presentation.project_table.components.ProjectTableTopAppBar
@@ -23,7 +23,7 @@ fun ProjectTableScreenContent(
     onDeleteTableClicked: (Long) -> Unit,
     onCreateTableClicked: () -> Unit,
     onCreateTableTaskMenuClicked: (Long?) -> Unit,
-    onCreateTableTaskClicked: (ProjectTableTask) -> Unit,
+    onCreateTableTaskClicked: (TableTask) -> Unit,
     onTaskClicked: (Long) -> Unit,
     onSwapTablePositionsClicked: (Long, Long) -> Unit,
     onSwitchDropdownMenuClicked: (Long?) -> Unit,
