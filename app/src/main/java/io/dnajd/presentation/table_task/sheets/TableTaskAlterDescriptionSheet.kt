@@ -68,7 +68,10 @@ fun TableTaskAlterDescriptionSheet(
 							contentDescription = ""
 						)
 					}
-					TextButton(onClick = { onDescriptionChange(mutableDescription) }) {
+					TextButton(
+						enabled = mutableDescription != description,
+						onClick = { onDescriptionChange(mutableDescription) }
+					) {
 						Text(
 							fontSize = (15.5).sp,
 							text = stringResource(R.string.action_save)
