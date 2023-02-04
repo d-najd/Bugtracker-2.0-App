@@ -15,7 +15,7 @@ import uy.kohesive.injekt.api.get
 object RemoteProjectTableRepository : ProjectTableRepository {
     private val factory: ProjectTableRepositoryApi =
         Injekt.get<Retrofit.Builder>()
-            .baseUrl(Urls.apiAppend(Urls.PROJECT_TABLE_RAW)).build().create(ProjectTableRepositoryApi::class.java)
+            .baseUrl("${Urls.PROJECT_TABLE.getAppendedUrl()}/").build().create(ProjectTableRepositoryApi::class.java)
 
     override suspend fun getAll(
         projectId: Long,
@@ -60,7 +60,7 @@ private interface ProjectTableRepositoryApi {
         @Query("ignoreIssues") ignoreTasks: Boolean,
     ): Call<ProjectTable>
 
-    @POST
+    @POST(Urls.PROJECT_TABLE.appendedUrlLocal)
     fun createTable(@Body table: ProjectTable): Call<ProjectTable>
 
     /**

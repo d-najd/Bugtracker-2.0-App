@@ -19,7 +19,7 @@ import uy.kohesive.injekt.api.get
 object RemoteUserAuthorityRepository: UserAuthorityRepository {
 	private val factory: UserAuthorityRepositoryApi =
 		Injekt.get<Retrofit.Builder>()
-			.baseUrl(Urls.apiAppend(Urls.USER_AUTHORITY_RAW)).build().create(UserAuthorityRepositoryApi::class.java)
+			.baseUrl("${Urls.USER_AUTHORITY.getAppendedUrl()}/").build().create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): List<UserAuthority> =
 		factory.get(projectId).processRequest()?.data ?: emptyList()
@@ -37,14 +37,14 @@ private interface UserAuthorityRepositoryApi {
 		@Path("projectId") projectId: Long
 	): Call<UserAuthorityHolder>
 
-	@POST
+	@POST(Urls.USER_AUTHORITY.appendedUrlLocal)
 	fun create(
 		@Body userAuthority: UserAuthority,
 	): Call<UserAuthority>
 
 	@HTTP(
 		method = "DELETE",
-		path = Urls.USER_AUTHORITY_RAW,
+		path = Urls.USER_AUTHORITY.appendedUrlLocal,
 		hasBody = true,
 	)
 	fun delete(

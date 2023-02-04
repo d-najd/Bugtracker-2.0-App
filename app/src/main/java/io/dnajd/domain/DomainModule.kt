@@ -53,7 +53,7 @@ class DomainModule : InjektModule {
 
         addSingletonFactory {
             Retrofit.Builder()
-                .baseUrl(Urls.API)
+                .baseUrl(Urls.API.baseUrlLocal)
                 .addConverterFactory(GsonConverterFactory.create(Injekt.get()))
                 .client(Injekt.get())
         }

@@ -15,7 +15,7 @@ import uy.kohesive.injekt.api.get
 object RemoteProjectRepository : ProjectRepository {
     private val factory: ProjectRepositoryApi =
         Injekt.get<Retrofit.Builder>()
-            .baseUrl(Urls.apiAppend(Urls.PROJECT_RAW)).build().create(ProjectRepositoryApi::class.java)
+            .baseUrl("${Urls.PROJECT.getAppendedUrl()}/").build().create(ProjectRepositoryApi::class.java)
 
     override suspend fun getAll(username: String): List<Project> =
         factory.getProjectsByUsername(username).processRequest()?.data ?: emptyList()
@@ -38,7 +38,6 @@ object RemoteProjectRepository : ProjectRepository {
 
     override suspend fun delete(id: Long): Boolean =
         factory.deleteProject(id).processVoidRequest()
-
 }
 
 interface ProjectRepositoryApi {
@@ -49,7 +48,7 @@ interface ProjectRepositoryApi {
     @GET("{id}")
     fun getProjectById(@Path("id") id: Long) : Call<Project>
 
-    @POST
+    @POST(Urls.PROJECT.appendedUrlLocal)
     fun createProject(@Body project: Project): Call<Project>
 
     /**
