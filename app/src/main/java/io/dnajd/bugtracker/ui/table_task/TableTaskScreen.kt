@@ -57,6 +57,7 @@ class TableTaskScreen(
         val successState = (state as TableTaskScreenState.Success)
         val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
+        // this reeks of spaghetti
         if(successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
             TableTaskScreenContent(
                 state = successState,

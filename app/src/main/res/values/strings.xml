@@ -84,6 +84,6 @@
     <string name="error_table_swap">Failed to swap table</string>
     <string name="error_description_update">Failed to update description</string>
     <string name="field_edit_description">Edit Description</string>
-    <string name="action_tap_to_add_description">Tap to add description...</string>
+    <string name="action_tap_to_add_description">Tap to add description…</string>
 
 </resources>

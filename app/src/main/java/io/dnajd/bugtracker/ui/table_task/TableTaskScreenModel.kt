@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.util.*
 
 class TableTaskStateScreenModel(
     context: Context,
@@ -65,7 +66,8 @@ class TableTaskStateScreenModel(
                 mutableState.update {
                     successState.copy(
                         task = successState.task.copy(
-                            description = newDescription
+                            description = newDescription,
+                            updatedAt = Date(),
                         )
                     )
                 }
