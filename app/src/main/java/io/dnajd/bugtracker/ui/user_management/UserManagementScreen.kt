@@ -13,7 +13,6 @@ import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.user_management.ProjectUserManagementScreenContent
 import io.dnajd.presentation.user_management.dialogs.AddUserToProjectDialog
 import io.dnajd.presentation.user_management.dialogs.ConfirmLastAuthorityRemovalDialog
-import io.dnajd.presentation.util.LocalRouter
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
@@ -29,7 +28,7 @@ class UserManagementScreen(
 
         LaunchedEffect(Unit) {
             screenModel.events.collectLatest { event ->
-                if(event is UserManagementEvent.LocalizedMessage) {
+                if (event is UserManagementEvent.LocalizedMessage) {
                     context.toast(event.stringRes)
                 }
             }
@@ -51,7 +50,7 @@ class UserManagementScreen(
             onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) }
         )
 
-        when(val dialog = successState.dialog) {
+        when (val dialog = successState.dialog) {
             null -> {}
             is UserManagementDialog.ConfirmLastAuthorityRemoval -> {
                 ConfirmLastAuthorityRemovalDialog(
@@ -65,6 +64,7 @@ class UserManagementScreen(
                     }
                 )
             }
+
             is UserManagementDialog.AddUserToProject -> {
                 AddUserToProjectDialog(
                     onDismissRequest = screenModel::dismissDialog,

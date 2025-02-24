@@ -1,5 +1,6 @@
 package io.dnajd.presentation.util
 
+import android.annotation.SuppressLint
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
+@SuppressLint("ModifierFactoryUnreferencedReceiver", "ComposableModifierFactory")
 @Composable
 fun Modifier.bottomBorder(
     strokeWidth: Dp = DividerDefaults.Thickness,
