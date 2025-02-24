@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.user_management.ProjectUserManagementScreenContent
@@ -21,8 +22,8 @@ class UserManagementScreen(
 ) : Screen {
     @Composable
     override fun Content() {
-        // val navigator = LocalNavigator.currentOrThrow
-        val router = LocalRouter.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
+        //val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel { UserManagementScreenModel(context, projectId) }
 
@@ -45,7 +46,7 @@ class UserManagementScreen(
 
         ProjectUserManagementScreenContent(
             state = successState,
-            onBackClicked = router::popCurrentController,
+            onBackClicked = navigator::pop,
             onInvertAuthorityClicked = screenModel::invertAuthority,
             onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) }
         )

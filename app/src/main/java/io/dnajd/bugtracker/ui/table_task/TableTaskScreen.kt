@@ -10,14 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.table_task.TableTaskScreenContent
 import io.dnajd.presentation.table_task.sheets.TableTaskAlterDescriptionSheet
-import io.dnajd.presentation.util.LocalRouter
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 
 class TableTaskScreen(
     private val taskId: Long
@@ -25,8 +24,8 @@ class TableTaskScreen(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        // val navigator = LocalNavigator.currentOrThrow
-        val router = LocalRouter.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
+        // val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel {
             TableTaskStateScreenModel(
@@ -42,9 +41,10 @@ class TableTaskScreen(
                 }
                 when (event) {
                     is TableTaskEvent.CanNotGetParentTable -> {
-                        router.popCurrentController()
+                        navigator.pop()
                     }
-                    is TableTaskEvent.LocalizedMessage -> { }
+
+                    is TableTaskEvent.LocalizedMessage -> {}
                 }
             }
         }
@@ -58,11 +58,11 @@ class TableTaskScreen(
         val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
         // this reeks of spaghetti
-        if(successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
+        if (successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
             TableTaskScreenContent(
                 state = successState,
                 bottomDialogState = bottomState,
-                onBackClicked = router::popCurrentController,
+                onBackClicked = navigator::pop,
                 onChangeTableClicked = screenModel::swapTable,
                 onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet()) },
                 onAlterDescriptionSheetClicked = {
@@ -80,15 +80,16 @@ class TableTaskScreen(
                 is TableTaskSheet.BottomSheet -> {
                     bottomState.show()
                 }
+
                 else -> {
-                    if(bottomState.isVisible) {
+                    if (bottomState.isVisible) {
                         bottomState.hide()
                     }
                 }
             }
         }
 
-        when(successState.sheet) {
+        when (successState.sheet) {
             is TableTaskSheet.BottomSheet -> {}
             is TableTaskSheet.AlterDescriptionSheet -> {
                 TableTaskAlterDescriptionSheet(
@@ -98,7 +99,8 @@ class TableTaskScreen(
                     onBackClicked = screenModel::dismissSheet,
                 )
             }
-            null -> { }
+
+            null -> {}
         }
 
         if (bottomState.progress.from == ModalBottomSheetValue.Expanded && bottomState.progress.to == ModalBottomSheetValue.Hidden) {

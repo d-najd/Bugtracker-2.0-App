@@ -20,11 +20,8 @@ class ContextHolder(
     var composeContext: Context? = null
     var composeCoroutineScope: CoroutineScope? = null
     
-    val fragmentManager: androidx.fragment.app.FragmentManager
-
     init {
         this.appContext = context
-        fragmentManager = (context as FragmentActivity).supportFragmentManager
     }
 
     fun getString(id: Int): String{

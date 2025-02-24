@@ -6,25 +6,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.ui.base.controller.pushController
-import io.dnajd.bugtracker.ui.project_table.ProjectTableController
+import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
-import io.dnajd.presentation.util.LocalRouter
 
 object ProjectScreen : Screen {
     @Composable
     override fun Content() {
-        // val navigator = LocalNavigator.currentOrThrow
-        val router = LocalRouter.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel { ProjectScreenModel(context) }
 
         val state by screenModel.state.collectAsState()
 
-        if (state is ProjectScreenState.Loading){
+        if (state is ProjectScreenState.Loading) {
             LoadingScreen()
             return
         }
@@ -35,13 +33,14 @@ object ProjectScreen : Screen {
             state = successState,
             onProjectClicked = {
                 val project = successState.projects.find { project -> project.id == it }!!
-                router.pushController(ProjectTableController(project))
-                               },
+
+                navigator.push(ProjectTableScreen(project))
+            },
             onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
             onFilterByNameClicked = { },
         )
 
-        when(successState.dialog) {
+        when (successState.dialog) {
             null -> {}
             is ProjectDialog.CreateProject -> {
                 CreateProjectDialog(
