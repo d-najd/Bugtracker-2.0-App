@@ -9,5 +9,4 @@ class GetProject(
     suspend fun await(username: String): List<Project> = repository.getAll(username)
 
     suspend fun awaitOne(id: Long): Project? = repository.get(id)
-
 }

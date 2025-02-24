@@ -7,7 +7,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.IOException
 
-
 inline fun <reified T> Call<T>.processRequest(): T? {
     if(T::class.java == Void::class.java) throw IllegalStateException("Use Call<T>.processVoidRequest for void requests")
     try{

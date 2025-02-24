@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 class ContextHolder(
     context: Context,
 ) {
-    val appContext: Context
+    private val appContext: Context = context
 
     /**
      * These are delicate components, use with care, alternatives are [appContext] for context across
@@ -19,10 +19,6 @@ class ContextHolder(
      */
     var composeContext: Context? = null
     var composeCoroutineScope: CoroutineScope? = null
-    
-    init {
-        this.appContext = context
-    }
 
     fun getString(id: Int): String{
         return appContext.getString(id)

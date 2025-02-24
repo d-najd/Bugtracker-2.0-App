@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
+import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreenState
 import io.dnajd.presentation.components.BugtrackerTwoAppBar
 import io.dnajd.presentation.components.BugtrackerTwoAppBarTableBar

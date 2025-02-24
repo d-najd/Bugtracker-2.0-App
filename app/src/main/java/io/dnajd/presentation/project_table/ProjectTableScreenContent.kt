@@ -1,11 +1,9 @@
 package io.dnajd.presentation.project_table
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
+import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.presentation.components.LoadingScreen

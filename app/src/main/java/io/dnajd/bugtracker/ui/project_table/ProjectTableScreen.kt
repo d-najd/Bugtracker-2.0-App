@@ -8,8 +8,8 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.ui.base.ProjectTableSelectedTab
-import io.dnajd.bugtracker.ui.base.getScreen
+import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
+import io.dnajd.bugtracker.ui.util.getScreen
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreen
 import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_table.ProjectTableScreenContent

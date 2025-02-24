@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.base
+package io.dnajd.bugtracker.ui.util
 
 import androidx.annotation.StringRes
 import cafe.adriel.voyager.core.screen.Screen
@@ -26,21 +26,3 @@ fun ProjectTableSelectedTab.getScreen(
         }
     }
 }
-
-/*
-/**
- * @param parameters parameters for the controller,
- */
-private fun ProjectTableSelectedTab.getController(
-    vararg parameters: Any,
-) : FullComposeController {
-    return when(this) {
-        ProjectTableSelectedTab.BOARD -> {
-            ProjectTableController(project = parameters[0] as Project)
-        }
-        ProjectTableSelectedTab.SETTINGS -> {
-            ProjectSettingsController(project = parameters[0] as Project)
-        }
-    }
-}
- */
