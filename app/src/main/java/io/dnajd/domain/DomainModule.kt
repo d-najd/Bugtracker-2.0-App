@@ -1,13 +1,13 @@
 package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
-import io.dnajd.data.project.FakeProjectRepository
+import io.dnajd.data.project.MockProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
-import io.dnajd.data.project_table.FakeProjectTableRepository
+import io.dnajd.data.project_table.MockProjectTableRepository
 import io.dnajd.data.project_table.RemoteProjectTableRepository
-import io.dnajd.data.table_task.FakeTableTaskRepository
+import io.dnajd.data.table_task.MockTableTaskRepository
 import io.dnajd.data.table_task.RemoteTableTaskRepository
-import io.dnajd.data.user_authority.FakeUserAuthorityRepository
+import io.dnajd.data.user_authority.MockUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.interactor.CreateProject
@@ -65,10 +65,10 @@ class DomainModule : InjektModule {
 
         when (USE_FAKES) {
             true -> {
-                addSingletonFactory<ProjectRepository> { FakeProjectRepository }
-                addSingletonFactory<ProjectTableRepository> { FakeProjectTableRepository }
-                addSingletonFactory<TableTaskRepository> { FakeTableTaskRepository }
-                addSingletonFactory<UserAuthorityRepository> { FakeUserAuthorityRepository }
+                addSingletonFactory<ProjectRepository> { MockProjectRepository }
+                addSingletonFactory<ProjectTableRepository> { MockProjectTableRepository }
+                addSingletonFactory<TableTaskRepository> { MockTableTaskRepository }
+                addSingletonFactory<UserAuthorityRepository> { MockUserAuthorityRepository }
             }
             false -> {
                 addSingletonFactory<ProjectRepository> { RemoteProjectRepository }

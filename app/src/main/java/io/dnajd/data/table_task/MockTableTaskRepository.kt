@@ -4,7 +4,7 @@ import io.dnajd.domain.table_task.model.*
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import java.util.*
 
-object FakeTableTaskRepository : TableTaskRepository {
+object MockTableTaskRepository : TableTaskRepository {
 
     @Suppress("RedundantNullableReturnType")
     override suspend fun get(taskId: Long): TableTask? = TableTask(

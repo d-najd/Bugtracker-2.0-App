@@ -6,7 +6,7 @@ import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 
-object FakeProjectTableRepository : ProjectTableRepository {
+object MockProjectTableRepository : ProjectTableRepository {
 
     override suspend fun getAll(
         projectId: Long,

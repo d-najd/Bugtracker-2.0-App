@@ -4,7 +4,7 @@ import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 
-object FakeUserAuthorityRepository : UserAuthorityRepository {
+object MockUserAuthorityRepository : UserAuthorityRepository {
 	override suspend fun getAllByProjectId(projectId: Long): List<UserAuthority> = listOf(
 		UserAuthority("user1", 1, UserAuthorityType.project_owner),
 		UserAuthority("user2", 1, UserAuthorityType.project_view),
