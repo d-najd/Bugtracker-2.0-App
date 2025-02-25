@@ -36,7 +36,7 @@ object ProjectScreen : Screen {
 			onProjectClicked = {
 				val project = successState.projects.find { project -> project.id == it }!!
 
-				navigator.push(ProjectTableScreen(project))
+				navigator.push(ProjectTableScreen(project.id))
 			},
 			onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
 			onFilterByNameClicked = { },

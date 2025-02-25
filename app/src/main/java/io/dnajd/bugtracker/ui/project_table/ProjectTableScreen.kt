@@ -11,20 +11,19 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreen
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.util.getScreen
-import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.project_table.dialogs.CreateProjectTableDialog
 import io.dnajd.presentation.project_table.dialogs.RenameProjectTableDialog
 
 class ProjectTableScreen(
-	private val project: Project,
+	private val projectId: Long,
 ) : Screen {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		// val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectTableScreenModel(context, project) }
+		val screenModel = rememberScreenModel { ProjectTableScreenModel(context, projectId) }
 
 		val state by screenModel.state.collectAsState()
 
@@ -49,7 +48,7 @@ class ProjectTableScreen(
 			onSwitchDropdownMenuClicked = screenModel::switchDropdownMenu,
 			onSwitchScreenTabClicked = {
 				if (it != ProjectTableSelectedTab.BOARD) {
-					navigator.replace(it.getScreen(project))
+					navigator.replace(it.getScreen(projectId))
 				}
 			},
 		)

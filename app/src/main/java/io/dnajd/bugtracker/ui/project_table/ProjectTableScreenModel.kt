@@ -3,6 +3,7 @@ package io.dnajd.bugtracker.ui.project_table
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.interactor.CreateProjectTable
 import io.dnajd.domain.project_table.interactor.DeleteProjectTable
@@ -18,14 +19,16 @@ import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
+import io.dnajd.util.toast
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
 	context: Context,
-	project: Project,
+	projectId: Long,
 
+	private val getProject: GetProject = Injekt.get(),
 	private val getTables: GetProjectTable = Injekt.get(),
 	private val createTable: CreateProjectTable = Injekt.get(),
 	private val createTask: CreateTableTask = Injekt.get(),
@@ -35,16 +38,40 @@ class ProjectTableScreenModel(
 	private val deleteTable: DeleteProjectTable = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectTableScreenState>(
 	context,
-	ProjectTableScreenState.Loading(project)
+	ProjectTableScreenState.Loading
 ) {
 
 	init {
-		requestTables(project)
+		coroutineScope.launchIO {
+			val persistedProject = getProject.awaitOne(projectId)
+			val persistedTables = retrieveTables(projectId)
+
+			if (persistedProject != null) {
+				mutableState.update {
+					ProjectTableScreenState.Success(
+						project = persistedProject,
+						tables = persistedTables,
+					)
+				}
+			} else {
+				context.toast("FAILED TO RETRIEVE TABLE")
+			}
+		}
 	}
 
+	private suspend fun retrieveTables(projectId: Long): List<ProjectTable> {
+		return getTables.await(projectId).sortedBy { it.position }.map { table ->
+			table.copy(
+				tasks = table.tasks.sortedBy { it.position }
+			)
+		}
+	}
+
+	/*
 	private fun requestTables(project: Project) {
 		coroutineScope.launchIO {
-			val tables = getTables.await(project.id).sortedBy { it.position }.map { table ->
+			val tables =
+				getTables.await(project.id).sortedBy { it.position }.map { table ->
 				table.copy(
 					tasks = table.tasks.sortedBy { it.position }
 				)
@@ -57,6 +84,7 @@ class ProjectTableScreenModel(
 			}
 		}
 	}
+	 */
 
 	fun createTable(table: ProjectTable) {
 		coroutineScope.launchIO {
@@ -312,27 +340,23 @@ sealed class ProjectTableDialog {
 	data class RenameTable(val id: Long, val title: String = "") : ProjectTableDialog()
 }
 
-sealed class ProjectTableScreenState(
-	open val project: Project,
-) {
+sealed class ProjectTableScreenState {
 
 	@Immutable
-	data class Loading(
-		override val project: Project,
-	) : ProjectTableScreenState(project)
+	object Loading : ProjectTableScreenState()
 
 	/**
 	 * TODO find a way to get rid of taskMoved, using events does not work properly
 	 */
 	@Immutable
 	data class Success(
-		override val project: Project,
+		val project: Project,
 		val tables: List<ProjectTable>,
 		val dropdownDialogSelectedTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
 		val createTableItemSelectedTableId: Long? = null,
 		val manualTableTasksRefresh: Int = 0,
 		val dialog: ProjectTableDialog? = null,
-	) : ProjectTableScreenState(project)
+	) : ProjectTableScreenState()
 
 }

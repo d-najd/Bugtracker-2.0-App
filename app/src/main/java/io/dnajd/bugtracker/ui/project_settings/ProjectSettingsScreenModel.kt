@@ -18,35 +18,30 @@ import uy.kohesive.injekt.api.get
 
 class ProjectSettingsScreenModel(
 	context: Context,
-	val project: Project,
+	val projectId: Long,
 
 	private val getProject: GetProject = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectSettingsScreenState>(
 	context,
-	ProjectSettingsScreenState.Loading(project)
+	ProjectSettingsScreenState.Loading
 ) {
 	private val _events: Channel<ProjectSettingsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectSettingsEvent> = _events.receiveAsFlow()
 
 	init {
 		coroutineScope.launchIO {
-			mutableState.update {
-				ProjectSettingsScreenState.Success(
-					project = project,
-				)
-			}
-			val persistedProject = getProject.awaitOne(project.id)
+			val persistedProject = getProject.awaitOne(projectId)
 			if (persistedProject != null) {
 				// it does not produce right results with binary operator
-				@Suppress("ReplaceCallWithBinaryOperator")
-				if (persistedProject.equals(project)) {
-					mutableState.update {
-						ProjectSettingsScreenState.Success(
-							project = persistedProject,
-						)
-					}
-					_events.send(ProjectSettingsEvent.ProjectModified(persistedProject))
+				// @Suppress("ReplaceCallWithBinaryOperator")
+				// if (persistedProject.equals(project)) {
+				mutableState.update {
+					ProjectSettingsScreenState.Success(
+						project = persistedProject,
+					)
 				}
+				_events.send(ProjectSettingsEvent.ProjectModified(persistedProject))
+				// }
 			} else {
 				_events.send(ProjectSettingsEvent.InvalidProjectId)
 			}
@@ -61,18 +56,13 @@ sealed class ProjectSettingsEvent {
 	data class ProjectModified(val project: Project) : ProjectSettingsEvent()
 }
 
-sealed class ProjectSettingsScreenState(
-	open val project: Project,
-) {
+sealed class ProjectSettingsScreenState {
 
 	@Immutable
-	data class Loading(
-		override val project: Project,
-	) : ProjectSettingsScreenState(project)
+	object Loading : ProjectSettingsScreenState()
 
 	@Immutable
 	data class Success(
-		override val project: Project,
-	) : ProjectSettingsScreenState(project)
-
+		val project: Project,
+	) : ProjectSettingsScreenState()
 }

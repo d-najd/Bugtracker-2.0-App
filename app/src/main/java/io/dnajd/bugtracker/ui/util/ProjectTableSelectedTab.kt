@@ -5,7 +5,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreen
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
-import io.dnajd.domain.project.model.Project
 
 enum class ProjectTableSelectedTab(@StringRes val titleResId: Int) {
 	BOARD(R.string.action_board),
@@ -14,15 +13,15 @@ enum class ProjectTableSelectedTab(@StringRes val titleResId: Int) {
 
 // TODO see if this can be refactored or something
 fun ProjectTableSelectedTab.getScreen(
-	project: Project,
+	projectId: Long,
 ): Screen {
 	return when (this) {
 		ProjectTableSelectedTab.BOARD -> {
-			ProjectTableScreen(project)
+			ProjectTableScreen(projectId)
 		}
 
 		ProjectTableSelectedTab.SETTINGS -> {
-			ProjectSettingsScreen(project)
+			ProjectSettingsScreen(projectId)
 		}
 	}
 }

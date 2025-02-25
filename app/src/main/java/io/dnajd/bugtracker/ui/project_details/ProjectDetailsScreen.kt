@@ -10,20 +10,19 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project.ProjectScreen
-import io.dnajd.domain.project.model.Project
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_details.ProjectDetailsScreenContent
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class ProjectDetailsScreen(
-	private val project: Project,
+	private val projectId: Long,
 ) : Screen {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, project) }
+		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, projectId) }
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->
@@ -42,25 +41,6 @@ class ProjectDetailsScreen(
 
 					is ProjectDetailsEvent.ProjectModified -> {
 						context.toast("Fix this")
-						/*
-						// pain
-						for((index, routerTransaction) in router.backstack.withIndex()){
-							when(routerTransaction.controller){
-								// TODO this does not really seem that expandable, create better
-								//  system possibly using https://stackoverflow.com/questions/71417326/jetpack-compose-topappbar-with-dynamic-actions
-								is ProjectSettingsController -> {
-									router.setAtBackstack(index, ProjectSettingsController(event.project))
-								}
-								is ProjectTableController -> {
-									router.setAtBackstack(index, ProjectTableController(event.project))
-								}
-								is ProjectController -> {
-									router.setAtBackstack(index, ProjectController())
-								}
-								else -> { }
-							}
-						}
-						 */
 					}
 
 					is ProjectDetailsEvent.LocalizedMessage -> {}

@@ -20,7 +20,7 @@ import uy.kohesive.injekt.api.get
 
 class ProjectDetailsScreenModel(
 	context: Context,
-	project: Project,
+	projectId: Long,
 
 	private val getProject: GetProject = Injekt.get(),
 	private val deleteProject: DeleteProject = Injekt.get(),
@@ -34,7 +34,7 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val persistedProject = getProject.awaitOne(project.id)
+			val persistedProject = getProject.awaitOne(projectId)
 			if (persistedProject != null) {
 				mutableState.update {
 					ProjectDetailsScreenState.Success(

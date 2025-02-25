@@ -10,7 +10,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.presentation.components.BugtrackerTwoAppBar
@@ -36,8 +38,11 @@ fun ProjectTableTopAppBar(
 			}
 		},
 		title = {
+			val title =
+				if (state is ProjectTableScreenState.Success) state.project.title else
+					stringResource(R.string.loading)
 			Text(
-				text = state.project.title,
+				text = title,
 			)
 		},
 		actions = {
