@@ -6,5 +6,6 @@ import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 class GetUserAuthorities(
 	private val repository: UserAuthorityRepository,
 ) {
-	suspend fun await(projectId: Long): List<UserAuthority> = repository.getAllByProjectId(projectId)
+	suspend fun await(projectId: Long): List<UserAuthority> =
+		repository.getAllByProjectId(projectId)
 }

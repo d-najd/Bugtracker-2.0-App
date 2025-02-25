@@ -18,31 +18,31 @@ import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 
 @Composable
 fun TableTaskDescriptionField(
-    state: TableTaskScreenState.Success,
-    onAlterDescriptionSheetClicked: () -> Unit,
+	state: TableTaskScreenState.Success,
+	onAlterDescriptionSheetClicked: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
+	Column(
+		modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
             .clickable { onAlterDescriptionSheetClicked() }
-    ) {
-        Text(
-            modifier = Modifier.padding(top = 20.dp),
-            text = stringResource(R.string.field_description),
-            color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
-        )
+	) {
+		Text(
+			modifier = Modifier.padding(top = 20.dp),
+			text = stringResource(R.string.field_description),
+			color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
+		)
 
-        Text(
-            modifier = Modifier
+		Text(
+			modifier = Modifier
                 .padding(top = 8.dp)
                 .height(92.dp),
-            fontSize = (14.5).sp,
-            text = state.task.description ?: stringResource(R.string.action_tap_to_add_description),
-            color = if(state.task.description != null) Color.Unspecified
-                else MaterialTheme.colorScheme.onSurface.copy(0.4f),
-            maxLines = 3,
-            minLines = 1,
-        )
-    }
+			fontSize = (14.5).sp,
+			text = state.task.description ?: stringResource(R.string.action_tap_to_add_description),
+			color = if (state.task.description != null) Color.Unspecified
+			else MaterialTheme.colorScheme.onSurface.copy(0.4f),
+			maxLines = 3,
+			minLines = 1,
+		)
+	}
 }

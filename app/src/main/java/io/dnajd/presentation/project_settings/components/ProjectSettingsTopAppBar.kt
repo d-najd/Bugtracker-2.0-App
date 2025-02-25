@@ -16,32 +16,32 @@ import io.dnajd.presentation.components.BugtrackerTwoAppBarTableBar
 
 @Composable
 fun ProjectSettingsTopAppBar(
-    state: ProjectSettingsScreenState,
-    onBackClicked: () -> Unit,
+	state: ProjectSettingsScreenState,
+	onBackClicked: () -> Unit,
 
-    onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
+	onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
 ) {
-    BugtrackerTwoAppBar(
-        navigationIcon = {
-            IconButton(onClick = { onBackClicked() }) {
-                Icon(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp),
-                    imageVector = Icons.Rounded.ArrowBack,
-                    contentDescription = ""
-                )
-            }
-        },
-        title = {
-            Text(
-                text = state.project.title,
-            )
-        },
-        bottomContent = {
-            BugtrackerTwoAppBarTableBar(
-                selectedTab = ProjectTableSelectedTab.SETTINGS,
-                onTabClicked = onSwitchScreenTabClicked,
-            )
-        }
-    )
+	BugtrackerTwoAppBar(
+		navigationIcon = {
+			IconButton(onClick = { onBackClicked() }) {
+				Icon(
+					modifier = Modifier
+						.padding(horizontal = 8.dp),
+					imageVector = Icons.Rounded.ArrowBack,
+					contentDescription = ""
+				)
+			}
+		},
+		title = {
+			Text(
+				text = state.project.title,
+			)
+		},
+		bottomContent = {
+			BugtrackerTwoAppBarTableBar(
+				selectedTab = ProjectTableSelectedTab.SETTINGS,
+				onTabClicked = onSwitchScreenTabClicked,
+			)
+		}
+	)
 }

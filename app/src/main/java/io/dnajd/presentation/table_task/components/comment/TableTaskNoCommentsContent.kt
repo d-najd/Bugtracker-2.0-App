@@ -17,24 +17,24 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 
 @Composable
-fun TableTaskNoCommentsContent(){
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            modifier = Modifier
+fun TableTaskNoCommentsContent() {
+	Column(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalAlignment = Alignment.CenterHorizontally,
+	) {
+		Icon(
+			modifier = Modifier
                 .padding(top = 36.dp)
                 .size(86.dp),
-            imageVector = Icons.Default.Forum,
-            contentDescription = ""
-        )
+			imageVector = Icons.Default.Forum,
+			contentDescription = ""
+		)
 
-        Text(
-            modifier = Modifier
-                .padding(top = 8.dp),
-            text = stringResource(R.string.info_comment_first),
-            fontSize = 15.sp,
-        )
-    }
+		Text(
+			modifier = Modifier
+				.padding(top = 8.dp),
+			text = stringResource(R.string.info_comment_first),
+			fontSize = 15.sp,
+		)
+	}
 }

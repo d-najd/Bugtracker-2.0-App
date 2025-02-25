@@ -17,71 +17,71 @@ import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class ProjectDetailsScreen(
-    private val project: Project,
+	private val project: Project,
 ) : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val context = LocalContext.current
-        val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, project) }
+	@Composable
+	override fun Content() {
+		val navigator = LocalNavigator.currentOrThrow
+		val context = LocalContext.current
+		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, project) }
 
-        LaunchedEffect(Unit) {
-            screenModel.events.collectLatest { event ->
-                if (event is ProjectDetailsEvent.LocalizedMessage) {
-                    context.toast(event.stringRes)
-                }
-                when (event) {
-                    is ProjectDetailsEvent.DeleteProject -> {
-                        navigator.popAll()
-                        navigator.push(ProjectScreen)
-                    }
+		LaunchedEffect(Unit) {
+			screenModel.events.collectLatest { event ->
+				if (event is ProjectDetailsEvent.LocalizedMessage) {
+					context.toast(event.stringRes)
+				}
+				when (event) {
+					is ProjectDetailsEvent.DeleteProject -> {
+						navigator.popAll()
+						navigator.push(ProjectScreen)
+					}
 
-                    is ProjectDetailsEvent.InvalidProjectId -> {
-                        navigator.pop()
-                    }
+					is ProjectDetailsEvent.InvalidProjectId -> {
+						navigator.pop()
+					}
 
-                    is ProjectDetailsEvent.ProjectModified -> {
-                        context.toast("Fix this")
-                        /*
-                        // pain
-                        for((index, routerTransaction) in router.backstack.withIndex()){
-                            when(routerTransaction.controller){
-                                // TODO this does not really seem that expandable, create better
-                                //  system possibly using https://stackoverflow.com/questions/71417326/jetpack-compose-topappbar-with-dynamic-actions
-                                is ProjectSettingsController -> {
-                                    router.setAtBackstack(index, ProjectSettingsController(event.project))
-                                }
-                                is ProjectTableController -> {
-                                    router.setAtBackstack(index, ProjectTableController(event.project))
-                                }
-                                is ProjectController -> {
-                                    router.setAtBackstack(index, ProjectController())
-                                }
-                                else -> { }
-                            }
-                        }
-                         */
-                    }
+					is ProjectDetailsEvent.ProjectModified -> {
+						context.toast("Fix this")
+						/*
+						// pain
+						for((index, routerTransaction) in router.backstack.withIndex()){
+							when(routerTransaction.controller){
+								// TODO this does not really seem that expandable, create better
+								//  system possibly using https://stackoverflow.com/questions/71417326/jetpack-compose-topappbar-with-dynamic-actions
+								is ProjectSettingsController -> {
+									router.setAtBackstack(index, ProjectSettingsController(event.project))
+								}
+								is ProjectTableController -> {
+									router.setAtBackstack(index, ProjectTableController(event.project))
+								}
+								is ProjectController -> {
+									router.setAtBackstack(index, ProjectController())
+								}
+								else -> { }
+							}
+						}
+						 */
+					}
 
-                    is ProjectDetailsEvent.LocalizedMessage -> {}
-                }
-            }
-        }
+					is ProjectDetailsEvent.LocalizedMessage -> {}
+				}
+			}
+		}
 
-        val state by screenModel.state.collectAsState()
+		val state by screenModel.state.collectAsState()
 
-        if (state is ProjectDetailsScreenState.Loading) {
-            LoadingScreen()
-            return
-        }
+		if (state is ProjectDetailsScreenState.Loading) {
+			LoadingScreen()
+			return
+		}
 
-        val successState = state as ProjectDetailsScreenState.Success
+		val successState = state as ProjectDetailsScreenState.Success
 
-        ProjectDetailsScreenContent(
-            state = successState,
-            onBackClicked = navigator::pop,
-            onRenameProjectClicked = screenModel::renameProject,
-            onDeleteProjectClicked = screenModel::deleteProject,
-        )
-    }
+		ProjectDetailsScreenContent(
+			state = successState,
+			onBackClicked = navigator::pop,
+			onRenameProjectClicked = screenModel::renameProject,
+			onDeleteProjectClicked = screenModel::deleteProject,
+		)
+	}
 }

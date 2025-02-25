@@ -1,7 +1,14 @@
 package io.dnajd.presentation.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.TaskAlt
@@ -33,107 +40,108 @@ import io.dnajd.bugtracker.R
  */
 @Composable
 fun BugtrackerIconPairField(
-    modifier: Modifier = Modifier,
-    title: String? = null,
-    titleContent: (@Composable ColumnScope.() -> Unit)? = null,
-    iconContent: (@Composable RowScope.() -> Unit)? = null,
-    text: String? = null,
-    textContent: (@Composable ColumnScope.() -> Unit)? = null,
+	modifier: Modifier = Modifier,
+	title: String? = null,
+	titleContent: (@Composable ColumnScope.() -> Unit)? = null,
+	iconContent: (@Composable RowScope.() -> Unit)? = null,
+	text: String? = null,
+	textContent: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
-    if (title != null && titleContent != null) {
-        throw IllegalArgumentException("title or titleContent must be null")
-    }
-    if(text != null && textContent != null) {
-        throw IllegalArgumentException("text or textContent must be null")
-    }
+	if (title != null && titleContent != null) {
+		throw IllegalArgumentException("title or titleContent must be null")
+	}
+	if (text != null && textContent != null) {
+		throw IllegalArgumentException("text or textContent must be null")
+	}
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if(title != null) {
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-            )
-        }
-        titleContent?.let { titleContent() }
+	Column(
+		modifier = modifier,
+		verticalArrangement = Arrangement.Center
+	) {
+		if (title != null) {
+			Text(
+				text = title,
+				color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+			)
+		}
+		titleContent?.let { titleContent() }
 
-        Row(
-            modifier = Modifier.padding(top = if(title != null) 6.dp else 0.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            iconContent?.let { iconContent() }
+		Row(
+			modifier = Modifier.padding(top = if (title != null) 6.dp else 0.dp),
+			verticalAlignment = Alignment.CenterVertically,
+		) {
+			iconContent?.let { iconContent() }
 
-            val textPadding = if ((textContent != null || text != null) && iconContent != null) 8.dp else 0.dp
-            Column(
-                modifier = Modifier.padding(start = textPadding),
-                verticalArrangement = Arrangement.Center,
-            ) {
-                textContent?.let { textContent() }
-                if (text != null) {
-                    Text(
-                        text = text,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Thin,
-                    )
-                }
-            }
-        }
-    }
+			val textPadding =
+				if ((textContent != null || text != null) && iconContent != null) 8.dp else 0.dp
+			Column(
+				modifier = Modifier.padding(start = textPadding),
+				verticalArrangement = Arrangement.Center,
+			) {
+				textContent?.let { textContent() }
+				if (text != null) {
+					Text(
+						text = text,
+						fontSize = 17.sp,
+						fontWeight = FontWeight.Thin,
+					)
+				}
+			}
+		}
+	}
 }
 
 @Preview
 @Composable
 fun BugtrackerIconPairFieldPreview() {
-    Column {
-        BugtrackerCard {
-            BugtrackerIconPairField(
-                modifier = Modifier
+	Column {
+		BugtrackerCard {
+			BugtrackerIconPairField(
+				modifier = Modifier
                     .fillMaxWidth()
                     .clickable { },
-                title = "Reporter",
-                text = "user1",
-                iconContent = {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = ""
-                    )
-                },
-            )
-        }
-        BugtrackerCard {
-            BugtrackerIconPairField(
-                iconContent = {
-                    Icon(
-                        imageVector = Icons.Default.TaskAlt,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = ""
-                    )
-                },
-                textContent = {
-                    Text(text = "Child Task")
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = "${stringResource(R.string.field_task).uppercase()}-${1}",
-                            color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-                        )
-                        Text(
-                            text = " = ",
-                            color = colorResource(R.color.coral),
-                            fontFamily = FontFamily.SansSerif,
-                            fontSize = 26.sp,
-                        )
-                        Text(
-                            text = "Table 1",
-                            color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-                        )
-                    }
-                }
-            )
-        }
-    }
+				title = "Reporter",
+				text = "user1",
+				iconContent = {
+					Icon(
+						modifier = Modifier.size(24.dp),
+						imageVector = Icons.Default.AccountCircle,
+						contentDescription = ""
+					)
+				},
+			)
+		}
+		BugtrackerCard {
+			BugtrackerIconPairField(
+				iconContent = {
+					Icon(
+						imageVector = Icons.Default.TaskAlt,
+						tint = MaterialTheme.colorScheme.primary,
+						contentDescription = ""
+					)
+				},
+				textContent = {
+					Text(text = "Child Task")
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+					) {
+						Text(
+							text = "${stringResource(R.string.field_task).uppercase()}-${1}",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+						)
+						Text(
+							text = " = ",
+							color = colorResource(R.color.coral),
+							fontFamily = FontFamily.SansSerif,
+							fontSize = 26.sp,
+						)
+						Text(
+							text = "Table 1",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+						)
+					}
+				}
+			)
+		}
+	}
 }

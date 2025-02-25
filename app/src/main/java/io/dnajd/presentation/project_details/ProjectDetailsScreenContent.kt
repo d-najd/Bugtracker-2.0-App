@@ -16,39 +16,39 @@ import io.dnajd.presentation.project_details.components.ProjectDetailsContent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectDetailsScreenContent(
-    state: ProjectDetailsScreenState.Success,
-    onBackClicked: () -> Unit,
+	state: ProjectDetailsScreenState.Success,
+	onBackClicked: () -> Unit,
 
-    onRenameProjectClicked: (String) -> Unit,
-    onDeleteProjectClicked: () -> Unit,
+	onRenameProjectClicked: (String) -> Unit,
+	onDeleteProjectClicked: () -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { onBackClicked() }) {
-                        Icon(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = ""
-                        )
-                    }
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.field_project_details),
-                    )
-                },
-            )
-        }
-    ) { contentPadding ->
-        BackHandler { onBackClicked() }
+	Scaffold(
+		topBar = {
+			TopAppBar(
+				navigationIcon = {
+					IconButton(onClick = { onBackClicked() }) {
+						Icon(
+							modifier = Modifier.padding(horizontal = 8.dp),
+							imageVector = Icons.Rounded.ArrowBack,
+							contentDescription = ""
+						)
+					}
+				},
+				title = {
+					Text(
+						text = stringResource(R.string.field_project_details),
+					)
+				},
+			)
+		}
+	) { contentPadding ->
+		BackHandler { onBackClicked() }
 
-        ProjectDetailsContent(
-            state = state,
-            contentPadding = contentPadding,
-            onRenameProjectClicked = onRenameProjectClicked,
-            onDeleteProjectClicked = onDeleteProjectClicked,
-        )
-    }
+		ProjectDetailsContent(
+			state = state,
+			contentPadding = contentPadding,
+			onRenameProjectClicked = onRenameProjectClicked,
+			onDeleteProjectClicked = onDeleteProjectClicked,
+		)
+	}
 }

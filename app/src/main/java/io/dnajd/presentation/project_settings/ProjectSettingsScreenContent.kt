@@ -13,35 +13,35 @@ import io.dnajd.presentation.project_settings.components.ProjectSettingsTopAppBa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectSettingsScreenContent(
-    state: ProjectSettingsScreenState,
-    onBackClicked: () -> Unit,
+	state: ProjectSettingsScreenState,
+	onBackClicked: () -> Unit,
 
-    onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
-    onProjectDetailsClicked: () -> Unit,
-    onUserManagementClicked: () -> Unit,
+	onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
+	onProjectDetailsClicked: () -> Unit,
+	onUserManagementClicked: () -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            ProjectSettingsTopAppBar(
-                state = state,
-                onBackClicked = onBackClicked,
-                onSwitchScreenTabClicked = onSwitchScreenTabClicked,
-            )
-        }
-    ) { contentPadding ->
-        BackHandler { onBackClicked() }
+	Scaffold(
+		topBar = {
+			ProjectSettingsTopAppBar(
+				state = state,
+				onBackClicked = onBackClicked,
+				onSwitchScreenTabClicked = onSwitchScreenTabClicked,
+			)
+		}
+	) { contentPadding ->
+		BackHandler { onBackClicked() }
 
-        if (state is ProjectSettingsScreenState.Loading) {
-            LoadingScreen()
-            return@Scaffold
-        }
+		if (state is ProjectSettingsScreenState.Loading) {
+			LoadingScreen()
+			return@Scaffold
+		}
 
-        val successState = state as ProjectSettingsScreenState.Success
-        ProjectSettingsContent(
-            state = successState,
-            contentPadding = contentPadding,
-            onProjectDetailsClicked = onProjectDetailsClicked,
-            onUserManagementClicked = onUserManagementClicked,
-        )
-    }
+		val successState = state as ProjectSettingsScreenState.Success
+		ProjectSettingsContent(
+			state = successState,
+			contentPadding = contentPadding,
+			onProjectDetailsClicked = onProjectDetailsClicked,
+			onUserManagementClicked = onUserManagementClicked,
+		)
+	}
 }

@@ -22,51 +22,51 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun BugtrackerPairField(
-    key: String,
-    value: String,
-    modifier: Modifier = Modifier,
-){
-    val cardContentPadding = ANALYTICS_CARD_CONTENT_PADDING
+	key: String,
+	value: String,
+	modifier: Modifier = Modifier,
+) {
+	val cardContentPadding = ANALYTICS_CARD_CONTENT_PADDING
 
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            text = "$key:",
-            modifier = Modifier
-                .padding(cardContentPadding),
-        )
-        Text(
-            text = value,
-            textAlign = TextAlign.End,
-            modifier = Modifier
+	Row(
+		modifier = modifier.fillMaxWidth(),
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		Text(
+			fontWeight = FontWeight.Bold,
+			fontSize = 16.sp,
+			text = "$key:",
+			modifier = Modifier
+				.padding(cardContentPadding),
+		)
+		Text(
+			text = value,
+			textAlign = TextAlign.End,
+			modifier = Modifier
                 .padding(cardContentPadding)
                 .fillMaxWidth()
-        )
-    }
+		)
+	}
 }
 
 @Preview(
-    widthDp = 300
+	widthDp = 300
 )
 @Composable
 private fun BugtrackerPairFieldPreview(
-){
-    BugtrackerCard {
-        BugtrackerPairField(
-            key = "key1",
-            value = "value1"
-        )
-        BugtrackerPairField(
-            key = "key2",
-            value = "value2"
-        )
-        BugtrackerPairField(
-            key = "key3",
-            value = "value3"
-        )
-    }
+) {
+	BugtrackerCard {
+		BugtrackerPairField(
+			key = "key1",
+			value = "value1"
+		)
+		BugtrackerPairField(
+			key = "key2",
+			value = "value2"
+		)
+		BugtrackerPairField(
+			key = "key3",
+			value = "value3"
+		)
+	}
 }

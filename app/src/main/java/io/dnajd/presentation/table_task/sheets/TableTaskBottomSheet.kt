@@ -2,8 +2,13 @@ package io.dnajd.presentation.table_task.sheets
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -28,12 +33,12 @@ fun TableTaskBottomSheetContent(
 	)
 
 	val tablesSorted = tables.toMutableList()
-	if(!tablesSorted.remove(tablesSorted.find { it.id == curTable.id })) {
+	if (!tablesSorted.remove(tablesSorted.find { it.id == curTable.id })) {
 		throw IllegalStateException()
 	}
 	tablesSorted.add(0, curTable)
 
-	for(table in tablesSorted) {
+	for (table in tablesSorted) {
 		SheetItem(
 			title = table.title,
 			onClick = { onChangeTableClicked(table.id) }
@@ -52,16 +57,16 @@ private fun SheetItem(
 	Column(
 		verticalArrangement = Arrangement.Center,
 		modifier = Modifier
-			.fillMaxWidth()
-			.height(38.dp)
-			.composed {
-				if (onClick != null) {
-					return@composed clickable {
-						onClick()
-					}
-				}
-				this
-			},
+            .fillMaxWidth()
+            .height(38.dp)
+            .composed {
+                if (onClick != null) {
+                    return@composed clickable {
+                        onClick()
+                    }
+                }
+                this
+            },
 	) {
 		Text(
 			modifier = Modifier.padding(start = 16.dp),

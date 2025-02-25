@@ -17,61 +17,61 @@ import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class UserManagementScreen(
-    private val projectId: Long
+	private val projectId: Long
 ) : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        //val router = LocalRouter.currentOrThrow
-        val context = LocalContext.current
-        val screenModel = rememberScreenModel { UserManagementScreenModel(context, projectId) }
+	@Composable
+	override fun Content() {
+		val navigator = LocalNavigator.currentOrThrow
+		//val router = LocalRouter.currentOrThrow
+		val context = LocalContext.current
+		val screenModel = rememberScreenModel { UserManagementScreenModel(context, projectId) }
 
-        LaunchedEffect(Unit) {
-            screenModel.events.collectLatest { event ->
-                if (event is UserManagementEvent.LocalizedMessage) {
-                    context.toast(event.stringRes)
-                }
-            }
-        }
+		LaunchedEffect(Unit) {
+			screenModel.events.collectLatest { event ->
+				if (event is UserManagementEvent.LocalizedMessage) {
+					context.toast(event.stringRes)
+				}
+			}
+		}
 
-        val state by screenModel.state.collectAsState()
+		val state by screenModel.state.collectAsState()
 
-        if (state is UserManagementScreenState.Loading) {
-            LoadingScreen()
-            return
-        }
+		if (state is UserManagementScreenState.Loading) {
+			LoadingScreen()
+			return
+		}
 
-        val successState = state as UserManagementScreenState.Success
+		val successState = state as UserManagementScreenState.Success
 
-        ProjectUserManagementScreenContent(
-            state = successState,
-            onBackClicked = navigator::pop,
-            onInvertAuthorityClicked = screenModel::invertAuthority,
-            onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) }
-        )
+		ProjectUserManagementScreenContent(
+			state = successState,
+			onBackClicked = navigator::pop,
+			onInvertAuthorityClicked = screenModel::invertAuthority,
+			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) }
+		)
 
-        when (val dialog = successState.dialog) {
-            null -> {}
-            is UserManagementDialog.ConfirmLastAuthorityRemoval -> {
-                ConfirmLastAuthorityRemovalDialog(
-                    onDismissRequest = screenModel::dismissDialog,
-                    onConfirmClicked = {
-                        screenModel.deleteAuthority(
-                            userAuthority = dialog.userAuthority,
-                            agreed = true
-                        )
-                        screenModel.dismissDialog()
-                    }
-                )
-            }
+		when (val dialog = successState.dialog) {
+			null -> {}
+			is UserManagementDialog.ConfirmLastAuthorityRemoval -> {
+				ConfirmLastAuthorityRemovalDialog(
+					onDismissRequest = screenModel::dismissDialog,
+					onConfirmClicked = {
+						screenModel.deleteAuthority(
+							userAuthority = dialog.userAuthority,
+							agreed = true
+						)
+						screenModel.dismissDialog()
+					}
+				)
+			}
 
-            is UserManagementDialog.AddUserToProject -> {
-                AddUserToProjectDialog(
-                    onDismissRequest = screenModel::dismissDialog,
-                    projectId = successState.projectId,
-                    onConfirmClicked = screenModel::createAuthority
-                )
-            }
-        }
-    }
+			is UserManagementDialog.AddUserToProject -> {
+				AddUserToProjectDialog(
+					onDismissRequest = screenModel::dismissDialog,
+					projectId = successState.projectId,
+					onConfirmClicked = screenModel::createAuthority
+				)
+			}
+		}
+	}
 }

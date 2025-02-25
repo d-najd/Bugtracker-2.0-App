@@ -1,10 +1,18 @@
-
 package io.dnajd.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,66 +45,72 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun BugtrackerDropdownMenu(
-    modifier: Modifier = Modifier,
-    dropdownModifier: Modifier = Modifier,
-    title: String? = null,
-    text: String,
-    expanded: Boolean,
-    includeDropdownArrow: Boolean = true,
-    offset: DpOffset = DpOffset(0.dp, 0.dp),
-    onDismissRequest: () -> Unit,
-    onClick: () -> Unit,
-    dropdownContent: @Composable ColumnScope.() -> Unit,
+	modifier: Modifier = Modifier,
+	dropdownModifier: Modifier = Modifier,
+	title: String? = null,
+	text: String,
+	expanded: Boolean,
+	includeDropdownArrow: Boolean = true,
+	offset: DpOffset = DpOffset(0.dp, 0.dp),
+	onDismissRequest: () -> Unit,
+	onClick: () -> Unit,
+	dropdownContent: @Composable ColumnScope.() -> Unit,
 ) {
-    Column {
-        BugtrackerMultipurposeMenu(
-            modifier = modifier,
-            text = {
-                Text(
-                    modifier = Modifier.padding(start = 3.5.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    text = text,
-                )
-            },
-            title = title,
-            includeDropdownArrow = includeDropdownArrow,
-            onClick = onClick,
-        )
+	Column {
+		BugtrackerMultipurposeMenu(
+			modifier = modifier,
+			text = {
+				Text(
+					modifier = Modifier.padding(start = 3.5.dp),
+					fontWeight = FontWeight.Bold,
+					fontSize = 16.sp,
+					text = text,
+				)
+			},
+			title = title,
+			includeDropdownArrow = includeDropdownArrow,
+			onClick = onClick,
+		)
 
-        DropdownMenu(
-            expanded = expanded,
-            modifier = dropdownModifier
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            onDismissRequest = onDismissRequest,
-            offset = offset,
-        ) {
-            dropdownContent()
-        }
-    }
+		DropdownMenu(
+			expanded = expanded,
+			modifier = dropdownModifier
+				.background(MaterialTheme.colorScheme.primaryContainer),
+			onDismissRequest = onDismissRequest,
+			offset = offset,
+		) {
+			dropdownContent()
+		}
+	}
 }
 
 @Preview(
-    widthDp = 300,
-    heightDp = 175,
+	widthDp = 300,
+	heightDp = 175,
 )
 @Composable
-private fun BugtrackerDropdownMenuPreview(){
-    var expanded by remember { mutableStateOf(false) }
+private fun BugtrackerDropdownMenuPreview() {
+	var expanded by remember { mutableStateOf(false) }
 
-    BugtrackerCard(title = "Example") {
-        BugtrackerDropdownMenu(
-            onClick = { expanded = !expanded },
-            expanded = expanded,
-            title = "Top Title",
-            text = "Selected Item",
-            onDismissRequest = {
-                expanded = false
-            },
-        ) {
-            DropdownMenuItem(text = { Text(text = "Dropdown Item 1") }, onClick = { expanded = false })
-            DropdownMenuItem(text = { Text(text = "Dropdown Item 2") }, onClick = { expanded = false })
-            DropdownMenuItem(text = { Text(text = "Dropdown Item 3") }, onClick = { expanded = false })
-        }
-    }
+	BugtrackerCard(title = "Example") {
+		BugtrackerDropdownMenu(
+			onClick = { expanded = !expanded },
+			expanded = expanded,
+			title = "Top Title",
+			text = "Selected Item",
+			onDismissRequest = {
+				expanded = false
+			},
+		) {
+			DropdownMenuItem(
+				text = { Text(text = "Dropdown Item 1") },
+				onClick = { expanded = false })
+			DropdownMenuItem(
+				text = { Text(text = "Dropdown Item 2") },
+				onClick = { expanded = false })
+			DropdownMenuItem(
+				text = { Text(text = "Dropdown Item 3") },
+				onClick = { expanded = false })
+		}
+	}
 }

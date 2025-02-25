@@ -19,57 +19,59 @@ import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerIconPairField
 import io.dnajd.util.BugtrackerDateFormat
-import java.util.*
+import java.util.Date
 
 @Composable
-fun TableTaskCommentsContent(state: TableTaskScreenState.Success){
-    for(comment in state.task.comments) {
-        BugtrackerIconPairField(
-            modifier = Modifier.padding(top = 12.dp, bottom = 3.dp),
-            iconContent = {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = ""
-                )
-            },
-            textContent = {
-                Row {
-                    val fontSize = (14.5).sp
-                    val fontWeight = FontWeight.ExtraLight
-                    Text(
-                        text = comment.user,
-                        fontSize = fontSize,
-                        fontWeight = fontWeight,
-                    )
+fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
+	for (comment in state.task.comments) {
+		BugtrackerIconPairField(
+			modifier = Modifier.padding(top = 12.dp, bottom = 3.dp),
+			iconContent = {
+				Icon(
+					modifier = Modifier.size(30.dp),
+					imageVector = Icons.Default.AccountCircle,
+					contentDescription = ""
+				)
+			},
+			textContent = {
+				Row {
+					val fontSize = (14.5).sp
+					val fontWeight = FontWeight.ExtraLight
+					Text(
+						text = comment.user,
+						fontSize = fontSize,
+						fontWeight = fontWeight,
+					)
 
-                    val dateSeconds: Long = if(comment.editedAt != null) (Date().time - comment.editedAt.time)/1000 else (Date().time - comment.createdAt.time)/1000
-                    val dateString = if(dateSeconds > 0) BugtrackerDateFormat.generateStringFromTime(timeSeconds = dateSeconds) else "Invalid Date"
-                    Text(
-                        modifier = Modifier.padding(start = 6.dp),
-                        text = "$dateString ${stringResource(R.string.field_ago).lowercase()}",
-                        color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-                        fontSize = fontSize,
-                        fontWeight = fontWeight,
-                    )
+					val dateSeconds: Long =
+						if (comment.editedAt != null) (Date().time - comment.editedAt.time) / 1000 else (Date().time - comment.createdAt.time) / 1000
+					val dateString =
+						if (dateSeconds > 0) BugtrackerDateFormat.generateStringFromTime(timeSeconds = dateSeconds) else "Invalid Date"
+					Text(
+						modifier = Modifier.padding(start = 6.dp),
+						text = "$dateString ${stringResource(R.string.field_ago).lowercase()}",
+						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+						fontSize = fontSize,
+						fontWeight = fontWeight,
+					)
 
-                    if(comment.editedAt != null) {
-                        Text(
-                            text = " - ${stringResource(R.string.field_edited).lowercase()}",
-                            color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
-                            fontSize = fontSize,
-                            fontWeight = fontWeight,
-                        )
-                    }
-                }
-                Text(
-                    modifier = Modifier.padding(top = 5.dp),
-                    text = comment.message,
-                    fontWeight = FontWeight.Light,
-                    fontFamily = FontFamily.SansSerif,
-                    fontSize = 15.sp
-                )
-            }
-        )
-    }
+					if (comment.editedAt != null) {
+						Text(
+							text = " - ${stringResource(R.string.field_edited).lowercase()}",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
+							fontSize = fontSize,
+							fontWeight = fontWeight,
+						)
+					}
+				}
+				Text(
+					modifier = Modifier.padding(top = 5.dp),
+					text = comment.message,
+					fontWeight = FontWeight.Light,
+					fontFamily = FontFamily.SansSerif,
+					fontSize = 15.sp
+				)
+			}
+		)
+	}
 }

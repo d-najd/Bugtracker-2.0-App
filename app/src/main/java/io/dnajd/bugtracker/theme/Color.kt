@@ -1,4 +1,5 @@
 package io.dnajd.bugtracker.theme
+
 import androidx.compose.ui.graphics.Color
 
 val bugtracker_theme_light_primary = Color(0xFF6750A4)

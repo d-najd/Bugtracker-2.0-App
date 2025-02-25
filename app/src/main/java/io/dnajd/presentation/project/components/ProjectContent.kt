@@ -20,30 +20,30 @@ import io.dnajd.bugtracker.ui.project.ProjectScreenState
 
 @Composable
 fun ProjectContent(
-    state: ProjectScreenState.Success,
-    contentPadding: PaddingValues,
-    onProjectClicked: (Long) -> Unit,
+	state: ProjectScreenState.Success,
+	contentPadding: PaddingValues,
+	onProjectClicked: (Long) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
+	Column(
+		modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
             .verticalScroll(rememberScrollState())
-    ) {
-        Text(
-            modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp),
-            text = stringResource(R.string.field_all_projects),
-            color = MaterialTheme.colorScheme.onSurface.copy(.5f),
-            fontSize = 14.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Medium,
-        )
+	) {
+		Text(
+			modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp),
+			text = stringResource(R.string.field_all_projects),
+			color = MaterialTheme.colorScheme.onSurface.copy(.5f),
+			fontSize = 14.sp,
+			fontFamily = FontFamily.SansSerif,
+			fontWeight = FontWeight.Medium,
+		)
 
-        for(project in state.projects) {
-            ProjectItemContent(
-                project = project,
-                onProjectClicked = onProjectClicked,
-            )
-        }
-    }
+		for (project in state.projects) {
+			ProjectItemContent(
+				project = project,
+				onProjectClicked = onProjectClicked,
+			)
+		}
+	}
 }

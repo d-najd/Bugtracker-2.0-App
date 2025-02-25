@@ -10,7 +10,7 @@ import uy.kohesive.injekt.api.get
 /**
  * TODO according to google passing context to screen-model is a bad idea, should find alternative
  */
-open class BugtrackerStateScreenModel<S> (context: Context, initialState: S):
+open class BugtrackerStateScreenModel<S>(context: Context, initialState: S) :
 	StateScreenModel<S>(initialState = initialState) {
 	init {
 		Injekt.get<ContextHolder>().composeContext = context

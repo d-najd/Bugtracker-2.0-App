@@ -16,10 +16,11 @@ import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteUserAuthorityRepository: UserAuthorityRepository {
+object RemoteUserAuthorityRepository : UserAuthorityRepository {
 	private val factory: UserAuthorityRepositoryApi =
 		Injekt.get<Retrofit.Builder>()
-			.baseUrl("${Urls.USER_AUTHORITY.getAppendedUrl()}/").build().create(UserAuthorityRepositoryApi::class.java)
+			.baseUrl("${Urls.USER_AUTHORITY.getAppendedUrl()}/").build()
+			.create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): List<UserAuthority> =
 		factory.get(projectId).processRequest()?.data ?: emptyList()

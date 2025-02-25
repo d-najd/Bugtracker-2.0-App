@@ -14,54 +14,54 @@ import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
 
 object ProjectScreen : Screen {
-    private fun readResolve(): Any = ProjectScreen
+	private fun readResolve(): Any = ProjectScreen
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val context = LocalContext.current
-        val screenModel = rememberScreenModel { ProjectScreenModel(context) }
+	@Composable
+	override fun Content() {
+		val navigator = LocalNavigator.currentOrThrow
+		val context = LocalContext.current
+		val screenModel = rememberScreenModel { ProjectScreenModel(context) }
 
-        val state by screenModel.state.collectAsState()
+		val state by screenModel.state.collectAsState()
 
-        if (state is ProjectScreenState.Loading) {
-            LoadingScreen()
-            return
-        }
+		if (state is ProjectScreenState.Loading) {
+			LoadingScreen()
+			return
+		}
 
-        val successState = state as ProjectScreenState.Success
+		val successState = state as ProjectScreenState.Success
 
-        ProjectScreenContent(
-            state = successState,
-            onProjectClicked = {
-                val project = successState.projects.find { project -> project.id == it }!!
+		ProjectScreenContent(
+			state = successState,
+			onProjectClicked = {
+				val project = successState.projects.find { project -> project.id == it }!!
 
-                navigator.push(ProjectTableScreen(project))
-            },
-            onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
-            onFilterByNameClicked = { },
-        )
+				navigator.push(ProjectTableScreen(project))
+			},
+			onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
+			onFilterByNameClicked = { },
+		)
 
-        when (successState.dialog) {
-            null -> {}
-            is ProjectDialog.CreateProject -> {
-                CreateProjectDialog(
-                    onDismissRequest = screenModel::dismissDialog,
-                    onCreateProjectClicked = screenModel::createProject
-                )
-            }
-        }
+		when (successState.dialog) {
+			null -> {}
+			is ProjectDialog.CreateProject -> {
+				CreateProjectDialog(
+					onDismissRequest = screenModel::dismissDialog,
+					onCreateProjectClicked = screenModel::createProject
+				)
+			}
+		}
 
-        /*
-        LaunchedEffect(Unit) {
-            screenModel.events.collectLatest { event ->
-                when (event) {
-                    is LibraryEvent.LocalizedMessage -> {
-                        context.toast(event.stringRes)
-                    }
-                }
-            }
-        }
-         */
-    }
+		/*
+		LaunchedEffect(Unit) {
+			screenModel.events.collectLatest { event ->
+				when (event) {
+					is LibraryEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
+				}
+			}
+		}
+		 */
+	}
 }

@@ -19,40 +19,40 @@ import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 
 @Composable
-fun TableTaskActivityContent(state: TableTaskScreenState.Success){
-    Row(
-        modifier = Modifier
+fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
+	Row(
+		modifier = Modifier
             .fillMaxWidth()
             .padding(top = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            fontSize = (16.5).sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
-            text = "${stringResource(R.string.field_activity)}:",
-        )
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.field_comments),
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 16.sp,
-            )
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		Text(
+			fontSize = (16.5).sp,
+			color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
+			text = "${stringResource(R.string.field_activity)}:",
+		)
+		Row(
+			horizontalArrangement = Arrangement.End,
+			modifier = Modifier.fillMaxWidth()
+		) {
+			Text(
+				text = stringResource(R.string.field_comments),
+				color = MaterialTheme.colorScheme.primary,
+				fontSize = 16.sp,
+			)
 
-            Icon(
-                modifier = Modifier,
-                tint = MaterialTheme.colorScheme.primary,
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = ""
-            )
-        }
-    }
+			Icon(
+				modifier = Modifier,
+				tint = MaterialTheme.colorScheme.primary,
+				imageVector = Icons.Default.ArrowDropDown,
+				contentDescription = ""
+			)
+		}
+	}
 
-    if(state.task.comments.isEmpty()) {
-        TableTaskNoCommentsContent()
-    } else {
-        TableTaskCommentsContent(state = state)
-    }
+	if (state.task.comments.isEmpty()) {
+		TableTaskNoCommentsContent()
+	} else {
+		TableTaskCommentsContent(state = state)
+	}
 }

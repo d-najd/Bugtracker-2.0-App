@@ -12,27 +12,27 @@ import io.dnajd.domain.user_authority.model.UserAuthority
 
 @Composable
 fun ProjectUserManagementContent(
-    state: UserManagementScreenState.Success,
-    contentPadding: PaddingValues,
+	state: UserManagementScreenState.Success,
+	contentPadding: PaddingValues,
 
-    onInvertAuthorityClicked: (UserAuthority) -> Unit,
+	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .padding(contentPadding)
-            .verticalScroll(rememberScrollState()),
-    ) {
-        var usersWithAuthorities by remember { mutableStateOf(state.getUsersWithAuthorities()) }
-        LaunchedEffect(state.authorities) {
-            usersWithAuthorities = state.getUsersWithAuthorities()
-        }
+	Column(
+		modifier = Modifier
+			.padding(contentPadding)
+			.verticalScroll(rememberScrollState()),
+	) {
+		var usersWithAuthorities by remember { mutableStateOf(state.getUsersWithAuthorities()) }
+		LaunchedEffect(state.authorities) {
+			usersWithAuthorities = state.getUsersWithAuthorities()
+		}
 
-        for(userWithAuthorities in usersWithAuthorities) {
-            ProjectUserManagementItemContent(
-                state = state,
-                userWithAuthorities = userWithAuthorities,
-                onInvertAuthorityClicked = onInvertAuthorityClicked,
-            )
-        }
-    }
+		for (userWithAuthorities in usersWithAuthorities) {
+			ProjectUserManagementItemContent(
+				state = state,
+				userWithAuthorities = userWithAuthorities,
+				onInvertAuthorityClicked = onInvertAuthorityClicked,
+			)
+		}
+	}
 }

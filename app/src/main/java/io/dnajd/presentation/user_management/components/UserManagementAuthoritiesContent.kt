@@ -33,8 +33,10 @@ fun ProjectUserManagementAuthoritiesContent(
 			it.authority == UserAuthorityType.project_owner
 		}
 		for (authorityType in UserAuthorityType.values()) {
-			val enabled = (containsOwnerAuthority == null || authorityType == UserAuthorityType.project_owner)
-			val checked = authorities.find { it.authority == authorityType } != null || containsOwnerAuthority != null
+			val enabled =
+				(containsOwnerAuthority == null || authorityType == UserAuthorityType.project_owner)
+			val checked =
+				authorities.find { it.authority == authorityType } != null || containsOwnerAuthority != null
 			val description = stringResource(authorityType.descriptionResId)
 			var localModifier = Modifier
 				.fillMaxWidth()

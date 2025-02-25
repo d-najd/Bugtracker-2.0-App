@@ -19,79 +19,80 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectDetailsScreenModel(
-    context: Context,
-    project: Project,
+	context: Context,
+	project: Project,
 
-    private val getProject: GetProject = Injekt.get(),
-    private val deleteProject: DeleteProject = Injekt.get(),
-    private val renameProject: RenameProject = Injekt.get(),
-) : BugtrackerStateScreenModel<ProjectDetailsScreenState>(context,
-    ProjectDetailsScreenState.Loading
+	private val getProject: GetProject = Injekt.get(),
+	private val deleteProject: DeleteProject = Injekt.get(),
+	private val renameProject: RenameProject = Injekt.get(),
+) : BugtrackerStateScreenModel<ProjectDetailsScreenState>(
+	context,
+	ProjectDetailsScreenState.Loading
 ) {
-    private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
-    val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
+	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
+	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
 
-    init {
-        coroutineScope.launchIO {
-            val persistedProject = getProject.awaitOne(project.id)
-            if(persistedProject != null) {
-                mutableState.update {
-                    ProjectDetailsScreenState.Success(
-                        project = persistedProject,
-                    )
-                }
-            } else {
-                _events.send(ProjectDetailsEvent.InvalidProjectId)
-            }
-        }
-    }
+	init {
+		coroutineScope.launchIO {
+			val persistedProject = getProject.awaitOne(project.id)
+			if (persistedProject != null) {
+				mutableState.update {
+					ProjectDetailsScreenState.Success(
+						project = persistedProject,
+					)
+				}
+			} else {
+				_events.send(ProjectDetailsEvent.InvalidProjectId)
+			}
+		}
+	}
 
-    fun deleteProject() {
-        coroutineScope.launchIO {
-            (mutableState.value as ProjectDetailsScreenState.Success).project.let { project ->
-                if(deleteProject.await(project.id)) {
-                    _events.send(ProjectDetailsEvent.DeleteProject)
-                }
-            }
-        }
-    }
+	fun deleteProject() {
+		coroutineScope.launchIO {
+			(mutableState.value as ProjectDetailsScreenState.Success).project.let { project ->
+				if (deleteProject.await(project.id)) {
+					_events.send(ProjectDetailsEvent.DeleteProject)
+				}
+			}
+		}
+	}
 
-    fun renameProject(title: String) {
-        coroutineScope.launchIO {
-            (mutableState.value as ProjectDetailsScreenState.Success).project.let { transientProject ->
-                if(renameProject.await(id = transientProject.id, newTitle = title)) {
-                    val renamedProject = transientProject.copy(
-                        title = title,
-                    )
-                    mutableState.update {
-                        (mutableState.value as ProjectDetailsScreenState.Success).copy(
-                            project = renamedProject,
-                        )
-                    }
-                    _events.send(ProjectDetailsEvent.ProjectModified(renamedProject))
-                }
-            }
-        }
-    }
+	fun renameProject(title: String) {
+		coroutineScope.launchIO {
+			(mutableState.value as ProjectDetailsScreenState.Success).project.let { transientProject ->
+				if (renameProject.await(id = transientProject.id, newTitle = title)) {
+					val renamedProject = transientProject.copy(
+						title = title,
+					)
+					mutableState.update {
+						(mutableState.value as ProjectDetailsScreenState.Success).copy(
+							project = renamedProject,
+						)
+					}
+					_events.send(ProjectDetailsEvent.ProjectModified(renamedProject))
+				}
+			}
+		}
+	}
 }
 
 
 sealed class ProjectDetailsEvent {
-    sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
+	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
 
-    object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
-    object DeleteProject : ProjectDetailsEvent()
-    data class ProjectModified(val project: Project) : ProjectDetailsEvent()
+	object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
+	object DeleteProject : ProjectDetailsEvent()
+	data class ProjectModified(val project: Project) : ProjectDetailsEvent()
 }
 
 sealed class ProjectDetailsScreenState {
 
-    @Immutable
-    object Loading : ProjectDetailsScreenState()
+	@Immutable
+	object Loading : ProjectDetailsScreenState()
 
-    @Immutable
-    data class Success(
-        val project: Project,
-    ): ProjectDetailsScreenState()
+	@Immutable
+	data class Success(
+		val project: Project,
+	) : ProjectDetailsScreenState()
 
 }

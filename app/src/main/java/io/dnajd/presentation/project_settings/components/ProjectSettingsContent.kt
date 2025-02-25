@@ -16,51 +16,51 @@ import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreenState
 
 @Composable
 fun ProjectSettingsContent(
-    state: ProjectSettingsScreenState.Success,
-    contentPadding: PaddingValues,
+	state: ProjectSettingsScreenState.Success,
+	contentPadding: PaddingValues,
 
-    onProjectDetailsClicked: () -> Unit,
-    onUserManagementClicked: () -> Unit,
+	onProjectDetailsClicked: () -> Unit,
+	onUserManagementClicked: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .padding(contentPadding)
-            .padding(horizontal = 14.dp),
-    ) {
-        ProjectSettingsItem(
-            title = stringResource(R.string.action_details),
-            onClick = { onProjectDetailsClicked() }
-        )
-        ProjectSettingsItem(
-            title = stringResource(R.string.action_user_management),
-            onClick = { onUserManagementClicked() }
-        )
-    }
+	Column(
+		modifier = Modifier
+			.padding(contentPadding)
+			.padding(horizontal = 14.dp),
+	) {
+		ProjectSettingsItem(
+			title = stringResource(R.string.action_details),
+			onClick = { onProjectDetailsClicked() }
+		)
+		ProjectSettingsItem(
+			title = stringResource(R.string.action_user_management),
+			onClick = { onUserManagementClicked() }
+		)
+	}
 }
 
 @Composable
 fun ProjectSettingsItem(
-    title: String,
-    onClick: () -> Unit,
+	title: String,
+	onClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .clickable { onClick() }
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                modifier = Modifier.padding(start = 2.dp),
-                text = title,
-                fontSize = (16.25).sp,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
-    }
-    Divider()
+	Column(
+		modifier = Modifier
+			.clickable { onClick() }
+			.fillMaxWidth()
+	) {
+		Row(
+			modifier = Modifier
+				.padding(vertical = 16.dp)
+				.fillMaxWidth(),
+			verticalAlignment = Alignment.CenterVertically,
+		) {
+			Text(
+				modifier = Modifier.padding(start = 2.dp),
+				text = title,
+				fontSize = (16.25).sp,
+				fontWeight = FontWeight.SemiBold,
+			)
+		}
+	}
+	Divider()
 }

@@ -1,11 +1,24 @@
 package io.dnajd.presentation.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,98 +47,98 @@ import io.dnajd.bugtracker.R
  */
 @Composable
 fun BugtrackerMultipurposeMenu(
-    modifier: Modifier = Modifier,
-    title: String? = null,
-    includeDropdownArrow: Boolean = false,
-    includeDivider: Boolean = true,
-    dividerThickness: Dp = DividerDefaults.Thickness,
-    dividerColor: Color = DividerDefaults.color,
-    onClick: (() -> Unit)? = null,
-    text: @Composable RowScope.() -> Unit,
+	modifier: Modifier = Modifier,
+	title: String? = null,
+	includeDropdownArrow: Boolean = false,
+	includeDivider: Boolean = true,
+	dividerThickness: Dp = DividerDefaults.Thickness,
+	dividerColor: Color = DividerDefaults.color,
+	onClick: (() -> Unit)? = null,
+	text: @Composable RowScope.() -> Unit,
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        if (title != null) {
-            Text(
-                modifier = Modifier
-                    .padding(start = MULTIPURPOSE_MENU_TEXT_START_PADDING),
-                text = title,
-            )
-        }
+	Column(
+		modifier = modifier
+	) {
+		if (title != null) {
+			Text(
+				modifier = Modifier
+					.padding(start = MULTIPURPOSE_MENU_TEXT_START_PADDING),
+				text = title,
+			)
+		}
 
-        Column(
-            modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 5.dp),
-            ) {
-                text()
-                if (includeDropdownArrow) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Icon(
-                            modifier = Modifier.align(Alignment.End),
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = ""
-                        )
-                    }
-                }
-            }
+		Column(
+			modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier,
+		) {
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier.padding(bottom = 5.dp),
+			) {
+				text()
+				if (includeDropdownArrow) {
+					Column(
+						verticalArrangement = Arrangement.Center,
+						horizontalAlignment = Alignment.End
+					) {
+						Icon(
+							modifier = Modifier.align(Alignment.End),
+							imageVector = Icons.Default.ArrowDropDown,
+							contentDescription = ""
+						)
+					}
+				}
+			}
 
-            if (includeDivider) {
-                Divider(
-                    color = dividerColor,
-                    thickness = dividerThickness,
-                )
-            }
-        }
-    }
+			if (includeDivider) {
+				Divider(
+					color = dividerColor,
+					thickness = dividerThickness,
+				)
+			}
+		}
+	}
 }
 
 /** start padding for the text so the text isn't right at the beginning */
 private val MULTIPURPOSE_MENU_TEXT_START_PADDING = 2.5.dp
 
 @Preview(
-    widthDp = 300,
-    heightDp = 175,
+	widthDp = 300,
+	heightDp = 175,
 )
 @Composable
-private fun BugtrackerMultipurposeMenuPreview(){
-    var displayDialog by remember { mutableStateOf(false) }
+private fun BugtrackerMultipurposeMenuPreview() {
+	var displayDialog by remember { mutableStateOf(false) }
 
-    BugtrackerCard(title = "Example") {
-        BugtrackerMultipurposeMenu(
-            text = {
-                Text(
-                    modifier = Modifier.padding(start = 3.5.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    text = "Show Dialog",
-                )
-            },
-            includeDropdownArrow = false,
-            onClick = {
-                displayDialog = !displayDialog
-            },
-        )
-    }
+	BugtrackerCard(title = "Example") {
+		BugtrackerMultipurposeMenu(
+			text = {
+				Text(
+					modifier = Modifier.padding(start = 3.5.dp),
+					fontWeight = FontWeight.Bold,
+					fontSize = 16.sp,
+					text = "Show Dialog",
+				)
+			},
+			includeDropdownArrow = false,
+			onClick = {
+				displayDialog = !displayDialog
+			},
+		)
+	}
 
-    if(displayDialog) {
-        AlertDialog(
-            text = {
-                Text(text = "hello")
-            },
-            confirmButton = {
-                TextButton(onClick = { displayDialog = false }) {
-                    Text(text = stringResource(R.string.action_confirm))
-                }
-            },
-            onDismissRequest = { displayDialog = false },
-        )
-    }
+	if (displayDialog) {
+		AlertDialog(
+			text = {
+				Text(text = "hello")
+			},
+			confirmButton = {
+				TextButton(onClick = { displayDialog = false }) {
+					Text(text = stringResource(R.string.action_confirm))
+				}
+			},
+			onDismissRequest = { displayDialog = false },
+		)
+	}
 }
 

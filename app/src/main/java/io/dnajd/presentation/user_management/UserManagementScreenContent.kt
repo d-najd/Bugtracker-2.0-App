@@ -18,48 +18,48 @@ import io.dnajd.presentation.user_management.components.ProjectUserManagementCon
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectUserManagementScreenContent(
-    state: UserManagementScreenState.Success,
-    onBackClicked: () -> Unit,
+	state: UserManagementScreenState.Success,
+	onBackClicked: () -> Unit,
 
-    onInvertAuthorityClicked: (UserAuthority) -> Unit,
-    onAddUserToProjectClicked: () -> Unit,
+	onInvertAuthorityClicked: (UserAuthority) -> Unit,
+	onAddUserToProjectClicked: () -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { onBackClicked() }) {
-                        Icon(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = ""
-                        )
-                    }
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.field_user_management),
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { onAddUserToProjectClicked() }) {
-                        Icon(
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp),
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = ""
-                        )
-                    }
-                }
-            )
-        },
-    ) { contentPadding ->
-        BackHandler { onBackClicked() }
+	Scaffold(
+		topBar = {
+			TopAppBar(
+				navigationIcon = {
+					IconButton(onClick = { onBackClicked() }) {
+						Icon(
+							modifier = Modifier.padding(horizontal = 8.dp),
+							imageVector = Icons.Rounded.ArrowBack,
+							contentDescription = ""
+						)
+					}
+				},
+				title = {
+					Text(
+						text = stringResource(R.string.field_user_management),
+					)
+				},
+				actions = {
+					IconButton(onClick = { onAddUserToProjectClicked() }) {
+						Icon(
+							modifier = Modifier
+								.padding(horizontal = 6.dp),
+							imageVector = Icons.Rounded.Add,
+							contentDescription = ""
+						)
+					}
+				}
+			)
+		},
+	) { contentPadding ->
+		BackHandler { onBackClicked() }
 
-        ProjectUserManagementContent(
-            state = state,
-            contentPadding = contentPadding,
-            onInvertAuthorityClicked = onInvertAuthorityClicked,
-        )
-    }
+		ProjectUserManagementContent(
+			state = state,
+			contentPadding = contentPadding,
+			onInvertAuthorityClicked = onInvertAuthorityClicked,
+		)
+	}
 }
