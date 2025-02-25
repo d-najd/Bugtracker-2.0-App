@@ -24,6 +24,7 @@ import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 import io.dnajd.util.BugtrackerDateFormat
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

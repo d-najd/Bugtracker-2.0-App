@@ -41,7 +41,6 @@ object RemoteProjectRepository : ProjectRepository {
 }
 
 interface ProjectRepositoryApi {
-
     @GET("user/{username}")
     fun getProjectsByUsername(@Path("username") username: String): Call<ProjectHolder>
 

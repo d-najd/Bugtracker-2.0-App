@@ -22,7 +22,6 @@ class ProjectDetailsScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        // val router = LocalRouter.currentOrThrow
         val context = LocalContext.current
         val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, project) }
 
@@ -35,13 +34,10 @@ class ProjectDetailsScreen(
                     is ProjectDetailsEvent.DeleteProject -> {
                         navigator.popAll()
                         navigator.push(ProjectScreen)
-                        //router.setAtBackstack(0, ProjectController())
-                        // router.popToRoot()
                     }
 
                     is ProjectDetailsEvent.InvalidProjectId -> {
                         navigator.pop()
-                        //router.popCurrentController()
                     }
 
                     is ProjectDetailsEvent.ProjectModified -> {

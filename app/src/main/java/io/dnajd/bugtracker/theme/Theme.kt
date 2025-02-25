@@ -71,7 +71,6 @@ private val DarkColors = darkColorScheme(
     scrim = bugtracker_theme_dark_scrim,
 )
 
-
 @Composable
 fun BugtrackerTheme(content: @Composable () -> Unit) {
     // val context = LocalContext.current

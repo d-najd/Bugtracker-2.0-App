@@ -14,6 +14,8 @@ import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
 
 object ProjectScreen : Screen {
+    private fun readResolve(): Any = ProjectScreen
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

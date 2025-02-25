@@ -22,7 +22,6 @@ class ProjectDetailsScreenModel(
     context: Context,
     project: Project,
 
-    // TODO this is horrible move this to th viewmodel
     private val getProject: GetProject = Injekt.get(),
     private val deleteProject: DeleteProject = Injekt.get(),
     private val renameProject: RenameProject = Injekt.get(),
