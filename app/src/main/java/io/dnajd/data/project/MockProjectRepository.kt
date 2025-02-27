@@ -1,12 +1,12 @@
 package io.dnajd.data.project
 
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.model.ProjectHolder
+import io.dnajd.domain.project.model.ProjectListResponse
 import io.dnajd.domain.project.service.ProjectRepository
 import java.util.Date
 
 object MockProjectRepository : ProjectRepository {
-	override suspend fun getAll(username: String): Result<ProjectHolder> = Result.success(
+	override suspend fun getAll(username: String): Result<ProjectListResponse> = Result.success(
 		mockData()
 	)
 
@@ -23,7 +23,7 @@ object MockProjectRepository : ProjectRepository {
 
 	override suspend fun delete(id: Long): Result<Unit> = Result.success(Unit)
 
-	private fun mockData() = ProjectHolder(
+	private fun mockData() = ProjectListResponse(
 		listOf(
 			Project(1, "user1", "Example Title", null, Date()),
 			Project(2, "user2", "Title 2", "Example Description", Date())

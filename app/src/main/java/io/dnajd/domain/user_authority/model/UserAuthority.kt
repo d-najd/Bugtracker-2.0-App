@@ -4,7 +4,7 @@ package io.dnajd.domain.user_authority.model
 import com.google.gson.annotations.SerializedName
 
 
-data class UserAuthorityHolder(
+data class UserAuthorityListResponse(
 	@SerializedName("data") val `data`: List<UserAuthority> = emptyList()
 )
 

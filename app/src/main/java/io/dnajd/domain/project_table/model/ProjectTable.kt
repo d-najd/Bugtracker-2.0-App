@@ -4,7 +4,7 @@ package io.dnajd.domain.project_table.model
 import com.google.gson.annotations.SerializedName
 import io.dnajd.domain.table_task.model.TableTaskBasic
 
-data class ProjectTableHolder(
+data class ProjectTableListResponse(
 	@SerializedName("data") val `data`: List<ProjectTable> = emptyList()
 )
 

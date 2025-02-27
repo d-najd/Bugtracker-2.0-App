@@ -4,7 +4,7 @@ package io.dnajd.domain.project.model
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 
-data class ProjectHolder(
+data class ProjectListResponse(
 	@SerializedName("data") val `data`: List<Project> = emptyList()
 )
 

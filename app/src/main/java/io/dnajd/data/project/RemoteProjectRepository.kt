@@ -2,7 +2,7 @@ package io.dnajd.data.project
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.model.ProjectHolder
+import io.dnajd.domain.project.model.ProjectListResponse
 import io.dnajd.domain.project.service.ProjectRepository
 import retrofit2.Retrofit
 import retrofit2.http.Body
@@ -21,7 +21,7 @@ object RemoteProjectRepository : ProjectRepository {
 			.baseUrl("${Urls.PROJECT.getAppendedUrl()}/").build()
 			.create(ProjectRepositoryApi::class.java)
 
-	override suspend fun getAll(username: String): Result<ProjectHolder> =
+	override suspend fun getAll(username: String): Result<ProjectListResponse> =
 		factory.getProjectsByUsername(username)
 
 	override suspend fun get(id: Long): Result<Project> =
@@ -46,7 +46,7 @@ object RemoteProjectRepository : ProjectRepository {
 
 interface ProjectRepositoryApi {
 	@GET("user/{username}")
-	fun getProjectsByUsername(@Path("username") username: String): Result<ProjectHolder>
+	fun getProjectsByUsername(@Path("username") username: String): Result<ProjectListResponse>
 
 	@GET("{id}")
 	fun getProjectById(@Path("id") id: Long): Result<Project>

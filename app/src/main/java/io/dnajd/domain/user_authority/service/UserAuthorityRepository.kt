@@ -1,7 +1,7 @@
 package io.dnajd.domain.user_authority.service
 
 import io.dnajd.domain.user_authority.model.UserAuthority
-import io.dnajd.domain.user_authority.model.UserAuthorityHolder
+import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 
 interface UserAuthorityRepository {
 
@@ -10,7 +10,7 @@ interface UserAuthorityRepository {
 	 * @param projectId project id associated with the user authority
 	 * @return list of projects matching the given [projectId], or empty list if the request failed
 	 */
-	suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityHolder>
+	suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse>
 
 	/**
 	 * Creates user authority

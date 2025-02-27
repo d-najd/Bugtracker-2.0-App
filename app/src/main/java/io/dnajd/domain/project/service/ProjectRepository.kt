@@ -1,7 +1,7 @@
 package io.dnajd.domain.project.service
 
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.model.ProjectHolder
+import io.dnajd.domain.project.model.ProjectListResponse
 
 interface ProjectRepository {
 	/**
@@ -9,7 +9,7 @@ interface ProjectRepository {
 	 * @param username username of the user which the projects are being requested for
 	 * @return list of received projects, empty list will be returned if the request failed
 	 */
-	suspend fun getAll(username: String): Result<ProjectHolder>
+	suspend fun getAll(username: String): Result<ProjectListResponse>
 
 	/**
 	 * Gets single project by id
