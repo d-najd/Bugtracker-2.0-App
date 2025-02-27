@@ -36,7 +36,6 @@ class ProjectSettingsScreenModel(
 						project = result,
 					)
 				}
-				_events.send(ProjectSettingsEvent.ProjectModified(result))
 			}.onFailure {
 				it.printStackTrace()
 				_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
@@ -50,8 +49,6 @@ sealed class ProjectSettingsEvent {
 
 	object FailedToRetrieveProjectData :
 		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
-
-	data class ProjectModified(val project: Project) : ProjectSettingsEvent()
 }
 
 sealed class ProjectSettingsScreenState {

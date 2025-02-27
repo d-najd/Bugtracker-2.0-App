@@ -32,17 +32,16 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			projectRepository.get(projectId)
-				.onSuccess { result ->
-					mutableState.update {
-						ProjectDetailsScreenState.Success(
-							project = result,
-						)
-					}
-				}.onFailure {
-					it.printStackTrace()
-					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
+			projectRepository.get(projectId).onSuccess { result ->
+				mutableState.update {
+					ProjectDetailsScreenState.Success(
+						project = result,
+					)
 				}
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
+			}
 		}
 	}
 
@@ -59,15 +58,13 @@ class ProjectDetailsScreenModel(
 		isBusy = true
 
 		coroutineScope.launchIO {
-			projectRepository.delete(successState.project.id)
-				.onSuccess {
-					_events.send(ProjectDetailsEvent.DeleteProject)
-					isBusy = false
-				}
-				.onFailure {
-					_events.send(ProjectDetailsEvent.FailedToDeleteProject)
-					isBusy = false
-				}
+			projectRepository.delete(successState.project.id).onSuccess {
+				_events.send(ProjectDetailsEvent.DeleteProject)
+				isBusy = false
+			}.onFailure {
+				_events.send(ProjectDetailsEvent.FailedToDeleteProject)
+				isBusy = false
+			}
 		}
 	}
 
@@ -107,7 +104,6 @@ class ProjectDetailsScreenModel(
 }
 
 sealed class ProjectDetailsScreenState {
-
 	@Immutable
 	object Loading : ProjectDetailsScreenState()
 

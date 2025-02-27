@@ -30,8 +30,15 @@ class ProjectSettingsScreen(
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->
-				if (event is ProjectSettingsEvent.LocalizedMessage) {
-					context.toast(event.stringRes)
+				when (event) {
+					is ProjectSettingsEvent.FailedToRetrieveProjectData -> {
+						navigator.pop()
+						context.toast(event.stringRes)
+					}
+
+					is ProjectSettingsEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
 				}
 			}
 		}

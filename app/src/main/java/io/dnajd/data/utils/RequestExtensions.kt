@@ -1,12 +1,6 @@
 package io.dnajd.data.utils
 
-import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.util.view.ContextHolder
-import retrofit2.Call
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
-import java.io.IOException
-
+/*
 inline fun <reified T> Call<T>.processRequest(): T? {
 	if (T::class.java == Void::class.java) throw IllegalStateException("Use Call<T>.processVoidRequest for void requests")
 	try {
@@ -58,3 +52,4 @@ fun <T> Call<T>.processVoidRequest(): Boolean {
 	}
 	return false
 }
+ */
