@@ -9,6 +9,7 @@ import io.dnajd.domain.project.interactor.DeleteProject
 import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.model.Project
+import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.channels.Channel
@@ -22,6 +23,7 @@ class ProjectDetailsScreenModel(
 	context: Context,
 	projectId: Long,
 
+	private val projectRepository: ProjectRepository = Injekt.get(),
 	private val getProject: GetProject = Injekt.get(),
 	private val deleteProject: DeleteProject = Injekt.get(),
 	private val renameProject: RenameProject = Injekt.get(),
@@ -34,16 +36,17 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val persistedProject = getProject.awaitOne(projectId)
-			if (persistedProject != null) {
-				mutableState.update {
-					ProjectDetailsScreenState.Success(
-						project = persistedProject,
-					)
+			projectRepository.get(projectId)
+				.onSuccess { result ->
+					mutableState.update {
+						ProjectDetailsScreenState.Success(
+							project = result,
+						)
+					}
+				}.onFailure { e ->
+					e.printStackTrace()
+					_events.send(ProjectDetailsEvent.InvalidProjectId)
 				}
-			} else {
-				_events.send(ProjectDetailsEvent.InvalidProjectId)
-			}
 		}
 	}
 

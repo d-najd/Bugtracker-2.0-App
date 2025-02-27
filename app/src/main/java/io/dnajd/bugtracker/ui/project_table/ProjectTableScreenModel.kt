@@ -3,8 +3,8 @@ package io.dnajd.bugtracker.ui.project_table
 import android.content.Context
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
-import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.model.Project
+import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.interactor.CreateProjectTable
 import io.dnajd.domain.project_table.interactor.DeleteProjectTable
 import io.dnajd.domain.project_table.interactor.GetProjectTable
@@ -28,7 +28,7 @@ class ProjectTableScreenModel(
 	context: Context,
 	projectId: Long,
 
-	private val getProject: GetProject = Injekt.get(),
+	private val projectRepository: ProjectRepository = Injekt.get(),
 	private val getTables: GetProjectTable = Injekt.get(),
 	private val createTable: CreateProjectTable = Injekt.get(),
 	private val createTask: CreateTableTask = Injekt.get(),
@@ -40,21 +40,22 @@ class ProjectTableScreenModel(
 	context,
 	ProjectTableScreenState.Loading
 ) {
-
 	init {
 		coroutineScope.launchIO {
-			val persistedProject = getProject.awaitOne(projectId)
-			val persistedTables = retrieveTables(projectId)
+			val persistedProject = projectRepository.get(projectId)
+			persistedProject.onFailure { e ->
+				context.toast("Failed to retrieve project with id $projectId")
+				e.printStackTrace()
 
-			if (persistedProject != null) {
-				mutableState.update {
-					ProjectTableScreenState.Success(
-						project = persistedProject,
-						tables = persistedTables,
-					)
-				}
-			} else {
-				context.toast("FAILED TO RETRIEVE TABLE")
+				return@launchIO
+			}
+
+			val persistedTables = retrieveTables(projectId)
+			mutableState.update {
+				ProjectTableScreenState.Success(
+					project = persistedProject.getOrThrow(),
+					tables = persistedTables,
+				)
 			}
 		}
 	}

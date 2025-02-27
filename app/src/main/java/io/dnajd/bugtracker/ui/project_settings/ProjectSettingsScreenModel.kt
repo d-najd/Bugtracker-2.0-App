@@ -5,8 +5,8 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project.interactor.GetProject
 import io.dnajd.domain.project.model.Project
+import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +20,7 @@ class ProjectSettingsScreenModel(
 	context: Context,
 	val projectId: Long,
 
-	private val getProject: GetProject = Injekt.get(),
+	private val projectRepository: ProjectRepository = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectSettingsScreenState>(
 	context,
 	ProjectSettingsScreenState.Loading
@@ -30,19 +30,16 @@ class ProjectSettingsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val persistedProject = getProject.awaitOne(projectId)
-			if (persistedProject != null) {
-				// it does not produce right results with binary operator
-				// @Suppress("ReplaceCallWithBinaryOperator")
-				// if (persistedProject.equals(project)) {
+
+			projectRepository.get(projectId).onSuccess { result ->
 				mutableState.update {
 					ProjectSettingsScreenState.Success(
-						project = persistedProject,
+						project = result,
 					)
 				}
-				_events.send(ProjectSettingsEvent.ProjectModified(persistedProject))
-				// }
-			} else {
+				_events.send(ProjectSettingsEvent.ProjectModified(result))
+			}.onFailure {
+				it.printStackTrace()
 				_events.send(ProjectSettingsEvent.InvalidProjectId)
 			}
 		}
