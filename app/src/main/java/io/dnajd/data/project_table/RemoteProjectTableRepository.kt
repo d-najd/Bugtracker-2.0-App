@@ -2,7 +2,7 @@ package io.dnajd.data.project_table
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.model.ProjectTableHolder
+import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import retrofit2.Retrofit
 import retrofit2.http.Body
@@ -25,7 +25,7 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 	override suspend fun getAll(
 		projectId: Long,
 		ignoreTasks: Boolean
-	): Result<ProjectTableHolder> =
+	): Result<ProjectTableListResponse> =
 		factory.getTablesByProjectId(projectId, ignoreTasks)
 
 	override suspend fun getOne(
@@ -56,7 +56,7 @@ private interface ProjectTableRepositoryApi {
 	fun getTablesByProjectId(
 		@Path("projectId") projectId: Long,
 		@Query("ignoreIssues") ignoreTasks: Boolean,
-	): Result<ProjectTableHolder>
+	): Result<ProjectTableListResponse>
 
 	@GET("id/{id}")
 	fun getById(

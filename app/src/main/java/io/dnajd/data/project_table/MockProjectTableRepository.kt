@@ -1,7 +1,7 @@
 package io.dnajd.data.project_table
 
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.model.ProjectTableHolder
+import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
@@ -12,7 +12,7 @@ object MockProjectTableRepository : ProjectTableRepository {
 	override suspend fun getAll(
 		projectId: Long,
 		ignoreTasks: Boolean
-	): Result<ProjectTableHolder> = Result.success(mockData(ignoreTasks))
+	): Result<ProjectTableListResponse> = Result.success(mockData(ignoreTasks))
 
 	override suspend fun getOne(
 		id: Long,
@@ -30,7 +30,7 @@ object MockProjectTableRepository : ProjectTableRepository {
 
 	override suspend fun delete(id: Long): Result<Unit> = Result.success(Unit)
 
-	private fun mockData(ignoreTasks: Boolean) = ProjectTableHolder(
+	private fun mockData(ignoreTasks: Boolean) = ProjectTableListResponse(
 		listOf(
 			ProjectTable(
 				id = 1,

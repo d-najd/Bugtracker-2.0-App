@@ -3,6 +3,7 @@ package io.dnajd.bugtracker.ui.project_table
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsEvent
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.model.ProjectTable
@@ -17,6 +18,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -39,6 +43,11 @@ class ProjectTableScreenModel(
 	private val deleteTable: DeleteProjectTable = Injekt.get(),
 	 */
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
+	private val _events: Channel<ProjectSettingsEvent> = Channel(Int.MAX_VALUE)
+	val events: Flow<ProjectSettingsEvent> = _events.receiveAsFlow()
+
+	private var isBusy = false
+
 	init {
 		coroutineScope.launchIO {
 			val projectResult = async { projectRepository.get(projectId).onFailure { cancel() } }
@@ -54,42 +63,19 @@ class ProjectTableScreenModel(
 				return@launchIO
 			}
 
-			var project = projectResult.getCompleted().getOrThrow()
-			var tablesHolder = tablesResult.getCompleted().getOrThrow()
-
-			val sortedTables = tablesHolder.data
+			val project = projectResult.getCompleted().getOrThrow()
+			val tables = tablesResult.getCompleted().getOrThrow()
+			val sortedTables = tables.data
 				.sortedBy { it.position }
 				.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
 
-
-			/*
-			
-			val persistedProject = projectRepository.get(projectId)
-			persistedProject.onFailure { e ->
-				// context.toast("Failed to retrieve project with id $projectId")
-				e.printStackTrace()
-
-				return@launchIO
-			}
-
-			val persistedTables = retrieveTables(projectId)
 			mutableState.update {
 				ProjectTableScreenState.Success(
-					project = persistedProject.getOrThrow(),
-					tables = persistedTables,
+					project = project,
+					tables = sortedTables,
 				)
 			}
-			 */
 		}
-	}
-
-	private suspend fun retrieveTables(projectId: Long): List<ProjectTable> {
-		return getTables.await(projectId)
-			.sortedBy { it.position }.map { table ->
-				table.copy(
-					tasks = table.tasks.sortedBy { it.position }
-				)
-			}
 	}
 
 	fun createTable(table: ProjectTable) {

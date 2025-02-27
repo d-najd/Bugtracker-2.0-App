@@ -1,7 +1,7 @@
 package io.dnajd.domain.project_table.service
 
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.model.ProjectTableHolder
+import io.dnajd.domain.project_table.model.ProjectTableListResponse
 
 interface ProjectTableRepository {
 	/**
@@ -10,7 +10,10 @@ interface ProjectTableRepository {
 	 * @param ignoreTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getAll(projectId: Long, ignoreTasks: Boolean = false): Result<ProjectTableHolder>
+	suspend fun getAll(
+		projectId: Long,
+		ignoreTasks: Boolean = false
+	): Result<ProjectTableListResponse>
 
 	/**
 	 * Gets one table
