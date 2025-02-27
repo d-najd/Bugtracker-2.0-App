@@ -10,8 +10,24 @@ import java.util.Date
 
 object MockTableTaskRepository : TableTaskRepository {
 
-	@Suppress("RedundantNullableReturnType")
-	override suspend fun get(taskId: Long): TableTask? = TableTask(
+	override suspend fun get(taskId: Long): Result<TableTask> = Result.success(mockData())
+
+	override suspend fun create(task: TableTask): Result<TableTask> = Result.success(task)
+
+	override suspend fun updateNoBody(
+		id: Long,
+		title: String?,
+		description: String?,
+		severity: Int?
+	): Result<Unit> = Result.success(Unit)
+
+	override suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
+
+	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
+
+	override suspend fun swapTable(id: Long, tableId: Long): Result<Unit> = Result.success(Unit)
+
+	private fun mockData() = TableTask(
 		id = 1L,
 		title = "Example Title",
 		tableId = 1L,
@@ -73,21 +89,4 @@ object MockTableTaskRepository : TableTaskRepository {
 			)
 		)
 	)
-
-	@Suppress("RedundantNullableReturnType")
-	override suspend fun create(task: TableTask): TableTask? = task
-
-	override suspend fun updateNoBody(
-		id: Long,
-		title: String?,
-		description: String?,
-		severity: Int?
-	): Boolean = true
-
-	override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean = true
-
-	override suspend fun movePositionTo(fId: Long, sId: Long): Boolean = true
-
-	override suspend fun swapTable(id: Long, tableId: Long): Boolean = true
-
 }
