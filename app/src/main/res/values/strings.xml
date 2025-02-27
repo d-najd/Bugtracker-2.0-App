@@ -37,6 +37,7 @@
     <string name="action_board">Board</string>
     <string name="action_settings">Settings</string>
     <string name="action_add">Add</string>
+    <string name="action_delete_project">Delete Project</string>
 
     <!-- info -->
     <string name="info_comment_first">Be the first to comment</string>
@@ -53,8 +54,9 @@
     <string name="field_project_details">Project Details</string>
     <string name="action_change_avatar">Change avatar</string>
     <string name="action_save">Save</string>
-    <string name="action_delete_project">Delete Project</string>
-    <string name="error_invalid_project_id">Project with given id does not exist</string>
+    <string name="error_failed_to_retrieve_project_data">failed to retrieve project data</string>
+    <string name="error_failed_to_retrieve_projects">Failed to retrieve projects</string>
+    <string name="error_failed_to_create_project">Failed to create project</string>
 
     <!-- authority -->
     <string name="authority_project_view">View</string>
@@ -64,12 +66,14 @@
     <string name="authority_manage_users">Manage Users</string>
     <string name="authority_manage_managers">Manage Managers</string>
     <string name="authority_owner">Owner</string>
+
     <string name="info_authority_project_view">Ability to view tasks</string>
     <string name="info_authority_project_create">Ability to create tasks</string>
     <string name="info_authority_project_delete">Ability to delete tasks</string>
     <string name="info_authority_project_edit">Ability to edit tasks</string>
     <string name="info_authority_manage_users">Ability to manage users except for the owner and users with the same privilege</string>
     <string name="info_authority_manage_owner">Ability to do anything with the project</string>
+
     <string name="field_remove_user">Remove User</string>
     <string name="info_remove_last_authority">By removing the last remaining authority that the user possesses, the user will be removed from the project.</string>
     <string name="info_do_you_wish_to_continue">Do you wish to continue?</string>
@@ -86,7 +90,7 @@
     <string name="error_description_update">Failed to update description</string>
     <string name="field_edit_description">Edit Description</string>
     <string name="action_tap_to_add_description">Tap to add description…</string>
-    <string name="failed_to_retrieve_projects">Failed to retrieve projects</string>
-    <string name="failed_to_create_project">Failed to create project</string>
+    <string name="error_failed_to_delete_project">Failed to delete project</string>
+    <string name="error_failed_to_rename_project">Failed to rename project</string>
 
 </resources>

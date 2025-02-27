@@ -26,24 +26,21 @@ class ProjectDetailsScreen(
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->
-				if (event is ProjectDetailsEvent.LocalizedMessage) {
-					context.toast(event.stringRes)
-				}
 				when (event) {
 					is ProjectDetailsEvent.DeleteProject -> {
 						navigator.popAll()
 						navigator.push(ProjectScreen)
 					}
 
-					is ProjectDetailsEvent.InvalidProjectId -> {
+					is ProjectDetailsEvent.FailedToRetrieveProjectData -> {
 						navigator.pop()
+
+						context.toast(event.stringRes)
 					}
 
-					is ProjectDetailsEvent.ProjectModified -> {
-						context.toast("Fix this")
+					is ProjectDetailsEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
 					}
-
-					is ProjectDetailsEvent.LocalizedMessage -> {}
 				}
 			}
 		}

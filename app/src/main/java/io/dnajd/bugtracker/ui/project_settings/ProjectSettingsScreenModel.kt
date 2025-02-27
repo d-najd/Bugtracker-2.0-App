@@ -30,7 +30,6 @@ class ProjectSettingsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-
 			projectRepository.get(projectId).onSuccess { result ->
 				mutableState.update {
 					ProjectSettingsScreenState.Success(
@@ -40,7 +39,7 @@ class ProjectSettingsScreenModel(
 				_events.send(ProjectSettingsEvent.ProjectModified(result))
 			}.onFailure {
 				it.printStackTrace()
-				_events.send(ProjectSettingsEvent.InvalidProjectId)
+				_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
 			}
 		}
 	}
@@ -49,7 +48,9 @@ class ProjectSettingsScreenModel(
 sealed class ProjectSettingsEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectSettingsEvent()
 
-	object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
+	object FailedToRetrieveProjectData :
+		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
+
 	data class ProjectModified(val project: Project) : ProjectSettingsEvent()
 }
 

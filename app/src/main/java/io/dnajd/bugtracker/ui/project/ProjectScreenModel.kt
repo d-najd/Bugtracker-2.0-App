@@ -28,7 +28,7 @@ class ProjectScreenModel(
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
 
-	private var busy = false
+	private var isBusy = false
 
 	init {
 		requestProjects("user1")
@@ -54,13 +54,13 @@ class ProjectScreenModel(
 	 * @throws IllegalStateException if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun createProject(project: Project) {
-		if (busy) return
+		if (isBusy) return
 		if (mutableState.value !is ProjectScreenState.Success) {
 			throw IllegalStateException("Must be called from state ${ProjectScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
 		}
 		val successState = mutableState.value as ProjectScreenState.Success
 
-		busy = true
+		isBusy = true
 		coroutineScope.launchIO {
 			projectRepository.create(project).onSuccess { result ->
 				mutableState.update {
@@ -70,12 +70,12 @@ class ProjectScreenModel(
 				}
 				dismissDialog()
 
-				busy = false
+				isBusy = false
 			}.onFailure {
 				it.printStackTrace()
 				_events.send(ProjectEvent.FailedToCreateProject)
 
-				busy = false
+				isBusy = false
 			}
 		}
 	}
@@ -85,13 +85,13 @@ class ProjectScreenModel(
 	 * @throws IllegalStateException if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun showDialog(dialog: ProjectDialog) {
-		if (busy) return
+		if (isBusy) return
 		if (mutableState.value !is ProjectScreenState.Success) {
 			throw IllegalStateException("Must be called from state ${ProjectScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
 		}
 		val successState = mutableState.value as ProjectScreenState.Success
 
-		busy = true
+		isBusy = true
 		when (dialog) {
 			is ProjectDialog.CreateProject -> {
 				coroutineScope.launchUI {
@@ -100,26 +100,29 @@ class ProjectScreenModel(
 							dialog = dialog,
 						)
 					}
-
-					busy = false
 				}
+				isBusy = false
+			}
+
+			else -> {
+				isBusy = false
 			}
 		}
 	}
 
 	fun dismissDialog() {
-		if (busy) return
+		if (isBusy) return
 		if (mutableState.value !is ProjectScreenState.Success) {
 			logcat(LogPriority.WARN) { "Dismiss dialog called from state ${mutableState.value}, this is probably a mistake" }
 		}
-		busy = true
+		isBusy = true
 		mutableState.update {
 			when (it) {
 				is ProjectScreenState.Success -> it.copy(dialog = null)
 				else -> it
 			}
 		}
-		busy = false
+		isBusy = false
 	}
 }
 
@@ -142,6 +145,6 @@ sealed class ProjectDialog {
 sealed class ProjectEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectEvent()
 
-	object FailedToRetrieveProjects : LocalizedMessage(R.string.failed_to_retrieve_projects)
-	object FailedToCreateProject : LocalizedMessage(R.string.failed_to_create_project)
+	object FailedToRetrieveProjects : LocalizedMessage(R.string.error_failed_to_retrieve_projects)
+	object FailedToCreateProject : LocalizedMessage(R.string.error_failed_to_create_project)
 }

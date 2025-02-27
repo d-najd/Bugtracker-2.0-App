@@ -5,9 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project.interactor.DeleteProject
-import io.dnajd.domain.project.interactor.GetProject
-import io.dnajd.domain.project.interactor.RenameProject
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.presentation.util.BugtrackerStateScreenModel
@@ -24,15 +21,14 @@ class ProjectDetailsScreenModel(
 	projectId: Long,
 
 	private val projectRepository: ProjectRepository = Injekt.get(),
-	private val getProject: GetProject = Injekt.get(),
-	private val deleteProject: DeleteProject = Injekt.get(),
-	private val renameProject: RenameProject = Injekt.get(),
 ) : BugtrackerStateScreenModel<ProjectDetailsScreenState>(
 	context,
 	ProjectDetailsScreenState.Loading
 ) {
 	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
+
+	private var isBusy = false
 
 	init {
 		coroutineScope.launchIO {
@@ -43,49 +39,71 @@ class ProjectDetailsScreenModel(
 							project = result,
 						)
 					}
-				}.onFailure { e ->
-					e.printStackTrace()
-					_events.send(ProjectDetailsEvent.InvalidProjectId)
+				}.onFailure {
+					it.printStackTrace()
+					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 				}
 		}
 	}
 
+	/**
+	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
+	 * @throws IllegalStateException if called from state other than [ProjectDetailsScreenState.Success] and not busy
+	 */
 	fun deleteProject() {
+		if (isBusy) return
+		if (mutableState.value !is ProjectDetailsScreenState.Success) {
+			throw IllegalStateException("Must be called from state ${ProjectDetailsScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
+		}
+		val successState = mutableState.value as ProjectDetailsScreenState.Success
+		isBusy = true
+
 		coroutineScope.launchIO {
-			(mutableState.value as ProjectDetailsScreenState.Success).project.let { project ->
-				if (deleteProject.await(project.id)) {
+			projectRepository.delete(successState.project.id)
+				.onSuccess {
 					_events.send(ProjectDetailsEvent.DeleteProject)
+					isBusy = false
 				}
-			}
+				.onFailure {
+					_events.send(ProjectDetailsEvent.FailedToDeleteProject)
+					isBusy = false
+				}
 		}
 	}
 
+	/**
+	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
+	 * @throws IllegalStateException if called from state other than [ProjectDetailsScreenState.Success] and not busy
+	 */
 	fun renameProject(title: String) {
+		if (isBusy) return
+		if (mutableState.value !is ProjectDetailsScreenState.Success) {
+			throw IllegalStateException("Must be called from state ${ProjectDetailsScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
+		}
+		val successState = mutableState.value as ProjectDetailsScreenState.Success
+		isBusy = true
+
 		coroutineScope.launchIO {
-			(mutableState.value as ProjectDetailsScreenState.Success).project.let { transientProject ->
-				if (renameProject.await(id = transientProject.id, newTitle = title)) {
-					val renamedProject = transientProject.copy(
-						title = title,
+			projectRepository.updateNoBody(
+				id = successState.project.id,
+				title = title
+			).onSuccess {
+				val renamedProject = successState.project.copy(
+					title = title,
+				)
+				mutableState.update {
+					successState.copy(
+						project = renamedProject,
 					)
-					mutableState.update {
-						(mutableState.value as ProjectDetailsScreenState.Success).copy(
-							project = renamedProject,
-						)
-					}
-					_events.send(ProjectDetailsEvent.ProjectModified(renamedProject))
 				}
+				isBusy = false
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(ProjectDetailsEvent.FailedToRenameProject)
+				isBusy = false
 			}
 		}
 	}
-}
-
-
-sealed class ProjectDetailsEvent {
-	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
-
-	object InvalidProjectId : LocalizedMessage(R.string.error_invalid_project_id)
-	object DeleteProject : ProjectDetailsEvent()
-	data class ProjectModified(val project: Project) : ProjectDetailsEvent()
 }
 
 sealed class ProjectDetailsScreenState {
@@ -97,5 +115,19 @@ sealed class ProjectDetailsScreenState {
 	data class Success(
 		val project: Project,
 	) : ProjectDetailsScreenState()
+}
 
+sealed class ProjectDetailsEvent {
+	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
+
+	object FailedToRetrieveProjectData :
+		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
+
+	object FailedToDeleteProject :
+		LocalizedMessage(R.string.error_failed_to_delete_project)
+
+	object FailedToRenameProject :
+		LocalizedMessage(R.string.error_failed_to_rename_project)
+
+	object DeleteProject : ProjectDetailsEvent()
 }
