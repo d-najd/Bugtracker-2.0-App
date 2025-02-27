@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -12,6 +13,8 @@ import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
+import io.dnajd.util.toast
+import kotlinx.coroutines.flow.collectLatest
 
 object ProjectScreen : Screen {
 	private fun readResolve(): Any = ProjectScreen
@@ -21,6 +24,16 @@ object ProjectScreen : Screen {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectScreenModel(context) }
+
+		LaunchedEffect(Unit) {
+			screenModel.events.collectLatest { event ->
+				when (event) {
+					is ProjectEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
+				}
+			}
+		}
 
 		val state by screenModel.state.collectAsState()
 
@@ -51,17 +64,5 @@ object ProjectScreen : Screen {
 				)
 			}
 		}
-
-		/*
-		LaunchedEffect(Unit) {
-			screenModel.events.collectLatest { event ->
-				when (event) {
-					is LibraryEvent.LocalizedMessage -> {
-						context.toast(event.stringRes)
-					}
-				}
-			}
-		}
-		 */
 	}
 }

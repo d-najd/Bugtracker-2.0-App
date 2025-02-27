@@ -86,5 +86,7 @@
     <string name="error_description_update">Failed to update description</string>
     <string name="field_edit_description">Edit Description</string>
     <string name="action_tap_to_add_description">Tap to add description…</string>
+    <string name="failed_to_retrieve_projects">Failed to retrieve projects</string>
+    <string name="failed_to_create_project">Failed to create project</string>
 
 </resources>
