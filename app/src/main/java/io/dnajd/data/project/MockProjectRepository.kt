@@ -7,16 +7,11 @@ import java.util.Date
 
 object MockProjectRepository : ProjectRepository {
 	override suspend fun getAll(username: String): Result<ProjectHolder> = Result.success(
-		ProjectHolder(
-			listOf(
-				Project(1, "user1", "Example Title", null, Date()),
-				Project(2, "user2", "Title 2", "Example Description", Date())
-			)
-		)
+		mockData()
 	)
 
 	override suspend fun get(id: Long): Result<Project> =
-		Result.success(Project(1, "user1", "Example Title", null, Date()))
+		Result.success(mockData().data[0])
 
 	override suspend fun create(project: Project): Result<Project> = Result.success(project)
 
@@ -27,5 +22,12 @@ object MockProjectRepository : ProjectRepository {
 	): Result<Unit> = Result.success(Unit)
 
 	override suspend fun delete(id: Long): Result<Unit> = Result.success(Unit)
+
+	private fun mockData() = ProjectHolder(
+		listOf(
+			Project(1, "user1", "Example Title", null, Date()),
+			Project(2, "user2", "Title 2", "Example Description", Date())
+		)
+	)
 }
 

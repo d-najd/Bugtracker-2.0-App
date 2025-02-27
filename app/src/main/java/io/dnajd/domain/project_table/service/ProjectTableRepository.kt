@@ -1,6 +1,7 @@
 package io.dnajd.domain.project_table.service
 
 import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.domain.project_table.model.ProjectTableHolder
 
 interface ProjectTableRepository {
 	/**
@@ -9,7 +10,7 @@ interface ProjectTableRepository {
 	 * @param ignoreTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getAll(projectId: Long, ignoreTasks: Boolean): List<ProjectTable>
+	suspend fun getAll(projectId: Long, ignoreTasks: Boolean): Result<ProjectTableHolder>
 
 	/**
 	 * Gets one table
@@ -17,19 +18,19 @@ interface ProjectTableRepository {
 	 * @param ignoreTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getOne(id: Long, ignoreTasks: Boolean): ProjectTable?
+	suspend fun getOne(id: Long, ignoreTasks: Boolean): Result<ProjectTable>
 
 	/**
 	 * Creates project table
 	 * @param table the pojo that is sent to the server
 	 * @return received project from the server or null if the request failed
 	 */
-	suspend fun create(table: ProjectTable): ProjectTable?
+	suspend fun create(table: ProjectTable): Result<ProjectTable>
 
 	suspend fun updateNoBody(
 		id: Long,
 		title: String? = null,
-	): Boolean
+	): Result<Unit>
 
 	/**
 	 * Swaps the positions of 2 tables
@@ -37,13 +38,13 @@ interface ProjectTableRepository {
 	 * @param sId id of the second table
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun swapPositionWith(fId: Long, sId: Long): Boolean
+	suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit>
 
 	/**
 	 * Deletes a table with given id
 	 * @param id id of the table
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun delete(id: Long): Boolean
+	suspend fun delete(id: Long): Result<Unit>
 
 }

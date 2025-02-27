@@ -1,12 +1,9 @@
 package io.dnajd.data.project_table
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.processRequest
-import io.dnajd.data.utils.processVoidRequest
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableHolder
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -28,49 +25,47 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 	override suspend fun getAll(
 		projectId: Long,
 		ignoreTasks: Boolean
-	): List<ProjectTable> =
-		factory.getTablesByProjectId(projectId, ignoreTasks).processRequest()?.data ?: emptyList()
+	): Result<ProjectTableHolder> =
+		factory.getTablesByProjectId(projectId, ignoreTasks)
 
 	override suspend fun getOne(
 		id: Long,
 		ignoreTasks: Boolean
-	): ProjectTable? = factory.getById(id, ignoreTasks).processRequest()
+	): Result<ProjectTable> = factory.getById(id, ignoreTasks)
 
-	override suspend fun create(table: ProjectTable): ProjectTable? =
-		factory.createTable(table).processRequest()
+	override suspend fun create(table: ProjectTable): Result<ProjectTable> =
+		factory.createTable(table)
 
 	override suspend fun updateNoBody(
 		id: Long,
 		title: String?
-	): Boolean = factory.updateNoBody(
+	): Result<Unit> = factory.updateNoBody(
 		id = id,
 		title = title,
-	).processVoidRequest()
+	)
 
-	override suspend fun swapPositionWith(fId: Long, sId: Long): Boolean =
-		factory.swapTablePositions(id = fId, sId = sId).processVoidRequest()
+	override suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit> =
+		factory.swapTablePositions(id = fId, sId = sId)
 
-	override suspend fun delete(id: Long): Boolean =
-		factory.deleteTable(id).processVoidRequest()
-
+	override suspend fun delete(id: Long): Result<Unit> =
+		factory.deleteTable(id)
 }
 
 private interface ProjectTableRepositoryApi {
-
 	@GET("projectId/{projectId}")
 	fun getTablesByProjectId(
 		@Path("projectId") projectId: Long,
 		@Query("ignoreIssues") ignoreTasks: Boolean,
-	): Call<ProjectTableHolder>
+	): Result<ProjectTableHolder>
 
 	@GET("id/{id}")
 	fun getById(
 		@Path("id") id: Long,
 		@Query("ignoreIssues") ignoreTasks: Boolean,
-	): Call<ProjectTable>
+	): Result<ProjectTable>
 
 	@POST(Urls.PROJECT_TABLE.appendedUrlLocal)
-	fun createTable(@Body table: ProjectTable): Call<ProjectTable>
+	fun createTable(@Body table: ProjectTable): Result<ProjectTable>
 
 	/**
 	 * Do not modify [returnBody]
@@ -80,14 +75,14 @@ private interface ProjectTableRepositoryApi {
 		@Path("id") id: Long,
 		@Query("title") title: String? = null,
 		@Query("returnBody") returnBody: Boolean = false,
-	): Call<Void>
+	): Result<Unit>
 
 	@PATCH("{id}/swapPositionWith/{sId}")
 	fun swapTablePositions(
 		@Path("id") id: Long,
 		@Path("sId") sId: Long,
-	): Call<Void>
+	): Result<Unit>
 
 	@DELETE("{id}")
-	fun deleteTable(@Path("id") id: Long): Call<Void>
+	fun deleteTable(@Path("id") id: Long): Result<Unit>
 }
