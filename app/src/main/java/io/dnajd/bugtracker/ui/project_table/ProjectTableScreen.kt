@@ -21,9 +21,8 @@ class ProjectTableScreen(
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
-		// val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectTableScreenModel(context, projectId) }
+		val screenModel = rememberScreenModel { ProjectTableScreenModel(projectId) }
 
 		val state by screenModel.state.collectAsState()
 

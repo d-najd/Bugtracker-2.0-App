@@ -1,7 +1,7 @@
 package io.dnajd.bugtracker.ui.project_table
 
-import android.content.Context
 import androidx.compose.runtime.Immutable
+import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
@@ -16,16 +16,13 @@ import io.dnajd.domain.table_task.interactor.MoveTableTask
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
-import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
-import io.dnajd.util.toast
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectTableScreenModel(
-	context: Context,
 	projectId: Long,
 
 	private val projectRepository: ProjectRepository = Injekt.get(),
@@ -36,15 +33,12 @@ class ProjectTableScreenModel(
 	private val swapTables: SwapProjectTables = Injekt.get(),
 	private val moveTask: MoveTableTask = Injekt.get(),
 	private val deleteTable: DeleteProjectTable = Injekt.get(),
-) : BugtrackerStateScreenModel<ProjectTableScreenState>(
-	context,
-	ProjectTableScreenState.Loading
-) {
+) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
 	init {
 		coroutineScope.launchIO {
 			val persistedProject = projectRepository.get(projectId)
 			persistedProject.onFailure { e ->
-				context.toast("Failed to retrieve project with id $projectId")
+				// context.toast("Failed to retrieve project with id $projectId")
 				e.printStackTrace()
 
 				return@launchIO

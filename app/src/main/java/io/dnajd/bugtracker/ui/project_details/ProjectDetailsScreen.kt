@@ -22,7 +22,7 @@ class ProjectDetailsScreen(
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(context, projectId) }
+		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(projectId) }
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->

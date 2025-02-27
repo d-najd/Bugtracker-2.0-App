@@ -23,7 +23,7 @@ object ProjectScreen : Screen {
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectScreenModel(context) }
+		val screenModel = rememberScreenModel { ProjectScreenModel() }
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->

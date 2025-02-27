@@ -1,8 +1,8 @@
 package io.dnajd.bugtracker.ui.table_task
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project_table.interactor.GetProjectTable
@@ -11,7 +11,6 @@ import io.dnajd.domain.table_task.interactor.GetTableTask
 import io.dnajd.domain.table_task.interactor.SwapTableTaskTable
 import io.dnajd.domain.table_task.interactor.UpdateTableTaskDescription
 import io.dnajd.domain.table_task.model.TableTask
-import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +22,13 @@ import uy.kohesive.injekt.api.get
 import java.util.Date
 
 class TableTaskStateScreenModel(
-	context: Context,
 	taskId: Long,
 
 	private val getTableTask: GetTableTask = Injekt.get(),
 	private val getProjectTable: GetProjectTable = Injekt.get(),
 	private val swapTableTaskTable: SwapTableTaskTable = Injekt.get(),
 	private val updateTaskDescription: UpdateTableTaskDescription = Injekt.get(),
-) : BugtrackerStateScreenModel<TableTaskScreenState>(context, TableTaskScreenState.Loading) {
+) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
 	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
 

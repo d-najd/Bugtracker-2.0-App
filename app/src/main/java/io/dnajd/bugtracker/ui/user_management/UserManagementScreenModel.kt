@@ -1,15 +1,14 @@
 package io.dnajd.bugtracker.ui.user_management
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.user_authority.interactor.CreateUserAuthority
 import io.dnajd.domain.user_authority.interactor.DeleteUserAuthority
 import io.dnajd.domain.user_authority.interactor.GetUserAuthorities
 import io.dnajd.domain.user_authority.model.UserAuthority
-import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
 import kotlinx.coroutines.channels.Channel
@@ -24,16 +23,12 @@ import java.util.function.BiFunction
 typealias UserAuthorityMap = MutableMap<String, List<UserAuthority>>
 
 class UserManagementScreenModel(
-	context: Context,
 	val projectId: Long,
 
 	private val getUserAuthorities: GetUserAuthorities = Injekt.get(),
 	private val createUserAuthority: CreateUserAuthority = Injekt.get(),
 	private val deleteUserAuthority: DeleteUserAuthority = Injekt.get(),
-) : BugtrackerStateScreenModel<UserManagementScreenState>(
-	context,
-	UserManagementScreenState.Loading
-) {
+) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading) {
 
 	private val _events: Channel<UserManagementEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<UserManagementEvent> = _events.receiveAsFlow()

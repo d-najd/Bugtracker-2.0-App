@@ -26,7 +26,7 @@ class ProjectSettingsScreen(
 		val navigator = LocalNavigator.currentOrThrow
 		// val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { ProjectSettingsScreenModel(context, projectId) }
+		val screenModel = rememberScreenModel { ProjectSettingsScreenModel(projectId) }
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->

@@ -25,11 +25,9 @@ class TableTaskScreen(
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
-		// val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel {
 			TableTaskStateScreenModel(
-				context,
 				taskId
 			)
 		}

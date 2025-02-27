@@ -22,9 +22,8 @@ class UserManagementScreen(
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
-		//val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel { UserManagementScreenModel(context, projectId) }
+		val screenModel = rememberScreenModel { UserManagementScreenModel(projectId) }
 
 		LaunchedEffect(Unit) {
 			screenModel.events.collectLatest { event ->

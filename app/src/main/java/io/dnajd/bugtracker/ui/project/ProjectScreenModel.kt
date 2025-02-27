@@ -1,13 +1,12 @@
 package io.dnajd.bugtracker.ui.project
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
-import io.dnajd.presentation.util.BugtrackerStateScreenModel
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
 import kotlinx.coroutines.channels.Channel
@@ -20,10 +19,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectScreenModel(
-	context: Context,
-
 	private val projectRepository: ProjectRepository = Injekt.get(),
-) : BugtrackerStateScreenModel<ProjectScreenState>(context, ProjectScreenState.Loading) {
+) : StateScreenModel<ProjectScreenState>(ProjectScreenState.Loading) {
 
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
