@@ -5,25 +5,23 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
-import io.dnajd.domain.project_table.interactor.CreateProjectTable
-import io.dnajd.domain.project_table.interactor.DeleteProjectTable
-import io.dnajd.domain.project_table.interactor.GetProjectTable
-import io.dnajd.domain.project_table.interactor.RenameProjectTable
-import io.dnajd.domain.project_table.interactor.SwapProjectTables
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.table_task.interactor.CreateTableTask
-import io.dnajd.domain.table_task.interactor.MoveTableTask
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.update
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProjectTableScreenModel(
 	projectId: Long,
 
@@ -43,6 +41,29 @@ class ProjectTableScreenModel(
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
 	init {
 		coroutineScope.launchIO {
+			val projectResult = async { projectRepository.get(projectId).onFailure { cancel() } }
+			val tablesResult =
+				async { projectTableRepository.getAll(projectId).onFailure { cancel() } }
+
+			awaitAll(projectResult, tablesResult)
+
+			if (projectResult.isCancelled || tablesResult.isCancelled) {
+				projectResult.getCompletionExceptionOrNull()?.printStackTrace()
+				tablesResult.getCompletionExceptionOrNull()?.printStackTrace()
+
+				return@launchIO
+			}
+
+			var project = projectResult.getCompleted().getOrThrow()
+			var tablesHolder = tablesResult.getCompleted().getOrThrow()
+
+			val sortedTables = tablesHolder.data
+				.sortedBy { it.position }
+				.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
+
+
+			/*
+			
 			val persistedProject = projectRepository.get(projectId)
 			persistedProject.onFailure { e ->
 				// context.toast("Failed to retrieve project with id $projectId")
@@ -58,6 +79,7 @@ class ProjectTableScreenModel(
 					tables = persistedTables,
 				)
 			}
+			 */
 		}
 	}
 
@@ -160,7 +182,9 @@ class ProjectTableScreenModel(
 								)
 							)
 							tables.add(
-								sTable.copy(
+								sTable.copy
+								/** This is used in the bottom portion of the table specifically the create button */
+									(
 									position = fTable.position
 								)
 							)

@@ -30,7 +30,7 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 
 	override suspend fun getOne(
 		id: Long,
-		ignoreTasks: Boolean
+		ignoreTasks: Boolean = false
 	): Result<ProjectTable> = factory.getById(id, ignoreTasks)
 
 	override suspend fun create(table: ProjectTable): Result<ProjectTable> =

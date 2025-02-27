@@ -10,7 +10,7 @@ interface ProjectTableRepository {
 	 * @param ignoreTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getAll(projectId: Long, ignoreTasks: Boolean): Result<ProjectTableHolder>
+	suspend fun getAll(projectId: Long, ignoreTasks: Boolean = false): Result<ProjectTableHolder>
 
 	/**
 	 * Gets one table
@@ -18,7 +18,7 @@ interface ProjectTableRepository {
 	 * @param ignoreTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getOne(id: Long, ignoreTasks: Boolean): Result<ProjectTable>
+	suspend fun getOne(id: Long, ignoreTasks: Boolean = false): Result<ProjectTable>
 
 	/**
 	 * Creates project table
