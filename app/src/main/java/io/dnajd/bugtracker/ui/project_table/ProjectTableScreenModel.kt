@@ -11,11 +11,13 @@ import io.dnajd.domain.project_table.interactor.GetProjectTable
 import io.dnajd.domain.project_table.interactor.RenameProjectTable
 import io.dnajd.domain.project_table.interactor.SwapProjectTables
 import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.interactor.CreateTableTask
 import io.dnajd.domain.table_task.interactor.MoveTableTask
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
+import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchUI
 import kotlinx.coroutines.flow.update
@@ -26,6 +28,10 @@ class ProjectTableScreenModel(
 	projectId: Long,
 
 	private val projectRepository: ProjectRepository = Injekt.get(),
+	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
+	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
+
+	/*
 	private val getTables: GetProjectTable = Injekt.get(),
 	private val createTable: CreateProjectTable = Injekt.get(),
 	private val createTask: CreateTableTask = Injekt.get(),
@@ -33,6 +39,7 @@ class ProjectTableScreenModel(
 	private val swapTables: SwapProjectTables = Injekt.get(),
 	private val moveTask: MoveTableTask = Injekt.get(),
 	private val deleteTable: DeleteProjectTable = Injekt.get(),
+	 */
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
 	init {
 		coroutineScope.launchIO {
@@ -55,31 +62,13 @@ class ProjectTableScreenModel(
 	}
 
 	private suspend fun retrieveTables(projectId: Long): List<ProjectTable> {
-		return getTables.await(projectId).sortedBy { it.position }.map { table ->
-			table.copy(
-				tasks = table.tasks.sortedBy { it.position }
-			)
-		}
-	}
-
-	/*
-	private fun requestTables(project: Project) {
-		coroutineScope.launchIO {
-			val tables =
-				getTables.await(project.id).sortedBy { it.position }.map { table ->
+		return getTables.await(projectId)
+			.sortedBy { it.position }.map { table ->
 				table.copy(
 					tasks = table.tasks.sortedBy { it.position }
 				)
 			}
-			mutableState.update {
-				ProjectTableScreenState.Success(
-					project = project,
-					tables = tables,
-				)
-			}
-		}
 	}
-	 */
 
 	fun createTable(table: ProjectTable) {
 		coroutineScope.launchIO {

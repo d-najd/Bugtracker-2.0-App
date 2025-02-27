@@ -24,7 +24,6 @@ class ProjectSettingsScreen(
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
-		// val router = LocalRouter.currentOrThrow
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectSettingsScreenModel(projectId) }
 
