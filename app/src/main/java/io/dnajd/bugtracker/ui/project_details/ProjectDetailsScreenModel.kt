@@ -8,10 +8,12 @@ import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.util.launchIO
+import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -23,7 +25,7 @@ class ProjectDetailsScreenModel(
 	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
 
-	private var isBusy = false
+	private var mutex = Mutex()
 
 	init {
 		coroutineScope.launchIO {
@@ -45,18 +47,14 @@ class ProjectDetailsScreenModel(
 	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
 	 */
 	fun deleteProject() {
-		if (isBusy) return
-		assert(mutableState.value is ProjectDetailsScreenState.Success)
-		val successState = mutableState.value as ProjectDetailsScreenState.Success
-		isBusy = true
+		mutex.launchIONoQueue(coroutineScope) {
+			assert(mutableState.value is ProjectDetailsScreenState.Success)
+			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-		coroutineScope.launchIO {
 			projectRepository.delete(successState.project.id).onSuccess {
 				_events.send(ProjectDetailsEvent.DeleteProject)
-				isBusy = false
 			}.onFailure {
 				_events.send(ProjectDetailsEvent.FailedToDeleteProject)
-				isBusy = false
 			}
 		}
 	}
@@ -66,12 +64,10 @@ class ProjectDetailsScreenModel(
 	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
 	 */
 	fun renameProject(title: String) {
-		if (isBusy) return
-		assert(mutableState.value is ProjectDetailsScreenState.Success)
-		val successState = mutableState.value as ProjectDetailsScreenState.Success
-		isBusy = true
+		mutex.launchIONoQueue(coroutineScope) {
+			assert(mutableState.value is ProjectDetailsScreenState.Success)
+			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-		coroutineScope.launchIO {
 			projectRepository.updateNoBody(
 				id = successState.project.id,
 				title = title
@@ -84,11 +80,9 @@ class ProjectDetailsScreenModel(
 						project = renamedProject,
 					)
 				}
-				isBusy = false
 			}.onFailure {
 				it.printStackTrace()
 				_events.send(ProjectDetailsEvent.FailedToRenameProject)
-				isBusy = false
 			}
 		}
 	}

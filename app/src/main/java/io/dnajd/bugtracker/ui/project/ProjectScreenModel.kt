@@ -8,11 +8,13 @@ import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.util.launchIO
-import io.dnajd.util.launchUI
+import io.dnajd.util.launchIONoQueue
+import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -22,8 +24,7 @@ class ProjectScreenModel(
 
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
-
-	private var isBusy = false
+	private var mutex = Mutex()
 
 	init {
 		requestProjects("user1")
@@ -49,12 +50,10 @@ class ProjectScreenModel(
 	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun createProject(project: Project) {
-		if (isBusy) return
-		assert(mutableState.value is ProjectScreenState.Success)
-		val successState = mutableState.value as ProjectScreenState.Success
+		mutex.launchIONoQueue(coroutineScope) {
+			assert(mutableState.value is ProjectScreenState.Success)
+			val successState = mutableState.value as ProjectScreenState.Success
 
-		isBusy = true
-		coroutineScope.launchIO {
 			projectRepository.create(project).onSuccess { result ->
 				mutableState.update {
 					val projects = successState.projects.toMutableList()
@@ -62,13 +61,9 @@ class ProjectScreenModel(
 					successState.copy(projects = projects)
 				}
 				dismissDialog()
-
-				isBusy = false
 			}.onFailure {
 				it.printStackTrace()
 				_events.send(ProjectEvent.FailedToCreateProject)
-
-				isBusy = false
 			}
 		}
 	}
@@ -78,25 +73,18 @@ class ProjectScreenModel(
 	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun showDialog(dialog: ProjectDialog) {
-		if (isBusy) return
-		assert(mutableState.value is ProjectScreenState.Success)
-		val successState = mutableState.value as ProjectScreenState.Success
+		mutex.launchUINoQueue(coroutineScope) {
+			assert(mutableState.value is ProjectScreenState.Success)
+			val successState = mutableState.value as ProjectScreenState.Success
 
-		isBusy = true
-		when (dialog) {
-			is ProjectDialog.CreateProject -> {
-				coroutineScope.launchUI {
+			when (dialog) {
+				is ProjectDialog.CreateProject -> {
 					mutableState.update {
 						successState.copy(
 							dialog = dialog,
 						)
 					}
 				}
-				isBusy = false
-			}
-
-			else -> {
-				isBusy = false
 			}
 		}
 	}
@@ -106,16 +94,16 @@ class ProjectScreenModel(
 	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun dismissDialog() {
-		if (isBusy) return
-		assert(mutableState.value is ProjectScreenState.Success)
-		isBusy = true
-		mutableState.update {
-			when (it) {
-				is ProjectScreenState.Success -> it.copy(dialog = null)
-				else -> it
+		mutex.launchUINoQueue(coroutineScope) {
+			assert(mutableState.value is ProjectScreenState.Success)
+
+			mutableState.update {
+				when (it) {
+					is ProjectScreenState.Success -> it.copy(dialog = null)
+					else -> it
+				}
 			}
 		}
-		isBusy = false
 	}
 }
 
