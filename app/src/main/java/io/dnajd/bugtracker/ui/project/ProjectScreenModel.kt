@@ -13,8 +13,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import logcat.LogPriority
-import logcat.logcat
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -48,13 +46,11 @@ class ProjectScreenModel(
 
 	/**
 	 * Must be called from state [ProjectScreenState.Success] or when busy
-	 * @throws IllegalStateException if called from state other than [ProjectScreenState.Success] and not busy
+	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun createProject(project: Project) {
 		if (isBusy) return
-		if (mutableState.value !is ProjectScreenState.Success) {
-			throw IllegalStateException("Must be called from state ${ProjectScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
-		}
+		assert(mutableState.value is ProjectScreenState.Success)
 		val successState = mutableState.value as ProjectScreenState.Success
 
 		isBusy = true
@@ -79,13 +75,11 @@ class ProjectScreenModel(
 
 	/**
 	 * Must be called from state [ProjectScreenState.Success] or when busy
-	 * @throws IllegalStateException if called from state other than [ProjectScreenState.Success] and not busy
+	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
 	 */
 	fun showDialog(dialog: ProjectDialog) {
 		if (isBusy) return
-		if (mutableState.value !is ProjectScreenState.Success) {
-			throw IllegalStateException("Must be called from state ${ProjectScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
-		}
+		assert(mutableState.value is ProjectScreenState.Success)
 		val successState = mutableState.value as ProjectScreenState.Success
 
 		isBusy = true
@@ -107,11 +101,13 @@ class ProjectScreenModel(
 		}
 	}
 
+	/**
+	 * Must be called from state [ProjectScreenState.Success] or when busy
+	 * @throws AssertionError if called from state other than [ProjectScreenState.Success] and not busy
+	 */
 	fun dismissDialog() {
 		if (isBusy) return
-		if (mutableState.value !is ProjectScreenState.Success) {
-			logcat(LogPriority.WARN) { "Dismiss dialog called from state ${mutableState.value}, this is probably a mistake" }
-		}
+		assert(mutableState.value is ProjectScreenState.Success)
 		isBusy = true
 		mutableState.update {
 			when (it) {

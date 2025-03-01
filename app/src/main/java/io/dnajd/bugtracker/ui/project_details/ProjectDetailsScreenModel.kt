@@ -42,13 +42,11 @@ class ProjectDetailsScreenModel(
 
 	/**
 	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
-	 * @throws IllegalStateException if called from state other than [ProjectDetailsScreenState.Success] and not busy
+	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
 	 */
 	fun deleteProject() {
 		if (isBusy) return
-		if (mutableState.value !is ProjectDetailsScreenState.Success) {
-			throw IllegalStateException("Must be called from state ${ProjectDetailsScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
-		}
+		assert(mutableState.value is ProjectDetailsScreenState.Success)
 		val successState = mutableState.value as ProjectDetailsScreenState.Success
 		isBusy = true
 
@@ -65,13 +63,11 @@ class ProjectDetailsScreenModel(
 
 	/**
 	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
-	 * @throws IllegalStateException if called from state other than [ProjectDetailsScreenState.Success] and not busy
+	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
 	 */
 	fun renameProject(title: String) {
 		if (isBusy) return
-		if (mutableState.value !is ProjectDetailsScreenState.Success) {
-			throw IllegalStateException("Must be called from state ${ProjectDetailsScreenState.Success::class.simpleName} but was called with state ${mutableState.value}")
-		}
+		assert(mutableState.value is ProjectDetailsScreenState.Success)
 		val successState = mutableState.value as ProjectDetailsScreenState.Success
 		isBusy = true
 
