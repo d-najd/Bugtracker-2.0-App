@@ -24,13 +24,13 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 
 	override suspend fun getAll(
 		projectId: Long,
-		ignoreTasks: Boolean
+		ignoreTasks: Boolean,
 	): Result<ProjectTableListResponse> =
 		factory.getTablesByProjectId(projectId, ignoreTasks)
 
 	override suspend fun getOne(
 		id: Long,
-		ignoreTasks: Boolean = false
+		ignoreTasks: Boolean,
 	): Result<ProjectTable> = factory.getById(id, ignoreTasks)
 
 	override suspend fun create(table: ProjectTable): Result<ProjectTable> =
@@ -38,7 +38,7 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 
 	override suspend fun updateNoBody(
 		id: Long,
-		title: String?
+		title: String?,
 	): Result<Unit> = factory.updateNoBody(
 		id = id,
 		title = title,
