@@ -51,7 +51,6 @@ class ProjectScreenModel(
 	 */
 	fun createProject(project: Project) {
 		mutex.launchIONoQueue(coroutineScope) {
-			assert(mutableState.value is ProjectScreenState.Success)
 			val successState = mutableState.value as ProjectScreenState.Success
 
 			projectRepository.create(project).onSuccess { result ->
@@ -74,7 +73,6 @@ class ProjectScreenModel(
 	 */
 	fun showDialog(dialog: ProjectDialog) {
 		mutex.launchUINoQueue(coroutineScope) {
-			assert(mutableState.value is ProjectScreenState.Success)
 			val successState = mutableState.value as ProjectScreenState.Success
 
 			when (dialog) {

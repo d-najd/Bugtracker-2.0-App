@@ -48,7 +48,6 @@ class ProjectDetailsScreenModel(
 	 */
 	fun deleteProject() {
 		mutex.launchIONoQueue(coroutineScope) {
-			assert(mutableState.value is ProjectDetailsScreenState.Success)
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
 			projectRepository.delete(successState.project.id).onSuccess {
@@ -65,7 +64,6 @@ class ProjectDetailsScreenModel(
 	 */
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
-			assert(mutableState.value is ProjectDetailsScreenState.Success)
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
 			projectRepository.updateNoBody(
