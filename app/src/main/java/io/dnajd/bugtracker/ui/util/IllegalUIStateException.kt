@@ -1,15 +1,35 @@
-import kotlin.reflect.KClass
+package io.dnajd.bugtracker.ui.util
 
 class IllegalUIStateException : IllegalStateException {
-	constructor(
-		actualState: B,
-		expectedStateClass: KClass<out T>,
-	) : super(
-		"Must be in state ${expectedStateClass.simpleName}, but current state is ${actualState::class.simpleName}"
-	)
+	companion object {
+		private fun getMessageOrThrowException(currentState: Any, expectedState: Any): String {
+			if (currentState::class != expectedState::class) {
+				throw IllegalArgumentException(invalidArgumentsMessage(currentState, expectedState))
+			}
+
+			return message(currentState, expectedState)
+		}
+
+		private fun invalidArgumentsMessage(currentState: Any, expectedState: Any) =
+			"Cannot create ${IllegalUIStateException::class::simpleName}: state types differ " +
+					"(${currentState::class::simpleName} vs ${expectedState::class::simpleName})"
+
+		private fun message(currentState: Any, expectedState: Any) =
+			"Must be called from state ${currentState::class.simpleName}, " +
+					"but was called with state ${expectedState::class.simpleName}"
+	}
 
 	constructor() : super()
-	constructor(message: String) : super(message)
-	constructor(message: String, cause: Throwable) : super(message, cause)
 	constructor(cause: Throwable) : super(cause)
+
+	@Throws(IllegalArgumentException::class)
+	constructor(currentState: Any, expectedState: Any) : super(
+		getMessageOrThrowException(currentState, expectedState)
+	)
+
+	@Throws(IllegalArgumentException::class)
+	constructor(currentState: Any, expectedState: Any, cause: Throwable) : super(
+		getMessageOrThrowException(currentState, expectedState),
+		cause
+	)
 }
