@@ -27,8 +27,15 @@ class UserManagementScreen(
 
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
-				if (event is UserManagementEvent.LocalizedMessage) {
-					context.toast(event.stringRes)
+				when (event) {
+					is UserManagementEvent.FailedToRetrieveUserAuthorities -> {
+						context.toast(event.stringRes)
+						navigator.pop()
+					}
+
+					is UserManagementEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
 				}
 			}
 		}

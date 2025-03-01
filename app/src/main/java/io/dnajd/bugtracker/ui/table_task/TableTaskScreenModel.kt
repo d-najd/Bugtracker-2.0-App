@@ -26,13 +26,6 @@ class TableTaskStateScreenModel(
 
 	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
 	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
-
-	/*
-	private val getTableTask: GetTableTask = Injekt.get(),
-	private val getProjectTable: GetProjectTable = Injekt.get(),
-	private val swapTableTaskTable: SwapTableTaskTable = Injekt.get(),
-	private val updateTaskDescription: UpdateTableTaskDescription = Injekt.get(),
-	 */
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
 	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<TableTaskEvent> = _events.receiveAsFlow()

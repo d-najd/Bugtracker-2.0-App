@@ -101,5 +101,7 @@
     <string name="error_failed_to_retrieve_table">Failed to retrieve table</string>
     <string name="error_failed_to_update_task_description">Failed to update task description</string>
     <string name="error_failed_to_show_sheet">Failed to show sheet</string>
+    <string name="error_failed_tor_retrieve_user_authorities">Failed to retrieve user authorities</string>
+    <string name="error_failed_to_create_user_authority">Failed to create user authority</string>
 
 </resources>
