@@ -25,7 +25,7 @@ class ProjectDetailsScreenModel(
 	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
 
-	private var mutex = Mutex()
+	private val mutex = Mutex()
 
 	init {
 		coroutineScope.launchIO {

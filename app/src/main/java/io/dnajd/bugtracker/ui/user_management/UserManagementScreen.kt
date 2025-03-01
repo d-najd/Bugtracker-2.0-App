@@ -17,7 +17,7 @@ import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class UserManagementScreen(
-	private val projectId: Long
+	private val projectId: Long,
 ) : Screen {
 	@Composable
 	override fun Content() {
@@ -25,7 +25,7 @@ class UserManagementScreen(
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { UserManagementScreenModel(projectId) }
 
-		LaunchedEffect(Unit) {
+		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				if (event is UserManagementEvent.LocalizedMessage) {
 					context.toast(event.stringRes)

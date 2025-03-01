@@ -19,7 +19,7 @@ import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class TableTaskScreen(
-	private val taskId: Long
+	private val taskId: Long,
 ) : Screen {
 	@OptIn(ExperimentalMaterialApi::class)
 	@Composable
@@ -32,17 +32,18 @@ class TableTaskScreen(
 			)
 		}
 
-		LaunchedEffect(Unit) {
+		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
-				if (event is TableTaskEvent.LocalizedMessage) {
-					context.toast(event.stringRes)
-				}
 				when (event) {
-					is TableTaskEvent.CanNotGetParentTable -> {
+					is TableTaskEvent.FailedToRetrieveTable,
+					is TableTaskEvent.FailedToRetrieveTask,
+						-> {
 						navigator.pop()
 					}
 
-					is TableTaskEvent.LocalizedMessage -> {}
+					is TableTaskEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
 				}
 			}
 		}
@@ -88,7 +89,6 @@ class TableTaskScreen(
 		}
 
 		when (successState.sheet) {
-			is TableTaskSheet.BottomSheet -> {}
 			is TableTaskSheet.AlterDescriptionSheet -> {
 				TableTaskAlterDescriptionSheet(
 					state = successState,

@@ -25,7 +25,7 @@ object ProjectScreen : Screen {
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectScreenModel() }
 
-		LaunchedEffect(Unit) {
+		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				when (event) {
 					is ProjectEvent.LocalizedMessage -> {

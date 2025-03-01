@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project_table
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -14,6 +15,8 @@ import io.dnajd.bugtracker.ui.util.getScreen
 import io.dnajd.presentation.project_table.ProjectTableScreenContent
 import io.dnajd.presentation.project_table.dialogs.CreateProjectTableDialog
 import io.dnajd.presentation.project_table.dialogs.RenameProjectTableDialog
+import io.dnajd.util.toast
+import kotlinx.coroutines.flow.collectLatest
 
 class ProjectTableScreen(
 	private val projectId: Long,
@@ -23,6 +26,16 @@ class ProjectTableScreen(
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectTableScreenModel(projectId) }
+
+		LaunchedEffect(screenModel.events) {
+			screenModel.events.collectLatest { event ->
+				when (event) {
+					is ProjectTableEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
+				}
+			}
+		}
 
 		val state by screenModel.state.collectAsState()
 

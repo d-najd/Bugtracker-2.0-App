@@ -39,7 +39,7 @@ class ProjectTableScreenModel(
 	private val _events: Channel<ProjectTableEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectTableEvent> = _events.receiveAsFlow()
 
-	private var mutex = Mutex()
+	private val mutex = Mutex()
 
 	init {
 		coroutineScope.launchIO {
@@ -147,6 +147,7 @@ class ProjectTableScreenModel(
 					)
 				}
 			}.onFailure {
+				it.printStackTrace()
 				_events.send(ProjectTableEvent.FailedToRenameProjectTable)
 			}
 		}
@@ -191,6 +192,7 @@ class ProjectTableScreenModel(
 					)
 				}
 			}.onFailure {
+				it.printStackTrace()
 				_events.send(ProjectTableEvent.FailedToSwapTablePositions)
 			}
 		}
@@ -234,6 +236,7 @@ class ProjectTableScreenModel(
 						manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
 					)
 				}
+
 				it.printStackTrace()
 				_events.send(ProjectTableEvent.FailedToMoveTableTasks)
 			}

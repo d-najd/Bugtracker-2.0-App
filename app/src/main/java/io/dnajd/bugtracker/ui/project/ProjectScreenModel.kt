@@ -21,10 +21,10 @@ import uy.kohesive.injekt.api.get
 class ProjectScreenModel(
 	private val projectRepository: ProjectRepository = Injekt.get(),
 ) : StateScreenModel<ProjectScreenState>(ProjectScreenState.Loading) {
-
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
-	private var mutex = Mutex()
+
+	private val mutex = Mutex()
 
 	init {
 		requestProjects("user1")

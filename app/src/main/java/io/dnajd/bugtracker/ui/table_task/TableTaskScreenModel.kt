@@ -5,18 +5,18 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project_table.interactor.GetProjectTable
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.table_task.interactor.GetTableTask
-import io.dnajd.domain.table_task.interactor.SwapTableTaskTable
-import io.dnajd.domain.table_task.interactor.UpdateTableTaskDescription
+import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.util.launchIO
+import io.dnajd.util.launchIONoQueue
+import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
@@ -24,13 +24,20 @@ import java.util.Date
 class TableTaskStateScreenModel(
 	taskId: Long,
 
+	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
+	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
+
+	/*
 	private val getTableTask: GetTableTask = Injekt.get(),
 	private val getProjectTable: GetProjectTable = Injekt.get(),
 	private val swapTableTaskTable: SwapTableTaskTable = Injekt.get(),
 	private val updateTaskDescription: UpdateTableTaskDescription = Injekt.get(),
+	 */
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
 	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
+
+	private val mutex = Mutex()
 
 	init {
 		requestTaskData(taskId)
@@ -38,33 +45,43 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		coroutineScope.launchIO {
-			getTableTask.awaitOne(taskId)?.let { task ->
-				getProjectTable.awaitOne(id = task.tableId, ignoreTasks = true)?.let { table ->
+			val taskResult = tableTaskRepository.get(taskId).onFailure {
+				it.printStackTrace()
+				_events.send(TableTaskEvent.FailedToRetrieveTask)
+				return@launchIO
+			}
+			val task = taskResult.getOrThrow()
+
+			projectTableRepository
+				.getOne(
+					id = task.tableId,
+					ignoreTasks = true
+				).onSuccess { table ->
 					mutableState.update {
 						TableTaskScreenState.Success(
 							task = task,
 							parentTable = table,
 						)
 					}
+				}.onFailure {
+					it.printStackTrace()
+					_events.send(TableTaskEvent.FailedToRetrieveTable)
 				}
-			}
 		}
 	}
 
 	private fun renameTask(newTitle: String) {
-		coroutineScope.launchIO {
 
-		}
 	}
 
 	fun updateDescription(newDescription: String) {
-		val successState = (mutableState.value as TableTaskScreenState.Success)
-		coroutineScope.launchIO {
-			if (updateTaskDescription.await(
-					id = successState.task.id,
-					description = newDescription
-				)
-			) {
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = (mutableState.value as TableTaskScreenState.Success)
+
+			tableTaskRepository.updateNoBody(
+				id = successState.task.id,
+				description = newDescription
+			).onSuccess {
 				mutableState.update {
 					successState.copy(
 						task = successState.task.copy(
@@ -73,74 +90,87 @@ class TableTaskStateScreenModel(
 						)
 					)
 				}
+
 				dismissSheet()
-			} else {
-				_events.send(TableTaskEvent.FailedToUpdateDescription)
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
 			}
 		}
 	}
 
 	fun swapTable(tableId: Long) {
-		coroutineScope.launchIO {
-			if (swapTableTaskTable.await(
-					id = (mutableState.value as TableTaskScreenState.Success).task.id,
-					tableId = tableId
-				)
-			) {
-				val table = getProjectTable.awaitOne(id = tableId, ignoreTasks = true)
-				if (table == null) {
-					_events.send(TableTaskEvent.CanNotGetParentTable)
-					return@launchIO
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = (mutableState.value as TableTaskScreenState.Success)
+
+			tableTaskRepository.swapTable(successState.task.id, tableId)
+				.onFailure {
+					it.printStackTrace()
+					_events.send(TableTaskEvent.FailedToSwapTable)
+					return@launchIONoQueue
 				}
+
+			projectTableRepository.getOne(id = tableId, ignoreTasks = true).onSuccess { table ->
 				mutableState.update {
-					(mutableState.value as TableTaskScreenState.Success).copy(
-						task = (mutableState.value as TableTaskScreenState.Success).task.copy(
+					successState.copy(
+						task = successState.task.copy(
 							tableId = tableId,
 							position = 0,
 						),
 						parentTable = table,
 					)
 				}
-			} else {
+			}.onFailure {
+				it.printStackTrace()
 				_events.send(TableTaskEvent.FailedToSwapTable)
 			}
 		}
 	}
 
 	fun showSheet(sheet: TableTaskSheet) {
-		when (sheet) {
-			is TableTaskSheet.BottomSheet -> {
-				coroutineScope.launchIO {
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = (mutableState.value as TableTaskScreenState.Success)
+
+			when (sheet) {
+				is TableTaskSheet.BottomSheet -> {
 					val tables = sheet.tables.ifEmpty {
-						getProjectTable.await(
-							(mutableState.value as TableTaskScreenState.Success).parentTable.projectId,
+						val data = projectTableRepository.getAll(
+							projectId = successState.parentTable.projectId,
 							ignoreTasks = true
-						)
+						).onFailure {
+							it.printStackTrace()
+							_events.send(TableTaskEvent.FailedToShowSheet)
+						}
+
+						data.getOrThrow().data
 					}
+
 					mutableState.update {
-						(mutableState.value as TableTaskScreenState.Success).copy(
+						successState.copy(
 							sheet = sheet.copy(
 								tables = tables,
 							),
 						)
 					}
 				}
-			}
 
-			else -> {
-				mutableState.update {
-					(mutableState.value as TableTaskScreenState.Success).copy(
-						sheet = sheet,
-					)
+				else -> {
+					mutableState.update {
+						successState.copy(
+							sheet = sheet,
+						)
+					}
 				}
 			}
 		}
 	}
 
 	fun dismissSheet() {
-		coroutineScope.launch {
+		mutex.launchUINoQueue(coroutineScope) {
+			val successState = (mutableState.value as TableTaskScreenState.Success)
+
 			mutableState.update {
-				(mutableState.value as TableTaskScreenState.Success).copy(
+				successState.copy(
 					sheet = null,
 				)
 			}
@@ -156,9 +186,13 @@ sealed class TableTaskSheet {
 sealed class TableTaskEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
 
-	object CanNotGetParentTable : LocalizedMessage(R.string.error_invalid_table_id)
-	object FailedToSwapTable : LocalizedMessage(R.string.error_table_swap)
-	object FailedToUpdateDescription : LocalizedMessage(R.string.error_description_update)
+	object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
+	object FailedToUpdateTaskDescription :
+		LocalizedMessage(R.string.error_failed_to_update_task_description)
+
+	object FailedToRetrieveTask : LocalizedMessage(R.string.error_failed_to_retrieve_task)
+	object FailedToRetrieveTable : LocalizedMessage(R.string.error_failed_to_retrieve_table)
+	object FailedToShowSheet : LocalizedMessage(R.string.error_failed_to_show_sheet)
 }
 
 sealed class TableTaskScreenState {

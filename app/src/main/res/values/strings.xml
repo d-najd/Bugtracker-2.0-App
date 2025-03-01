@@ -85,8 +85,7 @@
     <string name="error_user_authority_already_exists">Unable to create user authority since it already exists</string>
     <string name="error_unhandled">Unhandled exception</string>
     <string name="field_select_transition">Select a transition</string>
-    <string name="error_invalid_table_id">Can\'t get parent table</string>
-    <string name="error_table_swap">Failed to swap table</string>
+    <string name="error_failed_table_swap">Failed to swap table</string>
     <string name="error_description_update">Failed to update description</string>
     <string name="field_edit_description">Edit Description</string>
     <string name="action_tap_to_add_description">Tap to add description…</string>
@@ -97,6 +96,10 @@
     <string name="error_failed_to_rename_project_table">Failed to rename table</string>
     <string name="error_failed_to_swap_table_positions">Failed to swap table positions</string>
     <string name="error_failed_to_move_table_tasks">Failed to move table tasks</string>
-    <string name="error_failed_to_delete_table">Failed to delete table\n</string>
+    <string name="error_failed_to_delete_table">Failed to delete table</string>
+    <string name="error_failed_to_retrieve_task">Failed to retrieve task</string>
+    <string name="error_failed_to_retrieve_table">Failed to retrieve table</string>
+    <string name="error_failed_to_update_task_description">Failed to update task description</string>
+    <string name="error_failed_to_show_sheet">Failed to show sheet</string>
 
 </resources>

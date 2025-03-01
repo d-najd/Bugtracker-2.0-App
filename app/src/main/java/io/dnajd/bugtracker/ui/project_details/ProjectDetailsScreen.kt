@@ -24,7 +24,7 @@ class ProjectDetailsScreen(
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectDetailsScreenModel(projectId) }
 
-		LaunchedEffect(Unit) {
+		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				when (event) {
 					is ProjectDetailsEvent.DeleteProject -> {
