@@ -1,9 +1,10 @@
 package io.dnajd.bugtracker.ui.project_table
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsEvent
+import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.model.ProjectTable
@@ -13,7 +14,8 @@ import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.util.launchIO
-import io.dnajd.util.launchUI
+import io.dnajd.util.launchIONoQueue
+import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -22,6 +24,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -32,21 +35,11 @@ class ProjectTableScreenModel(
 	private val projectRepository: ProjectRepository = Injekt.get(),
 	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
 	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
-
-	/*
-	private val getTables: GetProjectTable = Injekt.get(),
-	private val createTable: CreateProjectTable = Injekt.get(),
-	private val createTask: CreateTableTask = Injekt.get(),
-	private val renameTable: RenameProjectTable = Injekt.get(),
-	private val swapTables: SwapProjectTables = Injekt.get(),
-	private val moveTask: MoveTableTask = Injekt.get(),
-	private val deleteTable: DeleteProjectTable = Injekt.get(),
-	 */
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
-	private val _events: Channel<ProjectSettingsEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<ProjectSettingsEvent> = _events.receiveAsFlow()
+	private val _events: Channel<ProjectTableEvent> = Channel(Int.MAX_VALUE)
+	val events: Flow<ProjectTableEvent> = _events.receiveAsFlow()
 
-	private var isBusy = false
+	private var mutex = Mutex()
 
 	init {
 		coroutineScope.launchIO {
@@ -79,24 +72,28 @@ class ProjectTableScreenModel(
 	}
 
 	fun createTable(table: ProjectTable) {
-		coroutineScope.launchIO {
-			createTable.awaitOne(table)?.let { persistedTable ->
-				val tables =
-					(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-				tables.add(persistedTable)
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			projectTableRepository.create(table).onSuccess {
+				val tables = successState.tables.toMutableList()
+				tables.add(it)
 				mutableState.update {
-					(mutableState.value as ProjectTableScreenState.Success).copy(
-						tables = tables,
-					)
+					successState.copy(tables = tables)
 				}
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(ProjectTableEvent.FailedToCreateProjectTable)
 			}
 		}
 	}
 
 	fun showCreateTaskMenu(tableId: Long?) {
-		coroutineScope.launchUI {
+		mutex.launchUINoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
 			mutableState.update {
-				(mutableState.value as ProjectTableScreenState.Success).copy(
+				successState.copy(
 					createTableItemSelectedTableId = tableId,
 				)
 			}
@@ -104,44 +101,53 @@ class ProjectTableScreenModel(
 	}
 
 	fun createTask(task: TableTask) {
-		coroutineScope.launchIO {
-			createTask.awaitOne(task)?.let { persistedTask ->
-				val tables =
-					(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			tableTaskRepository.create(task).onSuccess { result ->
+				val tables = successState.tables.toMutableList()
 				val table = tables.find { it.id == task.tableId }!!
 				tables.remove(table)
+
 				val tasks = table.tasks.toMutableList()
-				tasks.add(persistedTask.toBasic())
+				tasks.add(result.toBasic())
+
 				tables.add(
 					table.copy(
 						tasks = tasks,
 					)
 				)
+
 				mutableState.update {
-					(mutableState.value as ProjectTableScreenState.Success).copy(
+					successState.copy(
 						tables = tables,
 						createTableItemSelectedTableId = null,
 					)
 				}
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(ProjectTableEvent.FailedToCreateTableTask)
 			}
 		}
 	}
 
 	fun renameTable(id: Long, newName: String) {
-		coroutineScope.launchIO {
-			val tables =
-				(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-			tables.find { table -> table.id == id }!!.let { transientTable ->
-				if (renameTable.await(id, newName)) {
-					// doing it this way so that state changes get updated for sure
-					mutableState.update {
-						tables.remove(transientTable)
-						tables.add(transientTable.copy(title = newName))
-						(mutableState.value as ProjectTableScreenState.Success).copy(
-							tables = tables
-						)
-					}
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			val tables = successState.tables.toMutableList()
+			val table = tables.find { table -> table.id == id }!!
+			projectTableRepository.updateNoBody(id, title = newName).onSuccess {
+				tables.remove(table)
+				tables.add(table.copy(title = newName))
+
+				mutableState.update {
+					successState.copy(
+						tables = tables
+					)
 				}
+			}.onFailure {
+				_events.send(ProjectTableEvent.FailedToRenameProjectTable)
 			}
 		}
 	}
@@ -150,41 +156,45 @@ class ProjectTableScreenModel(
 	 * swaps the positions of 2 tables
 	 * @param fId id of the first table
 	 * @param sId id of the second table
+	 * @throws IllegalArgumentException if [fId] == [sId]
 	 */
 	fun swapTablePositions(fId: Long, sId: Long) {
-		coroutineScope.launchIO {
-			val tables =
-				(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-			tables.find { table -> table.id == sId }!!.let { fTable ->
-				tables.find { table -> table.id == fId }!!.let { sTable ->
-					if (swapTables.await(fId, sId)) {
-						// doing it this way so that state changes get updated for sure
-						mutableState.update {
-							tables.remove(fTable)
-							tables.remove(sTable)
-							tables.add(
-								fTable.copy(
-									position = sTable.position
-								)
-							)
-							tables.add(
-								sTable.copy
-								/** This is used in the bottom portion of the table specifically the create button */
-									(
-									position = fTable.position
-								)
-							)
-							(mutableState.value as ProjectTableScreenState.Success).copy(
-								tables = tables.sortedBy { it.position },
-								dropdownDialogSelectedTableId = null,
-							)
-						}
-					}
+		if (fId == sId) throw IllegalArgumentException("Can't swap table with itself")
+
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			val tables = successState.tables.toMutableList()
+
+			val fTable = tables.find { table -> table.id == sId }!!
+			val sTable = tables.find { table -> table.id == fId }!!
+
+			projectTableRepository.swapPositionWith(fId, sId).onSuccess {
+				tables.remove(fTable)
+				tables.remove(sTable)
+
+				tables.add(
+					fTable.copy(
+						position = sTable.position
+					)
+				)
+				tables.add(
+					sTable.copy(
+						position = fTable.position
+					)
+				)
+
+				mutableState.update {
+					successState.copy(
+						tables = tables.sortedBy { it.position },
+						dropdownDialogSelectedTableId = null,
+					)
 				}
+			}.onFailure {
+				_events.send(ProjectTableEvent.FailedToSwapTablePositions)
 			}
 		}
 	}
-
 
 	/**
 	 * moves 2 table tasks, this is different from swapping positions
@@ -193,46 +203,52 @@ class ProjectTableScreenModel(
 	 * @param sIndex index of the second task in the table
 	 * @param tableId id of the table in which the tasks are located at, this is used mainly to save
 	 * the need to find the id manually
-	 * @throws IllegalArgumentException if { fIndex == sIndex }
+	 * @throws IllegalArgumentException if [fIndex] == [sIndex]
 	 */
 	fun moveTableTasks(tableId: Long, fIndex: Int, sIndex: Int) {
 		if (fIndex == sIndex) {
 			throw IllegalArgumentException("fIndex and sIndex can't be the same")
 		}
-		coroutineScope.launchIO {
-			val tables =
-				(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-			tables.find { table -> table.id == tableId }!!.let { table ->
-				table.tasks[fIndex].let { fTask ->
-					table.tasks[sIndex].let { sTask ->
-						if (moveTask.await(fTask.id, sTask.id)) {
-							ifMoveTaskSuccess(
-								tables = tables,
-								table = table,
-								sTask = sTask,
-								fIndex = fIndex,
-								sIndex = sIndex,
-							)
-						} else {
-							mutableState.update {
-								(mutableState.value as ProjectTableScreenState.Success).copy(
-									manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
-								)
-							}
-						}
-					}
+
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			val tables = successState.tables.toMutableList()
+
+			val table = tables.find { table -> table.id == tableId }!!
+			val fTask = table.tasks[fIndex]
+			val sTask = table.tasks[sIndex]
+
+			tableTaskRepository.movePositionTo(fTask.id, sTask.id).onSuccess {
+				ifMoveTaskSuccess(
+					tables = tables,
+					table = table,
+					sTask = sTask,
+					fIndex = fIndex,
+					sIndex = sIndex,
+				)
+			}.onFailure {
+				// TODO what the hell is this?
+				mutableState.update {
+					successState.copy(
+						manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
+					)
 				}
+				it.printStackTrace()
+				_events.send(ProjectTableEvent.FailedToMoveTableTasks)
 			}
 		}
 	}
 
-	private fun ifMoveTaskSuccess(
+	private suspend fun ifMoveTaskSuccess(
 		tables: MutableList<ProjectTable>,
 		table: ProjectTable,
 		sTask: TableTaskBasic,
 		fIndex: Int,
 		sIndex: Int,
 	) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
+
 		tables.remove(table)
 		var tasks = table.tasks.toMutableList()
 		tasks = if (sIndex > fIndex) {
@@ -270,63 +286,87 @@ class ProjectTableScreenModel(
 			)
 		)
 		mutableState.update {
-			(mutableState.value as ProjectTableScreenState.Success).copy(
+			successState.copy(
 				tables = tables.sortedBy { it.position },
-				manualTableTasksRefresh = (mutableState.value as ProjectTableScreenState.Success).manualTableTasksRefresh + 1
+				manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
 			)
 		}
 	}
 
 	fun deleteTable(tableId: Long) {
-		coroutineScope.launchIO {
-			if (deleteTable.awaitOne(tableId)) {
+		mutex.launchIONoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			projectTableRepository.delete(tableId).onSuccess {
+				val tables = successState.tables.toMutableList()
+				tables.removeIf { it.id == tableId }
+
 				mutableState.update {
-					val tables =
-						(mutableState.value as ProjectTableScreenState.Success).tables.toMutableList()
-					tables.removeIf { it.id == tableId }
-					(mutableState.value as ProjectTableScreenState.Success).copy(
+					successState.copy(
 						tables = tables
 					)
 				}
+			}.onFailure {
+				it.printStackTrace()
+				_events.send(ProjectTableEvent.FailedToDeleteTable)
 			}
 		}
 	}
 
 	fun showDialog(dialog: ProjectTableDialog) {
-		@Suppress("UNUSED_EXPRESSION")
-		when (dialog) {
-			else -> {
-				coroutineScope.launchUI {
-					mutableState.update {
-						(mutableState.value as ProjectTableScreenState.Success).copy(
-							dialog = dialog,
-						)
-					}
-				}
+		mutex.launchUINoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			mutableState.update {
+				successState.copy(
+					dialog = dialog,
+				)
 			}
 		}
 	}
 
 	fun dismissDialog() {
-		mutableState.update {
-			when (it) {
-				is ProjectTableScreenState.Success -> it.copy(dialog = null)
-				else -> it
+		mutex.launchUINoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			mutableState.update {
+				successState.copy(dialog = null)
 			}
 		}
 	}
 
 	fun switchDropdownMenu(tableId: Long?) {
-		coroutineScope.launchUI {
+		mutex.launchUINoQueue(coroutineScope) {
+			val successState = mutableState.value as ProjectTableScreenState.Success
+
+			val newTableId =
+				if (successState.dropdownDialogSelectedTableId == tableId) null else tableId
 			mutableState.update {
-				(mutableState.value as ProjectTableScreenState.Success).copy(
-					dropdownDialogSelectedTableId = if ((mutableState.value as ProjectTableScreenState.Success)
-							.dropdownDialogSelectedTableId == tableId
-					) null else tableId
+				successState.copy(
+					dropdownDialogSelectedTableId = newTableId
 				)
 			}
 		}
 	}
+}
+
+sealed class ProjectTableEvent {
+	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectTableEvent()
+
+	object FailedToCreateProjectTable :
+		LocalizedMessage(R.string.error_failed_to_create_project_table)
+
+	object FailedToCreateTableTask : LocalizedMessage(R.string.error_failed_to_create_table_task)
+
+	object FailedToRenameProjectTable :
+		LocalizedMessage(R.string.error_failed_to_rename_project_table)
+
+	object FailedToSwapTablePositions :
+		LocalizedMessage(R.string.error_failed_to_swap_table_positions)
+
+	object FailedToMoveTableTasks : LocalizedMessage(R.string.error_failed_to_move_table_tasks)
+
+	object FailedToDeleteTable : LocalizedMessage(R.string.error_failed_to_delete_table)
 }
 
 sealed class ProjectTableDialog {
@@ -349,6 +389,7 @@ sealed class ProjectTableScreenState {
 		val dropdownDialogSelectedTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
 		val createTableItemSelectedTableId: Long? = null,
+		// TODO remove this
 		val manualTableTasksRefresh: Int = 0,
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState()

@@ -92,5 +92,11 @@
     <string name="action_tap_to_add_description">Tap to add description…</string>
     <string name="error_failed_to_delete_project">Failed to delete project</string>
     <string name="error_failed_to_rename_project">Failed to rename project</string>
+    <string name="error_failed_to_create_project_table">Failed to create table</string>
+    <string name="error_failed_to_create_table_task">Failed to create table task</string>
+    <string name="error_failed_to_rename_project_table">Failed to rename table</string>
+    <string name="error_failed_to_swap_table_positions">Failed to swap table positions</string>
+    <string name="error_failed_to_move_table_tasks">Failed to move table tasks</string>
+    <string name="error_failed_to_delete_table">Failed to delete table\n</string>
 
 </resources>

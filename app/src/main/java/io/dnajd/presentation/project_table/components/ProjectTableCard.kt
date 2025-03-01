@@ -62,8 +62,8 @@ fun ProjectTableCard(
 ) {
 	Card(
 		modifier = Modifier
-            .width(333.dp)
-            .padding(start = 8.dp, top = 4.dp),
+			.width(333.dp)
+			.padding(start = 8.dp, top = 4.dp),
 	) {
 		ProjectTableCardTop(
 			modifier = Modifier.fillMaxWidth(),
@@ -95,12 +95,12 @@ fun ProjectTableCard(
 			},
 		)
 
-		// refresh when project tables get altered
+		// TODO see if this can be removed refresh when project tables get altered
 		LaunchedEffect(state.tables) {
 			reorderableList = table.tasks.sortedBy { it.position }
 		}
 
-		/*
+		/* TODO see if this can be removed
 			refresh when an task gets moved, for some reason moving tasks does not count as state
 			change and events are not reliable so I am stuck with this
 		 */
@@ -111,9 +111,9 @@ fun ProjectTableCard(
 		LazyColumn(
 			state = reorderableState.listState,
 			modifier = Modifier
-                .fillMaxWidth()
-                .reorderable(reorderableState)
-                .heightIn(max = 2000.dp)
+				.fillMaxWidth()
+				.reorderable(reorderableState)
+				.heightIn(max = 2000.dp)
 		) {
 			items(reorderableList, { task -> task.id }) { task ->
 				ReorderableItem(reorderableState = reorderableState, key = task.id) { isDragging ->
@@ -131,8 +131,8 @@ fun ProjectTableCard(
 
 		ProjectTableCardBottom(
 			modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
-                .fillMaxWidth(),
+				.padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+				.fillMaxWidth(),
 			state = state,
 			table = table,
 			onCreateTableTaskMenuClicked = onCreateTableTaskMenuClicked,
@@ -307,8 +307,8 @@ private fun ProjectTableCardBottom(
 				color = MaterialTheme.colorScheme.primary,
 				fontSize = 14.sp,
 				modifier = Modifier
-                    .padding(start = 8.dp)
-                    .fillMaxWidth(),
+					.padding(start = 8.dp)
+					.fillMaxWidth(),
 			)
 		}
 	} else {
