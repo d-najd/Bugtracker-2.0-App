@@ -34,17 +34,16 @@ class UserManagementScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val userAuthoritiesResponse = userAuthorityRepository.getAllByProjectId(projectId)
+			val userAuthorities = userAuthorityRepository.getAllByProjectId(projectId)
 				.onFailureWithStackTrace {
 					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
 					return@launchIO
-				}
+				}.getOrThrow().data
 
-			val authorities = userAuthoritiesResponse.getOrThrow().data
 			mutableState.update {
 				UserManagementScreenState.Success(
 					projectId = projectId,
-					authorities = authorities,
+					authorities = userAuthorities,
 				)
 			}
 		}
@@ -90,11 +89,7 @@ class UserManagementScreenModel(
 			}.getOrThrow()
 
 		authorities.add(createdAuthority)
-		mutableState.update {
-			successState.copy(
-				authorities = authorities
-			)
-		}
+		mutableState.update { successState.copy(authorities = authorities) }
 	}
 
 
@@ -134,20 +129,14 @@ class UserManagementScreenModel(
 		}
 
 		authorities.remove(userAuthority)
-		mutableState.update {
-			(mutableState.value as UserManagementScreenState.Success).copy(
-				authorities = authorities,
-			)
-		}
+		mutableState.update { successState.copy(authorities = authorities) }
 	}
 
 	fun showDialog(dialog: UserManagementDialog) {
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as UserManagementScreenState.Success
 
-			mutableState.update {
-				successState.copy(dialog = dialog)
-			}
+			mutableState.update { successState.copy(dialog = dialog) }
 		}
 	}
 
@@ -155,9 +144,7 @@ class UserManagementScreenModel(
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as UserManagementScreenState.Success
 
-			mutableState.update {
-				successState.copy(dialog = null)
-			}
+			mutableState.update { successState.copy(dialog = null) }
 		}
 	}
 }

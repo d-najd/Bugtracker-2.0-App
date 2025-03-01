@@ -13,6 +13,7 @@ import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
@@ -75,16 +76,15 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			projectTableRepository.create(table).onSuccess {
-				val tables = successState.tables.toMutableList()
-				tables.add(it)
-				mutableState.update {
-					successState.copy(tables = tables)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			val createdTable = projectTableRepository.create(table).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToCreateProjectTable)
-			}
+				return@launchIONoQueue
+			}.getOrThrow()
+
+			val tables = successState.tables.toMutableList()
+			tables.add(createdTable)
+
+			mutableState.update { successState.copy(tables = tables) }
 		}
 	}
 
@@ -92,11 +92,7 @@ class ProjectTableScreenModel(
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update {
-				successState.copy(
-					createTableItemSelectedTableId = tableId,
-				)
-			}
+			mutableState.update { successState.copy(createTableItemSelectedTableId = tableId) }
 		}
 	}
 
@@ -104,29 +100,25 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			tableTaskRepository.create(task).onSuccess { result ->
-				val tables = successState.tables.toMutableList()
-				val table = tables.find { it.id == task.tableId }!!
-				tables.remove(table)
-
-				val tasks = table.tasks.toMutableList()
-				tasks.add(result.toBasic())
-
-				tables.add(
-					table.copy(
-						tasks = tasks,
-					)
-				)
-
-				mutableState.update {
-					successState.copy(
-						tables = tables,
-						createTableItemSelectedTableId = null,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			val createdTask = tableTaskRepository.create(task).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToCreateTableTask)
+				return@launchIONoQueue
+			}.getOrThrow()
+
+			val tables = successState.tables.toMutableList()
+			val table = tables.find { it.id == task.tableId }!!
+			tables.remove(table)
+
+			val tasks = table.tasks.toMutableList()
+			tasks.add(createdTask.toBasic())
+
+			tables.add(table.copy(tasks = tasks))
+
+			mutableState.update {
+				successState.copy(
+					tables = tables,
+					createTableItemSelectedTableId = null,
+				)
 			}
 		}
 	}
@@ -137,19 +129,15 @@ class ProjectTableScreenModel(
 
 			val tables = successState.tables.toMutableList()
 			val table = tables.find { table -> table.id == id }!!
-			projectTableRepository.updateNoBody(id, title = newName).onSuccess {
-				tables.remove(table)
-				tables.add(table.copy(title = newName))
-
-				mutableState.update {
-					successState.copy(
-						tables = tables
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			projectTableRepository.updateNoBody(id, title = newName).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToRenameProjectTable)
+				return@launchIONoQueue
 			}
+
+			tables.remove(table)
+			tables.add(table.copy(title = newName))
+
+			mutableState.update { successState.copy(tables = tables) }
 		}
 	}
 
@@ -170,30 +158,30 @@ class ProjectTableScreenModel(
 			val fTable = tables.find { table -> table.id == sId }!!
 			val sTable = tables.find { table -> table.id == fId }!!
 
-			projectTableRepository.swapPositionWith(fId, sId).onSuccess {
-				tables.remove(fTable)
-				tables.remove(sTable)
-
-				tables.add(
-					fTable.copy(
-						position = sTable.position
-					)
-				)
-				tables.add(
-					sTable.copy(
-						position = fTable.position
-					)
-				)
-
-				mutableState.update {
-					successState.copy(
-						tables = tables.sortedBy { it.position },
-						dropdownDialogSelectedTableId = null,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			projectTableRepository.swapPositionWith(fId, sId).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToSwapTablePositions)
+				return@launchIONoQueue
+			}
+
+			tables.remove(fTable)
+			tables.remove(sTable)
+
+			tables.add(
+				fTable.copy(
+					position = sTable.position
+				)
+			)
+			tables.add(
+				sTable.copy(
+					position = fTable.position
+				)
+			)
+
+			mutableState.update {
+				successState.copy(
+					tables = tables.sortedBy { it.position },
+					dropdownDialogSelectedTableId = null,
+				)
 			}
 		}
 	}
@@ -221,29 +209,28 @@ class ProjectTableScreenModel(
 			val fTask = table.tasks[fIndex]
 			val sTask = table.tasks[sIndex]
 
-			tableTaskRepository.movePositionTo(fTask.id, sTask.id).onSuccess {
-				ifMoveTaskSuccess(
-					tables = tables,
-					table = table,
-					sTask = sTask,
-					fIndex = fIndex,
-					sIndex = sIndex,
-				)
-			}.onFailure {
+			tableTaskRepository.movePositionTo(fTask.id, sTask.id).onFailureWithStackTrace {
 				// TODO what the hell is this?
 				mutableState.update {
 					successState.copy(
 						manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
 					)
 				}
-
-				it.printStackTrace()
 				_events.send(ProjectTableEvent.FailedToMoveTableTasks)
+				return@launchIONoQueue
 			}
+
+			ifMoveTaskSuccess(
+				tables = tables,
+				table = table,
+				sTask = sTask,
+				fIndex = fIndex,
+				sIndex = sIndex,
+			)
 		}
 	}
 
-	private suspend fun ifMoveTaskSuccess(
+	private fun ifMoveTaskSuccess(
 		tables: MutableList<ProjectTable>,
 		table: ProjectTable,
 		sTask: TableTaskBasic,
@@ -288,6 +275,7 @@ class ProjectTableScreenModel(
 				tasks = tasks.sortedBy { it.position },
 			)
 		)
+
 		mutableState.update {
 			successState.copy(
 				tables = tables.sortedBy { it.position },
@@ -320,11 +308,7 @@ class ProjectTableScreenModel(
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update {
-				successState.copy(
-					dialog = dialog,
-				)
-			}
+			mutableState.update { successState.copy(dialog = dialog) }
 		}
 	}
 
@@ -332,9 +316,7 @@ class ProjectTableScreenModel(
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update {
-				successState.copy(dialog = null)
-			}
+			mutableState.update { successState.copy(dialog = null) }
 		}
 	}
 
@@ -344,11 +326,8 @@ class ProjectTableScreenModel(
 
 			val newTableId =
 				if (successState.dropdownDialogSelectedTableId == tableId) null else tableId
-			mutableState.update {
-				successState.copy(
-					dropdownDialogSelectedTableId = newTableId
-				)
-			}
+
+			mutableState.update { successState.copy(dropdownDialogSelectedTableId = newTableId) }
 		}
 	}
 }

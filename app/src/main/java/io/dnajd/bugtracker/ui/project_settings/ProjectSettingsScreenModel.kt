@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -25,16 +26,12 @@ class ProjectSettingsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			projectRepository.get(projectId).onSuccess { result ->
-				mutableState.update {
-					ProjectSettingsScreenState.Success(
-						project = result,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			val project = projectRepository.get(projectId).onFailureWithStackTrace {
 				_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
-			}
+				return@launchIO
+			}.getOrThrow()
+
+			mutableState.update { ProjectSettingsScreenState.Success(project = project) }
 		}
 	}
 }

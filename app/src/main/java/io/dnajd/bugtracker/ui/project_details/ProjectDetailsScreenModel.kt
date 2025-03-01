@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.channels.Channel
@@ -29,39 +30,27 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			projectRepository.get(projectId).onSuccess { result ->
-				mutableState.update {
-					ProjectDetailsScreenState.Success(
-						project = result,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			val project = projectRepository.get(projectId).onFailureWithStackTrace {
 				_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
-			}
+				return@launchIO
+			}.getOrThrow()
+
+			mutableState.update { ProjectDetailsScreenState.Success(project = project) }
 		}
 	}
 
-	/**
-	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
-	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
-	 */
 	fun deleteProject() {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
 			projectRepository.delete(successState.project.id).onSuccess {
 				_events.send(ProjectDetailsEvent.DeleteProject)
-			}.onFailure {
+			}.onFailureWithStackTrace {
 				_events.send(ProjectDetailsEvent.FailedToDeleteProject)
 			}
 		}
 	}
 
-	/**
-	 * Must be called from state [ProjectDetailsScreenState.Success] or when busy
-	 * @throws AssertionError if called from state other than [ProjectDetailsScreenState.Success] and not busy
-	 */
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
@@ -69,18 +58,16 @@ class ProjectDetailsScreenModel(
 			projectRepository.updateNoBody(
 				id = successState.project.id,
 				title = title
-			).onSuccess {
-				val renamedProject = successState.project.copy(
-					title = title,
-				)
-				mutableState.update {
-					successState.copy(
-						project = renamedProject,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
+			).onFailureWithStackTrace {
 				_events.send(ProjectDetailsEvent.FailedToRenameProject)
+				return@launchIONoQueue
+			}
+
+			val renamedProject = successState.project.copy(
+				title = title,
+			)
+			mutableState.update {
+				successState.copy(project = renamedProject)
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
@@ -38,28 +39,23 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		coroutineScope.launchIO {
-			val taskResult = tableTaskRepository.get(taskId).onFailure {
-				it.printStackTrace()
+			val task = tableTaskRepository.get(taskId).onFailureWithStackTrace {
 				_events.send(TableTaskEvent.FailedToRetrieveTask)
 				return@launchIO
-			}
-			val task = taskResult.getOrThrow()
+			}.getOrThrow()
 
-			projectTableRepository
-				.getOne(
-					id = task.tableId,
-					ignoreTasks = true
-				).onSuccess { table ->
-					mutableState.update {
-						TableTaskScreenState.Success(
-							task = task,
-							parentTable = table,
-						)
-					}
-				}.onFailure {
-					it.printStackTrace()
+			val table = projectTableRepository.getOne(id = task.tableId, ignoreTasks = true)
+				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTable)
-				}
+					return@launchIO
+				}.getOrThrow()
+
+			mutableState.update {
+				TableTaskScreenState.Success(
+					task = task,
+					parentTable = table,
+				)
+			}
 		}
 	}
 
@@ -74,21 +70,20 @@ class TableTaskStateScreenModel(
 			tableTaskRepository.updateNoBody(
 				id = successState.task.id,
 				description = newDescription
-			).onSuccess {
-				mutableState.update {
-					successState.copy(
-						task = successState.task.copy(
-							description = newDescription,
-							updatedAt = Date(),
-						)
-					)
-				}
-
-				dismissSheet()
-			}.onFailure {
-				it.printStackTrace()
+			).onFailureWithStackTrace {
 				_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
+				return@launchIONoQueue
 			}
+
+			mutableState.update {
+				successState.copy(
+					task = successState.task.copy(
+						description = newDescription,
+						updatedAt = Date(),
+					)
+				)
+			}
+			dismissSheet()
 		}
 	}
 
@@ -97,25 +92,25 @@ class TableTaskStateScreenModel(
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 
 			tableTaskRepository.swapTable(successState.task.id, tableId)
-				.onFailure {
-					it.printStackTrace()
+				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
 
-			projectTableRepository.getOne(id = tableId, ignoreTasks = true).onSuccess { table ->
-				mutableState.update {
-					successState.copy(
-						task = successState.task.copy(
-							tableId = tableId,
-							position = 0,
-						),
-						parentTable = table,
-					)
-				}
-			}.onFailure {
-				it.printStackTrace()
-				_events.send(TableTaskEvent.FailedToSwapTable)
+			val table = projectTableRepository.getOne(id = tableId, ignoreTasks = true)
+				.onFailureWithStackTrace {
+					_events.send(TableTaskEvent.FailedToSwapTable)
+					return@launchIONoQueue
+				}.getOrThrow()
+
+			mutableState.update {
+				successState.copy(
+					task = successState.task.copy(
+						tableId = tableId,
+						position = 0,
+					),
+					parentTable = table,
+				)
 			}
 		}
 	}
@@ -127,32 +122,22 @@ class TableTaskStateScreenModel(
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
 					val tables = sheet.tables.ifEmpty {
-						val data = projectTableRepository.getAll(
+
+						projectTableRepository.getAll(
 							projectId = successState.parentTable.projectId,
 							ignoreTasks = true
-						).onFailure {
-							it.printStackTrace()
+						).onFailureWithStackTrace {
 							_events.send(TableTaskEvent.FailedToShowSheet)
-						}
+							return@launchIONoQueue
+						}.getOrThrow().data
 
-						data.getOrThrow().data
 					}
 
-					mutableState.update {
-						successState.copy(
-							sheet = sheet.copy(
-								tables = tables,
-							),
-						)
-					}
+					mutableState.update { successState.copy(sheet = sheet.copy(tables = tables)) }
 				}
 
 				else -> {
-					mutableState.update {
-						successState.copy(
-							sheet = sheet,
-						)
-					}
+					mutableState.update { successState.copy(sheet = sheet) }
 				}
 			}
 		}
@@ -162,11 +147,7 @@ class TableTaskStateScreenModel(
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 
-			mutableState.update {
-				successState.copy(
-					sheet = null,
-				)
-			}
+			mutableState.update { successState.copy(sheet = null) }
 		}
 	}
 }
