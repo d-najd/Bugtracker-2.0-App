@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun TableTaskBottomSheetContent(
 ) {
 	SheetItem(
 		title = stringResource(R.string.field_select_transition),
-		textColor = LocalContentColor.current.copy(alpha = .6f),
+		textColor = MaterialTheme.colorScheme.onSurface
 	)
 
 	val tablesSorted = tables.toMutableList()
@@ -51,22 +51,22 @@ fun TableTaskBottomSheetContent(
 @Composable
 private fun SheetItem(
 	title: String,
-	textColor: Color = Color.Unspecified,
+	textColor: Color = MaterialTheme.colorScheme.onSurface,
 	onClick: (() -> Unit)? = null,
 ) {
 	Column(
 		verticalArrangement = Arrangement.Center,
 		modifier = Modifier
-            .fillMaxWidth()
-            .height(38.dp)
-            .composed {
-                if (onClick != null) {
-                    return@composed clickable {
-                        onClick()
-                    }
-                }
-                this
-            },
+			.fillMaxWidth()
+			.height(38.dp)
+			.composed {
+				if (onClick != null) {
+					return@composed clickable {
+						onClick()
+					}
+				}
+				this
+			},
 	) {
 		Text(
 			modifier = Modifier.padding(start = 16.dp),

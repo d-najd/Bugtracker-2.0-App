@@ -47,13 +47,13 @@ fun TableTaskContent(
 ) {
 	Column(
 		modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(contentPadding)
-            .padding(
-                horizontal = 12.dp,
-                vertical = 36.dp
-            ),
+			.fillMaxSize()
+			.verticalScroll(rememberScrollState())
+			.padding(contentPadding)
+			.padding(
+				horizontal = 12.dp,
+				vertical = 36.dp
+			),
 	) {
 		val task = state.task
 
@@ -70,8 +70,8 @@ fun TableTaskContent(
 			)
 			Text(
 				modifier = Modifier
-                    .padding(start = 12.dp)
-                    .fillMaxWidth(),
+					.padding(start = 12.dp)
+					.fillMaxWidth(),
 				text = "${stringResource(R.string.field_task).uppercase()}-${task.id}",
 				fontSize = 14.sp,
 				color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
@@ -83,9 +83,9 @@ fun TableTaskContent(
 
 		BugtrackerExpandableTextField(
 			modifier = Modifier
-                .padding(top = 13.dp)
-                .fillMaxWidth()
-                .onFocusChanged { expanded = it.isFocused },
+				.padding(top = 13.dp)
+				.fillMaxWidth()
+				.onFocusChanged { expanded = it.isFocused },
 			value = task.title,
 			onValueChange = { taskTitle = it },
 			expanded = expanded,
@@ -104,8 +104,8 @@ fun TableTaskContent(
 
 		Card(
 			modifier = Modifier
-                .padding(top = 18.dp)
-                .clickable { onChangeTableSheetClicked() },
+				.padding(top = 18.dp)
+				.clickable { onChangeTableSheetClicked() },
 			shape = RoundedCornerShape(6.dp),
 		) {
 			BugtrackerMultipurposeMenu(

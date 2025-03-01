@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,7 +40,8 @@ fun BugtrackerExpandableTextField(
 	keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 	keyboardActions: KeyboardActions = KeyboardActions.Default,
 	isKeyboardEnabled: ((Boolean) -> Unit)? = null,
-	textStyle: TextStyle? = null,
+	textStyle: TextStyle = TextStyle.Default,
+	textColor: Color = MaterialTheme.colorScheme.onSurface,
 	includeDivider: Boolean = true,
 	value: String,
 	onValueChange: (String) -> Unit,
@@ -57,7 +59,9 @@ fun BugtrackerExpandableTextField(
 			value = value,
 			onValueChange = onValueChange,
 			label = label,
-			textStyle = textStyle,
+			textStyle = textStyle.copy(
+				color = textColor
+			),
 			keyboardActions = keyboardActions,
 			keyboardOptions = keyboardOptions,
 			isKeyboardEnabled = isKeyboardEnabled,

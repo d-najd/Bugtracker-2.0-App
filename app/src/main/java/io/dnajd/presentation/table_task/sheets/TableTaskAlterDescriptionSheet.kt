@@ -52,7 +52,10 @@ fun TableTaskAlterDescriptionSheet(
 		topBar = {
 			TopAppBar(
 				title = {
-					Text(text = stringResource(R.string.field_edit_description))
+					Text(
+						text = stringResource(R.string.field_edit_description),
+						fontSize = 18.sp
+					)
 				},
 				navigationIcon = {
 					IconButton(onClick = { onBackClicked() }) {
@@ -67,16 +70,12 @@ fun TableTaskAlterDescriptionSheet(
 				actions = {
 					IconButton(onClick = { /*TODO*/ }) {
 						Icon(
-							modifier = Modifier
-								.padding(horizontal = 8.dp),
 							imageVector = Icons.Rounded.Undo,
 							contentDescription = ""
 						)
 					}
 					IconButton(onClick = { /*TODO*/ }) {
 						Icon(
-							modifier = Modifier
-								.padding(horizontal = 8.dp),
 							imageVector = Icons.Rounded.Redo,
 							contentDescription = ""
 						)
@@ -86,7 +85,7 @@ fun TableTaskAlterDescriptionSheet(
 						onClick = { onDescriptionChange(mutableDescription) }
 					) {
 						Text(
-							fontSize = (15.5).sp,
+							fontSize = 15.sp,
 							text = stringResource(R.string.action_save)
 						)
 					}
@@ -104,11 +103,11 @@ fun TableTaskAlterDescriptionSheet(
 				unfocusedIndicatorColor = Color.Transparent,
 			),
 			modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .focusRequester(focusRequester)
-                .padding(paddingValues),
+				.fillMaxWidth()
+				.fillMaxHeight()
+				.verticalScroll(rememberScrollState())
+				.focusRequester(focusRequester)
+				.padding(paddingValues),
 			value = mutableDescription,
 			onValueChange = { mutableDescription = it },
 			textStyle = TextStyle(

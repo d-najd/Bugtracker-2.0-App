@@ -38,7 +38,8 @@ fun BugtrackerTextField(
 	onValueChange: (String) -> Unit,
 	label: String? = null,
 	includeDivider: Boolean = true,
-	textStyle: TextStyle? = null,
+	textStyle: TextStyle = TextStyle(fontSize = 15.sp),
+	textColor: Color = MaterialTheme.colorScheme.onSurface,
 	dividerColor: Color = MaterialTheme.colorScheme.onSurface,
 	keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 	keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -54,8 +55,8 @@ fun BugtrackerTextField(
 			modifier = modifierText.padding(top = 8.dp, bottom = 3.dp),
 			value = value,
 			onValueChange = onValueChange,
-			textStyle = textStyle ?: TextStyle(
-				fontSize = 15.sp,
+			textStyle = textStyle.copy(
+				color = textColor
 			),
 			singleLine = true,
 			keyboardOptions = keyboardOptions,

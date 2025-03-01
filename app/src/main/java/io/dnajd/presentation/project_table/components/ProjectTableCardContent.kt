@@ -100,14 +100,14 @@ private fun ProjectTableCardContentLocal(
 		),
 		shape = RoundedCornerShape(4.dp),
 		modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 65.dp)
-            .padding(vertical = 2.dp, horizontal = 8.dp),
+			.fillMaxWidth()
+			.heightIn(min = 65.dp)
+			.padding(vertical = 2.dp, horizontal = 8.dp),
 	) {
 		var cardModifier = Modifier
-            .fillMaxWidth()
-            .shadow(elevation.value)
-            .detectReorderAfterLongPress(reorderableState)
+			.fillMaxWidth()
+			.shadow(elevation.value)
+			.detectReorderAfterLongPress(reorderableState)
 		if (onTaskClicked != null) {
 			if (taskId != null) {
 				cardModifier = cardModifier.clickable { onTaskClicked(taskId) }
@@ -129,12 +129,15 @@ private fun ProjectTableCardContentLocal(
 				val focusRequester = remember { FocusRequester() }
 				BasicTextField(
 					modifier = textModifier
-                        .padding(top = 8.dp, start = 12.dp, end = 12.dp)
-                        .focusRequester(focusRequester),
+						.padding(top = 8.dp, start = 12.dp, end = 12.dp)
+						.focusRequester(focusRequester),
 					value = value,
 					onValueChange = onValueChange,
 					maxLines = 1,
-					textStyle = TextStyle(fontSize = 14.sp),
+					textStyle = TextStyle(
+						fontSize = 14.sp,
+						color = MaterialTheme.colorScheme.onSurface
+					),
 					keyboardActions = keyboardActions,
 					keyboardOptions = keyboardOptions,
 				)
