@@ -1,26 +1,53 @@
 package io.dnajd.presentation.auth.components
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import io.dnajd.bugtracker.R
+import com.mmk.kmpauth.google.GoogleAuthCredentials
+import com.mmk.kmpauth.google.GoogleAuthProvider
+import com.mmk.kmpauth.google.GoogleButtonUiContainer
+import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 
 @Composable
 fun AuthContentOAuth() {
+
+	var authReady by remember { mutableStateOf(false) }
+	LaunchedEffect(Unit) {
+		GoogleAuthProvider.create(
+			credentials = GoogleAuthCredentials(
+				serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com"
+			)
+		)
+		authReady = true
+	}
+
+	if (authReady) {
+		Box(
+			modifier = Modifier.fillMaxSize(),
+			contentAlignment = Alignment.Center
+		) {
+			GoogleButtonUiContainer(
+				onGoogleSignInResult = { googleUser ->
+					val tokenId = googleUser?.idToken
+					println("TOKEN: $tokenId")
+				}
+			) {
+				GoogleSignInButton(
+					onClick = { this.onClick() }
+				)
+			}
+		}
+	}
+
+
+	/*
 	Button(
 		onClick = {},
 		modifier = Modifier
@@ -48,4 +75,5 @@ fun AuthContentOAuth() {
 			)
 		}
 	}
+	 */
 }
