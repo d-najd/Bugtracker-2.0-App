@@ -94,7 +94,6 @@ class TableTaskScreen(
 					},
 					onBottomSheetDismissed = {
 						screenModel.dismissSheet()
-
 					}
 				)
 			}
