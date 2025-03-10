@@ -21,7 +21,7 @@ buildscript {
                 espresso           : '3.5.1'
         ]
          */
-        android_gradle_plugin_version = '7.4.0'
+        android_gradle_plugin_version = '8.5.0'
         kotlin_version = '1.7.20' // Updated for Compose compatibility
         compose_version = '1.3.1'
         compose_compiler_version = '1.3.2'
@@ -36,11 +36,6 @@ buildscript {
         espresso_version = '3.5.1'
         kmpauth_version = '2.0.0'
         material_version = '1.7.0'
-
-        // compose_version = '1.3.1'
-        // voyager_version = "1.0.0-rc03"
-        // okhttp_version = "4.10.0"
-        // retrofit_version = "2.9.0"
     }
 
     dependencies {
