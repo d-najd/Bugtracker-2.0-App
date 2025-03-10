@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,17 +21,49 @@ import io.dnajd.presentation.table_task.sheets.TableTaskBottomSheetContent
 
 @OptIn(
 	ExperimentalMaterial3Api::class,
-	ExperimentalMaterialApi::class
+	// ExperimentalMaterialApi::class
 )
 @Composable
 fun TableTaskScreenContent(
 	state: TableTaskScreenState.Success,
-	bottomDialogState: ModalBottomSheetState,
+	bottomDialogState: BottomSheetScaffoldState,
 	onBackClicked: () -> Unit,
 	onChangeTableClicked: (Long) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
 ) {
+	BottomSheetScaffold(
+		sheetContainerColor = MaterialTheme.colorScheme.surface,
+		sheetContentColor = MaterialTheme.colorScheme.onSurface.copy(.32f),
+		sheetContent = {
+			Column(
+				modifier = Modifier
+					.fillMaxWidth()
+					.heightIn(min = 1.dp)
+					.verticalScroll(rememberScrollState()),
+			) {
+				if (state.sheet is TableTaskSheet.BottomSheet) {
+					TableTaskBottomSheetContent(
+						curTable = state.parentTable,
+						tables = state.sheet.tables,
+						onChangeTableClicked = onChangeTableClicked,
+					)
+				}
+			}
+		}
+	) {
+		Scaffold { contentPadding ->
+			BackHandler { onBackClicked() }
+
+			TableTaskContent(
+				state = state,
+				contentPadding = contentPadding,
+				onChangeTableSheetClicked = onChangeTableSheetClicked,
+				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
+			)
+		}
+	}
+	/*
 	ModalBottomSheetLayout(
 		sheetState = bottomDialogState,
 		sheetBackgroundColor = MaterialTheme.colorScheme.surface,
@@ -66,4 +97,5 @@ fun TableTaskScreenContent(
 			)
 		}
 	}
+	 */
 }

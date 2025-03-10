@@ -92,4 +92,6 @@ dependencies {
 
     implementation "io.github.mirzemehdi:kmpauth-google:$kmpauth_version"
     implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
+
+    implementation "com.squareup.logcat:logcat:0.1"
 }

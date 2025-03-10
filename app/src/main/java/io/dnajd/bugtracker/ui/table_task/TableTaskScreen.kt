@@ -1,13 +1,15 @@
 package io.dnajd.bugtracker.ui.table_task
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 class TableTaskScreen(
 	private val taskId: Long,
 ) : Screen {
-	@OptIn(ExperimentalMaterialApi::class)
+	@OptIn(ExperimentalMaterial3Api::class)
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
@@ -54,7 +56,13 @@ class TableTaskScreen(
 			return
 		}
 		val successState = (state as TableTaskScreenState.Success)
-		val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+		val bottomState = rememberBottomSheetScaffoldState(
+			SheetState(
+				false,
+				LocalDensity.current,
+				SheetValue.Hidden
+			)
+		)
 
 		// this reeks of spaghetti
 		if (successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
@@ -77,12 +85,13 @@ class TableTaskScreen(
 		LaunchedEffect(successState.sheet) {
 			when (successState.sheet) {
 				is TableTaskSheet.BottomSheet -> {
-					bottomState.show()
+					bottomState.bottomSheetState.show()
+					bottomState.bottomSheetState.show()
 				}
 
 				else -> {
-					if (bottomState.isVisible) {
-						bottomState.hide()
+					if (bottomState.bottomSheetState.isVisible) {
+						bottomState.bottomSheetState.hide()
 					}
 				}
 			}
@@ -99,9 +108,10 @@ class TableTaskScreen(
 			}
 
 			null -> {}
+			is TableTaskSheet.BottomSheet -> TODO()
 		}
 
-		if (bottomState.progress.from == ModalBottomSheetValue.Expanded && bottomState.progress.to == ModalBottomSheetValue.Hidden) {
+		if (bottomState.bottomSheetState.currentValue == SheetValue.Expanded && bottomState.bottomSheetState.targetValue == SheetValue.Hidden) {
 			screenModel.dismissSheet()
 		}
 	}
