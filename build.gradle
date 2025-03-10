@@ -17,10 +17,12 @@ buildscript {
         material_version = '1.7.0'
     }
 
+    /*
     dependencies {
         classpath "com.android.tools.build:gradle:${android_gradle_plugin_version}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
     }
+     */
 }
 
 plugins {

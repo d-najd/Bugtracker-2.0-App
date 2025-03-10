@@ -289,6 +289,7 @@ private fun ProjectTableCardBottom(
 				}
 			}
 		)
+
 		Box(modifier = Modifier.height(4.dp))
 	} else if (state.createTableItemSelectedTableId == null) {
 		Row(

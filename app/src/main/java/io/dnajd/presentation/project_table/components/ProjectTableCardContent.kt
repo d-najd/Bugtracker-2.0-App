@@ -1,7 +1,6 @@
 package io.dnajd.presentation.project_table.components
 
 import android.annotation.SuppressLint
-import android.view.ViewTreeObserver
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -19,22 +18,23 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import io.dnajd.bugtracker.R
+import io.dnajd.presentation.util.rememberKeyboardState
 import org.burnoutcrew.reorderable.ReorderableLazyListState
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -77,6 +77,7 @@ fun ProjectTableTextFieldCardContent(
 	)
 }
 
+
 @Composable
 private fun ProjectTableCardContentLocal(
 	@SuppressLint("ModifierParameter") textModifier: Modifier = Modifier,
@@ -92,6 +93,8 @@ private fun ProjectTableCardContentLocal(
 	onTaskClicked: ((Long) -> Unit)? = null,
 ) {
 	val elevation = animateDpAsState(if (isDragging) 4.dp else 0.dp)
+	val isKeyboardOpen by rememberKeyboardState()
+	var wasFocused by remember { mutableStateOf(false) }
 
 	Card(
 		colors = CardDefaults.cardColors(
@@ -130,7 +133,16 @@ private fun ProjectTableCardContentLocal(
 				BasicTextField(
 					modifier = textModifier
 						.padding(top = 8.dp, start = 12.dp, end = 12.dp)
-						.focusRequester(focusRequester),
+						.focusRequester(focusRequester)
+						.onFocusChanged {
+							if (it.isFocused) {
+								wasFocused = true
+
+								if (isKeyboardEnabled != null) {
+									isKeyboardEnabled(true)
+								}
+							}
+						},
 					value = value,
 					onValueChange = onValueChange,
 					maxLines = 1,
@@ -142,21 +154,10 @@ private fun ProjectTableCardContentLocal(
 					keyboardOptions = keyboardOptions,
 				)
 
-				if (isKeyboardEnabled != null) {
-					val view = LocalView.current
-					DisposableEffect(view) {
-						val listener = ViewTreeObserver.OnGlobalLayoutListener {
-							val isKeyboardEnabledTemp = ViewCompat.getRootWindowInsets(view)
-								?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
-							isKeyboardEnabled(isKeyboardEnabledTemp)
-						}
-						view.viewTreeObserver.addOnGlobalLayoutListener(listener)
-						onDispose {
-							view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
-						}
+				LaunchedEffect(isKeyboardOpen) {
+					if (isKeyboardEnabled != null && wasFocused && !isKeyboardOpen) {
+						isKeyboardEnabled(false)
 					}
-				} else {
-					throw IllegalArgumentException()
 				}
 
 				LaunchedEffect(Unit) {
