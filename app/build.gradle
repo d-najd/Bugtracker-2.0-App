@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'io.dnajd.bugtracker'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "io.dnajd.bugtracker"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -35,11 +35,14 @@ android {
     }
     buildFeatures {
         compose true
-        viewBinding true
+        // viewBinding true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion = project.rootProject.ext.compose_compiler_version
     }
+    //composeOptions {
+    //    kotlinCompilerExtensionVersion '1.1.1'
+    // }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -48,8 +51,55 @@ android {
 }
 
 dependencies {
-    // Base
+    // Base Android
     implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.appcompat:appcompat:$app_compat_version"
+
+    // Compose
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material3:material3:$material3_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.activity:activity-compose:$activity_compose_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
+    // implementation 'androidx.compose.material:material:1.3.1'
+    implementation "com.google.android.material:material:$material_version"
+
+    // Preview support
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // Networking
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    // Voyager
+    implementation "cafe.adriel.voyager:voyager-navigator:$voyager_version"
+    implementation "cafe.adriel.voyager:voyager-androidx:$voyager_version"
+
+    // Injekt
+    implementation "uy.kohesive.injekt:injekt-core:1.16.1"
+
+
+    // Testing
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:1.1.5"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    // Additional dependencies
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.burnoutcrew.composereorderable:reorderable:0.9.6'
+
+    implementation "io.github.mirzemehdi:kmpauth-google:$kmpauth_version"
+    implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
+
+
+    /*
+    implementation 'androidx.core:core-ktx:${versions}'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:1.3.2"
@@ -72,37 +122,20 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    //noinspection GradleDependency
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-    // Compose dialogs not official
-    // implementation "io.github.vanpra.compose-material-dialogs:core:0.9.0"
-    // implementation "io.github.vanpra.compose-material-dialogs:datetime:0.9.0"
-    // coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 
     // voyager
     implementation "cafe.adriel.voyager:voyager-navigator:$voyager_version"
     implementation "cafe.adriel.voyager:voyager-androidx:$voyager_version"
-
-    /*
-    implementation "cafe.adriel.voyager:voyager-tab-navigator:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-transitions:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-bottom-sheet-navigator:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-koin:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-kodein:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-hilt:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-rxjava:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-livedata:$voyager_version"
-     */
 
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-appcompat:1.2.0"
     implementation "com.bluelinelabs:conductor:3.1.9"
     implementation "com.squareup.logcat:logcat:0.1"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
-    //noinspection GradleDynamicVersion there will only be bugfixes and no major releases so
     implementation "uy.kohesive.injekt:injekt-core:1.16.+"
     implementation 'androidx.compose.material3:material3:1.1.0-alpha03'
     implementation 'com.google.android.material:material:1.7.0'
@@ -112,4 +145,5 @@ dependencies {
 
     implementation("io.github.mirzemehdi:kmpauth-google:2.0.0")
     implementation("io.github.mirzemehdi:kmpauth-uihelper:2.0.0")
+     */
 }
