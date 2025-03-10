@@ -1,15 +1,13 @@
 package io.dnajd.bugtracker.ui.table_task
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -28,11 +26,7 @@ class TableTaskScreen(
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
-		val screenModel = rememberScreenModel {
-			TableTaskStateScreenModel(
-				taskId
-			)
-		}
+		val screenModel = rememberScreenModel { TableTaskStateScreenModel(taskId) }
 
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
@@ -56,48 +50,55 @@ class TableTaskScreen(
 			return
 		}
 		val successState = (state as TableTaskScreenState.Success)
-		val bottomState = rememberBottomSheetScaffoldState(
-			SheetState(
-				false,
-				LocalDensity.current,
-				SheetValue.Hidden
-			)
+		val bottomState = rememberStandardBottomSheetState(
+			initialValue = SheetValue.Hidden,
+			skipHiddenState = false
 		)
-
-		// this reeks of spaghetti
-		if (successState.sheet !is TableTaskSheet.AlterDescriptionSheet) {
-			TableTaskScreenContent(
-				state = successState,
-				bottomDialogState = bottomState,
-				onBackClicked = navigator::pop,
-				onChangeTableClicked = screenModel::swapTable,
-				onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet()) },
-				onAlterDescriptionSheetClicked = {
-					screenModel.showSheet(
-						TableTaskSheet.AlterDescriptionSheet(
-							description = successState.task.description ?: ""
-						)
-					)
-				}
-			)
-		}
 
 		LaunchedEffect(successState.sheet) {
 			when (successState.sheet) {
 				is TableTaskSheet.BottomSheet -> {
-					bottomState.bottomSheetState.show()
-					bottomState.bottomSheetState.show()
+					bottomState.show()
 				}
 
 				else -> {
-					if (bottomState.bottomSheetState.isVisible) {
-						bottomState.bottomSheetState.hide()
+					if (bottomState.isVisible) {
+						bottomState.hide()
 					}
 				}
 			}
 		}
 
+		/*
+		if (bottomState.currentValue == SheetValue.Expanded && bottomState.targetValue == SheetValue.Hidden) {
+			screenModel.dismissSheet()
+		}
+		 */
+
 		when (successState.sheet) {
+			null,
+			is TableTaskSheet.BottomSheet,
+				-> {
+				TableTaskScreenContent(
+					state = successState,
+					sheetState = bottomState,
+					onBackClicked = navigator::pop,
+					onChangeTableClicked = screenModel::swapTable,
+					onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet()) },
+					onAlterDescriptionSheetClicked = {
+						screenModel.showSheet(
+							TableTaskSheet.AlterDescriptionSheet(
+								description = successState.task.description ?: ""
+							)
+						)
+					},
+					onBottomSheetDismissed = {
+						screenModel.dismissSheet()
+
+					}
+				)
+			}
+
 			is TableTaskSheet.AlterDescriptionSheet -> {
 				TableTaskAlterDescriptionSheet(
 					state = successState,
@@ -106,13 +107,6 @@ class TableTaskScreen(
 					onBackClicked = screenModel::dismissSheet,
 				)
 			}
-
-			null -> {}
-			is TableTaskSheet.BottomSheet -> TODO()
-		}
-
-		if (bottomState.bottomSheetState.currentValue == SheetValue.Expanded && bottomState.bottomSheetState.targetValue == SheetValue.Hidden) {
-			screenModel.dismissSheet()
 		}
 	}
 }
