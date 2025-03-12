@@ -17,7 +17,6 @@ import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 
 @Composable
 fun AuthContentOAuth() {
-
 	var authReady by remember { mutableStateOf(false) }
 	LaunchedEffect(Unit) {
 		GoogleAuthProvider.create(

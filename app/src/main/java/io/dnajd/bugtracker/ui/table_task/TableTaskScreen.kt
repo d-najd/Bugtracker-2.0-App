@@ -69,12 +69,6 @@ class TableTaskScreen(
 			}
 		}
 
-		/*
-		if (bottomState.currentValue == SheetValue.Expanded && bottomState.targetValue == SheetValue.Hidden) {
-			screenModel.dismissSheet()
-		}
-		 */
-
 		when (successState.sheet) {
 			null,
 			is TableTaskSheet.BottomSheet,

@@ -38,8 +38,6 @@ class AuthScreenModel(
 			}
 		}
 	}
-
-
 }
 
 sealed class AuthScreenState {
