@@ -33,7 +33,7 @@ class ProjectScreenModel(
 
 	private fun requestProjects(username: String) {
 		coroutineScope.launchIO {
-			val projects = projectRepository.getAll(username).onFailureWithStackTrace {
+			val projects = projectRepository.getAllByUsername(username).onFailureWithStackTrace {
 				_events.send(ProjectEvent.FailedToRetrieveProjects)
 				return@launchIO
 			}.getOrThrow()
@@ -46,7 +46,7 @@ class ProjectScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectScreenState.Success
 
-			val projects = projectRepository.create(project).onFailureWithStackTrace {
+			val projects = projectRepository.createProject(project).onFailureWithStackTrace {
 				_events.send(ProjectEvent.FailedToCreateProject)
 				return@launchIONoQueue
 			}.getOrThrow()

@@ -19,70 +19,62 @@ import uy.kohesive.injekt.api.get
 object RemoteProjectTableRepository : ProjectTableRepository {
 	private val factory: ProjectTableRepositoryApi =
 		Injekt.get<Retrofit.Builder>()
-			.baseUrl("${Urls.PROJECT_TABLE.getAppendedUrl()}/").build()
+			.baseUrl(Urls.PROJECT_TABLE).build()
 			.create(ProjectTableRepositoryApi::class.java)
 
-	override suspend fun getAll(
+	override suspend fun getAllByProjectId(
 		projectId: Long,
-		ignoreTasks: Boolean,
+		includeTasks: Boolean,
 	): Result<ProjectTableListResponse> =
-		factory.getTablesByProjectId(projectId, ignoreTasks)
+		factory.getAllByProjectId(projectId, includeTasks)
 
-	override suspend fun getOne(
+	override suspend fun getById(
 		id: Long,
-		ignoreTasks: Boolean,
-	): Result<ProjectTable> = factory.getById(id, ignoreTasks)
+		includeTasks: Boolean,
+	): Result<ProjectTable> = factory.getById(id, includeTasks)
 
-	override suspend fun create(table: ProjectTable): Result<ProjectTable> =
+	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
 		factory.createTable(table)
 
-	override suspend fun updateNoBody(
-		id: Long,
-		title: String?,
-	): Result<Unit> = factory.updateNoBody(
-		id = id,
-		title = title,
-	)
+	override suspend fun updateTable(
+		table: ProjectTable,
+	): Result<ProjectTable> = factory.updateTable(table.id, table)
 
-	override suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit> =
-		factory.swapTablePositions(id = fId, sId = sId)
+	override suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit> =
+		factory.swapTablePositions(fId, sId)
 
-	override suspend fun delete(id: Long): Result<Unit> =
-		factory.deleteTable(id)
+	override suspend fun deleteById(id: Long): Result<Unit> =
+		factory.deleteById(id)
 }
 
 private interface ProjectTableRepositoryApi {
 	@GET("projectId/{projectId}")
-	fun getTablesByProjectId(
+	fun getAllByProjectId(
 		@Path("projectId") projectId: Long,
-		@Query("ignoreIssues") ignoreTasks: Boolean,
+		@Query("includeIssues") includeTasks: Boolean,
 	): Result<ProjectTableListResponse>
 
 	@GET("id/{id}")
 	fun getById(
 		@Path("id") id: Long,
-		@Query("ignoreIssues") ignoreTasks: Boolean,
+		@Query("includeIssues") includeTasks: Boolean,
 	): Result<ProjectTable>
 
-	@POST(Urls.PROJECT_TABLE.appendedUrlLocal)
+	@POST
 	fun createTable(@Body table: ProjectTable): Result<ProjectTable>
 
-	/**
-	 * Do not modify [returnBody]
-	 */
 	@PUT("{id}")
-	fun updateNoBody(
+	fun updateTable(
 		@Path("id") id: Long,
-		@Query("title") title: String? = null,
-		@Query("returnBody") returnBody: Boolean = false,
-	): Result<Unit>
+		@Body table: ProjectTable,
+	): Result<ProjectTable>
 
-	@PATCH("{id}/swapPositionWith/{sId}")
+	@PATCH("{fId}/swapPositionWith/{sId}")
 	fun swapTablePositions(
-		@Path("id") id: Long,
+		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
 	): Result<Unit>
 
 	@DELETE("{id}")
-	fun deleteTable(@Path("id") id: Long): Result<Unit>
+	fun deleteById(@Path("id") id: Long): Result<Unit>
 }

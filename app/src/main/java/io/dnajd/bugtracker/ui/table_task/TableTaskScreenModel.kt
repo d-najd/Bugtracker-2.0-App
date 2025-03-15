@@ -20,12 +20,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
 
 class TableTaskStateScreenModel(
 	taskId: Long,
 
-	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
+	private val taskRepository: TableTaskRepository = Injekt.get(),
 	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
 	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
@@ -39,12 +38,12 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		coroutineScope.launchIO {
-			val task = tableTaskRepository.get(taskId).onFailureWithStackTrace {
+			val task = taskRepository.getById(taskId).onFailureWithStackTrace {
 				_events.send(TableTaskEvent.FailedToRetrieveTask)
 				return@launchIO
 			}.getOrThrow()
 
-			val table = projectTableRepository.getOne(id = task.tableId, ignoreTasks = true)
+			val table = projectTableRepository.getById(id = task.tableId, includeTasks = true)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTable)
 					return@launchIO
@@ -66,22 +65,15 @@ class TableTaskStateScreenModel(
 	fun updateDescription(newDescription: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
+			val renamedTask = successState.task.copy(description = newDescription)
 
-			tableTaskRepository.updateNoBody(
-				id = successState.task.id,
-				description = newDescription
-			).onFailureWithStackTrace {
+			val persistedTask = taskRepository.updateTask(renamedTask).onFailureWithStackTrace {
 				_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
 				return@launchIONoQueue
-			}
+			}.getOrThrow()
 
 			mutableState.update {
-				successState.copy(
-					task = successState.task.copy(
-						description = newDescription,
-						updatedAt = Date(),
-					)
-				)
+				successState.copy(task = persistedTask)
 			}
 			dismissSheet()
 		}
@@ -91,13 +83,13 @@ class TableTaskStateScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 
-			tableTaskRepository.swapTable(successState.task.id, tableId)
+			taskRepository.swapTable(successState.task.id, tableId)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
 
-			val table = projectTableRepository.getOne(id = tableId, ignoreTasks = true)
+			val table = projectTableRepository.getById(id = tableId, includeTasks = true)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
@@ -123,9 +115,9 @@ class TableTaskStateScreenModel(
 				is TableTaskSheet.BottomSheet -> {
 					val tables = sheet.tables.ifEmpty {
 
-						projectTableRepository.getAll(
+						projectTableRepository.getAllByProjectId(
 							projectId = successState.parentTable.projectId,
-							ignoreTasks = true
+							includeTasks = true
 						).onFailureWithStackTrace {
 							_events.send(TableTaskEvent.FailedToShowSheet)
 							return@launchIONoQueue
@@ -160,19 +152,19 @@ sealed class TableTaskSheet {
 sealed class TableTaskEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
 
-	object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
-	object FailedToUpdateTaskDescription :
+	data object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
+	data object FailedToUpdateTaskDescription :
 		LocalizedMessage(R.string.error_failed_to_update_task_description)
 
-	object FailedToRetrieveTask : LocalizedMessage(R.string.error_failed_to_retrieve_task)
-	object FailedToRetrieveTable : LocalizedMessage(R.string.error_failed_to_retrieve_table)
-	object FailedToShowSheet : LocalizedMessage(R.string.error_failed_to_show_sheet)
+	data object FailedToRetrieveTask : LocalizedMessage(R.string.error_failed_to_retrieve_task)
+	data object FailedToRetrieveTable : LocalizedMessage(R.string.error_failed_to_retrieve_table)
+	data object FailedToShowSheet : LocalizedMessage(R.string.error_failed_to_show_sheet)
 }
 
 sealed class TableTaskScreenState {
 
 	@Immutable
-	object Loading : TableTaskScreenState()
+	data object Loading : TableTaskScreenState()
 
 	@Immutable
 	data class Success(

@@ -44,9 +44,10 @@ class ProjectTableScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val projectResult = async { projectRepository.get(projectId).onFailure { cancel() } }
+			val projectResult =
+				async { projectRepository.getById(projectId).onFailure { cancel() } }
 			val tablesResult =
-				async { projectTableRepository.getAll(projectId).onFailure { cancel() } }
+				async { projectTableRepository.getAllByProjectId(projectId).onFailure { cancel() } }
 
 			awaitAll(projectResult, tablesResult)
 
@@ -76,7 +77,7 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTable = projectTableRepository.create(table).onFailureWithStackTrace {
+			val createdTable = projectTableRepository.createTable(table).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToCreateProjectTable)
 				return@launchIONoQueue
 			}.getOrThrow()
@@ -100,7 +101,7 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTask = tableTaskRepository.create(task).onFailureWithStackTrace {
+			val createdTask = tableTaskRepository.createTask(task).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToCreateTableTask)
 				return@launchIONoQueue
 			}.getOrThrow()
@@ -126,18 +127,22 @@ class ProjectTableScreenModel(
 	fun renameTable(id: Long, newName: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
-
 			val tables = successState.tables.toMutableList()
 			val table = tables.find { table -> table.id == id }!!
-			projectTableRepository.updateNoBody(id, title = newName).onFailureWithStackTrace {
-				_events.send(ProjectTableEvent.FailedToRenameProjectTable)
-				return@launchIONoQueue
-			}
+			val renamedTable = table.copy(title = newName)
+
+			val persistedTable = projectTableRepository.updateTable(renamedTable)
+				.onFailureWithStackTrace {
+					_events.send(ProjectTableEvent.FailedToRenameProjectTable)
+					return@launchIONoQueue
+				}.getOrThrow()
 
 			tables.remove(table)
-			tables.add(table.copy(title = newName))
+			tables.add(persistedTable)
 
-			mutableState.update { successState.copy(tables = tables) }
+			mutableState.update {
+				successState.copy(tables = tables)
+			}
 		}
 	}
 
@@ -158,7 +163,7 @@ class ProjectTableScreenModel(
 			val fTable = tables.find { table -> table.id == sId }!!
 			val sTable = tables.find { table -> table.id == fId }!!
 
-			projectTableRepository.swapPositionWith(fId, sId).onFailureWithStackTrace {
+			projectTableRepository.swapTablePositions(fId, sId).onFailureWithStackTrace {
 				_events.send(ProjectTableEvent.FailedToSwapTablePositions)
 				return@launchIONoQueue
 			}
@@ -288,7 +293,7 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			projectTableRepository.delete(tableId).onSuccess {
+			projectTableRepository.deleteById(tableId).onSuccess {
 				val tables = successState.tables.toMutableList()
 				tables.removeIf { it.id == tableId }
 
@@ -335,20 +340,21 @@ class ProjectTableScreenModel(
 sealed class ProjectTableEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectTableEvent()
 
-	object FailedToCreateProjectTable :
+	data object FailedToCreateProjectTable :
 		LocalizedMessage(R.string.error_failed_to_create_project_table)
 
-	object FailedToCreateTableTask : LocalizedMessage(R.string.error_failed_to_create_table_task)
+	data object FailedToCreateTableTask :
+		LocalizedMessage(R.string.error_failed_to_create_table_task)
 
-	object FailedToRenameProjectTable :
+	data object FailedToRenameProjectTable :
 		LocalizedMessage(R.string.error_failed_to_rename_project_table)
 
-	object FailedToSwapTablePositions :
+	data object FailedToSwapTablePositions :
 		LocalizedMessage(R.string.error_failed_to_swap_table_positions)
 
-	object FailedToMoveTableTasks : LocalizedMessage(R.string.error_failed_to_move_table_tasks)
+	data object FailedToMoveTableTasks : LocalizedMessage(R.string.error_failed_to_move_table_tasks)
 
-	object FailedToDeleteTable : LocalizedMessage(R.string.error_failed_to_delete_table)
+	data object FailedToDeleteTable : LocalizedMessage(R.string.error_failed_to_delete_table)
 }
 
 sealed class ProjectTableDialog {
@@ -359,7 +365,7 @@ sealed class ProjectTableDialog {
 sealed class ProjectTableScreenState {
 
 	@Immutable
-	object Loading : ProjectTableScreenState()
+	data object Loading : ProjectTableScreenState()
 
 	/**
 	 * TODO find a way to get rid of taskMoved, using events does not work properly

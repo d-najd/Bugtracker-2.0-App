@@ -1,6 +1,14 @@
 package io.dnajd.data.utils
 
+object Urls {
+	const val SERVER_URL: String = "http://192.168.0.150:8080/"
+	const val BASE: String = "${SERVER_URL}api/"
+	const val PROJECT: String = BASE + "project/"
+	const val PROJECT_TABLE: String = BASE + "project-table/"
+	const val PROJECT_TABLE_ISSUE: String = BASE + "project-table-issue/"
+}
 
+/*
 /**
  * enum is not used because it is 'not compile time compliant' so I had to resort to using this, it is recommended to get the
  * fields using the interface [UrlsGetFields] where possible since it offers more flexibility
@@ -8,8 +16,8 @@ package io.dnajd.data.utils
 @Suppress("ClassName")
 sealed class Urls : UrlsGetFields {
 	object API : Urls() {
-		const val baseUrlLocal = "http://192.168.1.150:8080"
-		const val appendedUrlLocal = "http://192.168.1.150:8080"
+		const val baseUrlLocal = "http://192.168.0.150:8080"
+		const val appendedUrlLocal = "http://192.168.0.150:8080"
 		override fun getBaseUrl(): String = baseUrlLocal
 		override fun getAppendedUrl(): String = appendedUrlLocal
 	}
@@ -51,6 +59,7 @@ interface UrlsGetFields {
 
 	fun getBaseUrl(): String
 
-	fun getAppendedUrl(): String
+	fun getAppendedUrl(): String = "${Urls.API.baseUrlLocal}/${getBaseUrl()}"
 
 }
+ */

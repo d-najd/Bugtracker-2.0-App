@@ -9,7 +9,6 @@ import io.dnajd.data.table_task.MockTableTaskRepository
 import io.dnajd.data.table_task.RemoteTableTaskRepository
 import io.dnajd.data.user_authority.MockUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
-import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
@@ -28,7 +27,7 @@ import uy.kohesive.injekt.api.get
 
 class DomainModule : InjektModule {
 	companion object {
-		private const val USE_FAKES = true
+		private const val USE_MOCKS = false
 	}
 
 	override fun InjektRegistrar.registerInjectables() {
@@ -48,18 +47,17 @@ class DomainModule : InjektModule {
 
 		addSingletonFactory {
 			Retrofit.Builder()
-				.baseUrl(Urls.API.baseUrlLocal)
+				.baseUrl("")
 				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))
+				.addCallAdapterFactory(ResultCallAdapterFactory())
 				.client(Injekt.get())
 		}
 
 		addSingletonFactory {
-			Injekt.get<Retrofit.Builder>()
-				.addCallAdapterFactory(ResultCallAdapterFactory())
-				.build()
+			Injekt.get<Retrofit.Builder>().build()
 		}
 
-		when (USE_FAKES) {
+		when (USE_MOCKS) {
 			true -> {
 				addSingletonFactory<ProjectRepository> { MockProjectRepository }
 				addSingletonFactory<ProjectTableRepository> { MockProjectTableRepository }

@@ -10,18 +10,14 @@ import java.util.Date
 
 object MockTableTaskRepository : TableTaskRepository {
 
-	override suspend fun get(taskId: Long): Result<TableTask> = Result.success(mockData())
+	override suspend fun getById(id: Long): Result<TableTask> = Result.success(mockData())
 
-	override suspend fun create(task: TableTask): Result<TableTask> = Result.success(task)
+	override suspend fun createTask(task: TableTask): Result<TableTask> = Result.success(task)
 
-	override suspend fun updateNoBody(
-		id: Long,
-		title: String?,
-		description: String?,
-		severity: Int?
-	): Result<Unit> = Result.success(Unit)
+	override suspend fun updateTask(task: TableTask): Result<TableTask> = Result.success(task)
 
-	override suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
+	override suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit> =
+		Result.success(Unit)
 
 	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
 

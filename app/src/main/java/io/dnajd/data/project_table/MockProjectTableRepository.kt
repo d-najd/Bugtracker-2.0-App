@@ -8,27 +8,26 @@ import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
 import io.dnajd.domain.table_task.model.TableTaskBasic
 
 object MockProjectTableRepository : ProjectTableRepository {
-
-	override suspend fun getAll(
+	override suspend fun getAllByProjectId(
 		projectId: Long,
-		ignoreTasks: Boolean
-	): Result<ProjectTableListResponse> = Result.success(mockData(ignoreTasks))
+		includeTasks: Boolean,
+	): Result<ProjectTableListResponse> = Result.success(mockData(includeTasks))
 
-	override suspend fun getOne(
+	override suspend fun getById(
 		id: Long,
-		ignoreTasks: Boolean
-	): Result<ProjectTable> = Result.success(mockData(ignoreTasks).data[0])
+		includeTasks: Boolean,
+	): Result<ProjectTable> = Result.success(mockData(includeTasks).data[0])
 
-	override suspend fun create(table: ProjectTable): Result<ProjectTable> = Result.success(table)
+	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
+		Result.success(table)
 
-	override suspend fun updateNoBody(
-		id: Long,
-		title: String?
-	): Result<Unit> = Result.success(Unit)
+	override suspend fun updateTable(table: ProjectTable): Result<ProjectTable> =
+		Result.success(table)
 
-	override suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
+	override suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit> =
+		Result.success(Unit)
 
-	override suspend fun delete(id: Long): Result<Unit> = Result.success(Unit)
+	override suspend fun deleteById(id: Long): Result<Unit> = Result.success(Unit)
 
 	private fun mockData(ignoreTasks: Boolean) = ProjectTableListResponse(
 		listOf(

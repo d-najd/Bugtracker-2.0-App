@@ -3,27 +3,27 @@ package io.dnajd.domain.table_task.service
 import io.dnajd.domain.table_task.model.TableTask
 
 interface TableTaskRepository {
-
 	/**
 	 * Gets a single table task
-	 * @param taskId id of the task
+	 * @param id id of the task
 	 * @return received task from the server or null if the request failed
 	 */
-	suspend fun get(taskId: Long): Result<TableTask>
+	suspend fun getById(id: Long): Result<TableTask>
 
 	/**
 	 * Creates table task
 	 * @param task the pojo that is sent to the server
 	 * @return received task from the server or null if the request failed
 	 */
-	suspend fun create(task: TableTask): Result<TableTask>
+	suspend fun createTask(task: TableTask): Result<TableTask>
 
-	suspend fun updateNoBody(
-		id: Long,
-		title: String? = null,
-		description: String? = null,
-		severity: Int? = null
-	): Result<Unit>
+	/**
+	 * Can update fields
+	 * [TableTask.severity]
+	 * [TableTask.title]
+	 * [TableTask.description]
+	 */
+	suspend fun updateTask(task: TableTask): Result<TableTask>
 
 	/**
 	 * moves task from one position to another, this is different from moving tasks
@@ -31,7 +31,7 @@ interface TableTaskRepository {
 	 * @param sId id of the second task
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun swapPositionWith(fId: Long, sId: Long): Result<Unit>
+	suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit>
 
 	/**
 	 * moves task to the given position, this is different from swapping positions because every task

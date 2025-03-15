@@ -9,32 +9,33 @@ interface ProjectRepository {
 	 * @param username username of the user which the projects are being requested for
 	 * @return list of received projects, empty list will be returned if the request failed
 	 */
-	suspend fun getAll(username: String): Result<ProjectListResponse>
+	suspend fun getAllByUsername(username: String): Result<ProjectListResponse>
 
 	/**
 	 * Gets single project by id
 	 * @param id id of the table
 	 * @return project associated with the id or null if it does not exist
 	 */
-	suspend fun get(id: Long): Result<Project>
+	suspend fun getById(id: Long): Result<Project>
 
 	/**
 	 * Creates project
 	 * @param project the pojo that is sent to the server
 	 * @return received project from the server or null if the request failed
 	 */
-	suspend fun create(project: Project): Result<Project>
+	suspend fun createProject(project: Project): Result<Project>
 
-	suspend fun updateNoBody(
-		id: Long,
-		title: String? = null,
-		description: String? = null,
-	): Result<Unit>
+	/**
+	 * Can update fields:
+	 * [Project.title]
+	 * [Project.description]
+	 */
+	suspend fun updateProject(project: Project): Result<Project>
 
 	/**
 	 * Deletes a project with given id
 	 * @param id id of the table
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun delete(id: Long): Result<Unit>
+	suspend fun deleteById(id: Long): Result<Unit>
 }

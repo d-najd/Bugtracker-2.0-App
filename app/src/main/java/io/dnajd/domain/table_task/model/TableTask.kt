@@ -32,6 +32,8 @@ fun TableTask.toBasic(): TableTaskBasic = TableTaskBasic(
 )
 
 /**
+ * TODO deprecate this?
+ *
  * contains only the most basic of fields, this is used for items in the table which does not require
  * that much data
  */

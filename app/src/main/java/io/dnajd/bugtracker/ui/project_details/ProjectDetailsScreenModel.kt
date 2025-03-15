@@ -30,7 +30,7 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val project = projectRepository.get(projectId).onFailureWithStackTrace {
+			val project = projectRepository.getById(projectId).onFailureWithStackTrace {
 				_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 				return@launchIO
 			}.getOrThrow()
@@ -43,7 +43,7 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			projectRepository.delete(successState.project.id).onSuccess {
+			projectRepository.deleteById(successState.project.id).onSuccess {
 				_events.send(ProjectDetailsEvent.DeleteProject)
 			}.onFailureWithStackTrace {
 				_events.send(ProjectDetailsEvent.FailedToDeleteProject)
@@ -54,20 +54,16 @@ class ProjectDetailsScreenModel(
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
+			val renamedProject = successState.project.copy(title = title)
 
-			projectRepository.updateNoBody(
-				id = successState.project.id,
-				title = title
-			).onFailureWithStackTrace {
-				_events.send(ProjectDetailsEvent.FailedToRenameProject)
-				return@launchIONoQueue
-			}
+			val persistedProject =
+				projectRepository.updateProject(renamedProject).onFailureWithStackTrace {
+					_events.send(ProjectDetailsEvent.FailedToRenameProject)
+					return@launchIONoQueue
+				}.getOrThrow()
 
-			val renamedProject = successState.project.copy(
-				title = title,
-			)
 			mutableState.update {
-				successState.copy(project = renamedProject)
+				successState.copy(project = persistedProject)
 			}
 		}
 	}
@@ -75,7 +71,7 @@ class ProjectDetailsScreenModel(
 
 sealed class ProjectDetailsScreenState {
 	@Immutable
-	object Loading : ProjectDetailsScreenState()
+	data object Loading : ProjectDetailsScreenState()
 
 	@Immutable
 	data class Success(
@@ -86,14 +82,14 @@ sealed class ProjectDetailsScreenState {
 sealed class ProjectDetailsEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
 
-	object FailedToRetrieveProjectData :
+	data object FailedToRetrieveProjectData :
 		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
 
-	object FailedToDeleteProject :
+	data object FailedToDeleteProject :
 		LocalizedMessage(R.string.error_failed_to_delete_project)
 
-	object FailedToRenameProject :
+	data object FailedToRenameProject :
 		LocalizedMessage(R.string.error_failed_to_rename_project)
 
-	object DeleteProject : ProjectDetailsEvent()
+	data object DeleteProject : ProjectDetailsEvent()
 }
