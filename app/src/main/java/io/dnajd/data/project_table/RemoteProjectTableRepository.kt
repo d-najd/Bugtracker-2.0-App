@@ -1,7 +1,7 @@
 package io.dnajd.data.project_table
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.toResult
+import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableRepository
@@ -28,25 +28,25 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 		projectId: Long,
 		includeTasks: Boolean,
 	): Result<ProjectTableListResponse> =
-		factory.getAllByProjectId(projectId, includeTasks).toResult()
+		handleRetrofitRequest { factory.getAllByProjectId(projectId, includeTasks) }
 
 	override suspend fun getById(
 		id: Long,
 		includeTasks: Boolean,
-	): Result<ProjectTable> = factory.getById(id, includeTasks).toResult()
+	): Result<ProjectTable> = handleRetrofitRequest { factory.getById(id, includeTasks) }
 
 	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		factory.createTable(table).toResult()
+		handleRetrofitRequest { factory.createTable(table) }
 
 	override suspend fun updateTable(
 		table: ProjectTable,
-	): Result<ProjectTable> = factory.updateTable(table.id, table).toResult()
+	): Result<ProjectTable> = handleRetrofitRequest { factory.updateTable(table.id, table) }
 
 	override suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit> =
-		factory.swapTablePositions(fId, sId).toResult()
+		handleRetrofitRequest { factory.swapTablePositions(fId, sId) }
 
 	override suspend fun deleteById(id: Long): Result<Unit> =
-		factory.deleteById(id).toResult()
+		handleRetrofitRequest { factory.deleteById(id) }
 }
 
 private interface ProjectTableRepositoryApi {

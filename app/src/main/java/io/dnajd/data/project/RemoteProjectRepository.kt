@@ -1,7 +1,7 @@
 package io.dnajd.data.project
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.toResult
+import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
 import io.dnajd.domain.project.service.ProjectRepository
@@ -24,20 +24,20 @@ object RemoteProjectRepository : ProjectRepository {
 			.create(ProjectRepositoryApi::class.java)
 
 	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
-		factory.getAllByUsername(username).toResult()
+		handleRetrofitRequest { factory.getAllByUsername(username) }
 
 	override suspend fun getById(id: Long): Result<Project> =
-		factory.getById(id).toResult()
+		handleRetrofitRequest { factory.getById(id) }
 
 	override suspend fun createProject(project: Project): Result<Project> =
-		factory.createProject(project).toResult()
+		handleRetrofitRequest { factory.createProject(project) }
 
 	override suspend fun updateProject(
 		project: Project,
-	): Result<Project> = factory.updateProject(project.id, project).toResult()
+	): Result<Project> = handleRetrofitRequest { factory.updateProject(project.id, project) }
 
 	override suspend fun deleteById(id: Long): Result<Unit> =
-		factory.deleteById(id).toResult()
+		handleRetrofitRequest { factory.deleteById(id) }
 }
 
 interface ProjectRepositoryApi {

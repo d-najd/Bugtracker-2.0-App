@@ -1,6 +1,6 @@
 package io.dnajd.data.user_authority
 
-import io.dnajd.data.utils.toResult
+import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
@@ -22,13 +22,13 @@ object RemoteUserAuthorityRepository : UserAuthorityRepository {
 			.create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
-		factory.get(projectId).toResult()
+		handleRetrofitRequest { factory.get(projectId) }
 
 	override suspend fun create(userAuthority: UserAuthority): Result<UserAuthority> =
-		factory.create(userAuthority).toResult()
+		handleRetrofitRequest { factory.create(userAuthority) }
 
 	override suspend fun delete(userAuthority: UserAuthority): Result<Unit> =
-		factory.delete(userAuthority).toResult()
+		handleRetrofitRequest { factory.delete(userAuthority) }
 }
 
 private interface UserAuthorityRepositoryApi {

@@ -1,7 +1,7 @@
 package io.dnajd.data.table_task
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.toResult
+import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import retrofit2.Call
@@ -23,22 +23,22 @@ object RemoteTableTaskRepository : TableTaskRepository {
 			.create(TableTaskRepositoryApi::class.java)
 
 	override suspend fun getById(id: Long): Result<TableTask> =
-		factory.getById(id).toResult()
+		handleRetrofitRequest { factory.getById(id) }
 
 	override suspend fun createTask(task: TableTask): Result<TableTask> =
-		factory.createTask(task).toResult()
+		handleRetrofitRequest { factory.createTask(task) }
 
 	override suspend fun updateTask(task: TableTask): Result<TableTask> =
-		factory.updateTask(task.id, task).toResult()
+		handleRetrofitRequest { factory.updateTask(task.id, task) }
 
 	override suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit> =
-		factory.swapTaskPositions(fId = fId, sId = sId).toResult()
+		handleRetrofitRequest { factory.swapTaskPositions(fId = fId, sId = sId) }
 
 	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> =
-		factory.moveTaskPositions(fId = fId, sId = sId).toResult()
+		handleRetrofitRequest { factory.moveTaskPositions(fId, sId) }
 
 	override suspend fun swapTable(id: Long, tableId: Long): Result<Unit> =
-		factory.swapTable(id = id, tableId = tableId).toResult()
+		handleRetrofitRequest { factory.swapTable(id, tableId) }
 }
 
 private interface TableTaskRepositoryApi {
