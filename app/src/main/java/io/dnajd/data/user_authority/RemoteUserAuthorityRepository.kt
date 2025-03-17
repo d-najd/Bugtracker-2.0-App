@@ -1,8 +1,10 @@
 package io.dnajd.data.user_authority
 
+import io.dnajd.data.utils.toResult
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -20,26 +22,26 @@ object RemoteUserAuthorityRepository : UserAuthorityRepository {
 			.create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
-		factory.get(projectId)
+		factory.get(projectId).toResult()
 
 	override suspend fun create(userAuthority: UserAuthority): Result<UserAuthority> =
-		factory.create(userAuthority)
+		factory.create(userAuthority).toResult()
 
 	override suspend fun delete(userAuthority: UserAuthority): Result<Unit> =
-		factory.delete(userAuthority)
+		factory.delete(userAuthority).toResult()
 }
 
 private interface UserAuthorityRepositoryApi {
 	@GET("projectId/{projectId}")
 	fun get(
 		@Path("projectId") projectId: Long,
-	): Result<UserAuthorityListResponse>
+	): Call<UserAuthorityListResponse>
 
 	// @POST(Urls.USER_AUTHORITY.appendedUrlLocal)
 	@POST
 	fun create(
 		@Body userAuthority: UserAuthority,
-	): Result<UserAuthority>
+	): Call<UserAuthority>
 
 	/*
 	@HTTP(
@@ -51,5 +53,5 @@ private interface UserAuthorityRepositoryApi {
 	@DELETE
 	fun delete(
 		@Body userAuthority: UserAuthority,
-	): Result<Unit>
+	): Call<Unit>
 }

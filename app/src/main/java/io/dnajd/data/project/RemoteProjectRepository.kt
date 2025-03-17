@@ -1,9 +1,11 @@
 package io.dnajd.data.project
 
 import io.dnajd.data.utils.Urls
+import io.dnajd.data.utils.toResult
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
 import io.dnajd.domain.project.service.ProjectRepository
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -22,38 +24,38 @@ object RemoteProjectRepository : ProjectRepository {
 			.create(ProjectRepositoryApi::class.java)
 
 	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
-		factory.getAllByUsername(username)
+		factory.getAllByUsername(username).toResult()
 
 	override suspend fun getById(id: Long): Result<Project> =
-		factory.getById(id)
+		factory.getById(id).toResult()
 
 	override suspend fun createProject(project: Project): Result<Project> =
-		factory.createProject(project)
+		factory.createProject(project).toResult()
 
 	override suspend fun updateProject(
 		project: Project,
-	): Result<Project> = factory.updateProject(project.id, project)
+	): Result<Project> = factory.updateProject(project.id, project).toResult()
 
 	override suspend fun deleteById(id: Long): Result<Unit> =
-		factory.deleteById(id)
+		factory.deleteById(id).toResult()
 }
 
 interface ProjectRepositoryApi {
 	@GET("user/{username}")
-	fun getAllByUsername(@Path("username") username: String): Result<ProjectListResponse>
+	fun getAllByUsername(@Path("username") username: String): Call<ProjectListResponse>
 
 	@GET("{id}")
-	fun getById(@Path("id") id: Long): Result<Project>
+	fun getById(@Path("id") id: Long): Call<Project>
 
-	@POST
-	fun createProject(@Body project: Project): Result<Project>
+	@POST("./")
+	fun createProject(@Body project: Project): Call<Project>
 
 	@PUT("{id}")
 	fun updateProject(
 		@Path("id") id: Long,
 		@Body project: Project,
-	): Result<Project>
+	): Call<Project>
 
 	@DELETE("{id}")
-	fun deleteById(@Path("id") id: Long): Result<Unit>
+	fun deleteById(@Path("id") id: Long): Call<Unit>
 }

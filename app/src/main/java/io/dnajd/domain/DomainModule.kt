@@ -13,7 +13,6 @@ import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
-import io.dnajd.domain.utils.ResultCallAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -47,9 +46,8 @@ class DomainModule : InjektModule {
 
 		addSingletonFactory {
 			Retrofit.Builder()
-				.baseUrl("")
 				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))
-				.addCallAdapterFactory(ResultCallAdapterFactory())
+				// .addCallAdapterFactory(ResultCallAdapterFactory())
 				.client(Injekt.get())
 		}
 

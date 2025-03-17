@@ -1,8 +1,10 @@
 package io.dnajd.data.table_task
 
 import io.dnajd.data.utils.Urls
+import io.dnajd.data.utils.toResult
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskRepository
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,22 +23,22 @@ object RemoteTableTaskRepository : TableTaskRepository {
 			.create(TableTaskRepositoryApi::class.java)
 
 	override suspend fun getById(id: Long): Result<TableTask> =
-		factory.getById(id)
+		factory.getById(id).toResult()
 
 	override suspend fun createTask(task: TableTask): Result<TableTask> =
-		factory.createTask(task)
+		factory.createTask(task).toResult()
 
 	override suspend fun updateTask(task: TableTask): Result<TableTask> =
-		factory.updateTask(task.id, task)
+		factory.updateTask(task.id, task).toResult()
 
 	override suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit> =
-		factory.swapTaskPositions(fId = fId, sId = sId)
+		factory.swapTaskPositions(fId = fId, sId = sId).toResult()
 
 	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> =
-		factory.moveTaskPositions(fId = fId, sId = sId)
+		factory.moveTaskPositions(fId = fId, sId = sId).toResult()
 
 	override suspend fun swapTable(id: Long, tableId: Long): Result<Unit> =
-		factory.swapTable(id = id, tableId = tableId)
+		factory.swapTable(id = id, tableId = tableId).toResult()
 }
 
 private interface TableTaskRepositoryApi {
@@ -47,34 +49,34 @@ private interface TableTaskRepositoryApi {
 		@Query("includeAssigned") includeAssigned: Boolean = true,
 		@Query("includeComments") includeComments: Boolean = true,
 		@Query("includeLabels") includeLabels: Boolean = true,
-	): Result<TableTask>
+	): Call<TableTask>
 
 	@POST
 	fun createTask(
 		@Body task: TableTask,
-	): Result<TableTask>
+	): Call<TableTask>
 
 	@PUT("{id}")
 	fun updateTask(
 		@Path("id") id: Long,
 		@Body task: TableTask,
-	): Result<TableTask>
+	): Call<TableTask>
 
 	@PATCH("{fId}/swapPositionWith/{sId}")
 	fun swapTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Call<Unit>
 
 	@PATCH("{fId}/movePositionTo/{sId}")
 	fun moveTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Call<Unit>
 
 	@PATCH("{id}/swapTable/{tableId}")
 	fun swapTable(
 		@Path("id") id: Long,
 		@Path("tableId") tableId: Long,
-	): Result<Unit>
+	): Call<Unit>
 }

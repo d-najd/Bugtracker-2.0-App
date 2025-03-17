@@ -1,9 +1,11 @@
 package io.dnajd.data.project_table
 
 import io.dnajd.data.utils.Urls
+import io.dnajd.data.utils.toResult
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableRepository
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -26,25 +28,25 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 		projectId: Long,
 		includeTasks: Boolean,
 	): Result<ProjectTableListResponse> =
-		factory.getAllByProjectId(projectId, includeTasks)
+		factory.getAllByProjectId(projectId, includeTasks).toResult()
 
 	override suspend fun getById(
 		id: Long,
 		includeTasks: Boolean,
-	): Result<ProjectTable> = factory.getById(id, includeTasks)
+	): Result<ProjectTable> = factory.getById(id, includeTasks).toResult()
 
 	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		factory.createTable(table)
+		factory.createTable(table).toResult()
 
 	override suspend fun updateTable(
 		table: ProjectTable,
-	): Result<ProjectTable> = factory.updateTable(table.id, table)
+	): Result<ProjectTable> = factory.updateTable(table.id, table).toResult()
 
 	override suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit> =
-		factory.swapTablePositions(fId, sId)
+		factory.swapTablePositions(fId, sId).toResult()
 
 	override suspend fun deleteById(id: Long): Result<Unit> =
-		factory.deleteById(id)
+		factory.deleteById(id).toResult()
 }
 
 private interface ProjectTableRepositoryApi {
@@ -52,29 +54,29 @@ private interface ProjectTableRepositoryApi {
 	fun getAllByProjectId(
 		@Path("projectId") projectId: Long,
 		@Query("includeIssues") includeTasks: Boolean,
-	): Result<ProjectTableListResponse>
+	): Call<ProjectTableListResponse>
 
 	@GET("id/{id}")
 	fun getById(
 		@Path("id") id: Long,
 		@Query("includeIssues") includeTasks: Boolean,
-	): Result<ProjectTable>
+	): Call<ProjectTable>
 
 	@POST
-	fun createTable(@Body table: ProjectTable): Result<ProjectTable>
+	fun createTable(@Body table: ProjectTable): Call<ProjectTable>
 
 	@PUT("{id}")
 	fun updateTable(
 		@Path("id") id: Long,
 		@Body table: ProjectTable,
-	): Result<ProjectTable>
+	): Call<ProjectTable>
 
 	@PATCH("{fId}/swapPositionWith/{sId}")
 	fun swapTablePositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Call<Unit>
 
 	@DELETE("{id}")
-	fun deleteById(@Path("id") id: Long): Result<Unit>
+	fun deleteById(@Path("id") id: Long): Call<Unit>
 }
