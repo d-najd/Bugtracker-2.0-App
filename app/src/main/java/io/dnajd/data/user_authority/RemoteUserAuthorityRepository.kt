@@ -38,7 +38,7 @@ private interface UserAuthorityRepositoryApi {
 	): Call<UserAuthorityListResponse>
 
 	// @POST(Urls.USER_AUTHORITY.appendedUrlLocal)
-	@POST
+	@POST("./")
 	fun create(
 		@Body userAuthority: UserAuthority,
 	): Call<UserAuthority>
@@ -50,7 +50,7 @@ private interface UserAuthorityRepositoryApi {
 		hasBody = true,
 	)
 	 */
-	@DELETE
+	@DELETE("./")
 	fun delete(
 		@Body userAuthority: UserAuthority,
 	): Call<Unit>

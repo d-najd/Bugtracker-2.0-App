@@ -26,7 +26,7 @@ object RemoteTableTaskRepository : TableTaskRepository {
 		handleRetrofitRequest { factory.getById(id) }
 
 	override suspend fun createTask(task: TableTask): Result<TableTask> =
-		handleRetrofitRequest { factory.createTask(task) }
+		handleRetrofitRequest { factory.createTask(task.tableId, task) }
 
 	override suspend fun updateTask(task: TableTask): Result<TableTask> =
 		handleRetrofitRequest { factory.updateTask(task.id, task) }
@@ -51,8 +51,9 @@ private interface TableTaskRepositoryApi {
 		@Query("includeLabels") includeLabels: Boolean = true,
 	): Call<TableTask>
 
-	@POST
+	@POST("tableId/{tableId}")
 	fun createTask(
+		@Path("tableId") tableId: Long,
 		@Body task: TableTask,
 	): Call<TableTask>
 

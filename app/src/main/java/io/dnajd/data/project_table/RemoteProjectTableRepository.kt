@@ -36,7 +36,7 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 	): Result<ProjectTable> = handleRetrofitRequest { factory.getById(id, includeTasks) }
 
 	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		handleRetrofitRequest { factory.createTable(table) }
+		handleRetrofitRequest { factory.createTable(table.projectId, table) }
 
 	override suspend fun updateTable(
 		table: ProjectTable,
@@ -62,8 +62,11 @@ private interface ProjectTableRepositoryApi {
 		@Query("includeIssues") includeTasks: Boolean,
 	): Call<ProjectTable>
 
-	@POST
-	fun createTable(@Body table: ProjectTable): Call<ProjectTable>
+	@POST("projectId/{projectId}")
+	fun createTable(
+		@Path("projectId") projectId: Long,
+		@Body table: ProjectTable,
+	): Call<ProjectTable>
 
 	@PUT("{id}")
 	fun updateTable(

@@ -1,8 +1,6 @@
 package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
-import com.google.gson.internal.ConstructorConstructor
-import com.google.gson.internal.bind.CollectionTypeAdapterFactory
 import io.dnajd.data.project.MockProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
 import io.dnajd.data.project_table.MockProjectTableRepository
@@ -15,6 +13,7 @@ import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -43,7 +42,7 @@ class DomainModule : InjektModule {
 		addSingletonFactory {
 			GsonBuilder()
 				.setDateFormat(BugtrackerDateFormat.defaultRequestDateFormat().toPattern())
-				.registerTypeAdapterFactory(CollectionTypeAdapterFactory(ConstructorConstructor()))
+				.registerTypeAdapterFactory(MutableListTypeAdapterFactory())
 				.create()
 		}
 
