@@ -83,7 +83,7 @@ class TableTaskStateScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 
-			taskRepository.swapTable(successState.task.id, tableId)
+			taskRepository.moveToTable(successState.task.id, tableId)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue

@@ -32,13 +32,13 @@ object RemoteTableTaskRepository : TableTaskRepository {
 		handleRetrofitRequest { factory.updateTask(task.id, task) }
 
 	override suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit> =
-		handleRetrofitRequest { factory.swapTaskPositions(fId = fId, sId = sId) }
+		handleRetrofitRequest { factory.swapTaskPositions(fId, sId) }
 
 	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> =
 		handleRetrofitRequest { factory.moveTaskPositions(fId, sId) }
 
-	override suspend fun swapTable(id: Long, tableId: Long): Result<Unit> =
-		handleRetrofitRequest { factory.swapTable(id, tableId) }
+	override suspend fun moveToTable(id: Long, tableId: Long): Result<Unit> =
+		handleRetrofitRequest { factory.moveToTable(id, tableId) }
 }
 
 private interface TableTaskRepositoryApi {
@@ -75,8 +75,8 @@ private interface TableTaskRepositoryApi {
 		@Path("sId") sId: Long,
 	): Call<Unit>
 
-	@PATCH("{id}/swapTable/{tableId}")
-	fun swapTable(
+	@PATCH("{id}/moveToTable/{tableId}")
+	fun moveToTable(
 		@Path("id") id: Long,
 		@Path("tableId") tableId: Long,
 	): Call<Unit>

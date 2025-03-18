@@ -21,7 +21,7 @@ object MockTableTaskRepository : TableTaskRepository {
 
 	override suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit> = Result.success(Unit)
 
-	override suspend fun swapTable(id: Long, tableId: Long): Result<Unit> = Result.success(Unit)
+	override suspend fun moveToTable(id: Long, tableId: Long): Result<Unit> = Result.success(Unit)
 
 	private fun mockData() = TableTask(
 		id = 1L,

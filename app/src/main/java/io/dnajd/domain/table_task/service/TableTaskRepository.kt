@@ -48,6 +48,6 @@ interface TableTaskRepository {
 	 * @param tableId id of the table which the task will be moved to
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun swapTable(id: Long, tableId: Long): Result<Unit>
+	suspend fun moveToTable(id: Long, tableId: Long): Result<Unit>
 
 }
