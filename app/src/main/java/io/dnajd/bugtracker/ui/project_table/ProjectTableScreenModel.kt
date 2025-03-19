@@ -214,8 +214,7 @@ class ProjectTableScreenModel(
 			val fTask = table.tasks[fIndex]
 			val sTask = table.tasks[sIndex]
 
-			// TODO this is likely broken
-			tableTaskRepository.swapTaskPositions(fTask.id, sTask.id).onFailureWithStackTrace {
+			tableTaskRepository.movePositionTo(fTask.id, sTask.id).onFailureWithStackTrace {
 				// TODO what the hell is this?
 				mutableState.update {
 					successState.copy(
