@@ -29,15 +29,15 @@ object MockProjectTableRepository : ProjectTableRepository {
 
 	override suspend fun deleteById(id: Long): Result<Unit> = Result.success(Unit)
 
-	private fun mockData(ignoreTasks: Boolean) = ProjectTableListResponse(
+	private fun mockData(includeTasks: Boolean) = ProjectTableListResponse(
 		listOf(
 			ProjectTable(
 				id = 1,
 				title = "Table 1",
 				position = 0,
-				tasks = if (!ignoreTasks) listOf(
+				tasks = if (includeTasks) listOf(
 					TableTaskBasic(
-						id = 1,
+						1,
 						title = "Issue 1",
 						tableId = 1,
 						parentTaskId = null,
@@ -96,7 +96,7 @@ object MockProjectTableRepository : ProjectTableRepository {
 				id = 2,
 				title = "Table 2",
 				position = 1,
-				tasks = if (!ignoreTasks) listOf(
+				tasks = if (!includeTasks) listOf(
 					TableTaskBasic(
 						id = 5,
 						title = "Issue 5",
