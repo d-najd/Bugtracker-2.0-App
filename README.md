@@ -8,16 +8,11 @@ Link to the backend can be found [here](https://github.com/d-najd/Bugtracker-2.0
 
 <table>
     <tr>
-        <th>Project Screen</th>
         <th>Tasks Screen</th>
         <th>Task Screen</th>
         <th>Task Screen</th>
     </tr>
     <tr>
-        <td>
-
-![Project Screen](github-media/Project-Screen.jpg)
-</td>
 <td>
 
 ![Tasks Screen](github-media/Tasks-Screen.jpg)
@@ -35,10 +30,16 @@ Link to the backend can be found [here](https://github.com/d-najd/Bugtracker-2.0
 
 <table>
     <tr>
+        <th>Project Screen</th>
         <th>User Management Screen</th>
         <th>Project Details Screen</th>
     </tr>
 <tr>
+<td>
+
+![Project Screen](github-media/Project-Screen.jpg)
+</td>
+
 <td>
 
 ![User Management Screen](github-media/Permissions-Screen.jpg)
