@@ -70,7 +70,6 @@ fun AuthContentOAuth(
 			},
 		)
 
-
 		var authReady by remember { mutableStateOf(false) }
 		LaunchedEffect(Unit) {
 			GoogleAuthProvider.create(

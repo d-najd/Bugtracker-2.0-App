@@ -13,6 +13,7 @@ import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.utils.JwtAuthenticator
 import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
@@ -36,6 +37,7 @@ class DomainModule : InjektModule {
 		addSingletonFactory {
 			OkHttpClient.Builder()
 				.addInterceptor(loggingInterceptor)
+				.authenticator(JwtAuthenticator())
 				.build()
 		}
 

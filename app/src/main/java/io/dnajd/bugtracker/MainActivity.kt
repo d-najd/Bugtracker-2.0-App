@@ -13,8 +13,8 @@ class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		Injekt.importModule(DomainModule())
 		Injekt.importModule(MainActivityModule(this))
+		Injekt.importModule(DomainModule())
 
 		setContent {
 			BugtrackerTheme {

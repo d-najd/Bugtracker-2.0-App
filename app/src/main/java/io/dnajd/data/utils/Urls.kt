@@ -6,6 +6,8 @@ object Urls {
 	const val PROJECT: String = BASE + "project/"
 	const val PROJECT_TABLE: String = BASE + "project-table/"
 	const val PROJECT_TABLE_ISSUE: String = BASE + "project-table-issue/"
+	const val GOOGLE_AUTH: String = BASE + "google_auth"
+	const val JWT_AUTH: String = BASE + "jwt_auth"
 }
 
 /*
