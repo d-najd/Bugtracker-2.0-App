@@ -43,6 +43,7 @@
     <string name="info_comment_first">Be the first to comment</string>
     <string name="loading">Loading</string>
     <string name="info_pick_username">Pick username</string>
+    <string name="info_log_in_to_app">Log in to Bug Tracker</string>
 
     <!-- error -->
     <string name="error_password_do_not_match">Passwords don\'t match</string>
@@ -104,5 +105,8 @@
     <string name="error_failed_to_show_sheet">Failed to show sheet</string>
     <string name="error_failed_tor_retrieve_user_authorities">Failed to retrieve user authorities</string>
     <string name="error_failed_to_create_user_authority">Failed to create user authority</string>
+    <string name="field_sign_up_google">Sign up with Google</string>
+    <string name="field_sign_in_google">Sign in with Google</string>
+    <string name="field_or">or</string>
 
 </resources>

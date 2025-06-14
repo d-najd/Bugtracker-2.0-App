@@ -1,7 +1,6 @@
 package io.dnajd.presentation.auth
 
 import AuthContentPickUsername
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,11 +21,10 @@ fun AuthScreenContent(
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(contentPadding),
-			verticalArrangement = Arrangement.Center,
 		) {
 			when (screenState) {
 				AuthScreenState.SignedOut -> {
-					AuthContentOAuth()
+					AuthContentOAuth(contentPadding)
 				}
 
 				AuthScreenState.PickingUsername -> {
