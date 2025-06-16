@@ -95,4 +95,6 @@ dependencies {
 
     implementation "com.squareup.logcat:logcat:0.1"
     implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"
+
+    implementation 'com.auth0.android:jwtdecode:2.0.2'
 }

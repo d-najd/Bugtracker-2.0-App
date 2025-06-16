@@ -1,5 +1,6 @@
 package io.dnajd.domain.jwt_auth.service
 
+import com.auth0.android.jwt.JWT
 import io.dnajd.domain.auth.model.JwtTokenHolder
 
 interface JwtAuthPreferenceStore {
@@ -30,13 +31,15 @@ interface JwtAuthPreferenceStore {
 	 * Replaces available tokens, by default ignores tokens that are null
 	 */
 	fun storeTokenHolder(tokenHolder: JwtTokenHolder): Result<Unit> {
-		if (tokenHolder.access != null) {
-			storeAccessToken(tokenHolder.access).onFailure {
+		val access = tokenHolder.access()
+		val refresh = tokenHolder.refresh()
+		if (access != null) {
+			storeAccessToken(access).onFailure {
 				return Result.failure(it)
 			}
 		}
-		if (tokenHolder.refresh != null) {
-			storeRefreshToken(tokenHolder.refresh).onFailure {
+		if (refresh != null) {
+			storeRefreshToken(refresh).onFailure {
 				return Result.failure(it)
 			}
 		}
@@ -46,20 +49,20 @@ interface JwtAuthPreferenceStore {
 	/**
 	 * Replaces the access token
 	 */
-	fun storeAccessToken(token: String): Result<Unit>
+	fun storeAccessToken(token: JWT): Result<Unit>
 
 	/**
 	 * Retrieves the access token or returns null if there is none stored
 	 */
-	fun retrieveAccessToken(): Result<String?>
+	fun retrieveAccessToken(): Result<JWT?>
 
 	/**
 	 * Replaces the refresh token
 	 */
-	fun storeRefreshToken(token: String): Result<Unit>
+	fun storeRefreshToken(token: JWT): Result<Unit>
 
 	/**
 	 * Retrieves the refresh token or returns null if there is none stored
 	 */
-	fun retrieveRefreshToken(): Result<String?>
+	fun retrieveRefreshToken(): Result<JWT?>
 }

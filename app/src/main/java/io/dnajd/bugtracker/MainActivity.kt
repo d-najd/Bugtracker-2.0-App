@@ -7,7 +7,9 @@ import cafe.adriel.voyager.navigator.Navigator
 import io.dnajd.bugtracker.theme.BugtrackerTheme
 import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.domain.DomainModule
+import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,9 +18,14 @@ class MainActivity : ComponentActivity() {
 		Injekt.importModule(MainActivityModule(this))
 		Injekt.importModule(DomainModule())
 
+		val tokenStore: JwtAuthPreferenceStore = Injekt.get()
+		val tokenHolder = tokenStore
+			.retrieveTokenHolder()
+			.getOrThrow()
+
 		setContent {
 			BugtrackerTheme {
-				Navigator(ProjectScreen)				// Navigator(AuthScreen)                // Navigator(ProjectScreen)
+				Navigator(ProjectScreen)                // Navigator(AuthScreen)                // Navigator(ProjectScreen)
 
 				/*
 				val projectFake = Project(
