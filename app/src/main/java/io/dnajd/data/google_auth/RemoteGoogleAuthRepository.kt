@@ -1,11 +1,9 @@
 package io.dnajd.data.google_auth
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.auth.model.JwtTokenHolder
 import io.dnajd.domain.google_auth.model.CreateUser
 import io.dnajd.domain.google_auth.service.GoogleAuthRepository
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,18 +19,16 @@ object RemoteGoogleAuthRepository : GoogleAuthRepository {
 		.build()
 		.create(GoogleAuthRepositoryApi::class.java)
 
-	override fun googleSignIn(googleToken: String): Result<JwtTokenHolder> =
-		handleRetrofitRequest { factory.googleSignIn("Bearer $googleToken") }
+	override suspend fun googleSignIn(googleToken: String): Result<JwtTokenHolder> =
+		factory.googleSignIn("Bearer $googleToken")
 
-	override fun googleSignUp(
+	override suspend fun googleSignUp(
 		googleToken: String,
 		userInfo: CreateUser,
-	): Result<JwtTokenHolder> = handleRetrofitRequest {
-		factory.googleSignUp(
-			"Bearer $googleToken",
-			userInfo
-		)
-	}
+	): Result<JwtTokenHolder> = factory.googleSignUp(
+		"Bearer $googleToken",
+		userInfo
+	)
 }
 
 private interface GoogleAuthRepositoryApi {
@@ -40,16 +36,16 @@ private interface GoogleAuthRepositoryApi {
 	 * @param authHeader should be the google OAuth 2.0 token like "Bearer $[authHeader]"
 	 */
 	@GET("./")
-	fun googleSignIn(
+	suspend fun googleSignIn(
 		@Header("Authorization") authHeader: String,
-	): Call<JwtTokenHolder>
+	): Result<JwtTokenHolder>
 
 	/**
 	 * @param authHeader should be the google OAuth 2.0 token like "Bearer $[authHeader]"
 	 */
 	@POST("./")
-	fun googleSignUp(
+	suspend fun googleSignUp(
 		@Header("Authorization") authHeader: String,
 		@Body userInfo: CreateUser,
-	): Call<JwtTokenHolder>
+	): Result<JwtTokenHolder>
 }

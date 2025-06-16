@@ -1,6 +1,7 @@
 package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
+import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import io.dnajd.data.google_auth.RemoteGoogleAuthRepository
 import io.dnajd.data.project.MockProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
@@ -10,12 +11,12 @@ import io.dnajd.data.table_task.MockTableTaskRepository
 import io.dnajd.data.table_task.RemoteTableTaskRepository
 import io.dnajd.data.user_authority.MockUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
+import io.dnajd.data.utils.JwtAuthenticator
 import io.dnajd.domain.google_auth.service.GoogleAuthRepository
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
-import io.dnajd.domain.utils.JwtAuthenticator
 import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
@@ -59,6 +60,7 @@ class DomainModule : InjektModule {
 			Retrofit
 				.Builder()
 				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))
+				.addCallAdapterFactory(ResultCallAdapterFactory.create())
 				.client(Injekt.get<OkHttpClient>())
 		}
 

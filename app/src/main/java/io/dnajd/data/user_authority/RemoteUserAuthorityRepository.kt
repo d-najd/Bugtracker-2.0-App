@@ -1,10 +1,8 @@
 package io.dnajd.data.user_authority
 
-import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -18,40 +16,32 @@ object RemoteUserAuthorityRepository : UserAuthorityRepository {
 	private val factory: UserAuthorityRepositoryApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl("")
-		.build()        // .baseUrl(/* baseUrl = */ "${Urls.USER_AUTHORITY.getAppendedUrl()}/").build()
+		.build()
 		.create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
-		handleRetrofitRequest { factory.get(projectId) }
+		factory.get(projectId)
 
 	override suspend fun create(userAuthority: UserAuthority): Result<UserAuthority> =
-		handleRetrofitRequest { factory.create(userAuthority) }
+		factory.create(userAuthority)
 
 	override suspend fun delete(userAuthority: UserAuthority): Result<Unit> =
-		handleRetrofitRequest { factory.delete(userAuthority) }
+		factory.delete(userAuthority)
 }
 
 private interface UserAuthorityRepositoryApi {
 	@GET("projectId/{projectId}")
-	fun get(
+	suspend fun get(
 		@Path("projectId") projectId: Long,
-	): Call<UserAuthorityListResponse>
+	): Result<UserAuthorityListResponse>
 
-	// @POST(Urls.USER_AUTHORITY.appendedUrlLocal)
 	@POST("./")
-	fun create(
+	suspend fun create(
 		@Body userAuthority: UserAuthority,
-	): Call<UserAuthority>
+	): Result<UserAuthority>
 
-	/*
-	@HTTP(
-		method = "DELETE",
-		path = Urls.USER_AUTHORITY.appendedUrlLocal,
-		hasBody = true,
-	)
-	 */
 	@DELETE("./")
-	fun delete(
+	suspend fun delete(
 		@Body userAuthority: UserAuthority,
-	): Call<Unit>
+	): Result<Unit>
 }

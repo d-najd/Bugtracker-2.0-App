@@ -94,4 +94,5 @@ dependencies {
     implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
 
     implementation "com.squareup.logcat:logcat:0.1"
+    implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"
 }

@@ -7,12 +7,12 @@ interface GoogleAuthRepository {
 	/**
 	 * @param googleToken Should be only the token itself
 	 */
-	fun googleSignIn(googleToken: String): Result<JwtTokenHolder>
+	suspend fun googleSignIn(googleToken: String): Result<JwtTokenHolder>
 
 	/**
 	 * @param googleToken Should be only the token itself
 	 */
-	fun googleSignUp(
+	suspend fun googleSignUp(
 		googleToken: String,
 		userDto: CreateUser,
 	): Result<JwtTokenHolder>

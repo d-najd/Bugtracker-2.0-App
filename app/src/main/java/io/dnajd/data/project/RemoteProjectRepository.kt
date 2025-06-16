@@ -1,11 +1,9 @@
 package io.dnajd.data.project
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
 import io.dnajd.domain.project.service.ProjectRepository
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -24,45 +22,41 @@ object RemoteProjectRepository : ProjectRepository {
 		.create(ProjectRepositoryApi::class.java)
 
 	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
-		handleRetrofitRequest { factory.getAllByUsername() }
+		factory.getAllByUsername()
 
-	override suspend fun getById(id: Long): Result<Project> =
-		handleRetrofitRequest { factory.getById(id) }
+	override suspend fun getById(id: Long): Result<Project> = factory.getById(id)
 
 	override suspend fun createProject(project: Project): Result<Project> =
-		handleRetrofitRequest { factory.createProject(project) }
+		factory.createProject(project)
 
 	override suspend fun updateProject(
 		project: Project,
-	): Result<Project> = handleRetrofitRequest {
-		factory.updateProject(
-			project.id,
-			project
-		)
-	}
+	): Result<Project> = factory.updateProject(
+		project.id,
+		project
+	)
 
-	override suspend fun deleteById(id: Long): Result<Unit> =
-		handleRetrofitRequest { factory.deleteById(id) }
+	override suspend fun deleteById(id: Long): Result<Unit> = factory.deleteById(id)
 }
 
 interface ProjectRepositoryApi {
 	@GET("allByUsername")
-	fun getAllByUsername(
+	suspend fun getAllByUsername(
 		// @Header("Authorization") authTest: String = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiaXNzIjoiZC1uYWpkLmJ1Z3RyYWNrZXIuYmFja2VuZCIsImF1ZCI6ImQtbmFqZC5idWd0cmFja2VyLmFuZHJvaWQiLCJzdWIiOiJkaW10aHJvdzEyMyIsImlhdCI6MTc0OTc2MTQ0NiwiZXhwIjoyMDY1MTIxNDQ2fQ.zcSuluRriiRxa6MMp6xIisulwKyI1S1pJajqaHFNQa1bxMBWlY3UzviYoXVyq13ZvXg4X9yO-0Lu-_bPWrYljA",
-	): Call<ProjectListResponse>
+	): Result<ProjectListResponse>
 
 	@GET("{id}")
-	fun getById(@Path("id") id: Long): Call<Project>
+	suspend fun getById(@Path("id") id: Long): Result<Project>
 
 	@POST("./")
-	fun createProject(@Body project: Project): Call<Project>
+	suspend fun createProject(@Body project: Project): Result<Project>
 
 	@PUT("{id}")
-	fun updateProject(
+	suspend fun updateProject(
 		@Path("id") id: Long,
 		@Body project: Project,
-	): Call<Project>
+	): Result<Project>
 
 	@DELETE("{id}")
-	fun deleteById(@Path("id") id: Long): Call<Unit>
+	suspend fun deleteById(@Path("id") id: Long): Result<Unit>
 }

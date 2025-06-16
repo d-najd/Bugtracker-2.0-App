@@ -1,6 +1,7 @@
-package io.dnajd.domain.utils
+package io.dnajd.data.utils
 
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import okhttp3.Interceptor
 import okhttp3.Response
 import uy.kohesive.injekt.Injekt

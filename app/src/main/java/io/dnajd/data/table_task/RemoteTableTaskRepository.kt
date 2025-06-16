@@ -1,10 +1,8 @@
 package io.dnajd.data.table_task
 
 import io.dnajd.data.utils.Urls
-import io.dnajd.data.utils.handleRetrofitRequest
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskRepository
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -23,91 +21,80 @@ object RemoteTableTaskRepository : TableTaskRepository {
 		.build()
 		.create(TableTaskRepositoryApi::class.java)
 
-	override suspend fun getById(id: Long): Result<TableTask> =
-		handleRetrofitRequest { factory.getById(id) }
+	override suspend fun getById(id: Long): Result<TableTask> = factory.getById(id)
 
-	override suspend fun createTask(task: TableTask): Result<TableTask> = handleRetrofitRequest {
-		factory.createTask(
-			task.tableId,
-			task
-		)
-	}
+	override suspend fun createTask(task: TableTask): Result<TableTask> = factory.createTask(
+		task.tableId,
+		task
+	)
 
-	override suspend fun updateTask(task: TableTask): Result<TableTask> = handleRetrofitRequest {
-		factory.updateTask(
-			task.id,
-			task
-		)
-	}
+	override suspend fun updateTask(task: TableTask): Result<TableTask> = factory.updateTask(
+		task.id,
+		task
+	)
 
 	override suspend fun swapTaskPositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = handleRetrofitRequest {
-		factory.swapTaskPositions(
-			fId,
-			sId
-		)
-	}
+	): Result<Unit> = factory.swapTaskPositions(
+		fId,
+		sId
+	)
 
 	override suspend fun movePositionTo(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = handleRetrofitRequest {
-		factory.moveTaskPositions(
-			fId,
-			sId
-		)
-	}
+	): Result<Unit> = factory.moveTaskPositions(
+		fId,
+		sId
+	)
 
 	override suspend fun moveToTable(
 		id: Long,
 		tableId: Long,
-	): Result<Unit> = handleRetrofitRequest {
-		factory.moveToTable(
-			id,
-			tableId
-		)
-	}
+	): Result<Unit> = factory.moveToTable(
+		id,
+		tableId
+	)
 }
 
 private interface TableTaskRepositoryApi {
 	@GET("{id}")
-	fun getById(
+	suspend fun getById(
 		@Path("id") id: Long,
 		@Query("includeChildIssues") includeChildTasks: Boolean = true,
 		@Query("includeAssigned") includeAssigned: Boolean = true,
 		@Query("includeComments") includeComments: Boolean = true,
 		@Query("includeLabels") includeLabels: Boolean = true,
-	): Call<TableTask>
+	): Result<TableTask>
 
 	@POST("tableId/{tableId}")
-	fun createTask(
+	suspend fun createTask(
 		@Path("tableId") tableId: Long,
 		@Body task: TableTask,
-	): Call<TableTask>
+	): Result<TableTask>
 
 	@PUT("{id}")
-	fun updateTask(
+	suspend fun updateTask(
 		@Path("id") id: Long,
 		@Body task: TableTask,
-	): Call<TableTask>
+	): Result<TableTask>
 
 	@PATCH("{fId}/swapPositionWith/{sId}")
-	fun swapTaskPositions(
+	suspend fun swapTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Call<Unit>
+	): Result<Unit>
 
 	@PATCH("{fId}/movePositionTo/{sId}")
-	fun moveTaskPositions(
+	suspend fun moveTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Call<Unit>
+	): Result<Unit>
 
 	@PATCH("{id}/moveToTable/{tableId}")
-	fun moveToTable(
+	suspend fun moveToTable(
 		@Path("id") id: Long,
 		@Path("tableId") tableId: Long,
-	): Call<Unit>
+	): Result<Unit>
 }
