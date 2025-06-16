@@ -83,7 +83,7 @@ class ProjectScreenModel(
 sealed class ProjectScreenState {
 
 	@Immutable
-	object Loading : ProjectScreenState()
+	data object Loading : ProjectScreenState()
 
 	@Immutable
 	data class Success(
@@ -99,6 +99,8 @@ sealed class ProjectDialog {
 sealed class ProjectEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectEvent()
 
-	object FailedToRetrieveProjects : LocalizedMessage(R.string.error_failed_to_retrieve_projects)
-	object FailedToCreateProject : LocalizedMessage(R.string.error_failed_to_create_project)
+	data object FailedToRetrieveProjects :
+		LocalizedMessage(R.string.error_failed_to_retrieve_projects)
+
+	data object FailedToCreateProject : LocalizedMessage(R.string.error_failed_to_create_project)
 }

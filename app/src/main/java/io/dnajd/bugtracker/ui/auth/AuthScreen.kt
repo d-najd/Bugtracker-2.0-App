@@ -11,7 +11,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.presentation.auth.AuthScreenContent
-import io.dnajd.presentation.components.LoadingScreen
 import kotlinx.coroutines.flow.collectLatest
 
 object AuthScreen : Screen {
@@ -34,12 +33,8 @@ object AuthScreen : Screen {
 		}
 
 		val state by screenModel.state.collectAsState()
+		val successState = state as AuthScreenState.Success
 
-		if (state is AuthScreenState.Loading) {
-			LoadingScreen()
-			return
-		}
-
-		AuthScreenContent(state)
+		AuthScreenContent(successState)
 	}
 }

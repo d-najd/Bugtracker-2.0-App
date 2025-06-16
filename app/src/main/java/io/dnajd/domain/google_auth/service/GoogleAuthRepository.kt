@@ -1,6 +1,7 @@
 package io.dnajd.domain.google_auth.service
 
 import io.dnajd.domain.auth.model.JwtTokenHolder
+import io.dnajd.domain.google_auth.model.CreateUser
 
 interface GoogleAuthRepository {
 	/**
@@ -11,5 +12,5 @@ interface GoogleAuthRepository {
 	/**
 	 * @param googleToken Should be only the token itself
 	 */
-	fun googleSignUp(googleToken: String): Result<JwtTokenHolder>
+	fun googleSignUp(googleToken: String, userDto: CreateUser): Result<JwtTokenHolder>
 }
