@@ -27,8 +27,7 @@ fun AddUserToProjectDialog(
 
 	onConfirmClicked: (UserAuthority) -> Unit,
 ) {
-	var username by remember { mutableStateOf("") }
-	// val authorities = mutableListOf<UserAuthorityType>()
+	var username by remember { mutableStateOf("") }    // val authorities = mutableListOf<UserAuthorityType>()
 
 	AlertDialog(
 		onDismissRequest = { onDismissRequest() },

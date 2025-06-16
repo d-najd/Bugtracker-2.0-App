@@ -11,10 +11,22 @@ import java.util.Date
 fun Date.toStartOfDay(): Date {
 	val date = Calendar.getInstance()
 	date.time = this
-	date.set(Calendar.HOUR_OF_DAY, 0)
-	date.set(Calendar.MINUTE, 0)
-	date.set(Calendar.SECOND, 0)
-	date.set(Calendar.MILLISECOND, 0)
+	date.set(
+		Calendar.HOUR_OF_DAY,
+		0
+	)
+	date.set(
+		Calendar.MINUTE,
+		0
+	)
+	date.set(
+		Calendar.SECOND,
+		0
+	)
+	date.set(
+		Calendar.MILLISECOND,
+		0
+	)
 
 	return date.time
 }
@@ -27,10 +39,22 @@ fun Date.toStartOfDay(): Date {
 fun Date.toEndOfDay(): Date {
 	val date = Calendar.getInstance()
 	date.time = this
-	date.set(Calendar.HOUR_OF_DAY, 23)
-	date.set(Calendar.MINUTE, 59)
-	date.set(Calendar.SECOND, 59)
-	date.set(Calendar.MILLISECOND, 999)
+	date.set(
+		Calendar.HOUR_OF_DAY,
+		23
+	)
+	date.set(
+		Calendar.MINUTE,
+		59
+	)
+	date.set(
+		Calendar.SECOND,
+		59
+	)
+	date.set(
+		Calendar.MILLISECOND,
+		999
+	)
 
 	return date.time
 }

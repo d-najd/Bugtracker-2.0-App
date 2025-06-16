@@ -18,13 +18,16 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 			) {
 				if (response.isSuccessful) {
 					callback.onResponse(
-						this@ResultCall, Response.success(
-							response.code(), Result.success(response.body()!!)
+						this@ResultCall,
+						Response.success(
+							response.code(),
+							Result.success(response.body()!!)
 						)
 					)
 				} else {
 					callback.onResponse(
-						this@ResultCall, Response.success(
+						this@ResultCall,
+						Response.success(
 							Result.failure(
 								HttpException(response)
 							)
@@ -44,7 +47,14 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 				}
 				callback.onResponse(
 					this@ResultCall,
-					Response.success(Result.failure(RuntimeException(errorMessage, t)))
+					Response.success(
+						Result.failure(
+							RuntimeException(
+								errorMessage,
+								t
+							)
+						)
+					)
 				)
 			}
 		})
@@ -57,7 +67,8 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 	override fun execute(): Response<Result<T>> {
 		return Response.success(
 			Result.success(
-				delegate.execute()
+				delegate
+					.execute()
 					.body()!!
 			)
 		)

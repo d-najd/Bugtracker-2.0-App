@@ -58,7 +58,10 @@ fun TableTaskChildIssuesField(
 					)
 
 					Icon(
-						modifier = Modifier.padding(start = 3.dp, end = 4.dp),
+						modifier = Modifier.padding(
+							start = 3.dp,
+							end = 4.dp
+						),
 						tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 						imageVector = Icons.Default.ArrowDropDown,
 						contentDescription = ""
@@ -68,32 +71,35 @@ fun TableTaskChildIssuesField(
 		},
 		expandableContent = {
 			for (childTask in state.task.childTasks) {
-				BugtrackerIconPairField(modifier = Modifier.padding(top = 6.dp), iconContent = {
-					Icon(
-						imageVector = Icons.Default.TaskAlt,
-						contentDescription = "",
-					)
-				}, textContent = {
-					Text(text = childTask.title)
-					Row(
-						verticalAlignment = Alignment.CenterVertically,
-					) {
-						Text(
-							text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
-							color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+				BugtrackerIconPairField(
+					modifier = Modifier.padding(top = 6.dp),
+					iconContent = {
+						Icon(
+							imageVector = Icons.Default.TaskAlt,
+							contentDescription = "",
 						)
-						Text(
-							text = " = ",
-							color = colorResource(R.color.coral),
-							fontFamily = FontFamily.SansSerif,
-							fontSize = 26.sp,
-						)
-						Text(
-							text = "INSERT TABLE NAME",
-							color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-						)
-					}
-				})
+					},
+					textContent = {
+						Text(text = childTask.title)
+						Row(
+							verticalAlignment = Alignment.CenterVertically,
+						) {
+							Text(
+								text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
+								color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+							)
+							Text(
+								text = " = ",
+								color = colorResource(R.color.coral),
+								fontFamily = FontFamily.SansSerif,
+								fontSize = 26.sp,
+							)
+							Text(
+								text = "INSERT TABLE NAME",
+								color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+							)
+						}
+					})
 			}
 		})
 }

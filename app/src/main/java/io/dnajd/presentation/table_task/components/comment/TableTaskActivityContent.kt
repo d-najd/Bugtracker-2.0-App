@@ -32,7 +32,8 @@ fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 			text = "${stringResource(R.string.field_activity)}:",
 		)
 		Row(
-			horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
+			horizontalArrangement = Arrangement.End,
+			modifier = Modifier.fillMaxWidth()
 		) {
 			Text(
 				text = stringResource(R.string.field_comments),

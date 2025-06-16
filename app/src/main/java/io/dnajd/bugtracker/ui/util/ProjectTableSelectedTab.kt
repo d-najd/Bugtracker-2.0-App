@@ -7,7 +7,8 @@ import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreen
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
 
 enum class ProjectTableSelectedTab(@StringRes val titleResId: Int) {
-	BOARD(R.string.action_board), SETTINGS(R.string.action_settings),
+	BOARD(R.string.action_board),
+	SETTINGS(R.string.action_settings),
 }
 
 // TODO see if this can be refactored or something

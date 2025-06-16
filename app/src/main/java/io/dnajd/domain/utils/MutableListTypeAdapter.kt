@@ -18,7 +18,10 @@ class MutableListTypeAdapter<T>(private val delegate: TypeAdapter<MutableList<T>
 		out: JsonWriter?,
 		value: MutableList<T>?,
 	) {
-		delegate?.write(out, value)
+		delegate?.write(
+			out,
+			value
+		)
 	}
 
 	@Throws(IOException::class)
@@ -36,7 +39,10 @@ internal class MutableListTypeAdapterFactory : TypeAdapterFactory {
 		gson: Gson,
 		type: TypeToken<T>,
 	): TypeAdapter<T>? {
-		val delegate = gson.getDelegateAdapter(this, type)
+		val delegate = gson.getDelegateAdapter(
+			this,
+			type
+		)
 		val rawType = type.rawType as? Class<T>
 		return when (rawType) {
 			List::class.java -> {

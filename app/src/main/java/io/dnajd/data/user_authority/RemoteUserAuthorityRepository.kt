@@ -15,10 +15,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteUserAuthorityRepository : UserAuthorityRepository {
-	private val factory: UserAuthorityRepositoryApi = Injekt.get<Retrofit.Builder>()
+	private val factory: UserAuthorityRepositoryApi = Injekt
+		.get<Retrofit.Builder>()
 		.baseUrl("")
-		.build()
-		// .baseUrl(/* baseUrl = */ "${Urls.USER_AUTHORITY.getAppendedUrl()}/").build()
+		.build()        // .baseUrl(/* baseUrl = */ "${Urls.USER_AUTHORITY.getAppendedUrl()}/").build()
 		.create(UserAuthorityRepositoryApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =

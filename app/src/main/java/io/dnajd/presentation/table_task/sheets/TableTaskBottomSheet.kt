@@ -36,11 +36,15 @@ fun TableTaskBottomSheetContent(
 	if (!tablesSorted.remove(tablesSorted.find { it.id == curTable.id })) {
 		throw IllegalStateException()
 	}
-	tablesSorted.add(0, curTable)
+	tablesSorted.add(
+		0,
+		curTable
+	)
 
 	for (table in tablesSorted) {
 		SheetItem(
-			title = table.title, onClick = { onChangeTableClicked(table.id) })
+			title = table.title,
+			onClick = { onChangeTableClicked(table.id) })
 	}
 
 }

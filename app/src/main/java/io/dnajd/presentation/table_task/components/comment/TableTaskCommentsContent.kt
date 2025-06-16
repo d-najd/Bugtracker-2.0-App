@@ -25,7 +25,10 @@ import java.util.Date
 fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
 	for (comment in state.task.comments) {
 		BugtrackerIconPairField(
-			modifier = Modifier.padding(top = 12.dp, bottom = 3.dp),
+			modifier = Modifier.padding(
+				top = 12.dp,
+				bottom = 3.dp
+			),
 			iconContent = {
 				Icon(
 					modifier = Modifier.size(30.dp),

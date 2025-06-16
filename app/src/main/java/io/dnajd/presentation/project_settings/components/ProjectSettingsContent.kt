@@ -45,9 +45,10 @@ fun ProjectSettingsItem(
 	title: String,
 	onClick: () -> Unit,
 ) {
-	Column(modifier = Modifier
-		.clickable { onClick() }
-		.fillMaxWidth()) {
+	Column(
+		modifier = Modifier
+			.clickable { onClick() }
+			.fillMaxWidth()) {
 		Row(
 			modifier = Modifier
 				.padding(vertical = 16.dp)

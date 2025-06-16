@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import cafe.adriel.voyager.navigator.Navigator
 import io.dnajd.bugtracker.theme.BugtrackerTheme
-import io.dnajd.bugtracker.ui.auth.AuthScreen
+import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.domain.DomainModule
 import uy.kohesive.injekt.Injekt
 
@@ -18,8 +18,7 @@ class MainActivity : ComponentActivity() {
 
 		setContent {
 			BugtrackerTheme {
-				Navigator(AuthScreen)
-				// Navigator(ProjectScreen)
+				Navigator(ProjectScreen)				// Navigator(AuthScreen)                // Navigator(ProjectScreen)
 
 				/*
 				val projectFake = Project(

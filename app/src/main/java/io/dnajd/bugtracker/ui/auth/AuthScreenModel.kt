@@ -32,7 +32,8 @@ class AuthScreenModel(
 	) = mutex.launchIONoQueue(coroutineScope) {
 		val tokenHolder = googleAuthRepository
 			.googleSignUp(
-				googleOAuthToken, userInfo
+				googleOAuthToken,
+				userInfo
 			)
 			.onFailureWithStackTrace {
 				_events.send(AuthEvent.UserSignUpFailed)

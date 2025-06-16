@@ -26,7 +26,8 @@ class ProjectSettingsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val project = projectRepository.getById(projectId)
+			val project = projectRepository
+				.getById(projectId)
 				.onFailureWithStackTrace {
 					_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
 					return@launchIO
@@ -47,11 +48,9 @@ sealed class ProjectSettingsEvent {
 
 sealed class ProjectSettingsScreenState {
 
-	@Immutable
-	object Loading : ProjectSettingsScreenState()
+	@Immutable object Loading : ProjectSettingsScreenState()
 
-	@Immutable
-	data class Success(
+	@Immutable data class Success(
 		val project: Project,
 	) : ProjectSettingsScreenState()
 }

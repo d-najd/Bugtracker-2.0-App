@@ -55,7 +55,8 @@ fun BugtrackerIconPairField(
 	}
 
 	Column(
-		modifier = modifier, verticalArrangement = Arrangement.Center
+		modifier = modifier,
+		verticalArrangement = Arrangement.Center
 	) {
 		if (title != null) {
 			Text(
@@ -111,33 +112,35 @@ fun BugtrackerIconPairFieldPreview() {
 			)
 		}
 		BugtrackerCard {
-			BugtrackerIconPairField(iconContent = {
-				Icon(
-					imageVector = Icons.Default.TaskAlt,
-					tint = MaterialTheme.colorScheme.primary,
-					contentDescription = ""
-				)
-			}, textContent = {
-				Text(text = "Child Task")
-				Row(
-					verticalAlignment = Alignment.CenterVertically,
-				) {
-					Text(
-						text = "${stringResource(R.string.field_task).uppercase()}-${1}",
-						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+			BugtrackerIconPairField(
+				iconContent = {
+					Icon(
+						imageVector = Icons.Default.TaskAlt,
+						tint = MaterialTheme.colorScheme.primary,
+						contentDescription = ""
 					)
-					Text(
-						text = " = ",
-						color = colorResource(R.color.coral),
-						fontFamily = FontFamily.SansSerif,
-						fontSize = 26.sp,
-					)
-					Text(
-						text = "Table 1",
-						color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-					)
-				}
-			})
+				},
+				textContent = {
+					Text(text = "Child Task")
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+					) {
+						Text(
+							text = "${stringResource(R.string.field_task).uppercase()}-${1}",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+						)
+						Text(
+							text = " = ",
+							color = colorResource(R.color.coral),
+							fontFamily = FontFamily.SansSerif,
+							fontSize = 26.sp,
+						)
+						Text(
+							text = "Table 1",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+						)
+					}
+				})
 		}
 	}
 }

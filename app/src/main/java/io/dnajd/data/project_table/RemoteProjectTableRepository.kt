@@ -19,7 +19,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectTableRepository : ProjectTableRepository {
-	private val factory: ProjectTableRepositoryApi = Injekt.get<Retrofit.Builder>()
+	private val factory: ProjectTableRepositoryApi = Injekt
+		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_TABLE)
 		.build()
 		.create(ProjectTableRepositoryApi::class.java)
@@ -27,25 +28,49 @@ object RemoteProjectTableRepository : ProjectTableRepository {
 	override suspend fun getAllByProjectId(
 		projectId: Long,
 		includeTasks: Boolean,
-	): Result<ProjectTableListResponse> =
-		handleRetrofitRequest { factory.getAllByProjectId(projectId, includeTasks) }
+	): Result<ProjectTableListResponse> = handleRetrofitRequest {
+		factory.getAllByProjectId(
+			projectId,
+			includeTasks
+		)
+	}
 
 	override suspend fun getById(
 		id: Long,
 		includeTasks: Boolean,
-	): Result<ProjectTable> = handleRetrofitRequest { factory.getById(id, includeTasks) }
+	): Result<ProjectTable> = handleRetrofitRequest {
+		factory.getById(
+			id,
+			includeTasks
+		)
+	}
 
 	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		handleRetrofitRequest { factory.createTable(table.projectId, table) }
+		handleRetrofitRequest {
+			factory.createTable(
+				table.projectId,
+				table
+			)
+		}
 
 	override suspend fun updateTable(
 		table: ProjectTable,
-	): Result<ProjectTable> = handleRetrofitRequest { factory.updateTable(table.id, table) }
+	): Result<ProjectTable> = handleRetrofitRequest {
+		factory.updateTable(
+			table.id,
+			table
+		)
+	}
 
 	override suspend fun swapTablePositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = handleRetrofitRequest { factory.swapTablePositions(fId, sId) }
+	): Result<Unit> = handleRetrofitRequest {
+		factory.swapTablePositions(
+			fId,
+			sId
+		)
+	}
 
 	override suspend fun deleteById(id: Long): Result<Unit> =
 		handleRetrofitRequest { factory.deleteById(id) }

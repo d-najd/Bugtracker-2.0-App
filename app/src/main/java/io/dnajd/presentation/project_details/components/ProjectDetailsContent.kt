@@ -94,7 +94,10 @@ fun ProjectDetailsContent(
 		}
 
 		TextButton(
-			modifier = Modifier.padding(start = 4.dp, top = 20.dp),
+			modifier = Modifier.padding(
+				start = 4.dp,
+				top = 20.dp
+			),
 			onClick = { onDeleteProjectClicked() },
 		) {
 			Text(

@@ -56,13 +56,16 @@ private fun BugtrackerPairFieldPreview(
 ) {
 	BugtrackerCard {
 		BugtrackerPairField(
-			key = "key1", value = "value1"
+			key = "key1",
+			value = "value1"
 		)
 		BugtrackerPairField(
-			key = "key2", value = "value2"
+			key = "key2",
+			value = "value2"
 		)
 		BugtrackerPairField(
-			key = "key3", value = "value3"
+			key = "key3",
+			value = "value3"
 		)
 	}
 }

@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.callbackFlow
 class AndroidPreferenceStore(
 	context: Context,
 	private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-		"MyPreferences", Context.MODE_PRIVATE
+		"MyPreferences",
+		Context.MODE_PRIVATE
 	),
 ) : PreferenceStore {
 
@@ -21,42 +22,72 @@ class AndroidPreferenceStore(
 		key: String,
 		defaultValue: String,
 	): Preference<String> {
-		return AndroidPreference.StringPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.StringPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun getLong(
 		key: String,
 		defaultValue: Long,
 	): Preference<Long> {
-		return AndroidPreference.LongPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.LongPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun getInt(
 		key: String,
 		defaultValue: Int,
 	): Preference<Int> {
-		return AndroidPreference.IntPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.IntPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun getFloat(
 		key: String,
 		defaultValue: Float,
 	): Preference<Float> {
-		return AndroidPreference.FloatPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.FloatPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun getBoolean(
 		key: String,
 		defaultValue: Boolean,
 	): Preference<Boolean> {
-		return AndroidPreference.BooleanPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.BooleanPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun getStringSet(
 		key: String,
 		defaultValue: Set<String>,
 	): Preference<Set<String>> {
-		return AndroidPreference.StringSetPrimitive(sharedPreferences, keyFlow, key, defaultValue)
+		return AndroidPreference.StringSetPrimitive(
+			sharedPreferences,
+			keyFlow,
+			key,
+			defaultValue
+		)
 	}
 
 	override fun <T> getObject(

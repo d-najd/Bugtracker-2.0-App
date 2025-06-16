@@ -51,7 +51,10 @@ fun BugtrackerDropdownMenu(
 	text: String,
 	expanded: Boolean,
 	includeDropdownArrow: Boolean = true,
-	offset: DpOffset = DpOffset(0.dp, 0.dp),
+	offset: DpOffset = DpOffset(
+		0.dp,
+		0.dp
+	),
 	onDismissRequest: () -> Unit,
 	onClick: () -> Unit,
 	dropdownContent: @Composable ColumnScope.() -> Unit,

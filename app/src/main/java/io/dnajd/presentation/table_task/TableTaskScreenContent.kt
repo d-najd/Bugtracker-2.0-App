@@ -20,8 +20,7 @@ import io.dnajd.presentation.table_task.components.TableTaskContent
 import io.dnajd.presentation.table_task.sheets.TableTaskBottomSheetContent
 
 @OptIn(
-	ExperimentalMaterial3Api::class,
-	// ExperimentalMaterialApi::class
+	ExperimentalMaterial3Api::class,    // ExperimentalMaterialApi::class
 )
 @Composable
 fun TableTaskScreenContent(
@@ -98,7 +97,7 @@ fun TableTaskScreenContent(
 			)
 		}
 	}
-	 */	/*
+	 */    /*
 	ModalBottomSheetLayout(
 		sheetState = bottomDialogState,
 		sheetBackgroundColor = MaterialTheme.colorScheme.surface,

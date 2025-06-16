@@ -35,7 +35,8 @@ fun ProjectTableContent(
 			.padding(contentPadding)
 			.padding(5.dp),
 	) {
-		for ((index, table) in state.tables.sortedBy { it.position }
+		for ((index, table) in state.tables
+			.sortedBy { it.position }
 			.withIndex()) {
 			ProjectTableCard(
 				state = state,

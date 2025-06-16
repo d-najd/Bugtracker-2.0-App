@@ -39,14 +39,26 @@ object MockTableTaskRepository : TableTaskRepository {
 		severity = 3,
 		position = 0,
 		labels = listOf(
-			ProjectLabel(1L, "Label 1"), ProjectLabel(2L, "Label 2"), ProjectLabel(3L, "Label 3")
+			ProjectLabel(
+				1L,
+				"Label 1"
+			),
+			ProjectLabel(
+				2L,
+				"Label 2"
+			),
+			ProjectLabel(
+				3L,
+				"Label 3"
+			)
 		),
 		childTasks = listOf(
 			TableChildTask(
 				id = 3L,
 				title = "Child Task 1",
 				tableId = 1L,
-			), TableChildTask(
+			),
+			TableChildTask(
 				id = 4L,
 				title = "Child Task 2",
 				tableId = 2L,
@@ -60,7 +72,8 @@ object MockTableTaskRepository : TableTaskRepository {
 			TableTaskAssignee(
 				assignedUsername = "user1",
 				assignerUsername = "user2",
-			), TableTaskAssignee(
+			),
+			TableTaskAssignee(
 				assignedUsername = "user1",
 				assignerUsername = "user1",
 			)
@@ -72,13 +85,15 @@ object MockTableTaskRepository : TableTaskRepository {
 				message = "This is a basic comment",
 				createdAt = Date(Date().time - 3600000),
 				editedAt = null,
-			), TableTaskComment(
+			),
+			TableTaskComment(
 				id = 2L,
 				user = "user1",
 				message = "This is a edited comment",
 				createdAt = Date(Date().time - 3600000),
 				editedAt = Date(Date().time - 1800000),
-			), TableTaskComment(
+			),
+			TableTaskComment(
 				id = 3L,
 				user = "user2",
 				message = "This is a edited comment by another user",

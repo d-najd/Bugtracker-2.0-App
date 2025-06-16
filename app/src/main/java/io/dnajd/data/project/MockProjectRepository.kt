@@ -21,8 +21,20 @@ object MockProjectRepository : ProjectRepository {
 
 	private fun mockData() = ProjectListResponse(
 		listOf(
-			Project(1, "user1", "Example Title", null, Date()),
-			Project(2, "user2", "Title 2", "Example Description", Date())
+			Project(
+				1,
+				"user1",
+				"Example Title",
+				null,
+				Date()
+			),
+			Project(
+				2,
+				"user2",
+				"Title 2",
+				"Example Description",
+				Date()
+			)
 		)
 	)
 }

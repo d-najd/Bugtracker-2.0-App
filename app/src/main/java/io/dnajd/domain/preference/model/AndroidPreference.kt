@@ -38,7 +38,11 @@ sealed class AndroidPreference<T>(
 
 	override fun get(): T {
 		return try {
-			read(preferences, key, defaultValue)
+			read(
+				preferences,
+				key,
+				defaultValue
+			)
 		} catch (e: ClassCastException) {
 			logcat { "Invalid value for $key; deleting" }
 			delete()
@@ -47,7 +51,12 @@ sealed class AndroidPreference<T>(
 	}
 
 	override fun set(value: T) {
-		preferences.edit(action = write(key, value))
+		preferences.edit(
+			action = write(
+				key,
+				value
+			)
+		)
 	}
 
 	override fun isSet(): Boolean {
@@ -65,14 +74,19 @@ sealed class AndroidPreference<T>(
 	}
 
 	override fun changes(): Flow<T> {
-		return keyFlow.filter { it == key || it == null }
+		return keyFlow
+			.filter { it == key || it == null }
 			.onStart { emit("ignition") }
 			.map { get() }
 			.conflate()
 	}
 
 	override fun stateIn(scope: CoroutineScope): StateFlow<T> {
-		return changes().stateIn(scope, SharingStarted.Eagerly, get())
+		return changes().stateIn(
+			scope,
+			SharingStarted.Eagerly,
+			get()
+		)
 	}
 
 	class StringPrimitive(
@@ -80,20 +94,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: String,
-	) : AndroidPreference<String>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<String>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: String,
 		): String {
-			return preferences.getString(key, defaultValue) ?: defaultValue
+			return preferences.getString(
+				key,
+				defaultValue
+			) ?: defaultValue
 		}
 
 		override fun write(
 			key: String,
 			value: String,
 		): Editor.() -> Unit = {
-			putString(key, value)
+			putString(
+				key,
+				value
+			)
 		}
 	}
 
@@ -102,20 +127,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: Long,
-	) : AndroidPreference<Long>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<Long>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: Long,
 		): Long {
-			return preferences.getLong(key, defaultValue)
+			return preferences.getLong(
+				key,
+				defaultValue
+			)
 		}
 
 		override fun write(
 			key: String,
 			value: Long,
 		): Editor.() -> Unit = {
-			putLong(key, value)
+			putLong(
+				key,
+				value
+			)
 		}
 	}
 
@@ -124,20 +160,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: Int,
-	) : AndroidPreference<Int>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<Int>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: Int,
 		): Int {
-			return preferences.getInt(key, defaultValue)
+			return preferences.getInt(
+				key,
+				defaultValue
+			)
 		}
 
 		override fun write(
 			key: String,
 			value: Int,
 		): Editor.() -> Unit = {
-			putInt(key, value)
+			putInt(
+				key,
+				value
+			)
 		}
 	}
 
@@ -146,20 +193,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: Float,
-	) : AndroidPreference<Float>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<Float>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: Float,
 		): Float {
-			return preferences.getFloat(key, defaultValue)
+			return preferences.getFloat(
+				key,
+				defaultValue
+			)
 		}
 
 		override fun write(
 			key: String,
 			value: Float,
 		): Editor.() -> Unit = {
-			putFloat(key, value)
+			putFloat(
+				key,
+				value
+			)
 		}
 	}
 
@@ -168,20 +226,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: Boolean,
-	) : AndroidPreference<Boolean>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<Boolean>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: Boolean,
 		): Boolean {
-			return preferences.getBoolean(key, defaultValue)
+			return preferences.getBoolean(
+				key,
+				defaultValue
+			)
 		}
 
 		override fun write(
 			key: String,
 			value: Boolean,
 		): Editor.() -> Unit = {
-			putBoolean(key, value)
+			putBoolean(
+				key,
+				value
+			)
 		}
 	}
 
@@ -190,20 +259,31 @@ sealed class AndroidPreference<T>(
 		keyFlow: Flow<String?>,
 		key: String,
 		defaultValue: Set<String>,
-	) : AndroidPreference<Set<String>>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<Set<String>>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: Set<String>,
 		): Set<String> {
-			return preferences.getStringSet(key, defaultValue) ?: defaultValue
+			return preferences.getStringSet(
+				key,
+				defaultValue
+			) ?: defaultValue
 		}
 
 		override fun write(
 			key: String,
 			value: Set<String>,
 		): Editor.() -> Unit = {
-			putStringSet(key, value)
+			putStringSet(
+				key,
+				value
+			)
 		}
 	}
 
@@ -214,14 +294,23 @@ sealed class AndroidPreference<T>(
 		defaultValue: T,
 		val serializer: (T) -> String,
 		val deserializer: (String) -> T,
-	) : AndroidPreference<T>(preferences, keyFlow, key, defaultValue) {
+	) : AndroidPreference<T>(
+		preferences,
+		keyFlow,
+		key,
+		defaultValue
+	) {
 		override fun read(
 			preferences: SharedPreferences,
 			key: String,
 			defaultValue: T,
 		): T {
 			return try {
-				preferences.getString(key, null)
+				preferences
+					.getString(
+						key,
+						null
+					)
 					?.let(deserializer) ?: defaultValue
 			} catch (e: Exception) {
 				defaultValue
@@ -232,7 +321,10 @@ sealed class AndroidPreference<T>(
 			key: String,
 			value: T,
 		): Editor.() -> Unit = {
-			putString(key, serializer(value))
+			putString(
+				key,
+				serializer(value)
+			)
 		}
 	}
 }

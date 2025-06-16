@@ -34,7 +34,8 @@ class UserManagementScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val userAuthorities = userAuthorityRepository.getAllByProjectId(projectId)
+			val userAuthorities = userAuthorityRepository
+				.getAllByProjectId(projectId)
 				.onFailureWithStackTrace {
 					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
 					return@launchIO
@@ -83,7 +84,8 @@ class UserManagementScreenModel(
 			throw IllegalArgumentException("Authority already exists")
 		}
 
-		val createdAuthority = userAuthorityRepository.create(userAuthority)
+		val createdAuthority = userAuthorityRepository
+			.create(userAuthority)
 			.onFailureWithStackTrace {
 				_events.send(UserManagementEvent.FailedToCreateUserAuthority)
 				return
@@ -104,7 +106,10 @@ class UserManagementScreenModel(
 		agreed: Boolean = false,
 	) {
 		mutex.launchIONoQueue(coroutineScope) {
-			deleteAuthorityInternal(userAuthority, agreed)
+			deleteAuthorityInternal(
+				userAuthority,
+				agreed
+			)
 		}
 	}
 
@@ -128,7 +133,8 @@ class UserManagementScreenModel(
 			return
 		}
 
-		userAuthorityRepository.delete(userAuthority)
+		userAuthorityRepository
+			.delete(userAuthority)
 			.onFailureWithStackTrace {
 				_events.send(UserManagementEvent.UserAuthorityDoesNotExist)
 				return
@@ -176,11 +182,9 @@ sealed class UserManagementDialog {
 
 sealed class UserManagementScreenState {
 
-	@Immutable
-	object Loading : UserManagementScreenState()
+	@Immutable object Loading : UserManagementScreenState()
 
-	@Immutable
-	data class Success(
+	@Immutable data class Success(
 		val projectId: Long,
 		val authorities: List<UserAuthority>,
 		val dialog: UserManagementDialog? = null,
@@ -189,7 +193,8 @@ sealed class UserManagementScreenState {
 			val authorityMap: UserAuthorityMap = mutableMapOf()
 			for (authority in authorities) {
 				authorityMap.compute(
-					authority.username, BiFunction { _, u ->
+					authority.username,
+					BiFunction { _, u ->
 						val mutableList = u?.toMutableList() ?: mutableListOf()
 						mutableList.add(authority)
 						return@BiFunction mutableList

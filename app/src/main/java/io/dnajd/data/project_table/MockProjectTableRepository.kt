@@ -34,7 +34,10 @@ object MockProjectTableRepository : ProjectTableRepository {
 	private fun mockData(includeTasks: Boolean) = ProjectTableListResponse(
 		listOf(
 			ProjectTable(
-				id = 1, title = "Table 1", position = 0, tasks = if (includeTasks) listOf(
+				id = 1,
+				title = "Table 1",
+				position = 0,
+				tasks = if (includeTasks) listOf(
 					TableTaskBasic(
 						1,
 						title = "Issue 1",

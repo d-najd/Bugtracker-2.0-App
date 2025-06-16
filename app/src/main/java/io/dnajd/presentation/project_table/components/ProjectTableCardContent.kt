@@ -100,7 +100,10 @@ private fun ProjectTableCardContentLocal(
 		modifier = Modifier
 			.fillMaxWidth()
 			.heightIn(min = 65.dp)
-			.padding(vertical = 2.dp, horizontal = 8.dp),
+			.padding(
+				vertical = 2.dp,
+				horizontal = 8.dp
+			),
 	) {
 		var cardModifier = Modifier
 			.fillMaxWidth()
@@ -118,7 +121,11 @@ private fun ProjectTableCardContentLocal(
 		) {
 			if (onValueChange == null) {
 				Text(
-					modifier = Modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp),
+					modifier = Modifier.padding(
+						top = 8.dp,
+						start = 12.dp,
+						end = 12.dp
+					),
 					text = value,
 					maxLines = 2,
 					fontSize = 14.sp,
@@ -127,7 +134,11 @@ private fun ProjectTableCardContentLocal(
 				val focusRequester = remember { FocusRequester() }
 				BasicTextField(
 					modifier = textModifier
-						.padding(top = 8.dp, start = 12.dp, end = 12.dp)
+						.padding(
+							top = 8.dp,
+							start = 12.dp,
+							end = 12.dp
+						)
 						.focusRequester(focusRequester)
 						.onFocusChanged {
 							if (it.isFocused) {
@@ -142,7 +153,8 @@ private fun ProjectTableCardContentLocal(
 					onValueChange = onValueChange,
 					maxLines = 1,
 					textStyle = TextStyle(
-						fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface
+						fontSize = 14.sp,
+						color = MaterialTheme.colorScheme.onSurface
 					),
 					keyboardActions = keyboardActions,
 					keyboardOptions = keyboardOptions,
@@ -157,7 +169,7 @@ private fun ProjectTableCardContentLocal(
 				LaunchedEffect(Unit) {
 					focusRequester.requestFocus()
 				}
-			}			/*
+			}            /*
 			if (labels.isNotEmpty()) {
 				Row(
 					modifier = Modifier

@@ -38,14 +38,19 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		coroutineScope.launchIO {
-			val task = taskRepository.getById(taskId)
+			val task = taskRepository
+				.getById(taskId)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTask)
 					return@launchIO
 				}
 				.getOrThrow()
 
-			val table = projectTableRepository.getById(id = task.tableId, includeTasks = true)
+			val table = projectTableRepository
+				.getById(
+					id = task.tableId,
+					includeTasks = true
+				)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTable)
 					return@launchIO
@@ -70,7 +75,8 @@ class TableTaskStateScreenModel(
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 			val renamedTask = successState.task.copy(description = newDescription)
 
-			val persistedTask = taskRepository.updateTask(renamedTask)
+			val persistedTask = taskRepository
+				.updateTask(renamedTask)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
 					return@launchIONoQueue
@@ -88,13 +94,21 @@ class TableTaskStateScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 
-			taskRepository.moveToTable(successState.task.id, tableId)
+			taskRepository
+				.moveToTable(
+					successState.task.id,
+					tableId
+				)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
 
-			val table = projectTableRepository.getById(id = tableId, includeTasks = true)
+			val table = projectTableRepository
+				.getById(
+					id = tableId,
+					includeTasks = true
+				)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
@@ -121,9 +135,11 @@ class TableTaskStateScreenModel(
 				is TableTaskSheet.BottomSheet -> {
 					val tables = sheet.tables.ifEmpty {
 
-						projectTableRepository.getAllByProjectId(
-							projectId = successState.parentTable.projectId, includeTasks = true
-						)
+						projectTableRepository
+							.getAllByProjectId(
+								projectId = successState.parentTable.projectId,
+								includeTasks = true
+							)
 							.onFailureWithStackTrace {
 								_events.send(TableTaskEvent.FailedToShowSheet)
 								return@launchIONoQueue
@@ -170,11 +186,9 @@ sealed class TableTaskEvent {
 
 sealed class TableTaskScreenState {
 
-	@Immutable
-	data object Loading : TableTaskScreenState()
+	@Immutable data object Loading : TableTaskScreenState()
 
-	@Immutable
-	data class Success(
+	@Immutable data class Success(
 		val task: TableTask,
 		val parentTable: ProjectTable,
 		val sheet: TableTaskSheet? = null,

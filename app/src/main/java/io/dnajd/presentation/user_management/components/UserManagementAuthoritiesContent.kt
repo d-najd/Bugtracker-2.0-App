@@ -59,12 +59,14 @@ fun ProjectUserManagementAuthoritiesContent(
 			) {
 				BugtrackerIconPairField(
 					modifier = Modifier.padding(
-						horizontal = 8.dp, vertical = 10.dp
+						horizontal = 8.dp,
+						vertical = 10.dp
 					),
 					titleContent = {
 						Text(
 							modifier = Modifier.padding(
-								start = 2.dp, bottom = 6.dp
+								start = 2.dp,
+								bottom = 6.dp
 							),
 							text = stringResource(authorityType.titleResId),
 							fontWeight = FontWeight.SemiBold,
@@ -80,7 +82,8 @@ fun ProjectUserManagementAuthoritiesContent(
 					},
 					textContent = {
 						Text(
-							modifier = Modifier.padding(start = 2.dp), text = description
+							modifier = Modifier.padding(start = 2.dp),
+							text = description
 						)
 					},
 				)

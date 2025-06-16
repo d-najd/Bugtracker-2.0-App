@@ -63,7 +63,10 @@ fun ProjectTableCard(
 	Card(
 		modifier = Modifier
 			.width(333.dp)
-			.padding(start = 8.dp, top = 4.dp),
+			.padding(
+				start = 8.dp,
+				top = 4.dp
+			),
 	) {
 		ProjectTableCardTop(
 			modifier = Modifier.fillMaxWidth(),
@@ -76,13 +79,16 @@ fun ProjectTableCard(
 			onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
 		)
 
-		var reorderableList by remember { mutableStateOf(table.tasks) }
-		// a list is being stored in case the user moves multiple table items
+		var reorderableList by remember { mutableStateOf(table.tasks) }        // a list is being stored in case the user moves multiple table items
 		val reorderableState = rememberReorderableLazyListState(
 			onMove = { from, to ->
-				reorderableList = reorderableList.toMutableList()
+				reorderableList = reorderableList
+					.toMutableList()
 					.apply {
-						add(to.index, removeAt(from.index))
+						add(
+							to.index,
+							removeAt(from.index)
+						)
 					}
 			},
 			onDragEnd = { from, to ->
@@ -116,8 +122,13 @@ fun ProjectTableCard(
 				.reorderable(reorderableState)
 				.heightIn(max = 2000.dp)
 		) {
-			items(reorderableList, { task -> task.id }) { task ->
-				ReorderableItem(reorderableState = reorderableState, key = task.id) { isDragging ->
+			items(
+				reorderableList,
+				{ task -> task.id }) { task ->
+				ReorderableItem(
+					reorderableState = reorderableState,
+					key = task.id
+				) { isDragging ->
 					ProjectTableCardContent(
 						value = task.title,
 						labels = task.labels.map { it.label },
@@ -132,7 +143,12 @@ fun ProjectTableCard(
 
 		ProjectTableCardBottom(
 			modifier = Modifier
-				.padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+				.padding(
+					top = 8.dp,
+					bottom = 8.dp,
+					start = 8.dp,
+					end = 8.dp
+				)
 				.fillMaxWidth(),
 			state = state,
 			table = table,
@@ -155,7 +171,8 @@ private fun ProjectTableCardTop(
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
 	Row(
-		modifier = modifier, verticalAlignment = Alignment.CenterVertically
+		modifier = modifier,
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
 			modifier = Modifier.padding(start = 8.dp),
@@ -208,43 +225,57 @@ private fun ProjectTableDropdownMenu(
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
 	Column(
-		horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()
+		horizontalAlignment = Alignment.End,
+		modifier = Modifier.fillMaxWidth()
 	) {
 		DropdownMenu(
 			expanded = table.id == state.dropdownDialogSelectedTableId,
 			onDismissRequest = { onSwitchDropdownMenuClicked(null) }) {
-			DropdownMenuItem(text = {
-				Text(text = stringResource(R.string.action_rename_column))
-			}, onClick = {
-				onTableRename(table.id, table.title)
-				onSwitchDropdownMenuClicked(null)
-			})
-			if (index != 0) {
-				DropdownMenuItem(text = {
-					Text(text = stringResource(R.string.action_move_column_left))
-				}, onClick = {
-					onSwapTablePositionsClicked(
-						table.id, state.tables.find { it.position == table.position - 1 }!!.id
+			DropdownMenuItem(
+				text = {
+					Text(text = stringResource(R.string.action_rename_column))
+				},
+				onClick = {
+					onTableRename(
+						table.id,
+						table.title
 					)
 					onSwitchDropdownMenuClicked(null)
 				})
+			if (index != 0) {
+				DropdownMenuItem(
+					text = {
+						Text(text = stringResource(R.string.action_move_column_left))
+					},
+					onClick = {
+						onSwapTablePositionsClicked(
+							table.id,
+							state.tables.find { it.position == table.position - 1 }!!.id
+						)
+						onSwitchDropdownMenuClicked(null)
+					})
 			}
 			if (index + 1 in state.tables.indices) {
-				DropdownMenuItem(text = {
-					Text(text = stringResource(R.string.action_move_column_right))
-				}, onClick = {
-					onSwapTablePositionsClicked(
-						table.id, state.tables.find { it.position == table.position + 1 }!!.id
-					)
+				DropdownMenuItem(
+					text = {
+						Text(text = stringResource(R.string.action_move_column_right))
+					},
+					onClick = {
+						onSwapTablePositionsClicked(
+							table.id,
+							state.tables.find { it.position == table.position + 1 }!!.id
+						)
+						onSwitchDropdownMenuClicked(null)
+					})
+			}
+			DropdownMenuItem(
+				text = {
+					Text(text = stringResource(R.string.action_delete_table))
+				},
+				onClick = {
+					onDeleteTableClicked(table.id)
 					onSwitchDropdownMenuClicked(null)
 				})
-			}
-			DropdownMenuItem(text = {
-				Text(text = stringResource(R.string.action_delete_table))
-			}, onClick = {
-				onDeleteTableClicked(table.id)
-				onSwitchDropdownMenuClicked(null)
-			})
 		}
 	}
 }

@@ -45,14 +45,16 @@ fun TableTaskIconPairFields(
 	BugtrackerIconPairField(
 		modifier = Modifier.padding(top = 16.dp),
 		title = stringResource(R.string.field_created),
-		text = BugtrackerDateFormat.defaultRequestDateFormat()
+		text = BugtrackerDateFormat
+			.defaultRequestDateFormat()
 			.format(task.createdAt),
 	)
 
 	BugtrackerIconPairField(
 		modifier = Modifier.padding(top = 16.dp),
 		title = stringResource(R.string.field_updated),
-		text = if (task.updatedAt != null) BugtrackerDateFormat.defaultRequestDateFormat()
+		text = if (task.updatedAt != null) BugtrackerDateFormat
+			.defaultRequestDateFormat()
 			.format(task.updatedAt)
 		else "${stringResource(R.string.field_never)} TM",
 	)

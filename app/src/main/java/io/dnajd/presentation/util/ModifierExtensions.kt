@@ -11,7 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
-@SuppressLint("ModifierFactoryUnreferencedReceiver", "ComposableModifierFactory")
+@SuppressLint(
+	"ModifierFactoryUnreferencedReceiver",
+	"ComposableModifierFactory"
+)
 @Composable
 fun Modifier.bottomBorder(
 	strokeWidth: Dp = DividerDefaults.Thickness,
@@ -28,8 +31,14 @@ fun Modifier.bottomBorder(
 
 			drawLine(
 				color = color,
-				start = Offset(x = 0f, y = height),
-				end = Offset(x = width, y = height),
+				start = Offset(
+					x = 0f,
+					y = height
+				),
+				end = Offset(
+					x = width,
+					y = height
+				),
 				strokeWidth = strokeWidthPx
 			)
 		}

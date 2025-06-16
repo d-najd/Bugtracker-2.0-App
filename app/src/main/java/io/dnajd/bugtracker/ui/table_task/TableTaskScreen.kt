@@ -51,7 +51,8 @@ class TableTaskScreen(
 		}
 		val successState = (state as TableTaskScreenState.Success)
 		val bottomState = rememberStandardBottomSheetState(
-			initialValue = SheetValue.Hidden, skipHiddenState = false
+			initialValue = SheetValue.Hidden,
+			skipHiddenState = false
 		)
 
 		LaunchedEffect(successState.sheet) {

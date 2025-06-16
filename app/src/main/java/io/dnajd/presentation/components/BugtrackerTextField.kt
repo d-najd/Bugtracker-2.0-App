@@ -52,7 +52,10 @@ fun BugtrackerTextField(
 			Text(text = label)
 		}
 		BasicTextField(
-			modifier = modifierText.padding(top = 8.dp, bottom = 3.dp),
+			modifier = modifierText.padding(
+				top = 8.dp,
+				bottom = 3.dp
+			),
 			value = value,
 			onValueChange = onValueChange,
 			textStyle = textStyle.copy(
@@ -67,7 +70,8 @@ fun BugtrackerTextField(
 			val view = LocalView.current
 			DisposableEffect(view) {
 				val listener = ViewTreeObserver.OnGlobalLayoutListener {
-					val isKeyboardEnabledTemp = ViewCompat.getRootWindowInsets(view)
+					val isKeyboardEnabledTemp = ViewCompat
+						.getRootWindowInsets(view)
 						?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
 					isKeyboardEnabled(isKeyboardEnabledTemp)
 				}

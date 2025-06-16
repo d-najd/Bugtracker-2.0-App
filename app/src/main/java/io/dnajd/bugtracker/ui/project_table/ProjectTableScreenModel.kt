@@ -29,8 +29,7 @@ import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class ProjectTableScreenModel(
+@OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
 	projectId: Long,
 
 	private val projectRepository: ProjectRepository = Injekt.get(),
@@ -45,30 +44,40 @@ class ProjectTableScreenModel(
 	init {
 		coroutineScope.launchIO {
 			val projectResult = async {
-				projectRepository.getById(projectId)
+				projectRepository
+					.getById(projectId)
 					.onFailure { cancel() }
 			}
 			val tablesResult = async {
-				projectTableRepository.getAllByProjectId(projectId)
+				projectTableRepository
+					.getAllByProjectId(projectId)
 					.onFailure { cancel() }
 			}
 
-			awaitAll(projectResult, tablesResult)
+			awaitAll(
+				projectResult,
+				tablesResult
+			)
 
 			if (projectResult.isCancelled || tablesResult.isCancelled) {
-				projectResult.getCompletionExceptionOrNull()
+				projectResult
+					.getCompletionExceptionOrNull()
 					?.printStackTrace()
-				tablesResult.getCompletionExceptionOrNull()
+				tablesResult
+					.getCompletionExceptionOrNull()
 					?.printStackTrace()
 
 				return@launchIO
 			}
 
-			val project = projectResult.getCompleted()
+			val project = projectResult
+				.getCompleted()
 				.getOrThrow()
-			val tables = tablesResult.getCompleted()
+			val tables = tablesResult
+				.getCompleted()
 				.getOrThrow()
-			val sortedTables = tables.data.sortedBy { it.position }
+			val sortedTables = tables.data
+				.sortedBy { it.position }
 				.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
 
 			mutableState.update {
@@ -84,7 +93,8 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTable = projectTableRepository.createTable(table)
+			val createdTable = projectTableRepository
+				.createTable(table)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToCreateProjectTable)
 					return@launchIONoQueue
@@ -110,7 +120,8 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTask = tableTaskRepository.createTask(task)
+			val createdTask = tableTaskRepository
+				.createTask(task)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToCreateTableTask)
 					return@launchIONoQueue
@@ -145,7 +156,8 @@ class ProjectTableScreenModel(
 			val table = tables.find { table -> table.id == id }!!
 			val renamedTable = table.copy(title = newName)
 
-			val persistedTable = projectTableRepository.updateTable(renamedTable)
+			val persistedTable = projectTableRepository
+				.updateTable(renamedTable)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToRenameProjectTable)
 					return@launchIONoQueue
@@ -181,7 +193,11 @@ class ProjectTableScreenModel(
 			val fTable = tables.find { table -> table.id == sId }!!
 			val sTable = tables.find { table -> table.id == fId }!!
 
-			projectTableRepository.swapTablePositions(fId, sId)
+			projectTableRepository
+				.swapTablePositions(
+					fId,
+					sId
+				)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToSwapTablePositions)
 					return@launchIONoQueue
@@ -237,9 +253,12 @@ class ProjectTableScreenModel(
 			val fTask = table.tasks[fIndex]
 			val sTask = table.tasks[sIndex]
 
-			tableTaskRepository.movePositionTo(fTask.id, sTask.id)
-				.onFailureWithStackTrace {
-					// TODO what the hell is this?
+			tableTaskRepository
+				.movePositionTo(
+					fTask.id,
+					sTask.id
+				)
+				.onFailureWithStackTrace {                    // TODO what the hell is this?
 					mutableState.update {
 						successState.copy(
 							manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
@@ -271,34 +290,36 @@ class ProjectTableScreenModel(
 		tables.remove(table)
 		var tasks = table.tasks.toMutableList()
 		tasks = if (sIndex > fIndex) {
-			tasks.mapIndexed { index, it ->
-				when (index) {
-					in (fIndex + 1)..sIndex -> it.copy(
-						position = it.position - 1
-					)
+			tasks
+				.mapIndexed { index, it ->
+					when (index) {
+						in (fIndex + 1)..sIndex -> it.copy(
+							position = it.position - 1
+						)
 
-					fIndex -> it.copy(
-						position = sTask.position
-					)
+						fIndex -> it.copy(
+							position = sTask.position
+						)
 
-					else -> it
+						else -> it
+					}
 				}
-			}
 				.toMutableList()
 		} else {
-			tasks.mapIndexed { index, it ->
-				when (index) {
-					in sIndex until fIndex -> it.copy(
-						position = it.position + 1
-					)
+			tasks
+				.mapIndexed { index, it ->
+					when (index) {
+						in sIndex until fIndex -> it.copy(
+							position = it.position + 1
+						)
 
-					fIndex -> it.copy(
-						position = sTask.position
-					)
+						fIndex -> it.copy(
+							position = sTask.position
+						)
 
-					else -> it
+						else -> it
+					}
 				}
-			}
 				.toMutableList()
 		}
 		tables.add(
@@ -319,7 +340,8 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			projectTableRepository.deleteById(tableId)
+			projectTableRepository
+				.deleteById(tableId)
 				.onSuccess {
 					val tables = successState.tables.toMutableList()
 					tables.removeIf { it.id == tableId }
@@ -395,20 +417,17 @@ sealed class ProjectTableDialog {
 
 sealed class ProjectTableScreenState {
 
-	@Immutable
-	data object Loading : ProjectTableScreenState()
+	@Immutable data object Loading : ProjectTableScreenState()
 
 	/**
 	 * TODO find a way to get rid of taskMoved, using events does not work properly
 	 */
-	@Immutable
-	data class Success(
+	@Immutable data class Success(
 		val project: Project,
 		val tables: List<ProjectTable>,
 		val dropdownDialogSelectedTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
-		val createTableItemSelectedTableId: Long? = null,
-		// TODO remove this
+		val createTableItemSelectedTableId: Long? = null,        // TODO remove this
 		val manualTableTasksRefresh: Int = 0,
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState()

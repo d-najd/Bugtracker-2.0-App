@@ -35,7 +35,8 @@ fun ProjectUserManagementItemContent(
 	BugtrackerExpandableMenu(
 		modifier = Modifier
 			.padding(
-				horizontal = 12.dp, vertical = 4.dp
+				horizontal = 12.dp,
+				vertical = 4.dp
 			)
 			.fillMaxWidth(),
 		onClick = { expanded = !expanded },
@@ -45,31 +46,33 @@ fun ProjectUserManagementItemContent(
 			BugtrackerIconPairField(
 				modifier = Modifier
 					.fillMaxWidth()
-					.height(42.dp), iconContent = {
-				Icon(
-					modifier = Modifier.size(28.dp),
-					imageVector = Icons.Default.AccountCircle,
-					contentDescription = ""
-				)
-			}, textContent = {
-				Text(
-					modifier = Modifier.padding(start = 2.dp),
-					text = userWithAuthorities.key,
-					color = MaterialTheme.colorScheme.onSurface,
-					fontSize = (13.75).sp,
-					fontFamily = FontFamily.SansSerif,
-					fontWeight = FontWeight.Light,
-				)
+					.height(42.dp),
+				iconContent = {
+					Icon(
+						modifier = Modifier.size(28.dp),
+						imageVector = Icons.Default.AccountCircle,
+						contentDescription = ""
+					)
+				},
+				textContent = {
+					Text(
+						modifier = Modifier.padding(start = 2.dp),
+						text = userWithAuthorities.key,
+						color = MaterialTheme.colorScheme.onSurface,
+						fontSize = (13.75).sp,
+						fontFamily = FontFamily.SansSerif,
+						fontWeight = FontWeight.Light,
+					)
 
-				Text(
-					modifier = Modifier.padding(start = 2.dp),
-					text = "ROLE-CUSTOM",
-					color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-					fontSize = 12.sp,
-					fontWeight = FontWeight.ExtraLight,
-					fontFamily = FontFamily.SansSerif,
-				)
-			})
+					Text(
+						modifier = Modifier.padding(start = 2.dp),
+						text = "ROLE-CUSTOM",
+						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+						fontSize = 12.sp,
+						fontWeight = FontWeight.ExtraLight,
+						fontFamily = FontFamily.SansSerif,
+					)
+				})
 		},
 		expandableContent = {
 			ProjectUserManagementAuthoritiesContent(

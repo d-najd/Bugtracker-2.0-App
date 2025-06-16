@@ -23,7 +23,11 @@ fun AuthScreenContent(
 				.fillMaxSize()
 				.padding(contentPadding),
 		) {
-			AuthContentOAuth(contentPadding, onSignUpClicked, onSignInClicked)
+			AuthContentOAuth(
+				contentPadding,
+				onSignUpClicked,
+				onSignInClicked
+			)
 		}
 	}
 }

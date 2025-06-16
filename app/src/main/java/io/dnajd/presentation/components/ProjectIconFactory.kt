@@ -12,7 +12,9 @@ object ProjectIconFactory {
 	@SuppressLint("DiscouragedApi")
 	@Composable
 	fun getRandom(): Int = LocalContext.current.resources.getIdentifier(
-		NAME_PREFIX + (1..COUNT).random(), "drawable", LocalContext.current.packageName
+		NAME_PREFIX + (1..COUNT).random(),
+		"drawable",
+		LocalContext.current.packageName
 	)
 
 	// adding hundreds of lines of code will probably be slower in this case and much more verbose
@@ -21,6 +23,8 @@ object ProjectIconFactory {
 	fun getSpecific(
 		index: Int,
 	): Int = LocalContext.current.resources.getIdentifier(
-		NAME_PREFIX + index, "drawable", LocalContext.current.packageName
+		NAME_PREFIX + index,
+		"drawable",
+		LocalContext.current.packageName
 	)
 }

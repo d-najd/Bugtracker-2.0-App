@@ -90,7 +90,8 @@ fun BugtrackerMultipurposeMenu(
 
 			if (includeDivider) {
 				HorizontalDivider(
-					thickness = dividerThickness, color = dividerColor
+					thickness = dividerThickness,
+					color = dividerColor
 				)
 			}
 		}

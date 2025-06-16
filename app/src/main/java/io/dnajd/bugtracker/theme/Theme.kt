@@ -72,8 +72,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun BugtrackerTheme(content: @Composable () -> Unit) {
-	// val context = LocalContext.current
+fun BugtrackerTheme(content: @Composable () -> Unit) {    // val context = LocalContext.current
 	// val layoutDirection = LocalLayoutDirection.current
 
 	val colors = if (!isSystemInDarkTheme()) {

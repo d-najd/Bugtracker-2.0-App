@@ -22,8 +22,12 @@ class JwtAuthenticator(
 
 		val accessToken = jwtAuthPreferenceStore.retrieveAccessToken()
 		if (accessToken != null) {
-			return response.request.newBuilder()
-				.header("Authorization", "Bearer $accessToken")
+			return response.request
+				.newBuilder()
+				.header(
+					"Authorization",
+					"Bearer $accessToken"
+				)
 				.build()
 		}
 		println("No access token found, authentication failed")

@@ -56,7 +56,10 @@ fun TableTaskAssignedField(
 				)
 
 				Icon(
-					modifier = Modifier.padding(start = 3.dp, end = 4.dp),
+					modifier = Modifier.padding(
+						start = 3.dp,
+						end = 4.dp
+					),
 					tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 					imageVector = Icons.Default.ArrowDropDown,
 					contentDescription = ""
@@ -66,7 +69,11 @@ fun TableTaskAssignedField(
 		expandableContent = {
 			for (assigned in state.task.assigned) {
 				Row(
-					modifier = Modifier.padding(top = 12.dp, start = 16.dp, end = 16.dp),
+					modifier = Modifier.padding(
+						top = 12.dp,
+						start = 16.dp,
+						end = 16.dp
+					),
 					horizontalArrangement = Arrangement.Center,
 					verticalAlignment = Alignment.CenterVertically,
 				) {

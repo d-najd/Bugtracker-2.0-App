@@ -25,7 +25,9 @@ fun TableTaskNoCommentsContent() {
 		Icon(
 			modifier = Modifier
 				.padding(top = 36.dp)
-				.size(86.dp), imageVector = Icons.Default.Forum, contentDescription = ""
+				.size(86.dp),
+			imageVector = Icons.Default.Forum,
+			contentDescription = ""
 		)
 
 		Text(

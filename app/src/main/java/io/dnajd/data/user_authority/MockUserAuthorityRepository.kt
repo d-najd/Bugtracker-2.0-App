@@ -18,11 +18,31 @@ object MockUserAuthorityRepository : UserAuthorityRepository {
 
 	private fun mockData() = UserAuthorityListResponse(
 		listOf(
-			UserAuthority("user1", 1, UserAuthorityType.project_owner),
-			UserAuthority("user2", 1, UserAuthorityType.project_view),
-			UserAuthority("user2", 1, UserAuthorityType.project_create),
-			UserAuthority("user2", 1, UserAuthorityType.project_manage_users),
-			UserAuthority("user3", 1, UserAuthorityType.project_view),
+			UserAuthority(
+				"user1",
+				1,
+				UserAuthorityType.project_owner
+			),
+			UserAuthority(
+				"user2",
+				1,
+				UserAuthorityType.project_view
+			),
+			UserAuthority(
+				"user2",
+				1,
+				UserAuthorityType.project_create
+			),
+			UserAuthority(
+				"user2",
+				1,
+				UserAuthorityType.project_manage_users
+			),
+			UserAuthority(
+				"user3",
+				1,
+				UserAuthorityType.project_view
+			),
 		)
 	)
 }

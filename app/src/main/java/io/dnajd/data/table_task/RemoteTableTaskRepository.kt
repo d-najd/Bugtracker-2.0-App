@@ -17,7 +17,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteTableTaskRepository : TableTaskRepository {
-	private val factory: TableTaskRepositoryApi = Injekt.get<Retrofit.Builder>()
+	private val factory: TableTaskRepositoryApi = Injekt
+		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_TABLE_ISSUE)
 		.build()
 		.create(TableTaskRepositoryApi::class.java)
@@ -25,26 +26,49 @@ object RemoteTableTaskRepository : TableTaskRepository {
 	override suspend fun getById(id: Long): Result<TableTask> =
 		handleRetrofitRequest { factory.getById(id) }
 
-	override suspend fun createTask(task: TableTask): Result<TableTask> =
-		handleRetrofitRequest { factory.createTask(task.tableId, task) }
+	override suspend fun createTask(task: TableTask): Result<TableTask> = handleRetrofitRequest {
+		factory.createTask(
+			task.tableId,
+			task
+		)
+	}
 
-	override suspend fun updateTask(task: TableTask): Result<TableTask> =
-		handleRetrofitRequest { factory.updateTask(task.id, task) }
+	override suspend fun updateTask(task: TableTask): Result<TableTask> = handleRetrofitRequest {
+		factory.updateTask(
+			task.id,
+			task
+		)
+	}
 
 	override suspend fun swapTaskPositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = handleRetrofitRequest { factory.swapTaskPositions(fId, sId) }
+	): Result<Unit> = handleRetrofitRequest {
+		factory.swapTaskPositions(
+			fId,
+			sId
+		)
+	}
 
 	override suspend fun movePositionTo(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = handleRetrofitRequest { factory.moveTaskPositions(fId, sId) }
+	): Result<Unit> = handleRetrofitRequest {
+		factory.moveTaskPositions(
+			fId,
+			sId
+		)
+	}
 
 	override suspend fun moveToTable(
 		id: Long,
 		tableId: Long,
-	): Result<Unit> = handleRetrofitRequest { factory.moveToTable(id, tableId) }
+	): Result<Unit> = handleRetrofitRequest {
+		factory.moveToTable(
+			id,
+			tableId
+		)
+	}
 }
 
 private interface TableTaskRepositoryApi {

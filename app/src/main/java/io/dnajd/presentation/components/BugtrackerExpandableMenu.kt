@@ -110,7 +110,8 @@ private fun BugtrackerExpandableMenuPreview() {
 			id = 1,
 			title = "Title 1",
 			tableId = 1,
-		), TableChildTask(
+		),
+		TableChildTask(
 			id = 2,
 			title = "Title 2",
 			tableId = 2,
@@ -142,7 +143,10 @@ private fun BugtrackerExpandableMenuPreview() {
 						)
 
 						Icon(
-							modifier = Modifier.padding(start = 3.dp, end = 4.dp),
+							modifier = Modifier.padding(
+								start = 3.dp,
+								end = 4.dp
+							),
 							tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 							imageVector = Icons.Default.ArrowDropDown,
 							contentDescription = ""
@@ -152,33 +156,36 @@ private fun BugtrackerExpandableMenuPreview() {
 			},
 			expandableContent = {
 				for (childTask in childTasks) {
-					BugtrackerIconPairField(modifier = Modifier.padding(top = 6.dp), iconContent = {
-						Icon(
-							imageVector = Icons.Default.TaskAlt,
-							tint = MaterialTheme.colorScheme.primary,
-							contentDescription = ""
-						)
-					}, textContent = {
-						Text(text = childTask.title)
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-						) {
-							Text(
-								text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
-								color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+					BugtrackerIconPairField(
+						modifier = Modifier.padding(top = 6.dp),
+						iconContent = {
+							Icon(
+								imageVector = Icons.Default.TaskAlt,
+								tint = MaterialTheme.colorScheme.primary,
+								contentDescription = ""
 							)
-							Text(
-								text = " = ",
-								color = colorResource(R.color.coral),
-								fontFamily = FontFamily.SansSerif,
-								fontSize = 26.sp,
-							)
-							Text(
-								text = "INSERT TABLE NAME",
-								color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-							)
-						}
-					})
+						},
+						textContent = {
+							Text(text = childTask.title)
+							Row(
+								verticalAlignment = Alignment.CenterVertically,
+							) {
+								Text(
+									text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
+									color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+								)
+								Text(
+									text = " = ",
+									color = colorResource(R.color.coral),
+									fontFamily = FontFamily.SansSerif,
+									fontSize = 26.sp,
+								)
+								Text(
+									text = "INSERT TABLE NAME",
+									color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+								)
+							}
+						})
 				}
 			})
 	}

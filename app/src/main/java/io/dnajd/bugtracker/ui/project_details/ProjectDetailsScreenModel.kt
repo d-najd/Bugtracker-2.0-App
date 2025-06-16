@@ -30,7 +30,8 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val project = projectRepository.getById(projectId)
+			val project = projectRepository
+				.getById(projectId)
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIO
@@ -45,7 +46,8 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			projectRepository.deleteById(successState.project.id)
+			projectRepository
+				.deleteById(successState.project.id)
 				.onSuccess {
 					_events.send(ProjectDetailsEvent.DeleteProject)
 				}
@@ -60,7 +62,8 @@ class ProjectDetailsScreenModel(
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 			val renamedProject = successState.project.copy(title = title)
 
-			val persistedProject = projectRepository.updateProject(renamedProject)
+			val persistedProject = projectRepository
+				.updateProject(renamedProject)
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRenameProject)
 					return@launchIONoQueue
@@ -75,11 +78,9 @@ class ProjectDetailsScreenModel(
 }
 
 sealed class ProjectDetailsScreenState {
-	@Immutable
-	data object Loading : ProjectDetailsScreenState()
+	@Immutable data object Loading : ProjectDetailsScreenState()
 
-	@Immutable
-	data class Success(
+	@Immutable data class Success(
 		val project: Project,
 	) : ProjectDetailsScreenState()
 }

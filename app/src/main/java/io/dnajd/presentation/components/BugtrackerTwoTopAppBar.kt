@@ -62,11 +62,16 @@ fun BugtrackerTwoAppBarTableBar(
 	for (tab in ProjectTableSelectedTab.values()) {
 		val tabModifier = Modifier
 			.clickable { onTabClicked(tab) }
-			.padding(start = 8.dp, top = 2.dp, end = 8.dp)
+			.padding(
+				start = 8.dp,
+				top = 2.dp,
+				end = 8.dp
+			)
 			.composed {
 				if (selectedTab == tab) {
 					return@composed bottomBorder(
-						strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary
+						strokeWidth = (1.5).dp,
+						color = MaterialTheme.colorScheme.primary
 					)
 				}
 				this
