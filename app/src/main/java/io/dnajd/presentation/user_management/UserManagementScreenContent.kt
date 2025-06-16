@@ -3,6 +3,7 @@ package io.dnajd.presentation.user_management
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,27 +31,30 @@ fun ProjectUserManagementScreenContent(
 ) {
 	Scaffold(
 		topBar = {
-			TopAppBar(navigationIcon = {
-				IconButton(onClick = { onBackClicked() }) {
-					Icon(
-						modifier = Modifier.padding(horizontal = 8.dp),
-						imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-						contentDescription = ""
+			TopAppBar(
+				navigationIcon = {
+					IconButton(onClick = { onBackClicked() }) {
+						Icon(
+							modifier = Modifier.padding(horizontal = 8.dp),
+							imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+							contentDescription = ""
+						)
+					}
+				},
+				title = {
+					Text(
+						text = stringResource(R.string.field_user_management),
 					)
-				}
-			}, title = {
-				Text(
-					text = stringResource(R.string.field_user_management),
-				)
-			}, actions = {
-				IconButton(onClick = { onAddUserToProjectClicked() }) {
-					Icon(
-						modifier = Modifier.padding(horizontal = 6.dp),
-						imageVector = Icons.Rounded.Add,
-						contentDescription = ""
-					)
-				}
-			})
+				},
+				actions = {
+					IconButton(onClick = { onAddUserToProjectClicked() }) {
+						Icon(
+							modifier = Modifier.padding(horizontal = 6.dp),
+							imageVector = Icons.Rounded.Add,
+							contentDescription = ""
+						)
+					}
+				})
 		},
 	) { contentPadding ->
 		BackHandler { onBackClicked() }

@@ -11,6 +11,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.presentation.auth.AuthScreenContent
+import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 object AuthScreen : Screen {
@@ -25,8 +26,12 @@ object AuthScreen : Screen {
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				when (event) {
+					is AuthEvent.LocalizedMessage -> {
+						context.toast(event.stringRes)
+					}
+
 					AuthEvent.UserLoggedIn -> {
-						navigator.replace(ProjectScreen)
+						navigator.replaceAll(ProjectScreen)
 					}
 				}
 			}
@@ -35,6 +40,10 @@ object AuthScreen : Screen {
 		val state by screenModel.state.collectAsState()
 		val successState = state as AuthScreenState.Success
 
-		AuthScreenContent(successState)
+		AuthScreenContent(
+			screenState = successState,
+			onSignInClicked = screenModel::signIn,
+			onSignUpClicked = screenModel::signUp,
+		)
 	}
 }

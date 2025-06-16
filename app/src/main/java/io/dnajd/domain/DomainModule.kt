@@ -1,6 +1,7 @@
 package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
+import io.dnajd.data.google_auth.RemoteGoogleAuthRepository
 import io.dnajd.data.project.MockProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
 import io.dnajd.data.project_table.MockProjectTableRepository
@@ -9,6 +10,7 @@ import io.dnajd.data.table_task.MockTableTaskRepository
 import io.dnajd.data.table_task.RemoteTableTaskRepository
 import io.dnajd.data.user_authority.MockUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
+import io.dnajd.domain.google_auth.service.GoogleAuthRepository
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
@@ -28,22 +30,25 @@ import uy.kohesive.injekt.api.get
 
 class DomainModule : InjektModule {
 	companion object {
-		private const val USE_MOCKS = true
+		private const val USE_MOCKS = false
 	}
 
 	override fun InjektRegistrar.registerInjectables() {
 		val loggingInterceptor = HttpLoggingInterceptor()
 		loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 		addSingletonFactory {
-			OkHttpClient.Builder()
+			OkHttpClient
+				.Builder()
 				.addInterceptor(loggingInterceptor)
 				.authenticator(JwtAuthenticator())
 				.build()
 		}
 
 		addSingletonFactory {
-			GsonBuilder().setDateFormat(
-					BugtrackerDateFormat.defaultRequestDateFormat()
+			GsonBuilder()
+				.setDateFormat(
+					BugtrackerDateFormat
+						.defaultRequestDateFormat()
 						.toPattern()
 				)
 				.registerTypeAdapterFactory(MutableListTypeAdapterFactory())
@@ -51,19 +56,21 @@ class DomainModule : InjektModule {
 		}
 
 		addSingletonFactory {
-			Retrofit.Builder()
-				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))
-				// .addCallAdapterFactory(ResultCallAdapterFactory())
+			Retrofit
+				.Builder()
+				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))                // .addCallAdapterFactory(ResultCallAdapterFactory())
 				.client(Injekt.get())
 		}
 
 		addSingletonFactory {
-			Injekt.get<Retrofit.Builder>()
+			Injekt
+				.get<Retrofit.Builder>()
 				.build()
 		}
 
 		when (USE_MOCKS) {
 			true -> {
+				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
 				addSingletonFactory<ProjectRepository> { MockProjectRepository }
 				addSingletonFactory<ProjectTableRepository> { MockProjectTableRepository }
 				addSingletonFactory<TableTaskRepository> { MockTableTaskRepository }
@@ -71,6 +78,7 @@ class DomainModule : InjektModule {
 			}
 
 			false -> {
+				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
 				addSingletonFactory<ProjectRepository> { RemoteProjectRepository }
 				addSingletonFactory<ProjectTableRepository> { RemoteProjectTableRepository }
 				addSingletonFactory<TableTaskRepository> { RemoteTableTaskRepository }
