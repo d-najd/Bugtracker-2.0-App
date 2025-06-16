@@ -40,7 +40,7 @@ class DomainModule : InjektModule {
 			OkHttpClient
 				.Builder()
 				.addInterceptor(loggingInterceptor)
-				.authenticator(JwtAuthenticator())
+				.addInterceptor(JwtAuthenticator())
 				.build()
 		}
 
@@ -58,8 +58,8 @@ class DomainModule : InjektModule {
 		addSingletonFactory {
 			Retrofit
 				.Builder()
-				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))                // .addCallAdapterFactory(ResultCallAdapterFactory())
-				.client(Injekt.get())
+				.addConverterFactory(GsonConverterFactory.create(Injekt.get()))
+				.client(Injekt.get<OkHttpClient>())
 		}
 
 		addSingletonFactory {
