@@ -4,13 +4,15 @@ import java.math.RoundingMode
 
 fun Double.includeDecimals(
 	decimals: Int,
-	roundingMode: RoundingMode = RoundingMode.HALF_UP
-): Double = toBigDecimal().setScale(decimals, roundingMode).toDouble()
+	roundingMode: RoundingMode = RoundingMode.HALF_UP,
+): Double = toBigDecimal().setScale(decimals, roundingMode)
+	.toDouble()
 
 fun Float.includeDecimals(
 	decimals: Int,
-	roundingMode: RoundingMode = RoundingMode.HALF_UP
-): Float = toBigDecimal().setScale(decimals, roundingMode).toFloat()
+	roundingMode: RoundingMode = RoundingMode.HALF_UP,
+): Float = toBigDecimal().setScale(decimals, roundingMode)
+	.toFloat()
 
 fun Float.conditionalIncludeDecimals(
 	condition: Boolean,

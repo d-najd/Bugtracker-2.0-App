@@ -26,9 +26,9 @@ fun ProjectContent(
 ) {
 	Column(
 		modifier = Modifier
-            .fillMaxSize()
-            .padding(contentPadding)
-            .verticalScroll(rememberScrollState())
+			.fillMaxSize()
+			.padding(contentPadding)
+			.verticalScroll(rememberScrollState())
 	) {
 		Text(
 			modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp),

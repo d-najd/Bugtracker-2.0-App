@@ -25,38 +25,27 @@ fun RenameProjectTableDialog(
 	// the entire screen each time a letter is modified
 	var newTitle by remember { mutableStateOf(originalTitle) }
 
-	AlertDialog(
-		onDismissRequest = { onDismissRequest() },
-		title = {
-			Text(text = stringResource(R.string.field_rename_column))
-		},
-		confirmButton = {
-			TextButton(
-				enabled = newTitle.isNotBlank() && newTitle != originalTitle,
-				onClick = {
-					onRenameProjectTableClicked(newTitle)
-				}
-			) {
-				Text(
-					text = stringResource(R.string.action_rename).uppercase()
-				)
-			}
-		},
-		dismissButton = {
-			TextButton(
-				onClick = { onDismissRequest() }
-			) {
-				Text(text = stringResource(R.string.action_cancel).uppercase())
-			}
-		},
-		text = {
-			BugtrackerTextField(
-				modifierText = Modifier
-					.fillMaxWidth(),
-				label = stringResource(R.string.field_column_name),
-				value = newTitle,
-				onValueChange = { newTitle = it }
+	AlertDialog(onDismissRequest = { onDismissRequest() }, title = {
+		Text(text = stringResource(R.string.field_rename_column))
+	}, confirmButton = {
+		TextButton(
+			enabled = newTitle.isNotBlank() && newTitle != originalTitle, onClick = {
+				onRenameProjectTableClicked(newTitle)
+			}) {
+			Text(
+				text = stringResource(R.string.action_rename).uppercase()
 			)
 		}
-	)
+	}, dismissButton = {
+		TextButton(
+			onClick = { onDismissRequest() }) {
+			Text(text = stringResource(R.string.action_cancel).uppercase())
+		}
+	}, text = {
+		BugtrackerTextField(
+			modifierText = Modifier.fillMaxWidth(),
+			label = stringResource(R.string.field_column_name),
+			value = newTitle,
+			onValueChange = { newTitle = it })
+	})
 }

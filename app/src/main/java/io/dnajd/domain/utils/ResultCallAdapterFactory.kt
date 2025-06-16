@@ -10,7 +10,7 @@ class ResultCallAdapterFactory : CallAdapter.Factory() {
 	override fun get(
 		returnType: Type,
 		annotations: Array<out Annotation>,
-		retrofit: Retrofit
+		retrofit: Retrofit,
 	): CallAdapter<*, *>? {
 		if (getRawType(returnType) != Call::class.java || returnType !is ParameterizedType) {
 			return null

@@ -74,8 +74,7 @@ fun BugtrackerDropdownMenu(
 
 		DropdownMenu(
 			expanded = expanded,
-			modifier = dropdownModifier
-				.background(MaterialTheme.colorScheme.primaryContainer),
+			modifier = dropdownModifier.background(MaterialTheme.colorScheme.primaryContainer),
 			onDismissRequest = onDismissRequest,
 			offset = offset,
 		) {

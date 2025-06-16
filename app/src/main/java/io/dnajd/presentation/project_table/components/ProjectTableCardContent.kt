@@ -142,8 +142,7 @@ private fun ProjectTableCardContentLocal(
 					onValueChange = onValueChange,
 					maxLines = 1,
 					textStyle = TextStyle(
-						fontSize = 14.sp,
-						color = MaterialTheme.colorScheme.onSurface
+						fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface
 					),
 					keyboardActions = keyboardActions,
 					keyboardOptions = keyboardOptions,
@@ -158,8 +157,7 @@ private fun ProjectTableCardContentLocal(
 				LaunchedEffect(Unit) {
 					focusRequester.requestFocus()
 				}
-			}
-			/*
+			}			/*
 			if (labels.isNotEmpty()) {
 				Row(
 					modifier = Modifier

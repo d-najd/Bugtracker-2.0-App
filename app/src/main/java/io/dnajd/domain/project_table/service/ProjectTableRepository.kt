@@ -21,7 +21,10 @@ interface ProjectTableRepository {
 	 * @param includeTasks if true tasks wont be sent in the response
 	 * @return list of received tables, empty list will be returned if the request failed
 	 */
-	suspend fun getById(id: Long, includeTasks: Boolean = true): Result<ProjectTable>
+	suspend fun getById(
+		id: Long,
+		includeTasks: Boolean = true,
+	): Result<ProjectTable>
 
 	/**
 	 * Creates project table
@@ -42,7 +45,10 @@ interface ProjectTableRepository {
 	 * @param sId id of the second table
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit>
+	suspend fun swapTablePositions(
+		fId: Long,
+		sId: Long,
+	): Result<Unit>
 
 	/**
 	 * Deletes a table with given id

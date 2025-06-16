@@ -68,37 +68,32 @@ fun TableTaskChildIssuesField(
 		},
 		expandableContent = {
 			for (childTask in state.task.childTasks) {
-				BugtrackerIconPairField(
-					modifier = Modifier.padding(top = 6.dp),
-					iconContent = {
-						Icon(
-							imageVector = Icons.Default.TaskAlt,
-							contentDescription = "",
+				BugtrackerIconPairField(modifier = Modifier.padding(top = 6.dp), iconContent = {
+					Icon(
+						imageVector = Icons.Default.TaskAlt,
+						contentDescription = "",
+					)
+				}, textContent = {
+					Text(text = childTask.title)
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+					) {
+						Text(
+							text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 						)
-					},
-					textContent = {
-						Text(text = childTask.title)
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-						) {
-							Text(
-								text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
-								color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-							)
-							Text(
-								text = " = ",
-								color = colorResource(R.color.coral),
-								fontFamily = FontFamily.SansSerif,
-								fontSize = 26.sp,
-							)
-							Text(
-								text = "INSERT TABLE NAME",
-								color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-							)
-						}
+						Text(
+							text = " = ",
+							color = colorResource(R.color.coral),
+							fontFamily = FontFamily.SansSerif,
+							fontSize = 26.sp,
+						)
+						Text(
+							text = "INSERT TABLE NAME",
+							color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+						)
 					}
-				)
+				})
 			}
-		}
-	)
+		})
 }

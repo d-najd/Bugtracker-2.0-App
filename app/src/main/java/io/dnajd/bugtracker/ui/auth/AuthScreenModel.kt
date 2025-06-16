@@ -27,10 +27,8 @@ class AuthScreenModel(
 		googleOAuthToken: String,
 		username: String,
 	) = mutex.launchIONoQueue(coroutineScope) {
-		googleAuthRepository
-			.googleSignUp(googleOAuthToken, CreateUser(username))
-			.onFailureWithStackTrace {
-			}
+		googleAuthRepository.googleSignUp(googleOAuthToken, CreateUser(username))
+			.onFailureWithStackTrace { }
 	}
 
 	fun signIn(googleOAuthToken: String) = mutex.launchIONoQueue(coroutineScope) {

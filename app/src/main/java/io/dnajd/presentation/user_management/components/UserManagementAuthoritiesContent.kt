@@ -59,14 +59,12 @@ fun ProjectUserManagementAuthoritiesContent(
 			) {
 				BugtrackerIconPairField(
 					modifier = Modifier.padding(
-						horizontal = 8.dp,
-						vertical = 10.dp
+						horizontal = 8.dp, vertical = 10.dp
 					),
 					titleContent = {
 						Text(
 							modifier = Modifier.padding(
-								start = 2.dp,
-								bottom = 6.dp
+								start = 2.dp, bottom = 6.dp
 							),
 							text = stringResource(authorityType.titleResId),
 							fontWeight = FontWeight.SemiBold,
@@ -75,16 +73,14 @@ fun ProjectUserManagementAuthoritiesContent(
 					iconContent = {
 						Checkbox(
 							enabled = enabled,
-							modifier = Modifier
-								.size(24.dp),
+							modifier = Modifier.size(24.dp),
 							checked = checked,
 							onCheckedChange = null,
 						)
 					},
 					textContent = {
 						Text(
-							modifier = Modifier.padding(start = 2.dp),
-							text = description
+							modifier = Modifier.padding(start = 2.dp), text = description
 						)
 					},
 				)

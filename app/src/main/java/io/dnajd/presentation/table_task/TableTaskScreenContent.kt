@@ -50,8 +50,7 @@ fun TableTaskScreenContent(
 			contentColor = MaterialTheme.colorScheme.onSurface.copy(.32f),
 			onDismissRequest = {
 				onBottomSheetDismissed()
-			}
-		) {
+			}) {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
@@ -99,8 +98,7 @@ fun TableTaskScreenContent(
 			)
 		}
 	}
-	 */
-	/*
+	 */	/*
 	ModalBottomSheetLayout(
 		sheetState = bottomDialogState,
 		sheetBackgroundColor = MaterialTheme.colorScheme.surface,

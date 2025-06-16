@@ -37,25 +37,23 @@ class BugtrackerDateFormat {
 			return when (timeSeconds) {
 				in 3600..Long.MAX_VALUE -> {
 					val hours = timeSeconds / 3600f
-					"${hours.conditionalIncludeDecimals(condition = hours < 10)} " +
-							pluralStringResource(id = R.plurals.hours, count = hours.roundToInt())
+					"${hours.conditionalIncludeDecimals(condition = hours < 10)} " + pluralStringResource(
+						id = R.plurals.hours,
+						count = hours.roundToInt()
+					)
 				}
 
 				in 60..3599 -> {
 					val minutes = timeSeconds / 60f
-					"${minutes.conditionalIncludeDecimals(condition = minutes < 10)} " +
-							pluralStringResource(
-								id = R.plurals.minutes,
-								count = (minutes).roundToInt()
-							)
+					"${minutes.conditionalIncludeDecimals(condition = minutes < 10)} " + pluralStringResource(
+						id = R.plurals.minutes, count = (minutes).roundToInt()
+					)
 				}
 
 				in 0..59 -> {
-					"$timeSeconds " +
-							pluralStringResource(
-								id = R.plurals.seconds,
-								count = timeSeconds.toInt()
-							)
+					"$timeSeconds " + pluralStringResource(
+						id = R.plurals.seconds, count = timeSeconds.toInt()
+					)
 				}
 
 				else -> {
@@ -72,8 +70,7 @@ class BugtrackerDateFormat {
 					val days = timeSeconds / 86400f
 					"${days.roundToInt()} ${
 						pluralStringResource(
-							id = R.plurals.days,
-							count = days.roundToInt()
+							id = R.plurals.days, count = days.roundToInt()
 						)
 					}"
 				}
@@ -82,8 +79,7 @@ class BugtrackerDateFormat {
 					val hours = timeSeconds / 3600f
 					"${hours.roundToInt()} ${
 						pluralStringResource(
-							id = R.plurals.hours,
-							count = hours.roundToInt()
+							id = R.plurals.hours, count = hours.roundToInt()
 						)
 					}"
 				}
@@ -92,8 +88,7 @@ class BugtrackerDateFormat {
 					val minutes = timeSeconds / 60f
 					"${minutes.roundToInt()} ${
 						pluralStringResource(
-							id = R.plurals.minutes,
-							count = minutes.roundToInt()
+							id = R.plurals.minutes, count = minutes.roundToInt()
 						)
 					}"
 				}
@@ -101,8 +96,7 @@ class BugtrackerDateFormat {
 				in 0..59 -> {
 					"$timeSeconds ${
 						pluralStringResource(
-							id = R.plurals.seconds,
-							count = timeSeconds.toInt()
+							id = R.plurals.seconds, count = timeSeconds.toInt()
 						)
 					}"
 				}

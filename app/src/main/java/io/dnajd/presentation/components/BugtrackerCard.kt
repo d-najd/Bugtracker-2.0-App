@@ -30,21 +30,20 @@ fun BugtrackerCard(
 ) {
 	Card(
 		modifier = modifier
-            .fillMaxWidth()
-            .padding(if (applyPadding) ANALYTICS_CARD_PADDING else PaddingValues(0.dp)),
+			.fillMaxWidth()
+			.padding(if (applyPadding) ANALYTICS_CARD_PADDING else PaddingValues(0.dp)),
 	) {
 
 		Column(
-			modifier = Modifier
-				.padding(vertical = 6.dp, horizontal = 16.dp)
+			modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp)
 		) {
 			if (title != null) {
 				Text(
 					text = title,
 					fontSize = 20.sp,
 					modifier = Modifier
-                        .padding(ANALYTICS_CARD_CONTENT_PADDING)
-                        .padding(vertical = 16.dp),
+						.padding(ANALYTICS_CARD_CONTENT_PADDING)
+						.padding(vertical = 16.dp),
 				)
 			}
 			content()
@@ -61,12 +60,10 @@ private fun BugtrackerCardPreview() {
 
 	BugtrackerCard(title = "title") {
 		BugtrackerPairField(
-			key = "key1",
-			value = "value1"
+			key = "key1", value = "value1"
 		)
 		BugtrackerPairField(
-			key = "key2",
-			value = "value2"
+			key = "key2", value = "value2"
 		)
 		BugtrackerDropdownMenu(
 			onClick = { dismissMenu = !dismissMenu },

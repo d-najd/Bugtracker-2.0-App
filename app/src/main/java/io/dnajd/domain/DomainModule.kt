@@ -42,8 +42,10 @@ class DomainModule : InjektModule {
 		}
 
 		addSingletonFactory {
-			GsonBuilder()
-				.setDateFormat(BugtrackerDateFormat.defaultRequestDateFormat().toPattern())
+			GsonBuilder().setDateFormat(
+					BugtrackerDateFormat.defaultRequestDateFormat()
+						.toPattern()
+				)
 				.registerTypeAdapterFactory(MutableListTypeAdapterFactory())
 				.create()
 		}
@@ -56,7 +58,8 @@ class DomainModule : InjektModule {
 		}
 
 		addSingletonFactory {
-			Injekt.get<Retrofit.Builder>().build()
+			Injekt.get<Retrofit.Builder>()
+				.build()
 		}
 
 		when (USE_MOCKS) {

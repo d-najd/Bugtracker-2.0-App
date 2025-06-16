@@ -30,10 +30,12 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val project = projectRepository.getById(projectId).onFailureWithStackTrace {
-				_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
-				return@launchIO
-			}.getOrThrow()
+			val project = projectRepository.getById(projectId)
+				.onFailureWithStackTrace {
+					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
+					return@launchIO
+				}
+				.getOrThrow()
 
 			mutableState.update { ProjectDetailsScreenState.Success(project = project) }
 		}
@@ -43,11 +45,13 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			projectRepository.deleteById(successState.project.id).onSuccess {
-				_events.send(ProjectDetailsEvent.DeleteProject)
-			}.onFailureWithStackTrace {
-				_events.send(ProjectDetailsEvent.FailedToDeleteProject)
-			}
+			projectRepository.deleteById(successState.project.id)
+				.onSuccess {
+					_events.send(ProjectDetailsEvent.DeleteProject)
+				}
+				.onFailureWithStackTrace {
+					_events.send(ProjectDetailsEvent.FailedToDeleteProject)
+				}
 		}
 	}
 
@@ -56,11 +60,12 @@ class ProjectDetailsScreenModel(
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 			val renamedProject = successState.project.copy(title = title)
 
-			val persistedProject =
-				projectRepository.updateProject(renamedProject).onFailureWithStackTrace {
+			val persistedProject = projectRepository.updateProject(renamedProject)
+				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRenameProject)
 					return@launchIONoQueue
-				}.getOrThrow()
+				}
+				.getOrThrow()
 
 			mutableState.update {
 				successState.copy(project = persistedProject)
@@ -85,11 +90,9 @@ sealed class ProjectDetailsEvent {
 	data object FailedToRetrieveProjectData :
 		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
 
-	data object FailedToDeleteProject :
-		LocalizedMessage(R.string.error_failed_to_delete_project)
+	data object FailedToDeleteProject : LocalizedMessage(R.string.error_failed_to_delete_project)
 
-	data object FailedToRenameProject :
-		LocalizedMessage(R.string.error_failed_to_rename_project)
+	data object FailedToRenameProject : LocalizedMessage(R.string.error_failed_to_rename_project)
 
 	data object DeleteProject : ProjectDetailsEvent()
 }

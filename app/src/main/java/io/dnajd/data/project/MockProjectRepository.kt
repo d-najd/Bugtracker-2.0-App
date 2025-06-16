@@ -11,8 +11,7 @@ object MockProjectRepository : ProjectRepository {
 			mockData()
 		)
 
-	override suspend fun getById(id: Long): Result<Project> =
-		Result.success(mockData().data[0])
+	override suspend fun getById(id: Long): Result<Project> = Result.success(mockData().data[0])
 
 	override suspend fun createProject(project: Project): Result<Project> = Result.success(project)
 

@@ -33,5 +33,4 @@ fun Modifier.bottomBorder(
 				strokeWidth = strokeWidthPx
 			)
 		}
-	}
-)
+	})

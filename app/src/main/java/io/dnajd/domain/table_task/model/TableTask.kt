@@ -28,8 +28,7 @@ fun TableTask.toBasic(): TableTaskBasic = TableTaskBasic(
 	severity = severity,
 	position = position,
 	labels = labels,
-	childTasks = childTasks.map { it.toBasic() }
-)
+	childTasks = childTasks.map { it.toBasic() })
 
 /**
  * TODO deprecate this?

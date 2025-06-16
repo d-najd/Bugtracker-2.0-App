@@ -3,7 +3,6 @@ package io.dnajd.presentation.project_table.components
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,48 +25,41 @@ fun ProjectTableTopAppBar(
 	onCreateTableClicked: () -> Unit,
 	onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
 ) {
-	BugtrackerTwoAppBar(
-		navigationIcon = {
-			IconButton(onClick = { onBackClicked() }) {
-				Icon(
-					modifier = Modifier
-						.padding(horizontal = 8.dp),
-					imageVector = Icons.Rounded.ArrowBack,
-					contentDescription = ""
-				)
-			}
-		},
-		title = {
-			val title =
-				if (state is ProjectTableScreenState.Success) state.project.title else
-					stringResource(R.string.loading)
-			Text(
-				text = title,
-			)
-		},
-		actions = {
-			IconButton(onClick = { /*TODO*/ }) {
-				Icon(
-					modifier = Modifier
-						.padding(horizontal = 6.dp),
-					imageVector = Icons.Rounded.FilterList,
-					contentDescription = ""
-				)
-			}
-			IconButton(onClick = { onCreateTableClicked() }) {
-				Icon(
-					modifier = Modifier
-						.padding(horizontal = 6.dp),
-					imageVector = Icons.Rounded.Add,
-					contentDescription = ""
-				)
-			}
-		},
-		bottomContent = {
-			BugtrackerTwoAppBarTableBar(
-				selectedTab = ProjectTableSelectedTab.BOARD,
-				onTabClicked = onSwitchScreenTabClicked,
+	BugtrackerTwoAppBar(navigationIcon = {
+		IconButton(onClick = { onBackClicked() }) {
+			Icon(
+				modifier = Modifier.padding(horizontal = 8.dp),
+				imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+				contentDescription = ""
 			)
 		}
-	)
+	}, title = {
+		val title =
+			if (state is ProjectTableScreenState.Success) state.project.title else stringResource(
+				R.string.loading
+			)
+		Text(
+			text = title,
+		)
+	}, actions = {
+		IconButton(onClick = { /*TODO*/ }) {
+			Icon(
+				modifier = Modifier.padding(horizontal = 6.dp),
+				imageVector = Icons.Rounded.FilterList,
+				contentDescription = ""
+			)
+		}
+		IconButton(onClick = { onCreateTableClicked() }) {
+			Icon(
+				modifier = Modifier.padding(horizontal = 6.dp),
+				imageVector = Icons.Rounded.Add,
+				contentDescription = ""
+			)
+		}
+	}, bottomContent = {
+		BugtrackerTwoAppBarTableBar(
+			selectedTab = ProjectTableSelectedTab.BOARD,
+			onTabClicked = onSwitchScreenTabClicked,
+		)
+	})
 }

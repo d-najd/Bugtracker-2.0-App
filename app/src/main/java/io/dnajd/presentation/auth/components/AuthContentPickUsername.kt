@@ -15,11 +15,7 @@ fun AuthContentPickUsername() {
 	TextField(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 20.dp),
-		value = "",
-		onValueChange = { },
-		placeholder = {
-			Text(text = stringResource(R.string.info_pick_username))
-		}
-	)
+			.padding(horizontal = 20.dp), value = "", onValueChange = { }, placeholder = {
+		Text(text = stringResource(R.string.info_pick_username))
+	})
 }

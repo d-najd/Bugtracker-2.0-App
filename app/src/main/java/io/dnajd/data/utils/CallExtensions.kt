@@ -23,8 +23,7 @@ fun <T> Call<T>.toResult(): Result<T> {
 		if (response.body() != null) {
 			return Result.success(response.body()!!)
 		} else {
-			@Suppress("UNCHECKED_CAST")
-			return Result.success(Unit as T)
+			@Suppress("UNCHECKED_CAST") return Result.success(Unit as T)
 		}
 	} catch (e: Exception) {
 		return Result.failure(e)

@@ -17,11 +17,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteProjectRepository : ProjectRepository {
-	private val factory: ProjectRepositoryApi =
-		Injekt.get<Retrofit.Builder>()
-			.baseUrl(Urls.PROJECT)
-			.build()
-			.create(ProjectRepositoryApi::class.java)
+	private val factory: ProjectRepositoryApi = Injekt.get<Retrofit.Builder>()
+		.baseUrl(Urls.PROJECT)
+		.build()
+		.create(ProjectRepositoryApi::class.java)
 
 	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
 		handleRetrofitRequest { factory.getAllByUsername(username) }

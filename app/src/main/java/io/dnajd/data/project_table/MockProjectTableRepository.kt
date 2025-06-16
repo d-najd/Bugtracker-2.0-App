@@ -24,18 +24,17 @@ object MockProjectTableRepository : ProjectTableRepository {
 	override suspend fun updateTable(table: ProjectTable): Result<ProjectTable> =
 		Result.success(table)
 
-	override suspend fun swapTablePositions(fId: Long, sId: Long): Result<Unit> =
-		Result.success(Unit)
+	override suspend fun swapTablePositions(
+		fId: Long,
+		sId: Long,
+	): Result<Unit> = Result.success(Unit)
 
 	override suspend fun deleteById(id: Long): Result<Unit> = Result.success(Unit)
 
 	private fun mockData(includeTasks: Boolean) = ProjectTableListResponse(
 		listOf(
 			ProjectTable(
-				id = 1,
-				title = "Table 1",
-				position = 0,
-				tasks = if (includeTasks) listOf(
+				id = 1, title = "Table 1", position = 0, tasks = if (includeTasks) listOf(
 					TableTaskBasic(
 						1,
 						title = "Issue 1",

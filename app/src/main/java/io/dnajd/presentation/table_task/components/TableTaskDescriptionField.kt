@@ -23,10 +23,9 @@ fun TableTaskDescriptionField(
 ) {
 	Column(
 		modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .clickable { onAlterDescriptionSheetClicked() }
-	) {
+			.fillMaxWidth()
+			.padding(top = 8.dp)
+			.clickable { onAlterDescriptionSheetClicked() }) {
 		Text(
 			modifier = Modifier.padding(top = 20.dp),
 			text = stringResource(R.string.field_description),
@@ -35,8 +34,8 @@ fun TableTaskDescriptionField(
 
 		Text(
 			modifier = Modifier
-                .padding(top = 8.dp)
-                .height(92.dp),
+				.padding(top = 8.dp)
+				.height(92.dp),
 			fontSize = (14.5).sp,
 			text = state.task.description ?: stringResource(R.string.action_tap_to_add_description),
 			color = if (state.task.description != null) Color.Unspecified

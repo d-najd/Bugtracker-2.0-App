@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,7 +79,7 @@ fun BugtrackerTextField(
 		}
 
 		if (includeDivider) {
-			Divider(color = dividerColor)
+			HorizontalDivider(color = dividerColor)
 		}
 	}
 }
@@ -90,11 +90,9 @@ fun BugtrackerTextFieldPreview() {
 	var title by remember { mutableStateOf("") }
 	BugtrackerCard {
 		BugtrackerTextField(
-			modifierText = Modifier
-				.fillMaxWidth(),
+			modifierText = Modifier.fillMaxWidth(),
 			label = stringResource(R.string.field_project_title),
 			value = title,
-			onValueChange = { title = it }
-		)
+			onValueChange = { title = it })
 	}
 }

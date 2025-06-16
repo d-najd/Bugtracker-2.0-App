@@ -40,9 +40,7 @@ fun TableTaskBottomSheetContent(
 
 	for (table in tablesSorted) {
 		SheetItem(
-			title = table.title,
-			onClick = { onChangeTableClicked(table.id) }
-		)
+			title = table.title, onClick = { onChangeTableClicked(table.id) })
 	}
 
 }

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class UserAuthorityListResponse(
-	@SerializedName("data") val `data`: List<UserAuthority> = emptyList()
+	@SerializedName("data") val `data`: List<UserAuthority> = emptyList(),
 )
 
 data class UserAuthority(

@@ -38,16 +38,19 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		coroutineScope.launchIO {
-			val task = taskRepository.getById(taskId).onFailureWithStackTrace {
-				_events.send(TableTaskEvent.FailedToRetrieveTask)
-				return@launchIO
-			}.getOrThrow()
+			val task = taskRepository.getById(taskId)
+				.onFailureWithStackTrace {
+					_events.send(TableTaskEvent.FailedToRetrieveTask)
+					return@launchIO
+				}
+				.getOrThrow()
 
 			val table = projectTableRepository.getById(id = task.tableId, includeTasks = true)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTable)
 					return@launchIO
-				}.getOrThrow()
+				}
+				.getOrThrow()
 
 			mutableState.update {
 				TableTaskScreenState.Success(
@@ -67,10 +70,12 @@ class TableTaskStateScreenModel(
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 			val renamedTask = successState.task.copy(description = newDescription)
 
-			val persistedTask = taskRepository.updateTask(renamedTask).onFailureWithStackTrace {
-				_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
-				return@launchIONoQueue
-			}.getOrThrow()
+			val persistedTask = taskRepository.updateTask(renamedTask)
+				.onFailureWithStackTrace {
+					_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
+					return@launchIONoQueue
+				}
+				.getOrThrow()
 
 			mutableState.update {
 				successState.copy(task = persistedTask)
@@ -93,7 +98,8 @@ class TableTaskStateScreenModel(
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
-				}.getOrThrow()
+				}
+				.getOrThrow()
 
 			mutableState.update {
 				successState.copy(
@@ -116,12 +122,13 @@ class TableTaskStateScreenModel(
 					val tables = sheet.tables.ifEmpty {
 
 						projectTableRepository.getAllByProjectId(
-							projectId = successState.parentTable.projectId,
-							includeTasks = true
-						).onFailureWithStackTrace {
-							_events.send(TableTaskEvent.FailedToShowSheet)
-							return@launchIONoQueue
-						}.getOrThrow().data
+							projectId = successState.parentTable.projectId, includeTasks = true
+						)
+							.onFailureWithStackTrace {
+								_events.send(TableTaskEvent.FailedToShowSheet)
+								return@launchIONoQueue
+							}
+							.getOrThrow().data
 
 					}
 

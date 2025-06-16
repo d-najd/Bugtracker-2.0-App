@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -48,7 +48,7 @@ fun BugtrackerTwoAppBar(
 		) {
 			bottomContent()
 		}
-		Divider()
+		HorizontalDivider()
 	}
 }
 
@@ -61,17 +61,16 @@ fun BugtrackerTwoAppBarTableBar(
 	val colorEnabled = MaterialTheme.colorScheme.primary
 	for (tab in ProjectTableSelectedTab.values()) {
 		val tabModifier = Modifier
-            .clickable { onTabClicked(tab) }
-            .padding(start = 8.dp, top = 2.dp, end = 8.dp)
-            .composed {
-                if (selectedTab == tab) {
-                    return@composed bottomBorder(
-                        strokeWidth = (1.5).dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                this
-            }
+			.clickable { onTabClicked(tab) }
+			.padding(start = 8.dp, top = 2.dp, end = 8.dp)
+			.composed {
+				if (selectedTab == tab) {
+					return@composed bottomBorder(
+						strokeWidth = (1.5).dp, color = MaterialTheme.colorScheme.primary
+					)
+				}
+				this
+			}
 		Column(
 			modifier = tabModifier
 		) {

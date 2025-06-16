@@ -24,41 +24,31 @@ fun CreateProjectDialog(
 	// the entire screen each time a letter is modified
 	var title by remember { mutableStateOf("") }
 
-	AlertDialog(
-		onDismissRequest = { onDismissRequest() },
-		title = {
-			Text(text = stringResource(R.string.field_create_project))
-		},
-		confirmButton = {
-			TextButton(
-				enabled = title.isNotBlank(),
-				onClick = {
-					val project = Project(
-						owner = "user1",
-						title = title,
-					)
-					onCreateProjectClicked(project)
-				}) {
-				Text(
-					text = stringResource(R.string.action_create).uppercase()
+	AlertDialog(onDismissRequest = { onDismissRequest() }, title = {
+		Text(text = stringResource(R.string.field_create_project))
+	}, confirmButton = {
+		TextButton(
+			enabled = title.isNotBlank(), onClick = {
+				val project = Project(
+					owner = "user1",
+					title = title,
 				)
-			}
-		},
-		dismissButton = {
-			TextButton(
-				onClick = { onDismissRequest() }
-			) {
-				Text(text = stringResource(R.string.action_cancel).uppercase())
-			}
-		},
-		text = {
-			BugtrackerTextField(
-				modifierText = Modifier
-					.fillMaxWidth(),
-				label = stringResource(R.string.field_project_title),
-				value = title,
-				onValueChange = { title = it }
+				onCreateProjectClicked(project)
+			}) {
+			Text(
+				text = stringResource(R.string.action_create).uppercase()
 			)
 		}
-	)
+	}, dismissButton = {
+		TextButton(
+			onClick = { onDismissRequest() }) {
+			Text(text = stringResource(R.string.action_cancel).uppercase())
+		}
+	}, text = {
+		BugtrackerTextField(
+			modifierText = Modifier.fillMaxWidth(),
+			label = stringResource(R.string.field_project_title),
+			value = title,
+			onValueChange = { title = it })
+	})
 }

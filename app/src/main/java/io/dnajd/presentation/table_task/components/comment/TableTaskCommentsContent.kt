@@ -71,7 +71,6 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
 					fontFamily = FontFamily.SansSerif,
 					fontSize = 15.sp
 				)
-			}
-		)
+			})
 	}
 }

@@ -1,4 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+
     <style name="Theme.Bugtracker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/bugtracker_theme_light_primary</item>
         <item name="colorOnPrimary">@color/bugtracker_theme_light_onPrimary</item>
@@ -7,11 +8,13 @@
         <item name="colorSecondary">@color/bugtracker_theme_light_secondary</item>
         <item name="colorOnSecondary">@color/bugtracker_theme_light_onSecondary</item>
         <item name="colorSecondaryContainer">@color/bugtracker_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/bugtracker_theme_light_onSecondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/bugtracker_theme_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/bugtracker_theme_light_tertiary</item>
         <item name="colorOnTertiary">@color/bugtracker_theme_light_onTertiary</item>
         <item name="colorTertiaryContainer">@color/bugtracker_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/bugtracker_theme_light_onTertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/bugtracker_theme_light_onTertiaryContainer
+        </item>
         <item name="colorError">@color/bugtracker_theme_light_error</item>
         <item name="colorOnError">@color/bugtracker_theme_light_onError</item>
         <item name="colorErrorContainer">@color/bugtracker_theme_light_errorContainer</item>

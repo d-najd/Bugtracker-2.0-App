@@ -22,8 +22,8 @@ import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 	Row(
 		modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 14.dp),
+			.fillMaxWidth()
+			.padding(top = 14.dp),
 		verticalAlignment = Alignment.CenterVertically,
 	) {
 		Text(
@@ -32,8 +32,7 @@ fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 			text = "${stringResource(R.string.field_activity)}:",
 		)
 		Row(
-			horizontalArrangement = Arrangement.End,
-			modifier = Modifier.fillMaxWidth()
+			horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
 		) {
 			Text(
 				text = stringResource(R.string.field_comments),

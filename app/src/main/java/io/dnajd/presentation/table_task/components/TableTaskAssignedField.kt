@@ -101,8 +101,7 @@ fun TableTaskAssignedField(
 					}
 
 					Row(
-						modifier = Modifier
-							.weight(1f),
+						modifier = Modifier.weight(1f),
 						horizontalArrangement = Arrangement.End,
 						verticalAlignment = Alignment.CenterVertically,
 					) {
@@ -120,6 +119,5 @@ fun TableTaskAssignedField(
 					}
 				}
 			}
-		}
-	)
+		})
 }

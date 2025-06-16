@@ -28,43 +28,32 @@ fun CreateProjectTableDialog(
 	// the entire screen each time a letter is modified
 	var title by remember { mutableStateOf(placeholderTitle) }
 
-	AlertDialog(
-		onDismissRequest = { onDismissRequest() },
-		title = {
-			Text(text = stringResource(R.string.field_add_column))
-		},
-		confirmButton = {
-			TextButton(
-				enabled = title.isNotBlank(),
-				onClick = {
-					onCreateTableClicked(
-						ProjectTable(
-							projectId = state.project.id,
-							title = title,
-						)
+	AlertDialog(onDismissRequest = { onDismissRequest() }, title = {
+		Text(text = stringResource(R.string.field_add_column))
+	}, confirmButton = {
+		TextButton(
+			enabled = title.isNotBlank(), onClick = {
+				onCreateTableClicked(
+					ProjectTable(
+						projectId = state.project.id,
+						title = title,
 					)
-				}
-			) {
-				Text(
-					text = stringResource(R.string.action_add).uppercase()
 				)
-			}
-		},
-		dismissButton = {
-			TextButton(
-				onClick = { onDismissRequest() }
-			) {
-				Text(text = stringResource(R.string.action_cancel).uppercase())
-			}
-		},
-		text = {
-			BugtrackerTextField(
-				modifierText = Modifier
-					.fillMaxWidth(),
-				label = stringResource(R.string.field_column_name),
-				value = title,
-				onValueChange = { title = it }
+			}) {
+			Text(
+				text = stringResource(R.string.action_add).uppercase()
 			)
 		}
-	)
+	}, dismissButton = {
+		TextButton(
+			onClick = { onDismissRequest() }) {
+			Text(text = stringResource(R.string.action_cancel).uppercase())
+		}
+	}, text = {
+		BugtrackerTextField(
+			modifierText = Modifier.fillMaxWidth(),
+			label = stringResource(R.string.field_column_name),
+			value = title,
+			onValueChange = { title = it })
+	})
 }

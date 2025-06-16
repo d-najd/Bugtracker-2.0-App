@@ -11,7 +11,10 @@ import uy.kohesive.injekt.api.get
 class JwtAuthenticator(
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
 ) : Authenticator {
-	override fun authenticate(route: Route?, response: Response): Request? {
+	override fun authenticate(
+		route: Route?,
+		response: Response,
+	): Request? {
 		if (response.request.header("Authorization") != null) {
 			return null
 		}

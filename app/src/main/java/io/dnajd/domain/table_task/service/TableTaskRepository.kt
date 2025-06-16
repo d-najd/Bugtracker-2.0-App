@@ -31,7 +31,10 @@ interface TableTaskRepository {
 	 * @param sId id of the second task
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun swapTaskPositions(fId: Long, sId: Long): Result<Unit>
+	suspend fun swapTaskPositions(
+		fId: Long,
+		sId: Long,
+	): Result<Unit>
 
 	/**
 	 * moves task to the given position, this is different from swapping positions because every task
@@ -40,7 +43,10 @@ interface TableTaskRepository {
 	 * @param sId id of the second task
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun movePositionTo(fId: Long, sId: Long): Result<Unit>
+	suspend fun movePositionTo(
+		fId: Long,
+		sId: Long,
+	): Result<Unit>
 
 	/**
 	 * Swaps the table of a task
@@ -48,6 +54,9 @@ interface TableTaskRepository {
 	 * @param tableId id of the table which the task will be moved to
 	 * @return true if the request was successful false if it wasn't
 	 */
-	suspend fun moveToTable(id: Long, tableId: Long): Result<Unit>
+	suspend fun moveToTable(
+		id: Long,
+		tableId: Long,
+	): Result<Unit>
 
 }

@@ -24,15 +24,12 @@ fun TableTaskNoCommentsContent() {
 	) {
 		Icon(
 			modifier = Modifier
-                .padding(top = 36.dp)
-                .size(86.dp),
-			imageVector = Icons.Default.Forum,
-			contentDescription = ""
+				.padding(top = 36.dp)
+				.size(86.dp), imageVector = Icons.Default.Forum, contentDescription = ""
 		)
 
 		Text(
-			modifier = Modifier
-				.padding(top = 8.dp),
+			modifier = Modifier.padding(top = 8.dp),
 			text = stringResource(R.string.info_comment_first),
 			fontSize = 15.sp,
 		)

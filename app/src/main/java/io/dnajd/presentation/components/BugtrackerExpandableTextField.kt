@@ -94,8 +94,8 @@ private fun BugtrackerExpandableTextFieldPreview() {
 	BugtrackerCard {
 		BugtrackerExpandableTextField(
 			modifierText = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { expanded = it.isFocused },
+				.fillMaxWidth()
+				.onFocusChanged { expanded = it.isFocused },
 			expanded = expanded,
 			value = title,
 			onValueChange = { title = it },
@@ -104,8 +104,7 @@ private fun BugtrackerExpandableTextFieldPreview() {
 			BugtrackerExpandableTextFieldDefaults.Content(
 				confirmEnabled = (title != originalTitle) && title.isNotBlank(),
 				onConfirmClicked = { },
-				onCancelClicked = { }
-			)
+				onCancelClicked = { })
 		}
 	}
 }

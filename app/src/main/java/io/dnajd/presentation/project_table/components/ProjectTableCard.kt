@@ -80,9 +80,10 @@ fun ProjectTableCard(
 		// a list is being stored in case the user moves multiple table items
 		val reorderableState = rememberReorderableLazyListState(
 			onMove = { from, to ->
-				reorderableList = reorderableList.toMutableList().apply {
-					add(to.index, removeAt(from.index))
-				}
+				reorderableList = reorderableList.toMutableList()
+					.apply {
+						add(to.index, removeAt(from.index))
+					}
 			},
 			onDragEnd = { from, to ->
 				if (from != to) {
@@ -154,12 +155,10 @@ private fun ProjectTableCardTop(
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
 	Row(
-		modifier = modifier,
-		verticalAlignment = Alignment.CenterVertically
+		modifier = modifier, verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
-			modifier = Modifier
-				.padding(start = 8.dp),
+			modifier = Modifier.padding(start = 8.dp),
 			text = table.title,
 			fontWeight = FontWeight.SemiBold,
 			fontSize = 16.sp,
@@ -171,15 +170,13 @@ private fun ProjectTableCardTop(
 			color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 		)
 		Column(
-			modifier = Modifier
-				.fillMaxWidth(),
+			modifier = Modifier.fillMaxWidth(),
 			horizontalAlignment = Alignment.End,
 		) {
 			IconButton(
 				onClick = {
 					onSwitchDropdownMenuClicked(table.id)
-				}
-			) {
+				}) {
 				Icon(
 					imageVector = Icons.Rounded.MoreVert,
 					contentDescription = "",
@@ -211,14 +208,11 @@ private fun ProjectTableDropdownMenu(
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
 	Column(
-		horizontalAlignment = Alignment.End,
-		modifier = Modifier
-			.fillMaxWidth()
+		horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()
 	) {
 		DropdownMenu(
 			expanded = table.id == state.dropdownDialogSelectedTableId,
-			onDismissRequest = { onSwitchDropdownMenuClicked(null) }
-		) {
+			onDismissRequest = { onSwitchDropdownMenuClicked(null) }) {
 			DropdownMenuItem(text = {
 				Text(text = stringResource(R.string.action_rename_column))
 			}, onClick = {
@@ -230,8 +224,7 @@ private fun ProjectTableDropdownMenu(
 					Text(text = stringResource(R.string.action_move_column_left))
 				}, onClick = {
 					onSwapTablePositionsClicked(
-						table.id,
-						state.tables.find { it.position == table.position - 1 }!!.id
+						table.id, state.tables.find { it.position == table.position - 1 }!!.id
 					)
 					onSwitchDropdownMenuClicked(null)
 				})
@@ -241,8 +234,7 @@ private fun ProjectTableDropdownMenu(
 					Text(text = stringResource(R.string.action_move_column_right))
 				}, onClick = {
 					onSwapTablePositionsClicked(
-						table.id,
-						state.tables.find { it.position == table.position + 1 }!!.id
+						table.id, state.tables.find { it.position == table.position + 1 }!!.id
 					)
 					onSwitchDropdownMenuClicked(null)
 				})
@@ -281,14 +273,12 @@ private fun ProjectTableCardBottom(
 							reporter = "user1",
 						)
 					)
-				}
-			),
+				}),
 			isKeyboardEnabled = {
 				if (!it) {
 					onCreateTableTaskMenuClicked(null)
 				}
-			}
-		)
+			})
 
 		Box(modifier = Modifier.height(4.dp))
 	} else if (state.createTableItemSelectedTableId == null) {
@@ -297,8 +287,7 @@ private fun ProjectTableCardBottom(
 			modifier = modifier.clickable { onCreateTableTaskMenuClicked(table.id) },
 		) {
 			Icon(
-				modifier = Modifier
-					.size(32.dp),
+				modifier = Modifier.size(32.dp),
 				tint = MaterialTheme.colorScheme.primary,
 				imageVector = Icons.Rounded.Add,
 				contentDescription = "",

@@ -9,7 +9,11 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +35,7 @@ fun ProjectUserManagementItemContent(
 	BugtrackerExpandableMenu(
 		modifier = Modifier
 			.padding(
-				horizontal = 12.dp,
-				vertical = 4.dp
+				horizontal = 12.dp, vertical = 4.dp
 			)
 			.fillMaxWidth(),
 		onClick = { expanded = !expanded },
@@ -42,34 +45,31 @@ fun ProjectUserManagementItemContent(
 			BugtrackerIconPairField(
 				modifier = Modifier
 					.fillMaxWidth()
-					.height(42.dp),
-				iconContent = {
-					Icon(
-						modifier = Modifier.size(28.dp),
-						imageVector = Icons.Default.AccountCircle,
-						contentDescription = ""
-					)
-				},
-				textContent = {
-					Text(
-						modifier = Modifier.padding(start = 2.dp),
-						text = userWithAuthorities.key,
-						color = MaterialTheme.colorScheme.onSurface,
-						fontSize = (13.75).sp,
-						fontFamily = FontFamily.SansSerif,
-						fontWeight = FontWeight.Light,
-					)
+					.height(42.dp), iconContent = {
+				Icon(
+					modifier = Modifier.size(28.dp),
+					imageVector = Icons.Default.AccountCircle,
+					contentDescription = ""
+				)
+			}, textContent = {
+				Text(
+					modifier = Modifier.padding(start = 2.dp),
+					text = userWithAuthorities.key,
+					color = MaterialTheme.colorScheme.onSurface,
+					fontSize = (13.75).sp,
+					fontFamily = FontFamily.SansSerif,
+					fontWeight = FontWeight.Light,
+				)
 
-					Text(
-						modifier = Modifier.padding(start = 2.dp),
-						text = "ROLE-CUSTOM",
-						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-						fontSize = 12.sp,
-						fontWeight = FontWeight.ExtraLight,
-						fontFamily = FontFamily.SansSerif,
-					)
-				}
-			)
+				Text(
+					modifier = Modifier.padding(start = 2.dp),
+					text = "ROLE-CUSTOM",
+					color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
+					fontSize = 12.sp,
+					fontWeight = FontWeight.ExtraLight,
+					fontFamily = FontFamily.SansSerif,
+				)
+			})
 		},
 		expandableContent = {
 			ProjectUserManagementAuthoritiesContent(

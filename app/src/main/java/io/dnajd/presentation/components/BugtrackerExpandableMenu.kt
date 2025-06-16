@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.TaskAlt
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -94,7 +94,7 @@ fun BugtrackerExpandableMenu(
 		}
 
 		if (displaySecondaryDivider) {
-			Divider(
+			HorizontalDivider(
 				modifier = Modifier.padding(top = if (displayMainDivider) 14.dp else 0.dp)
 			)
 		}
@@ -110,8 +110,7 @@ private fun BugtrackerExpandableMenuPreview() {
 			id = 1,
 			title = "Title 1",
 			tableId = 1,
-		),
-		TableChildTask(
+		), TableChildTask(
 			id = 2,
 			title = "Title 2",
 			tableId = 2,
@@ -153,39 +152,34 @@ private fun BugtrackerExpandableMenuPreview() {
 			},
 			expandableContent = {
 				for (childTask in childTasks) {
-					BugtrackerIconPairField(
-						modifier = Modifier.padding(top = 6.dp),
-						iconContent = {
-							Icon(
-								imageVector = Icons.Default.TaskAlt,
-								tint = MaterialTheme.colorScheme.primary,
-								contentDescription = ""
+					BugtrackerIconPairField(modifier = Modifier.padding(top = 6.dp), iconContent = {
+						Icon(
+							imageVector = Icons.Default.TaskAlt,
+							tint = MaterialTheme.colorScheme.primary,
+							contentDescription = ""
+						)
+					}, textContent = {
+						Text(text = childTask.title)
+						Row(
+							verticalAlignment = Alignment.CenterVertically,
+						) {
+							Text(
+								text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
+								color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 							)
-						},
-						textContent = {
-							Text(text = childTask.title)
-							Row(
-								verticalAlignment = Alignment.CenterVertically,
-							) {
-								Text(
-									text = "${stringResource(R.string.field_task).uppercase()}-${childTask.id}",
-									color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-								)
-								Text(
-									text = " = ",
-									color = colorResource(R.color.coral),
-									fontFamily = FontFamily.SansSerif,
-									fontSize = 26.sp,
-								)
-								Text(
-									text = "INSERT TABLE NAME",
-									color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
-								)
-							}
+							Text(
+								text = " = ",
+								color = colorResource(R.color.coral),
+								fontFamily = FontFamily.SansSerif,
+								fontSize = 26.sp,
+							)
+							Text(
+								text = "INSERT TABLE NAME",
+								color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
+							)
 						}
-					)
+					})
 				}
-			}
-		)
+			})
 	}
 }

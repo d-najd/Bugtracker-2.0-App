@@ -88,15 +88,12 @@ fun AuthContentOAuth(
 				.fillMaxWidth(),
 			mode = GoogleButtonMode.Dark,
 			text = stringResource(R.string.field_sign_up_google),
-			onClick = {
-			}
-		)
+			onClick = { })
 
 		Box(
 			modifier = Modifier
 				.padding(top = 36.dp)
-				.fillMaxWidth(),
-			contentAlignment = Alignment.Center
+				.fillMaxWidth(), contentAlignment = Alignment.Center
 		) {
 			HorizontalDivider(
 				modifier = Modifier,
@@ -118,9 +115,7 @@ fun AuthContentOAuth(
 				.fillMaxWidth(),
 			mode = GoogleButtonMode.Light,
 			text = stringResource(R.string.field_sign_up_google),
-			onClick = {
-			}
-		)
+			onClick = { })
 
 
 		/*

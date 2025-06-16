@@ -28,33 +28,27 @@ fun ProjectScreenContent(
 ) {
 	Scaffold(
 		topBar = {
-			TopAppBar(
-				title = {
-					Text(
-						text = stringResource(R.string.field_projects),
+			TopAppBar(title = {
+				Text(
+					text = stringResource(R.string.field_projects),
+				)
+			}, actions = {
+				IconButton(onClick = { /*TODO*/ }) {
+					Icon(
+						modifier = Modifier.padding(horizontal = 6.dp),
+						imageVector = Icons.Rounded.Search,
+						contentDescription = ""
 					)
-				},
-				actions = {
-					IconButton(onClick = { /*TODO*/ }) {
-						Icon(
-							modifier = Modifier
-								.padding(horizontal = 6.dp),
-							imageVector = Icons.Rounded.Search,
-							contentDescription = ""
-						)
-					}
-					IconButton(onClick = { onCreateProjectClicked() }) {
-						Icon(
-							modifier = Modifier
-								.padding(horizontal = 6.dp),
-							imageVector = Icons.Rounded.Add,
-							contentDescription = ""
-						)
-					}
 				}
-			)
-		}
-	) { contentPadding ->
+				IconButton(onClick = { onCreateProjectClicked() }) {
+					Icon(
+						modifier = Modifier.padding(horizontal = 6.dp),
+						imageVector = Icons.Rounded.Add,
+						contentDescription = ""
+					)
+				}
+			})
+		}) { contentPadding ->
 		ProjectContent(
 			state = state,
 			contentPadding = contentPadding,

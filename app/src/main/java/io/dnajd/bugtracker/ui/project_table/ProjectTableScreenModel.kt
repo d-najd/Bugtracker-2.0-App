@@ -44,24 +44,31 @@ class ProjectTableScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val projectResult =
-				async { projectRepository.getById(projectId).onFailure { cancel() } }
-			val tablesResult =
-				async { projectTableRepository.getAllByProjectId(projectId).onFailure { cancel() } }
+			val projectResult = async {
+				projectRepository.getById(projectId)
+					.onFailure { cancel() }
+			}
+			val tablesResult = async {
+				projectTableRepository.getAllByProjectId(projectId)
+					.onFailure { cancel() }
+			}
 
 			awaitAll(projectResult, tablesResult)
 
 			if (projectResult.isCancelled || tablesResult.isCancelled) {
-				projectResult.getCompletionExceptionOrNull()?.printStackTrace()
-				tablesResult.getCompletionExceptionOrNull()?.printStackTrace()
+				projectResult.getCompletionExceptionOrNull()
+					?.printStackTrace()
+				tablesResult.getCompletionExceptionOrNull()
+					?.printStackTrace()
 
 				return@launchIO
 			}
 
-			val project = projectResult.getCompleted().getOrThrow()
-			val tables = tablesResult.getCompleted().getOrThrow()
-			val sortedTables = tables.data
-				.sortedBy { it.position }
+			val project = projectResult.getCompleted()
+				.getOrThrow()
+			val tables = tablesResult.getCompleted()
+				.getOrThrow()
+			val sortedTables = tables.data.sortedBy { it.position }
 				.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
 
 			mutableState.update {
@@ -77,10 +84,12 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTable = projectTableRepository.createTable(table).onFailureWithStackTrace {
-				_events.send(ProjectTableEvent.FailedToCreateProjectTable)
-				return@launchIONoQueue
-			}.getOrThrow()
+			val createdTable = projectTableRepository.createTable(table)
+				.onFailureWithStackTrace {
+					_events.send(ProjectTableEvent.FailedToCreateProjectTable)
+					return@launchIONoQueue
+				}
+				.getOrThrow()
 
 			val tables = successState.tables.toMutableList()
 			tables.add(createdTable)
@@ -101,10 +110,12 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTask = tableTaskRepository.createTask(task).onFailureWithStackTrace {
-				_events.send(ProjectTableEvent.FailedToCreateTableTask)
-				return@launchIONoQueue
-			}.getOrThrow()
+			val createdTask = tableTaskRepository.createTask(task)
+				.onFailureWithStackTrace {
+					_events.send(ProjectTableEvent.FailedToCreateTableTask)
+					return@launchIONoQueue
+				}
+				.getOrThrow()
 
 			val tables = successState.tables.toMutableList()
 			val table = tables.find { it.id == task.tableId }!!
@@ -124,7 +135,10 @@ class ProjectTableScreenModel(
 		}
 	}
 
-	fun renameTable(id: Long, newName: String) {
+	fun renameTable(
+		id: Long,
+		newName: String,
+	) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 			val tables = successState.tables.toMutableList()
@@ -135,7 +149,8 @@ class ProjectTableScreenModel(
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToRenameProjectTable)
 					return@launchIONoQueue
-				}.getOrThrow()
+				}
+				.getOrThrow()
 
 			tables.remove(table)
 			tables.add(persistedTable)
@@ -152,7 +167,10 @@ class ProjectTableScreenModel(
 	 * @param sId id of the second table
 	 * @throws IllegalArgumentException if [fId] == [sId]
 	 */
-	fun swapTablePositions(fId: Long, sId: Long) {
+	fun swapTablePositions(
+		fId: Long,
+		sId: Long,
+	) {
 		if (fId == sId) throw IllegalArgumentException("Can't swap table with itself")
 
 		mutex.launchIONoQueue(coroutineScope) {
@@ -163,10 +181,11 @@ class ProjectTableScreenModel(
 			val fTable = tables.find { table -> table.id == sId }!!
 			val sTable = tables.find { table -> table.id == fId }!!
 
-			projectTableRepository.swapTablePositions(fId, sId).onFailureWithStackTrace {
-				_events.send(ProjectTableEvent.FailedToSwapTablePositions)
-				return@launchIONoQueue
-			}
+			projectTableRepository.swapTablePositions(fId, sId)
+				.onFailureWithStackTrace {
+					_events.send(ProjectTableEvent.FailedToSwapTablePositions)
+					return@launchIONoQueue
+				}
 
 			tables.remove(fTable)
 			tables.remove(sTable)
@@ -200,7 +219,11 @@ class ProjectTableScreenModel(
 	 * the need to find the id manually
 	 * @throws IllegalArgumentException if [fIndex] == [sIndex]
 	 */
-	fun moveTableTasks(tableId: Long, fIndex: Int, sIndex: Int) {
+	fun moveTableTasks(
+		tableId: Long,
+		fIndex: Int,
+		sIndex: Int,
+	) {
 		if (fIndex == sIndex) {
 			throw IllegalArgumentException("fIndex and sIndex can't be the same")
 		}
@@ -214,16 +237,17 @@ class ProjectTableScreenModel(
 			val fTask = table.tasks[fIndex]
 			val sTask = table.tasks[sIndex]
 
-			tableTaskRepository.movePositionTo(fTask.id, sTask.id).onFailureWithStackTrace {
-				// TODO what the hell is this?
-				mutableState.update {
-					successState.copy(
-						manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
-					)
+			tableTaskRepository.movePositionTo(fTask.id, sTask.id)
+				.onFailureWithStackTrace {
+					// TODO what the hell is this?
+					mutableState.update {
+						successState.copy(
+							manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
+						)
+					}
+					_events.send(ProjectTableEvent.FailedToMoveTableTasks)
+					return@launchIONoQueue
 				}
-				_events.send(ProjectTableEvent.FailedToMoveTableTasks)
-				return@launchIONoQueue
-			}
 
 			ifMoveTaskSuccess(
 				tables = tables,
@@ -259,7 +283,8 @@ class ProjectTableScreenModel(
 
 					else -> it
 				}
-			}.toMutableList()
+			}
+				.toMutableList()
 		} else {
 			tasks.mapIndexed { index, it ->
 				when (index) {
@@ -273,7 +298,8 @@ class ProjectTableScreenModel(
 
 					else -> it
 				}
-			}.toMutableList()
+			}
+				.toMutableList()
 		}
 		tables.add(
 			table.copy(
@@ -293,19 +319,21 @@ class ProjectTableScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			projectTableRepository.deleteById(tableId).onSuccess {
-				val tables = successState.tables.toMutableList()
-				tables.removeIf { it.id == tableId }
+			projectTableRepository.deleteById(tableId)
+				.onSuccess {
+					val tables = successState.tables.toMutableList()
+					tables.removeIf { it.id == tableId }
 
-				mutableState.update {
-					successState.copy(
-						tables = tables
-					)
+					mutableState.update {
+						successState.copy(
+							tables = tables
+						)
+					}
 				}
-			}.onFailure {
-				it.printStackTrace()
-				_events.send(ProjectTableEvent.FailedToDeleteTable)
-			}
+				.onFailure {
+					it.printStackTrace()
+					_events.send(ProjectTableEvent.FailedToDeleteTable)
+				}
 		}
 	}
 
@@ -359,7 +387,10 @@ sealed class ProjectTableEvent {
 
 sealed class ProjectTableDialog {
 	data class CreateTable(val title: String = "") : ProjectTableDialog()
-	data class RenameTable(val id: Long, val title: String = "") : ProjectTableDialog()
+	data class RenameTable(
+		val id: Long,
+		val title: String = "",
+	) : ProjectTableDialog()
 }
 
 sealed class ProjectTableScreenState {

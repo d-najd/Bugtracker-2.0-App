@@ -13,15 +13,18 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object RemoteGoogleAuthRepository : GoogleAuthRepository {
-	private val factory: GoogleAuthRepositoryApi =
-		Injekt.get<Retrofit.Builder>()
-			.baseUrl(Urls.GOOGLE_AUTH).build()
-			.create(GoogleAuthRepositoryApi::class.java)
+	private val factory: GoogleAuthRepositoryApi = Injekt.get<Retrofit.Builder>()
+		.baseUrl(Urls.GOOGLE_AUTH)
+		.build()
+		.create(GoogleAuthRepositoryApi::class.java)
 
 	override fun googleSignIn(googleToken: String): Result<JwtTokenHolder> =
 		handleRetrofitRequest { factory.googleSignIn("Bearer $googleToken") }
 
-	override fun googleSignUp(googleToken: String, userInfo: CreateUser): Result<JwtTokenHolder> =
+	override fun googleSignUp(
+		googleToken: String,
+		userInfo: CreateUser,
+	): Result<JwtTokenHolder> =
 		handleRetrofitRequest { factory.googleSignUp("Bearer $googleToken", userInfo) }
 }
 

@@ -29,13 +29,14 @@ fun ProjectTableContent(
 ) {
 	Row(
 		modifier = Modifier
-            .fillMaxSize()
-            .horizontalScroll(rememberScrollState())
-            .verticalScroll(rememberScrollState())
-            .padding(contentPadding)
-            .padding(5.dp),
+			.fillMaxSize()
+			.horizontalScroll(rememberScrollState())
+			.verticalScroll(rememberScrollState())
+			.padding(contentPadding)
+			.padding(5.dp),
 	) {
-		for ((index, table) in state.tables.sortedBy { it.position }.withIndex()) {
+		for ((index, table) in state.tables.sortedBy { it.position }
+			.withIndex()) {
 			ProjectTableCard(
 				state = state,
 				table = table,

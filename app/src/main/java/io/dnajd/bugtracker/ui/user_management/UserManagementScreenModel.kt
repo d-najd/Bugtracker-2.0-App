@@ -38,7 +38,8 @@ class UserManagementScreenModel(
 				.onFailureWithStackTrace {
 					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
 					return@launchIO
-				}.getOrThrow().data
+				}
+				.getOrThrow().data
 
 			mutableState.update {
 				UserManagementScreenState.Success(
@@ -82,11 +83,12 @@ class UserManagementScreenModel(
 			throw IllegalArgumentException("Authority already exists")
 		}
 
-		val createdAuthority =
-			userAuthorityRepository.create(userAuthority).onFailureWithStackTrace {
+		val createdAuthority = userAuthorityRepository.create(userAuthority)
+			.onFailureWithStackTrace {
 				_events.send(UserManagementEvent.FailedToCreateUserAuthority)
 				return
-			}.getOrThrow()
+			}
+			.getOrThrow()
 
 		authorities.add(createdAuthority)
 		mutableState.update { successState.copy(authorities = authorities) }
@@ -97,7 +99,10 @@ class UserManagementScreenModel(
 	 * removes user authority from given project, if every authority is removed the user will be
 	 * removed from the project as well, [agreed] must be true to prevent accidental removal of users
 	 */
-	fun deleteAuthority(userAuthority: UserAuthority, agreed: Boolean = false) {
+	fun deleteAuthority(
+		userAuthority: UserAuthority,
+		agreed: Boolean = false,
+	) {
 		mutex.launchIONoQueue(coroutineScope) {
 			deleteAuthorityInternal(userAuthority, agreed)
 		}
@@ -123,10 +128,11 @@ class UserManagementScreenModel(
 			return
 		}
 
-		userAuthorityRepository.delete(userAuthority).onFailureWithStackTrace {
-			_events.send(UserManagementEvent.UserAuthorityDoesNotExist)
-			return
-		}
+		userAuthorityRepository.delete(userAuthority)
+			.onFailureWithStackTrace {
+				_events.send(UserManagementEvent.UserAuthorityDoesNotExist)
+				return
+			}
 
 		authorities.remove(userAuthority)
 		mutableState.update { successState.copy(authorities = authorities) }
@@ -183,13 +189,11 @@ sealed class UserManagementScreenState {
 			val authorityMap: UserAuthorityMap = mutableMapOf()
 			for (authority in authorities) {
 				authorityMap.compute(
-					authority.username,
-					BiFunction { _, u ->
+					authority.username, BiFunction { _, u ->
 						val mutableList = u?.toMutableList() ?: mutableListOf()
 						mutableList.add(authority)
 						return@BiFunction mutableList
-					}
-				)
+					})
 			}
 			return authorityMap.toSortedMap()
 		}

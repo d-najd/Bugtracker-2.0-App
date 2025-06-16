@@ -53,22 +53,18 @@ class UserManagementScreen(
 			state = successState,
 			onBackClicked = navigator::pop,
 			onInvertAuthorityClicked = screenModel::invertAuthority,
-			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) }
-		)
+			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) })
 
 		when (val dialog = successState.dialog) {
 			null -> {}
 			is UserManagementDialog.ConfirmLastAuthorityRemoval -> {
 				ConfirmLastAuthorityRemovalDialog(
-					onDismissRequest = screenModel::dismissDialog,
-					onConfirmClicked = {
+					onDismissRequest = screenModel::dismissDialog, onConfirmClicked = {
 						screenModel.deleteAuthority(
-							userAuthority = dialog.userAuthority,
-							agreed = true
+							userAuthority = dialog.userAuthority, agreed = true
 						)
 						screenModel.dismissDialog()
-					}
-				)
+					})
 			}
 
 			is UserManagementDialog.AddUserToProject -> {

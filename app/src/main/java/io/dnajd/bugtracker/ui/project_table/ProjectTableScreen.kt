@@ -45,8 +45,7 @@ class ProjectTableScreen(
 			onTableRename = { id, title ->
 				screenModel.showDialog(
 					ProjectTableDialog.RenameTable(
-						id = id,
-						title = title
+						id = id, title = title
 					)
 				)
 			},
@@ -77,8 +76,7 @@ class ProjectTableScreen(
 						onCreateTableClicked = {
 							screenModel.createTable(table = it)
 							screenModel.dismissDialog()
-						}
-					)
+						})
 				}
 
 				is ProjectTableDialog.RenameTable -> {
@@ -88,8 +86,7 @@ class ProjectTableScreen(
 						onRenameProjectTableClicked = {
 							screenModel.renameTable(id = dialog.id, newName = it)
 							screenModel.dismissDialog()
-						}
-					)
+						})
 				}
 			}
 		}

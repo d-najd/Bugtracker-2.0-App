@@ -12,5 +12,8 @@ interface GoogleAuthRepository {
 	/**
 	 * @param googleToken Should be only the token itself
 	 */
-	fun googleSignUp(googleToken: String, userDto: CreateUser): Result<JwtTokenHolder>
+	fun googleSignUp(
+		googleToken: String,
+		userDto: CreateUser,
+	): Result<JwtTokenHolder>
 }

@@ -22,7 +22,8 @@ class JwtAuthAndroidPreferenceStore(
 	}
 
 	override fun storeAccessToken(token: String) {
-		androidPreferenceStore.getString(ACCESS_TOKEN_PREFERENCE).set(token)
+		androidPreferenceStore.getString(ACCESS_TOKEN_PREFERENCE)
+			.set(token)
 	}
 
 	override fun retrieveRefreshToken(): String? {
@@ -34,6 +35,7 @@ class JwtAuthAndroidPreferenceStore(
 	}
 
 	override fun storeRefreshToken(token: String) {
-		androidPreferenceStore.getString(REFRESH_TOKEN_PREFERENCE).set(token)
+		androidPreferenceStore.getString(REFRESH_TOKEN_PREFERENCE)
+			.set(token)
 	}
 }

@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -61,8 +61,7 @@ fun BugtrackerMultipurposeMenu(
 	) {
 		if (title != null) {
 			Text(
-				modifier = Modifier
-					.padding(start = MULTIPURPOSE_MENU_TEXT_START_PADDING),
+				modifier = Modifier.padding(start = MULTIPURPOSE_MENU_TEXT_START_PADDING),
 				text = title,
 			)
 		}
@@ -90,9 +89,8 @@ fun BugtrackerMultipurposeMenu(
 			}
 
 			if (includeDivider) {
-				Divider(
-					color = dividerColor,
-					thickness = dividerThickness,
+				HorizontalDivider(
+					thickness = dividerThickness, color = dividerColor
 				)
 			}
 		}

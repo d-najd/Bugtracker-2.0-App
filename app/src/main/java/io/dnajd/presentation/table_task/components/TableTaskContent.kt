@@ -51,8 +51,7 @@ fun TableTaskContent(
 			.verticalScroll(rememberScrollState())
 			.padding(contentPadding)
 			.padding(
-				horizontal = 12.dp,
-				vertical = 36.dp
+				horizontal = 12.dp, vertical = 36.dp
 			),
 	) {
 		val task = state.task
@@ -64,10 +63,7 @@ fun TableTaskContent(
 			/* TODO add functionality for this and the other one in the tables screen, when pressed
 				the completed state should revert from false to true and vice versa */
 			Checkbox(
-				modifier = Modifier.size(16.dp),
-				checked = true,
-				onCheckedChange = { }
-			)
+				modifier = Modifier.size(16.dp), checked = true, onCheckedChange = { })
 			Text(
 				modifier = Modifier
 					.padding(start = 12.dp)
@@ -109,8 +105,7 @@ fun TableTaskContent(
 			shape = RoundedCornerShape(6.dp),
 		) {
 			BugtrackerMultipurposeMenu(
-				modifier = Modifier
-					.padding(top = 8.dp, bottom = 8.dp, start = 4.dp, end = 2.dp),
+				modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 4.dp, end = 2.dp),
 				text = {
 					Text(
 						modifier = Modifier.padding(start = 3.5.dp),

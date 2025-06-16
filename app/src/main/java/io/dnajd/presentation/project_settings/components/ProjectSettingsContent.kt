@@ -1,8 +1,12 @@
 package io.dnajd.presentation.project_settings.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,12 +33,10 @@ fun ProjectSettingsContent(
 	) {
 		ProjectSettingsItem(
 			title = stringResource(R.string.action_details),
-			onClick = { onProjectDetailsClicked() }
-		)
+			onClick = { onProjectDetailsClicked() })
 		ProjectSettingsItem(
 			title = stringResource(R.string.action_user_management),
-			onClick = { onUserManagementClicked() }
-		)
+			onClick = { onUserManagementClicked() })
 	}
 }
 
@@ -43,11 +45,9 @@ fun ProjectSettingsItem(
 	title: String,
 	onClick: () -> Unit,
 ) {
-	Column(
-		modifier = Modifier
-			.clickable { onClick() }
-			.fillMaxWidth()
-	) {
+	Column(modifier = Modifier
+		.clickable { onClick() }
+		.fillMaxWidth()) {
 		Row(
 			modifier = Modifier
 				.padding(vertical = 16.dp)
@@ -62,5 +62,5 @@ fun ProjectSettingsItem(
 			)
 		}
 	}
-	Divider()
+	HorizontalDivider()
 }
