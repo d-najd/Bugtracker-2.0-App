@@ -24,10 +24,10 @@ object RemoteGoogleAuthRepository : GoogleAuthRepository {
 
 	override suspend fun googleSignUp(
 		googleToken: String,
-		userInfo: CreateUser,
+		userDto: CreateUser,
 	): Result<JwtTokenHolder> = factory.googleSignUp(
 		"Bearer $googleToken",
-		userInfo
+		userDto
 	)
 }
 
