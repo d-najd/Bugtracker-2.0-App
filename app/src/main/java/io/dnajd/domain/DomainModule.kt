@@ -41,7 +41,7 @@ class DomainModule : InjektModule {
 			OkHttpClient
 				.Builder()
 				.addInterceptor(loggingInterceptor)
-				.addInterceptor(JwtAuthenticator())
+				.addInterceptor(JwtAuthenticator)
 				.build()
 		}
 
