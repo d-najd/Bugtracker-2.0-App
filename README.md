@@ -69,7 +69,7 @@ Link to the backend can be found [here](https://github.com/d-najd/Bugtracker-2.0
 1. Git clone the project
 
 ```shell
-git clone https://github.com/d-najd/Bugtracker-2.0-App
+git clone https://github.com/d-najd/Bugtracker-2.0-App.git
 ```
 
 2. Change the config to mock (mock implementations for development) or remote (using backend) in
