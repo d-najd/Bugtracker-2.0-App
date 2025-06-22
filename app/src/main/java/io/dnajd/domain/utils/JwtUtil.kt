@@ -1,15 +1,16 @@
 package io.dnajd.domain.utils
 
 import com.auth0.android.jwt.JWT
-import java.sql.Date
 
 /**
  * Tokens are refreshed before they exceed certain threshold
  * E.X token expires in 3 days and threshold is 1 day, so it should be refreshed in 2 days
  */
 object JwtUtil {
-	private const val SECONDS_THRESHOLD_ACCESS_TOKEN = 60 * 60 * 1L // 1 hours
-	private const val SECONDS_THRESHOLD_REFRESH_TOKEN = 60 * 60 * 24 * 7L // 7 days
+	const val SECONDS_THRESHOLD_ACCESS_TOKEN = 60 * 60 * 1L // 1 hours
+
+	@Suppress("MemberVisibilityCanBePrivate")
+	const val SECONDS_THRESHOLD_REFRESH_TOKEN = 60 * 60 * 24 * 7L // 7 days
 
 	/**
 	 * The refresh token may expire in shorter time than [SECONDS_THRESHOLD_REFRESH_TOKEN] which
@@ -36,40 +37,21 @@ object JwtUtil {
 			throw IllegalArgumentException("Token expires in very short time, new refresh token is through oauth token")
 		}
 
-		val refreshWithThreshold = Date(
-			jwt.expiresAt!!
-				.toInstant()
-				.minusSeconds(SECONDS_THRESHOLD_REFRESH_TOKEN)
-				.toEpochMilli()
-		)
-
-		return refreshWithThreshold
-			.toInstant()
-			.toEpochMilli() > System.currentTimeMillis()
+		return System.currentTimeMillis() > refreshTokenExpirationWithToleranceMilli(jwt)
 	}
 
 	fun accessTokenNeedsRefresh(jwt: JWT): Boolean {
-		val accessWithThreshold = Date(
-			jwt.expiresAt!!
-				.toInstant()
-				.minusSeconds(SECONDS_THRESHOLD_ACCESS_TOKEN)
-				.toEpochMilli()
-		)
-
-		return accessWithThreshold
-			.toInstant()
-			.toEpochMilli() > System.currentTimeMillis()
+		return System.currentTimeMillis() > accessTokenExpirationWithToleranceMilli(jwt)
 	}
 
-	fun isRefreshTokenValid(jwt: JWT): Boolean {
-		return isTokenValid(jwt)
-	}
+	fun accessTokenExpirationWithToleranceMilli(jwt: JWT): Long = jwt.expiresAt!!
+		.toInstant()
+		.minusSeconds(SECONDS_THRESHOLD_ACCESS_TOKEN)
+		.toEpochMilli()
 
-	fun isAccessTokenValid(jwt: JWT): Boolean {
-		return isTokenValid(jwt)
-	}
-
-	private fun isTokenValid(jwt: JWT): Boolean {
-		return !jwt.isExpired(0L)
-	}
+	@Suppress("MemberVisibilityCanBePrivate")
+	fun refreshTokenExpirationWithToleranceMilli(jwt: JWT): Long = jwt.expiresAt!!
+		.toInstant()
+		.minusSeconds(SECONDS_THRESHOLD_REFRESH_TOKEN)
+		.toEpochMilli()
 }

@@ -3,6 +3,7 @@ package io.dnajd.domain
 import com.google.gson.GsonBuilder
 import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import io.dnajd.data.google_auth.RemoteGoogleAuthRepository
+import io.dnajd.data.jwt_auth.RemoteJwtRefreshAuthRepository
 import io.dnajd.data.project.MockProjectRepository
 import io.dnajd.data.project.RemoteProjectRepository
 import io.dnajd.data.project_table.MockProjectTableRepository
@@ -13,6 +14,7 @@ import io.dnajd.data.user_authority.MockUserAuthorityRepository
 import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
 import io.dnajd.data.utils.JwtAuthenticator
 import io.dnajd.domain.google_auth.service.GoogleAuthRepository
+import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthRepository
 import io.dnajd.domain.project.service.ProjectRepository
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.service.TableTaskRepository
@@ -73,6 +75,7 @@ class DomainModule : InjektModule {
 		when (USE_MOCKS) {
 			true -> {
 				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
+				addSingletonFactory<JwtRefreshAuthRepository> { RemoteJwtRefreshAuthRepository }
 				addSingletonFactory<ProjectRepository> { MockProjectRepository }
 				addSingletonFactory<ProjectTableRepository> { MockProjectTableRepository }
 				addSingletonFactory<TableTaskRepository> { MockTableTaskRepository }
@@ -81,6 +84,7 @@ class DomainModule : InjektModule {
 
 			false -> {
 				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
+				addSingletonFactory<JwtRefreshAuthRepository> { RemoteJwtRefreshAuthRepository }
 				addSingletonFactory<ProjectRepository> { RemoteProjectRepository }
 				addSingletonFactory<ProjectTableRepository> { RemoteProjectTableRepository }
 				addSingletonFactory<TableTaskRepository> { RemoteTableTaskRepository }
