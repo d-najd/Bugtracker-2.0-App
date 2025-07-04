@@ -10,7 +10,7 @@ object JwtUtil {
 	const val SECONDS_THRESHOLD_ACCESS_TOKEN = 60 * 60 * 1L // 1 hours
 
 	@Suppress("MemberVisibilityCanBePrivate")
-	const val SECONDS_THRESHOLD_REFRESH_TOKEN = 60 * 60 * 24 * 7L // 7 days
+	const val SECONDS_THRESHOLD_REFRESH_TOKEN = 60 * 60 * 24 * 15L // 15 days
 
 	/**
 	 * The refresh token may expire in shorter time than [SECONDS_THRESHOLD_REFRESH_TOKEN] which
