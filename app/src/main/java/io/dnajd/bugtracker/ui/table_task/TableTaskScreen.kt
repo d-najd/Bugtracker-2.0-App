@@ -12,6 +12,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.R
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.table_task.TableTaskScreenContent
 import io.dnajd.presentation.table_task.sheets.TableTaskAlterDescriptionSheet
@@ -34,6 +35,7 @@ class TableTaskScreen(
 					is TableTaskEvent.FailedToRetrieveTable,
 					is TableTaskEvent.FailedToRetrieveTask,
 						-> {
+						context.toast(R.string.error_failed_to_retrieve_task)
 						navigator.pop()
 					}
 

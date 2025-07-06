@@ -70,7 +70,7 @@ private interface ProjectTableRepositoryApi {
 		@Query("includeIssues") includeTasks: Boolean,
 	): Result<ProjectTableListResponse>
 
-	@GET("id/{id}")
+	@GET("{id}")
 	suspend fun getById(
 		@Path("id") id: Long,
 		@Query("includeIssues") includeTasks: Boolean,

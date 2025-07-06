@@ -1,6 +1,7 @@
 package io.dnajd.presentation.project_table.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -111,9 +112,14 @@ private fun ProjectTableCardContentLocal(
 			.detectReorderAfterLongPress(reorderableState)
 		if (onTaskClicked != null) {
 			if (taskId != null) {
-				cardModifier = cardModifier.clickable { onTaskClicked(taskId) }
+				cardModifier = cardModifier.clickable {
+					onTaskClicked(taskId)
+				}
 			} else {
-				throw IllegalArgumentException("if onTaskClicked is not null taskId must not be null as well")
+				Log.d(
+					"Debug",
+					"Task not clickable"
+				)
 			}
 		}
 		Column(
