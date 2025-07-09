@@ -58,7 +58,6 @@ class UserManagementScreenModel(
 	 * authority
 	 * @throws IllegalArgumentException if supplied authority type is [UserAuthorityType.project_owner]
 	 */
-	@Throws(IllegalArgumentException::class)
 	fun modifyAuthority(
 		userAuthority: UserAuthority,
 		value: Boolean? = null,
@@ -84,16 +83,13 @@ class UserManagementScreenModel(
 		}
 	}
 
-	/**
-	 * @throws IllegalArgumentException if the authority already exists
-	 */
-	@Throws(IllegalArgumentException::class)
 	private suspend fun createAuthorityInternal(userAuthority: UserAuthority) {
 		val successState = mutableState.value as UserManagementScreenState.Success
 		val authorities = successState.authorities.toMutableList()
 
 		if (authorities.contains(userAuthority)) {
-			throw IllegalArgumentException("Authority already exists")
+			_events.send(UserManagementEvent.AuthorityAlreadyExists)
+			return
 		}
 
 		userAuthorityRepository
@@ -190,6 +186,9 @@ sealed class UserManagementEvent {
 
 	data object FailedToCreateUserAuthority :
 		LocalizedMessage(R.string.error_failed_to_create_user_authority)
+
+	data object AuthorityAlreadyExists :
+		LocalizedMessage(R.string.error_user_authority_already_exists)
 }
 
 sealed class UserManagementDialog {

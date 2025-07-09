@@ -50,13 +50,13 @@ private interface UserAuthorityRepositoryApi {
 	): Result<UserAuthorityListResponse>
 
 	@POST("userAuthority/value/{value}")
-	fun modifyUserAuthority(
+	suspend fun modifyUserAuthority(
 		@Body projectAuthorityId: UserAuthority,
 		@Path("value") value: Boolean,
 	): Result<Unit>
 
 	@POST("managerAuthority/value/{value}")
-	fun modifyManagerAuthority(
+	suspend fun modifyManagerAuthority(
 		@Body projectAuthorityId: UserAuthority,
 		@Path("value") value: Boolean,
 	): Result<Unit>
