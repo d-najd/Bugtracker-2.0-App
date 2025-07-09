@@ -75,41 +75,12 @@ class UserManagementScreenModel(
 
 				return@launchIONoQueue
 			} else if (value) {
+				createAuthorityInternal(userAuthority)
 				return@launchIONoQueue
 			} else {
+				deleteAuthorityInternal(userAuthority)
 				return@launchIONoQueue
 			}
-
-			/*
-			val successState = mutableState.value as UserManagementScreenState.Success
-
-			if (successState.authorities.contains(userAuthority)) {
-				deleteAuthorityInternal(userAuthority)
-			} else {
-				createAuthorityInternal(userAuthority)
-			}
-			 */
-		}
-	}
-
-	/**
-	 * creates user authority if it does not exist or removes it if it does exist
-	 */
-	fun invertAuthority(userAuthority: UserAuthority) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as UserManagementScreenState.Success
-
-			if (successState.authorities.contains(userAuthority)) {
-				deleteAuthorityInternal(userAuthority)
-			} else {
-				createAuthorityInternal(userAuthority)
-			}
-		}
-	}
-
-	fun createAuthority(userAuthority: UserAuthority) {
-		mutex.launchIONoQueue(coroutineScope) {
-			createAuthorityInternal(userAuthority)
 		}
 	}
 
@@ -125,15 +96,18 @@ class UserManagementScreenModel(
 			throw IllegalArgumentException("Authority already exists")
 		}
 
-		val createdAuthority = userAuthorityRepository
-			.create(userAuthority)
+		userAuthorityRepository
+			.modifyAuthority(
+				userAuthority,
+				true
+			)
 			.onFailureWithStackTrace {
 				_events.send(UserManagementEvent.FailedToCreateUserAuthority)
 				return
 			}
 			.getOrThrow()
 
-		authorities.add(createdAuthority)
+		authorities.add(userAuthority)
 		mutableState.update { successState.copy(authorities = authorities) }
 	}
 
@@ -177,7 +151,7 @@ class UserManagementScreenModel(
 		userAuthorityRepository
 			.modifyAuthority(
 				userAuthority,
-				false
+				false,
 			)
 			.onFailureWithStackTrace {
 				_events.send(UserManagementEvent.FailedToModifyUserAuthority)
@@ -226,7 +200,6 @@ sealed class UserManagementDialog {
 }
 
 sealed class UserManagementScreenState {
-
 	@Immutable data object Loading : UserManagementScreenState()
 
 	@Immutable data class Success(
@@ -248,5 +221,4 @@ sealed class UserManagementScreenState {
 			return authorityMap.toSortedMap()
 		}
 	}
-
 }

@@ -11,10 +11,10 @@ object MockUserAuthorityRepository : UserAuthorityRepository {
 			mockData()
 		)
 
-	override suspend fun create(userAuthority: UserAuthority): Result<UserAuthority> =
-		Result.success(userAuthority)
-
-	override suspend fun delete(userAuthority: UserAuthority): Result<Unit> = Result.success(Unit)
+	override suspend fun modifyAuthority(
+		userAuthority: UserAuthority,
+		value: Boolean,
+	): Result<Unit> = Result.success(Unit)
 
 	private fun mockData() = UserAuthorityListResponse(
 		listOf(

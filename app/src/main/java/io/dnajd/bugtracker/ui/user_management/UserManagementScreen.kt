@@ -52,7 +52,7 @@ class UserManagementScreen(
 		ProjectUserManagementScreenContent(
 			state = successState,
 			onBackClicked = navigator::pop,
-			onInvertAuthorityClicked = screenModel::invertAuthority,
+			onInvertAuthorityClicked = { screenModel.modifyAuthority(it) },
 			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) })
 
 		when (val dialog = successState.dialog) {
@@ -73,8 +73,12 @@ class UserManagementScreen(
 				AddUserToProjectDialog(
 					onDismissRequest = screenModel::dismissDialog,
 					projectId = successState.projectId,
-					onConfirmClicked = screenModel::createAuthority
-				)
+					onConfirmClicked = {
+						screenModel.modifyAuthority(
+							it,
+							true
+						)
+					})
 			}
 		}
 	}
