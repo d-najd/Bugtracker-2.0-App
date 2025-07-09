@@ -2,6 +2,7 @@ package io.dnajd.domain.user_authority.service
 
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
+import io.dnajd.domain.user_authority.model.UserAuthorityType
 
 interface UserAuthorityRepository {
 
@@ -13,17 +14,15 @@ interface UserAuthorityRepository {
 	suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse>
 
 	/**
-	 * Creates user authority
-	 * @param userAuthority the pojo that is sent to the server
-	 * @return received userAuthority from the server or null if the request failed
+	 * Adds ar removes authority
+	 * @param userAuthority the pojo that will be sent to the server
+	 * @param value if true will add the authority if false will remove it, nothing will happen
+	 * the authority is already in that state
+	 * @throws IllegalArgumentException if the authority is [UserAuthorityType.project_owner]
 	 */
-	suspend fun create(userAuthority: UserAuthority): Result<UserAuthority>
-
-	/**
-	 * Deletes given userAuthority
-	 * @param userAuthority pojo that is to be removed
-	 * @return true if the request was successful false if it wasn't
-	 */
-	suspend fun delete(userAuthority: UserAuthority): Result<Unit>
-
+	@Throws(IllegalArgumentException::class)
+	suspend fun modifyAuthority(
+		userAuthority: UserAuthority,
+		value: Boolean,
+	): Result<Unit>
 }

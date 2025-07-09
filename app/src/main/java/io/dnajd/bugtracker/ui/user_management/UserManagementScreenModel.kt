@@ -6,9 +6,9 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.user_authority.model.UserAuthority
+import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
 import io.dnajd.domain.utils.onFailureWithStackTrace
-import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.channels.Channel
@@ -33,12 +33,12 @@ class UserManagementScreenModel(
 	private val mutex = Mutex()
 
 	init {
-		coroutineScope.launchIO {
+		mutex.launchIONoQueue(coroutineScope) {
 			val userAuthorities = userAuthorityRepository
 				.getAllByProjectId(projectId)
 				.onFailureWithStackTrace {
 					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
-					return@launchIO
+					return@launchIONoQueue
 				}
 				.getOrThrow().data
 
@@ -48,6 +48,47 @@ class UserManagementScreenModel(
 					authorities = userAuthorities,
 				)
 			}
+		}
+	}
+
+	/**
+	 * Creates or removes user authority
+	 * @param userAuthority the user authority
+	 * @param value if true will create authority, if false will remove, if unset will flip the
+	 * authority
+	 * @throws IllegalArgumentException if supplied authority type is [UserAuthorityType.project_owner]
+	 */
+	@Throws(IllegalArgumentException::class)
+	fun modifyAuthority(
+		userAuthority: UserAuthority,
+		value: Boolean? = null,
+	) {
+		mutex.launchIONoQueue(coroutineScope) {
+			if (value == null) {
+				val successState = mutableState.value as UserManagementScreenState.Success
+
+				if (successState.authorities.contains(userAuthority)) {
+					deleteAuthorityInternal(userAuthority)
+				} else {
+					createAuthorityInternal(userAuthority)
+				}
+
+				return@launchIONoQueue
+			} else if (value) {
+				return@launchIONoQueue
+			} else {
+				return@launchIONoQueue
+			}
+
+			/*
+			val successState = mutableState.value as UserManagementScreenState.Success
+
+			if (successState.authorities.contains(userAuthority)) {
+				deleteAuthorityInternal(userAuthority)
+			} else {
+				createAuthorityInternal(userAuthority)
+			}
+			 */
 		}
 	}
 
@@ -134,9 +175,12 @@ class UserManagementScreenModel(
 		}
 
 		userAuthorityRepository
-			.delete(userAuthority)
+			.modifyAuthority(
+				userAuthority,
+				false
+			)
 			.onFailureWithStackTrace {
-				_events.send(UserManagementEvent.UserAuthorityDoesNotExist)
+				_events.send(UserManagementEvent.FailedToModifyUserAuthority)
 				return
 			}
 
@@ -163,13 +207,14 @@ class UserManagementScreenModel(
 
 sealed class UserManagementEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : UserManagementEvent()
-	object UserAuthorityDoesNotExist :
-		LocalizedMessage(R.string.error_user_authority_does_not_exist)
 
-	object FailedToRetrieveUserAuthorities :
+	data object FailedToModifyUserAuthority :
+		LocalizedMessage(R.string.error_failed_to_modify_user_authority)
+
+	data object FailedToRetrieveUserAuthorities :
 		LocalizedMessage(R.string.error_failed_tor_retrieve_user_authorities)
 
-	object FailedToCreateUserAuthority :
+	data object FailedToCreateUserAuthority :
 		LocalizedMessage(R.string.error_failed_to_create_user_authority)
 }
 
@@ -177,12 +222,12 @@ sealed class UserManagementDialog {
 	data class ConfirmLastAuthorityRemoval(val userAuthority: UserAuthority) :
 		UserManagementDialog()
 
-	object AddUserToProject : UserManagementDialog()
+	data object AddUserToProject : UserManagementDialog()
 }
 
 sealed class UserManagementScreenState {
 
-	@Immutable object Loading : UserManagementScreenState()
+	@Immutable data object Loading : UserManagementScreenState()
 
 	@Immutable data class Success(
 		val projectId: Long,

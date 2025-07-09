@@ -85,7 +85,7 @@
     <string name="field_add_user_to_project">Add user to project</string>
     <string name="field_name_of_user">Name of user</string>
     <string name="field_username">Username</string>
-    <string name="error_user_authority_does_not_exist">Unable to remove user authority since it does not exist</string>
+    <string name="error_failed_to_modify_user_authority">Failed to modify user authority</string>
     <string name="error_user_authority_already_exists">Unable to create user authority since it already exists</string>
     <string name="error_unhandled">Unhandled exception</string>
     <string name="field_select_transition">Select a transition</string>

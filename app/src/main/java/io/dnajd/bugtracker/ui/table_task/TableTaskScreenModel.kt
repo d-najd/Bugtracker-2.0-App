@@ -10,7 +10,6 @@ import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.utils.onFailureWithStackTrace
-import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.channels.Channel
@@ -37,12 +36,12 @@ class TableTaskStateScreenModel(
 	}
 
 	private fun requestTaskData(taskId: Long) {
-		coroutineScope.launchIO {
+		mutex.launchIONoQueue(coroutineScope) {
 			val task = taskRepository
 				.getById(taskId)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTask)
-					return@launchIO
+					return@launchIONoQueue
 				}
 				.getOrThrow()
 
@@ -53,7 +52,7 @@ class TableTaskStateScreenModel(
 				)
 				.onFailureWithStackTrace {
 					_events.send(TableTaskEvent.FailedToRetrieveTable)
-					return@launchIO
+					return@launchIONoQueue
 				}
 				.getOrThrow()
 
