@@ -31,7 +31,7 @@ object AuthScreen : Screen {
 					}
 
 					AuthEvent.UserLoggedIn -> {
-						navigator.replaceAll(ProjectScreen)
+						navigator.replaceAll(ProjectScreen())
 					}
 				}
 			}

@@ -6,10 +6,9 @@ import io.dnajd.domain.project.service.ProjectRepository
 import java.util.Date
 
 object MockProjectRepository : ProjectRepository {
-	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
-		Result.success(
-			mockData()
-		)
+	override suspend fun getAll(): Result<ProjectListResponse> = Result.success(
+		mockData()
+	)
 
 	override suspend fun getById(id: Long): Result<Project> = Result.success(mockData().data[0])
 

@@ -28,13 +28,13 @@ class ProjectScreenModel(
 	private val mutex = Mutex()
 
 	init {
-		requestProjects("user1")
+		requestProjects()
 	}
 
-	private fun requestProjects(username: String) {
+	private fun requestProjects() {
 		coroutineScope.launchIO {
 			val projects = projectRepository
-				.getAllByUsername(username)
+				.getAll()
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToRetrieveProjects)
 					return@launchIO
@@ -83,6 +83,11 @@ class ProjectScreenModel(
 
 			mutableState.update { successState.copy(dialog = null) }
 		}
+	}
+
+	override fun onDispose() {
+		val test = ""
+		super.onDispose()
 	}
 }
 

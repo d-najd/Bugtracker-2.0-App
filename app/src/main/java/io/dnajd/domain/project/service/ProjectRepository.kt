@@ -5,11 +5,10 @@ import io.dnajd.domain.project.model.ProjectListResponse
 
 interface ProjectRepository {
 	/**
-	 * Gets all projects associated for a given username
-	 * @param username username of the user which the projects are being requested for
+	 * Gets all projects associated with current user
 	 * @return list of received projects, empty list will be returned if the request failed
 	 */
-	suspend fun getAllByUsername(username: String): Result<ProjectListResponse>
+	suspend fun getAll(): Result<ProjectListResponse>
 
 	/**
 	 * Gets single project by id

@@ -28,8 +28,7 @@ class ProjectDetailsScreen(
 			screenModel.events.collectLatest { event ->
 				when (event) {
 					is ProjectDetailsEvent.DeleteProject -> {
-						navigator.popAll()
-						navigator.push(ProjectScreen)
+						navigator.replaceAll(ProjectScreen())
 					}
 
 					is ProjectDetailsEvent.FailedToRetrieveProjectData -> {

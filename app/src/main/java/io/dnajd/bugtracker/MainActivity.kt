@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
 					}
 
 					CheckingTokensState.REFRESH_VALID -> {
-						Navigator(ProjectScreen)
+						Navigator(ProjectScreen())
 					}
 
 					CheckingTokensState.REFRESH_INVALID -> {

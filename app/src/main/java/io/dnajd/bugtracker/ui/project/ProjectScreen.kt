@@ -16,9 +16,7 @@ import io.dnajd.presentation.project.dialogs.CreateProjectDialog
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
-object ProjectScreen : Screen {
-	private fun readResolve(): Any = ProjectScreen
-
+class ProjectScreen : Screen {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow

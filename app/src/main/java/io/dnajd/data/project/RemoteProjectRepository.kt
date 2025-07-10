@@ -21,8 +21,7 @@ object RemoteProjectRepository : ProjectRepository {
 		.build()
 		.create(ProjectRepositoryApi::class.java)
 
-	override suspend fun getAllByUsername(username: String): Result<ProjectListResponse> =
-		factory.getAllByUsername()
+	override suspend fun getAll(): Result<ProjectListResponse> = factory.getAll()
 
 	override suspend fun getById(id: Long): Result<Project> = factory.getById(id)
 
@@ -41,7 +40,7 @@ object RemoteProjectRepository : ProjectRepository {
 
 interface ProjectRepositoryApi {
 	@GET("allByUsername")
-	suspend fun getAllByUsername(
+	suspend fun getAll(
 		// @Header("Authorization") authTest: String = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiaXNzIjoiZC1uYWpkLmJ1Z3RyYWNrZXIuYmFja2VuZCIsImF1ZCI6ImQtbmFqZC5idWd0cmFja2VyLmFuZHJvaWQiLCJzdWIiOiJkaW10aHJvdzEyMyIsImlhdCI6MTc0OTc2MTQ0NiwiZXhwIjoyMDY1MTIxNDQ2fQ.zcSuluRriiRxa6MMp6xIisulwKyI1S1pJajqaHFNQa1bxMBWlY3UzviYoXVyq13ZvXg4X9yO-0Lu-_bPWrYljA",
 	): Result<ProjectListResponse>
 
