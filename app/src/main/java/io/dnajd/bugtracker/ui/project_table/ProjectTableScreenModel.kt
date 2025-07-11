@@ -14,9 +14,9 @@ import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.domain.table_task.service.TableTaskRepository
 import io.dnajd.domain.utils.onFailureWithStackTrace
-import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -30,7 +30,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 @OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
-	projectId: Long,
+	private val projectId: Long,
 
 	private val projectRepository: ProjectRepository = Injekt.get(),
 	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
@@ -42,50 +42,64 @@ import uy.kohesive.injekt.api.get
 	private val mutex = Mutex()
 
 	init {
-		coroutineScope.launchIO {
-			val projectResult = async {
-				projectRepository
-					.getById(projectId)
-					.onFailure { cancel() }
-			}
-			val tablesResult = async {
-				projectTableRepository
-					.getAllByProjectId(projectId)
-					.onFailure { cancel() }
-			}
+		mutex.launchIONoQueue(coroutineScope) {
+			fetchTableData(this)
+		}
+	}
 
-			awaitAll(
-				projectResult,
-				tablesResult
-			)
-
-			if (projectResult.isCancelled || tablesResult.isCancelled) {
-				projectResult
-					.getCompletionExceptionOrNull()
-					?.printStackTrace()
-				tablesResult
-					.getCompletionExceptionOrNull()
-					?.printStackTrace()
-
-				return@launchIO
-			}
-
-			val project = projectResult
-				.getCompleted()
-				.getOrThrow()
-			val tables = tablesResult
-				.getCompleted()
-				.getOrThrow()
-			val sortedTables = tables.data
-				.sortedBy { it.position }
-				.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
-
+	fun reFetchTableData() {
+		mutex.launchIONoQueue(coroutineScope) {
 			mutableState.update {
-				ProjectTableScreenState.Success(
-					project = project,
-					tables = sortedTables,
-				)
+				ProjectTableScreenState.Loading
 			}
+
+			fetchTableData(this)
+		}
+	}
+
+	private suspend fun fetchTableData(coroutineScope: CoroutineScope) {
+		val projectResult = coroutineScope.async {
+			projectRepository
+				.getById(projectId)
+				.onFailure { cancel() }
+		}
+		val tablesResult = coroutineScope.async {
+			this@ProjectTableScreenModel.projectTableRepository
+				.getAllByProjectId(this@ProjectTableScreenModel.projectId)
+				.onFailure { this.cancel() }
+		}
+
+		awaitAll(
+			projectResult,
+			tablesResult
+		)
+
+		if (projectResult.isCancelled || tablesResult.isCancelled) {
+			projectResult
+				.getCompletionExceptionOrNull()
+				?.printStackTrace()
+			tablesResult
+				.getCompletionExceptionOrNull()
+				?.printStackTrace()
+
+			return
+		}
+
+		val project = projectResult
+			.getCompleted()
+			.getOrThrow()
+		val tables = tablesResult
+			.getCompleted()
+			.getOrThrow()
+		val sortedTables = tables.data
+			.sortedBy { it.position }
+			.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
+
+		mutableState.update {
+			ProjectTableScreenState.Success(
+				project = project,
+				tables = sortedTables,
+			)
 		}
 	}
 

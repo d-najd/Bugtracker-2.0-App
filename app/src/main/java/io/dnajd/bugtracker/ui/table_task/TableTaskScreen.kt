@@ -9,10 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.table_task.TableTaskScreenContent
@@ -36,7 +34,7 @@ class TableTaskScreen(
 					is TableTaskEvent.FailedToRetrieveTable,
 					is TableTaskEvent.FailedToRetrieveTask,
 						-> {
-						context.toast(R.string.error_failed_to_retrieve_task)
+						context.toast((event as TableTaskEvent.LocalizedMessage).stringRes)
 						navigator.pop()
 					}
 

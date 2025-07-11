@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.project_table.shared_viewmodels.ProjectTableSharedState
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreen
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.util.ScreenFixed
@@ -19,13 +20,24 @@ import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class ProjectTableScreen(
-	private val projectId: Long,
+	val projectId: Long,
 ) : ScreenFixed() {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectTableScreenModel(projectId) }
+
+		LaunchedEffect(ProjectTableSharedState.events) {
+			ProjectTableSharedState.events.collectLatest {
+				if (it == ProjectTableSharedState.Event.TableOrTaskAltered) {
+					screenModel.reFetchTableData()
+
+					// Already re-fetched data
+					return@collectLatest
+				}
+			}
+		}
 
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
