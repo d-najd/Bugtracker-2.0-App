@@ -18,6 +18,11 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreenState
 
+/**
+ * I plan to show settings depending on what roles the user has, for example maybe user management
+ * shouldn't be visible to the user if they arent a manager but rather another field for own
+ * permissions?
+ */
 @Composable
 fun ProjectSettingsContent(
 	state: ProjectSettingsScreenState.Success,

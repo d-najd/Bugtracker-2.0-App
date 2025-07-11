@@ -13,7 +13,6 @@ import io.dnajd.bugtracker.ui.user_management.UserManagementScreen
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.bugtracker.ui.util.getScreen
-import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
 import io.dnajd.util.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -43,11 +42,6 @@ class ProjectSettingsScreen(
 		}
 
 		val state by screenModel.state.collectAsState()
-
-		if (state is ProjectSettingsScreenState.Loading) {
-			LoadingScreen()
-			return
-		}
 
 		ProjectSettingsScreenContent(
 			state = state,
