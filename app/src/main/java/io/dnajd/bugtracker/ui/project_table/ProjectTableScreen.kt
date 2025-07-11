@@ -33,6 +33,13 @@ class ProjectTableScreen(
 					is ProjectTableEvent.LocalizedMessage -> {
 						context.toast(event.stringRes)
 					}
+
+					ProjectTableEvent.RenamedTable,
+					ProjectTableEvent.CreatedTable,
+						-> {
+						screenModel.dismissDialog()
+					}
+
 				}
 			}
 		}
@@ -76,7 +83,6 @@ class ProjectTableScreen(
 						onDismissRequest = screenModel::dismissDialog,
 						onCreateTableClicked = {
 							screenModel.createTable(table = it)
-							screenModel.dismissDialog()
 						})
 				}
 
@@ -89,7 +95,6 @@ class ProjectTableScreen(
 								id = dialog.id,
 								newName = it
 							)
-							screenModel.dismissDialog()
 						})
 				}
 			}

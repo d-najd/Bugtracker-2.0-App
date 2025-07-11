@@ -105,6 +105,8 @@ import uy.kohesive.injekt.api.get
 			tables.add(createdTable)
 
 			mutableState.update { successState.copy(tables = tables) }
+
+			_events.send(ProjectTableEvent.CreatedTable)
 		}
 	}
 
@@ -170,6 +172,8 @@ import uy.kohesive.injekt.api.get
 			mutableState.update {
 				successState.copy(tables = tables)
 			}
+
+			_events.send(ProjectTableEvent.RenamedTable)
 		}
 	}
 
@@ -390,11 +394,15 @@ import uy.kohesive.injekt.api.get
 sealed class ProjectTableEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectTableEvent()
 
+	data object CreatedTable : ProjectTableEvent()
+
 	data object FailedToCreateProjectTable :
 		LocalizedMessage(R.string.error_failed_to_create_project_table)
 
 	data object FailedToCreateTableTask :
 		LocalizedMessage(R.string.error_failed_to_create_table_task)
+
+	data object RenamedTable : ProjectTableEvent()
 
 	data object FailedToRenameProjectTable :
 		LocalizedMessage(R.string.error_failed_to_rename_project_table)
