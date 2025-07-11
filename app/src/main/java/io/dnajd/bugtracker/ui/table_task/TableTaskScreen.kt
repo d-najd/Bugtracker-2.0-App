@@ -13,6 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.table_task.TableTaskScreenContent
 import io.dnajd.presentation.table_task.sheets.TableTaskAlterDescriptionSheet
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class TableTaskScreen(
 	private val taskId: Long,
-) : Screen {
+) : ScreenFixed() {
 	@OptIn(ExperimentalMaterial3Api::class)
 	@Composable
 	override fun Content() {

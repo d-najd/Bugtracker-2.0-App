@@ -6,12 +6,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreen
 import io.dnajd.bugtracker.ui.user_management.UserManagementScreen
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
+import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.bugtracker.ui.util.getScreen
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_settings.ProjectSettingsScreenContent
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class ProjectSettingsScreen(
 	private val projectId: Long,
-) : Screen {
+) : ScreenFixed() {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow

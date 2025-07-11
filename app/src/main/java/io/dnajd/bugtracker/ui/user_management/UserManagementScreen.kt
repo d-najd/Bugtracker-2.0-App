@@ -9,6 +9,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.user_management.ProjectUserManagementScreenContent
 import io.dnajd.presentation.user_management.dialogs.AddUserToProjectDialog
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class UserManagementScreen(
 	private val projectId: Long,
-) : Screen {
+) : ScreenFixed() {
 	@Composable
 	override fun Content() {
 		val navigator = LocalNavigator.currentOrThrow
