@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
-import io.dnajd.bugtracker.ui.project_table.shared_viewmodels.ProjectTableSharedState
+import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableRepository
 import io.dnajd.domain.table_task.model.TableTask

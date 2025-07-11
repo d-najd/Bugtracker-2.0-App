@@ -8,7 +8,6 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.dnajd.bugtracker.ui.project_table.shared_viewmodels.ProjectTableSharedState
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreen
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.bugtracker.ui.util.ScreenFixed

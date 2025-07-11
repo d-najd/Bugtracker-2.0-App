@@ -1,4 +1,4 @@
-package io.dnajd.bugtracker.ui.project_table.shared_viewmodels
+package io.dnajd.bugtracker.ui.project_table
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
