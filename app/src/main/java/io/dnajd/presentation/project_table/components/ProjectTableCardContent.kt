@@ -5,8 +5,9 @@ import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -100,14 +101,14 @@ private fun ProjectTableCardContentLocal(
 		shape = RoundedCornerShape(4.dp),
 		modifier = Modifier
 			.fillMaxWidth()
-			.heightIn(min = 65.dp)
+			.height(65.dp)
 			.padding(
 				vertical = 2.dp,
 				horizontal = 8.dp
 			),
 	) {
 		var cardModifier = Modifier
-			.fillMaxWidth()
+			.fillMaxSize()
 			.shadow(elevation.value)
 			.detectReorderAfterLongPress(reorderableState)
 		if (onTaskClicked != null) {
