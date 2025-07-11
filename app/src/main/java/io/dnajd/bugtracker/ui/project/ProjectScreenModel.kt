@@ -84,11 +84,6 @@ class ProjectScreenModel(
 			mutableState.update { successState.copy(dialog = null) }
 		}
 	}
-
-	override fun onDispose() {
-		val test = ""
-		super.onDispose()
-	}
 }
 
 sealed class ProjectScreenState {
