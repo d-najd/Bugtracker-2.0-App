@@ -1,7 +1,11 @@
 package io.dnajd.data.utils
 
 object Urls {
-	const val SERVER_URL: String = "https://green-ape-13.telebit.io/"
+
+	const val SERVER_URL: String = "http://192.168.0.150:8080/"
+
+	// const val SERVER_URL: String = "https://green-ape-13.telebit.io/"
+
 	const val BASE: String = "${SERVER_URL}api/"
 	const val PROJECT: String = BASE + "project/"
 	const val PROJECT_TABLE: String = BASE + "project-table/"

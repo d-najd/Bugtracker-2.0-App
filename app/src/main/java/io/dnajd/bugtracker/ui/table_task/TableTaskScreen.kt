@@ -56,7 +56,7 @@ class TableTaskScreen(
 			skipHiddenState = false
 		)
 
-		LaunchedEffect(successState.sheet) {
+		LaunchedEffect(Unit) {
 			when (successState.sheet) {
 				is TableTaskSheet.BottomSheet -> {
 					bottomState.show()

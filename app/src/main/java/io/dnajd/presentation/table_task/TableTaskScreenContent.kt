@@ -1,10 +1,9 @@
 package io.dnajd.presentation.table_task
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.bugtracker.ui.table_task.TableTaskSheet
@@ -56,8 +54,7 @@ fun TableTaskScreenContent(
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
-					.height(300.dp)
-					.background(Color.Red)                    // .heightIn(min = 1.dp)
+					.heightIn(min = 1.dp)
 					.verticalScroll(rememberScrollState()),
 			) {
 				TableTaskBottomSheetContent(

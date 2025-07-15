@@ -141,24 +141,27 @@ class TableTaskStateScreenModel(
 
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
-					
+
 					// There will always be at least one table (the current one)
-					if (successState.sheetTables.isNotEmpty()) {
-						return@launchIONoQueue
+					val tables = successState.sheetTables.ifEmpty {
+						projectTableRepository
+							.getAllByProjectId(
+								projectId = successState.parentTable.projectId,
+								includeTasks = true
+							)
+							.onFailureWithStackTrace {
+								_events.send(TableTaskEvent.FailedToShowSheet)
+								return@launchIONoQueue
+							}
+							.getOrThrow().data
 					}
 
-					val tables = projectTableRepository
-						.getAllByProjectId(
-							projectId = successState.parentTable.projectId,
-							includeTasks = true
+					mutableState.update {
+						successState.copy(
+							sheetTables = tables,
+							sheet = sheet,
 						)
-						.onFailureWithStackTrace {
-							_events.send(TableTaskEvent.FailedToShowSheet)
-							return@launchIONoQueue
-						}
-						.getOrThrow().data
-
-					mutableState.update { successState.copy(sheetTables = tables) }
+					}
 				}
 
 				else -> {
