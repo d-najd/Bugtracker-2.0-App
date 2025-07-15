@@ -1,9 +1,10 @@
 package io.dnajd.presentation.table_task
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.bugtracker.ui.table_task.TableTaskSheet
@@ -43,93 +45,27 @@ fun TableTaskScreenContent(
 		)
 	}
 
-	if (state.sheet is TableTaskSheet.BottomSheet) {
+	if (state.sheet is TableTaskSheet.BottomSheet || sheetState.isVisible) {
 		ModalBottomSheet(
 			containerColor = MaterialTheme.colorScheme.surface,
 			contentColor = MaterialTheme.colorScheme.onSurface.copy(.32f),
+			sheetState = sheetState,
 			onDismissRequest = {
 				onBottomSheetDismissed()
 			}) {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
-					.heightIn(min = 1.dp)
+					.height(300.dp)
+					.background(Color.Red)                    // .heightIn(min = 1.dp)
 					.verticalScroll(rememberScrollState()),
 			) {
 				TableTaskBottomSheetContent(
 					curTable = state.parentTable,
-					tables = state.sheet.tables,
+					tables = state.sheetTables,
 					onChangeTableClicked = onChangeTableClicked,
 				)
 			}
 		}
 	}
-
-	/*
-	BottomSheetScaffold(
-		sheetContainerColor = MaterialTheme.colorScheme.surface,
-		sheetContentColor = MaterialTheme.colorScheme.onSurface.copy(.32f),
-		sheetContent = {
-			Column(
-				modifier = Modifier
-					.fillMaxWidth()
-					.heightIn(min = 1.dp)
-					.verticalScroll(rememberScrollState()),
-			) {
-				if (state.sheet is TableTaskSheet.BottomSheet) {
-					TableTaskBottomSheetContent(
-						curTable = state.parentTable,
-						tables = state.sheet.tables,
-						onChangeTableClicked = onChangeTableClicked,
-					)
-				}
-			}
-		}
-	) {
-		Scaffold { contentPadding ->
-			BackHandler { onBackClicked() }
-
-			TableTaskContent(
-				state = state,
-				contentPadding = contentPadding,
-				onChangeTableSheetClicked = onChangeTableSheetClicked,
-				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
-			)
-		}
-	}
-	 */    /*
-	ModalBottomSheetLayout(
-		sheetState = bottomDialogState,
-		sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-		sheetContentColor = MaterialTheme.colorScheme.onSurface.copy(.32f),
-		sheetContent = {
-			// anchor bs
-			Column(
-				modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 1.dp)
-                    .verticalScroll(rememberScrollState()),
-			) {
-				if (state.sheet is TableTaskSheet.BottomSheet) {
-					TableTaskBottomSheetContent(
-						curTable = state.parentTable,
-						tables = state.sheet.tables,
-						onChangeTableClicked = onChangeTableClicked,
-					)
-				}
-			}
-		}
-	) {
-		Scaffold { contentPadding ->
-			BackHandler { onBackClicked() }
-
-			TableTaskContent(
-				state = state,
-				contentPadding = contentPadding,
-				onChangeTableSheetClicked = onChangeTableSheetClicked,
-				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
-			)
-		}
-	}
-	 */
 }

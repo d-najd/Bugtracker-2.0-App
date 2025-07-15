@@ -79,7 +79,7 @@ class TableTaskScreen(
 					sheetState = bottomState,
 					onBackClicked = navigator::pop,
 					onChangeTableClicked = screenModel::swapTable,
-					onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet()) },
+					onChangeTableSheetClicked = { screenModel.showSheet(TableTaskSheet.BottomSheet) },
 					onAlterDescriptionSheetClicked = {
 						screenModel.showSheet(
 							TableTaskSheet.AlterDescriptionSheet(

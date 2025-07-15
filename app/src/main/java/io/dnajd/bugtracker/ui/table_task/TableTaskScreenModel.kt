@@ -126,6 +126,8 @@ class TableTaskStateScreenModel(
 				)
 			}
 
+			dismissSheet()
+
 			/**
 			 * The [ProjectTableScreen] needs to be refreshed since data is changed
 			 */
@@ -139,22 +141,24 @@ class TableTaskStateScreenModel(
 
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
-					val tables = sheet.tables.ifEmpty {
-
-						projectTableRepository
-							.getAllByProjectId(
-								projectId = successState.parentTable.projectId,
-								includeTasks = true
-							)
-							.onFailureWithStackTrace {
-								_events.send(TableTaskEvent.FailedToShowSheet)
-								return@launchIONoQueue
-							}
-							.getOrThrow().data
-
+					
+					// There will always be at least one table (the current one)
+					if (successState.sheetTables.isNotEmpty()) {
+						return@launchIONoQueue
 					}
 
-					mutableState.update { successState.copy(sheet = sheet.copy(tables = tables)) }
+					val tables = projectTableRepository
+						.getAllByProjectId(
+							projectId = successState.parentTable.projectId,
+							includeTasks = true
+						)
+						.onFailureWithStackTrace {
+							_events.send(TableTaskEvent.FailedToShowSheet)
+							return@launchIONoQueue
+						}
+						.getOrThrow().data
+
+					mutableState.update { successState.copy(sheetTables = tables) }
 				}
 
 				else -> {
@@ -174,7 +178,7 @@ class TableTaskStateScreenModel(
 }
 
 sealed class TableTaskSheet {
-	data class BottomSheet(val tables: List<ProjectTable> = emptyList()) : TableTaskSheet()
+	data object BottomSheet : TableTaskSheet()
 	data class AlterDescriptionSheet(val description: String = "") : TableTaskSheet()
 }
 
@@ -198,6 +202,7 @@ sealed class TableTaskScreenState {
 		val task: TableTask,
 		val parentTable: ProjectTable,
 		val sheet: TableTaskSheet? = null,
+		val sheetTables: List<ProjectTable> = emptyList(),
 	) : TableTaskScreenState()
 
 }
