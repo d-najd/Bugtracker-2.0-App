@@ -36,10 +36,6 @@ fun TableTaskBottomSheetContent(
 	if (!tablesSorted.remove(tablesSorted.find { it.id == curTable.id })) {
 		throw IllegalStateException()
 	}
-	tablesSorted.add(
-		0,
-		curTable
-	)
 
 	for (table in tablesSorted) {
 		SheetItem(
