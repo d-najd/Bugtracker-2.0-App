@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
+import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.domain.user_authority.service.UserAuthorityRepository
@@ -26,6 +27,7 @@ class UserManagementScreenModel(
 	val projectId: Long,
 
 	private val userAuthorityRepository: UserAuthorityRepository = Injekt.get(),
+	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
 ) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading) {
 	private val _events: Channel<UserManagementEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<UserManagementEvent> = _events.receiveAsFlow()
@@ -42,10 +44,15 @@ class UserManagementScreenModel(
 				}
 				.getOrThrow().data
 
+			val selfUsername = jwtAuthPreferenceStore
+				.retrieveAccessToken()
+				.getOrThrow()!!.subject!!
+
 			mutableState.update {
 				UserManagementScreenState.Success(
 					projectId = projectId,
 					authorities = userAuthorities,
+					selfUsername = selfUsername
 				)
 			}
 		}
@@ -204,6 +211,7 @@ sealed class UserManagementScreenState {
 	@Immutable data class Success(
 		val projectId: Long,
 		val authorities: List<UserAuthority>,
+		val selfUsername: String,
 		val dialog: UserManagementDialog? = null,
 	) : UserManagementScreenState() {
 		fun getUsersWithAuthorities(): Map<String, List<UserAuthority>> {

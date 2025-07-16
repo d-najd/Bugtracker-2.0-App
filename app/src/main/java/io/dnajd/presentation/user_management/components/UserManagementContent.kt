@@ -32,10 +32,13 @@ fun ProjectUserManagementContent(
 			usersWithAuthorities = state.getUsersWithAuthorities()
 		}
 
+		val selfAuthorities = usersWithAuthorities[state.selfUsername]!!
+
 		for (userWithAuthorities in usersWithAuthorities) {
 			ProjectUserManagementItemContent(
 				state = state,
 				userWithAuthorities = userWithAuthorities,
+				selfAuthorities = selfAuthorities,
 				onInvertAuthorityClicked = onInvertAuthorityClicked,
 			)
 		}

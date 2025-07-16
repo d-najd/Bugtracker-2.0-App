@@ -14,29 +14,57 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.dnajd.bugtracker.ui.user_management.UserManagementScreenState
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.presentation.components.BugtrackerIconPairField
 
 @Composable
 fun ProjectUserManagementAuthoritiesContent(
+	state: UserManagementScreenState.Success,
 	modifier: Modifier = Modifier,
-	projectId: Long,
 	username: String,
 	authorities: List<UserAuthority>,
+	selfAuthorities: List<UserAuthority>,
 	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
 	Column(
 		modifier = modifier
 	) {
-		val containsOwnerAuthority = authorities.find {
+		val isSelfOwner = selfAuthorities.any { it.authority == UserAuthorityType.project_owner }
+		val isSelfManager =
+			selfAuthorities.any { it.authority == UserAuthorityType.project_manage_users } || isSelfOwner
+		val isCurrentUserSelf = username == state.selfUsername
+
+		val containsOwnerAuthority = authorities.any {
 			it.authority == UserAuthorityType.project_owner
 		}
-		for (authorityType in UserAuthorityType.values()) {
-			val enabled =
-				(containsOwnerAuthority == null || authorityType == UserAuthorityType.project_owner)
+		for (authorityType in UserAuthorityType.entries) {
+			var enabled = when (authorityType) {
+				UserAuthorityType.project_view,
+				UserAuthorityType.project_create,
+				UserAuthorityType.project_edit,
+				UserAuthorityType.project_delete,
+					-> {
+
+					// managing of basic roles is available to admins if they have said role or owner
+					isSelfOwner || (isSelfManager && selfAuthorities.any { it.authority == authorityType })
+				}
+
+				UserAuthorityType.project_manage_users -> {
+
+					// Adding admins is only allowed to owners
+					isSelfOwner
+				}
+
+				UserAuthorityType.project_owner -> false
+			}
+
+			// Don't allow managing of self
+			enabled = enabled && !isCurrentUserSelf
+
 			val checked =
-				authorities.find { it.authority == authorityType } != null || containsOwnerAuthority != null
+				authorities.any { it.authority == authorityType } || containsOwnerAuthority
 			val description = stringResource(authorityType.descriptionResId)
 			var localModifier = Modifier
 				.fillMaxWidth()
@@ -46,7 +74,7 @@ fun ProjectUserManagementAuthoritiesContent(
 					onInvertAuthorityClicked(
 						UserAuthority(
 							username = username,
-							projectId = projectId,
+							projectId = state.projectId,
 							authority = authorityType,
 						)
 					)

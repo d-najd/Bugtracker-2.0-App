@@ -28,6 +28,7 @@ import io.dnajd.presentation.components.BugtrackerIconPairField
 fun ProjectUserManagementItemContent(
 	state: UserManagementScreenState.Success,
 	userWithAuthorities: Map.Entry<String, List<UserAuthority>>,
+	selfAuthorities: List<UserAuthority>,
 
 	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
@@ -64,6 +65,14 @@ fun ProjectUserManagementItemContent(
 						fontWeight = FontWeight.Light,
 					)
 
+					/**
+					 * TODO
+					 * there should be multiple roles,
+					 * Viewer - only view
+					 * Editor - view along with atleast one of create edit delete
+					 * Manager - view, manage users along with atleast one of create edit delete
+					 * Owner - The owner of the project
+					 */
 					Text(
 						modifier = Modifier.padding(start = 2.dp),
 						text = "ROLE-CUSTOM",
@@ -75,10 +84,12 @@ fun ProjectUserManagementItemContent(
 				})
 		},
 		expandableContent = {
+
 			ProjectUserManagementAuthoritiesContent(
-				projectId = state.projectId,
+				state = state,
 				authorities = userWithAuthorities.value,
 				username = userWithAuthorities.key,
+				selfAuthorities = selfAuthorities,
 				onInvertAuthorityClicked = onInvertAuthorityClicked
 			)
 		},
