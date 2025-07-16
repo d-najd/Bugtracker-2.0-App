@@ -141,8 +141,9 @@ class UserManagementScreenModel(
 	) {
 		val successState = mutableState.value as UserManagementScreenState.Success
 		val authorities = successState.authorities.toMutableList()
+		val currentUserAuthorities = authorities.filter { it.username == userAuthority.username }
 
-		if (!agreed && authorities.filter { it.username == userAuthority.username }.size <= 1) {
+		if (!agreed && (currentUserAuthorities.size <= 1 || userAuthority.authority == UserAuthorityType.project_view)) {
 			mutableState.update {
 				successState.copy(
 					dialog = UserManagementDialog.ConfirmLastAuthorityRemoval(userAuthority)
