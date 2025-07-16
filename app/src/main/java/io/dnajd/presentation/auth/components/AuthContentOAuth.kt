@@ -156,7 +156,7 @@ fun AuthContentOAuth(
 				GoogleSignInButton(
 					modifier = Modifier.fillMaxSize(),
 					mode = GoogleButtonMode.Light,
-					text = stringResource(R.string.field_sign_up_google),
+					text = stringResource(R.string.field_sign_in_google),
 					onClick = {
 						if (!authReady) {
 							return@GoogleSignInButton
