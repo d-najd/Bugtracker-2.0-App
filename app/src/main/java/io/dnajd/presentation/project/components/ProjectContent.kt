@@ -9,6 +9,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project.ProjectScreenState
+import io.dnajd.data.project.repository.ProjectRepository
 
 @Composable
 fun ProjectContent(
@@ -43,7 +46,9 @@ fun ProjectContent(
 			fontWeight = FontWeight.Medium,
 		)
 
-		for (project in state.projects) {
+		val projectState by ProjectRepository.state.collectAsState()
+
+		for (project in projectState.projects) {
 			ProjectItemContent(
 				project = project,
 				onProjectClicked = onProjectClicked,

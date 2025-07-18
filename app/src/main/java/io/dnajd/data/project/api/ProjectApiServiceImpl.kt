@@ -1,4 +1,4 @@
-package io.dnajd.data.project
+package io.dnajd.data.project.api
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.model.Project

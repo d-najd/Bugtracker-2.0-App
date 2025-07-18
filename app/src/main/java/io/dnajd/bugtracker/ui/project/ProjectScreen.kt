@@ -10,6 +10,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
 import io.dnajd.bugtracker.ui.util.ScreenFixed
+import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project.ProjectScreenContent
 import io.dnajd.presentation.project.dialogs.CreateProjectDialog
@@ -44,8 +45,8 @@ class ProjectScreen : ScreenFixed() {
 
 		ProjectScreenContent(
 			state = successState,
-			onProjectClicked = {
-				val project = successState.projects.find { project -> project.id == it }!!
+			onProjectClicked = { id ->
+				val project = ProjectRepository.state.value.projects.find { it.id == id }!!
 
 				navigator.push(ProjectTableScreen(project.id))
 			},

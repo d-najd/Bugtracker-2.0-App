@@ -5,10 +5,10 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
+import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
-import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.channels.Channel
@@ -25,23 +25,20 @@ class ProjectScreenModel(
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
 
+	private val projectState = ProjectRepository.state.value
+
 	private val mutex = Mutex()
 
 	init {
-		requestProjects()
-	}
-
-	private fun requestProjects() {
-		coroutineScope.launchIO {
-			val projects = projectApiService
-				.getAll()
+		mutex.launchIONoQueue(coroutineScope) {
+			ProjectRepository
+				.fetchProjects()
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToRetrieveProjects)
-					return@launchIO
+					return@launchIONoQueue
 				}
-				.getOrThrow()
 
-			mutableState.update { ProjectScreenState.Success(projects = projects.data) }
+			mutableState.update { ProjectScreenState.Success() }
 		}
 	}
 
@@ -49,7 +46,7 @@ class ProjectScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectScreenState.Success
 
-			val projects = projectApiService
+			val persistedProject = projectApiService
 				.createProject(project)
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToCreateProject)
@@ -57,10 +54,10 @@ class ProjectScreenModel(
 				}
 				.getOrThrow()
 
-			val projectsMutable = successState.projects.toMutableList()
-			projectsMutable.add(projects)
+			val projectsMutable = ProjectRepository.state.value.projects.toMutableList()
+			projectsMutable.add(persistedProject)
+			ProjectRepository.updateProjects(projectsMutable)
 
-			mutableState.update { successState.copy(projects = projectsMutable) }
 			dismissDialog()
 		}
 	}
@@ -91,7 +88,6 @@ sealed class ProjectScreenState {
 	@Immutable data object Loading : ProjectScreenState()
 
 	@Immutable data class Success(
-		val projects: List<Project>,
 		val dialog: ProjectDialog? = null,
 	) : ProjectScreenState()
 }
