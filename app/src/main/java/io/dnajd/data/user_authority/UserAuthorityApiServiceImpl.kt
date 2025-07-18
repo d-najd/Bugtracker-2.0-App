@@ -4,7 +4,7 @@ import io.dnajd.data.utils.Urls
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.model.UserAuthorityType
-import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -13,7 +13,7 @@ import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteUserAuthorityRepository : UserAuthorityRepository {
+object UserAuthorityApiServiceImpl : UserAuthorityApiService {
 	private val factory: UserAuthorityRepositoryApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_AUTHORITY)

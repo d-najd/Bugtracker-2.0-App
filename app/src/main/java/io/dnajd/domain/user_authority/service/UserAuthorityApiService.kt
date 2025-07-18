@@ -4,7 +4,7 @@ import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 
-interface UserAuthorityRepository {
+interface UserAuthorityApiService {
 
 	/**
 	 * Gets all userAuthorities associated for a given projectId

@@ -6,13 +6,13 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.service.ProjectTableRepository
+import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskBasic
 import io.dnajd.domain.table_task.model.toBasic
-import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
@@ -32,9 +32,9 @@ import uy.kohesive.injekt.api.get
 @OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
 	private val projectId: Long,
 
-	private val projectRepository: ProjectRepository = Injekt.get(),
-	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
-	private val tableTaskRepository: TableTaskRepository = Injekt.get(),
+	private val projectApiService: ProjectApiService = Injekt.get(),
+	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
+	private val tableTaskApiService: TableTaskApiService = Injekt.get(),
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
 	private val _events: Channel<ProjectTableEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectTableEvent> = _events.receiveAsFlow()
@@ -59,12 +59,12 @@ import uy.kohesive.injekt.api.get
 
 	private suspend fun fetchTableData(coroutineScope: CoroutineScope) {
 		val projectResult = coroutineScope.async {
-			projectRepository
+			projectApiService
 				.getById(projectId)
 				.onFailure { cancel() }
 		}
 		val tablesResult = coroutineScope.async {
-			this@ProjectTableScreenModel.projectTableRepository
+			this@ProjectTableScreenModel.projectTableApiService
 				.getAllByProjectId(this@ProjectTableScreenModel.projectId)
 				.onFailure { this.cancel() }
 		}
@@ -107,7 +107,7 @@ import uy.kohesive.injekt.api.get
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTable = projectTableRepository
+			val createdTable = projectTableApiService
 				.createTable(table)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToCreateProjectTable)
@@ -136,7 +136,7 @@ import uy.kohesive.injekt.api.get
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val createdTask = tableTaskRepository
+			val createdTask = tableTaskApiService
 				.createTask(task)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToCreateTableTask)
@@ -172,7 +172,7 @@ import uy.kohesive.injekt.api.get
 			val table = tables.find { table -> table.id == id }!!
 			val renamedTable = table.copy(title = newName)
 
-			val persistedTable = projectTableRepository
+			val persistedTable = projectTableApiService
 				.updateTable(renamedTable)
 				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToRenameProjectTable)
@@ -211,7 +211,7 @@ import uy.kohesive.injekt.api.get
 			val fTable = tables.find { table -> table.id == sId }!!
 			val sTable = tables.find { table -> table.id == fId }!!
 
-			projectTableRepository
+			projectTableApiService
 				.swapTablePositions(
 					fId,
 					sId
@@ -271,7 +271,7 @@ import uy.kohesive.injekt.api.get
 			val fTask = table.tasks[fIndex]
 			val sTask = table.tasks[sIndex]
 
-			tableTaskRepository
+			tableTaskApiService
 				.movePositionTo(
 					fTask.id,
 					sTask.id
@@ -358,7 +358,7 @@ import uy.kohesive.injekt.api.get
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			projectTableRepository
+			projectTableApiService
 				.deleteById(tableId)
 				.onSuccess {
 					val tables = successState.tables.toMutableList()

@@ -3,7 +3,7 @@ package io.dnajd.data.project
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
-import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.project.service.ProjectApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -14,7 +14,7 @@ import retrofit2.http.Path
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteProjectRepository : ProjectRepository {
+object ProjectApiServiceImpl : ProjectApiService {
 	private val factory: ProjectRepositoryApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT)

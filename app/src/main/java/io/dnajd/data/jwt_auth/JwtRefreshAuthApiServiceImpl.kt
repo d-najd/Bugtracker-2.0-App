@@ -4,14 +4,14 @@ import com.auth0.android.jwt.JWT
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.auth.model.JwtTokenHolder
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
-import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthRepository
+import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Header
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteJwtRefreshAuthRepository : JwtRefreshAuthRepository {
+object JwtRefreshAuthApiServiceImpl : JwtRefreshAuthApiService {
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get()
 
 	private val factory: JwtRefreshAuthRepositoryApi = Injekt

@@ -2,10 +2,10 @@ package io.dnajd.data.project
 
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
-import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.project.service.ProjectApiService
 import java.util.Date
 
-object MockProjectRepository : ProjectRepository {
+object ProjectApiServiceMock : ProjectApiService {
 	override suspend fun getAll(): Result<ProjectListResponse> = Result.success(
 		mockData()
 	)

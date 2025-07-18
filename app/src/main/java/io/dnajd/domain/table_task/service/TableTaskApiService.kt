@@ -2,7 +2,7 @@ package io.dnajd.domain.table_task.service
 
 import io.dnajd.domain.table_task.model.TableTask
 
-interface TableTaskRepository {
+interface TableTaskApiService {
 	/**
 	 * Gets a single table task
 	 * @param id id of the task

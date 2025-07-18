@@ -2,7 +2,7 @@ package io.dnajd.data.table_task
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.table_task.model.TableTask
-import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.table_task.service.TableTaskApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,7 +14,7 @@ import retrofit2.http.Query
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteTableTaskRepository : TableTaskRepository {
+object TableTaskApiServiceImpl : TableTaskApiService {
 	private val factory: TableTaskRepositoryApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_TABLE_ISSUE)

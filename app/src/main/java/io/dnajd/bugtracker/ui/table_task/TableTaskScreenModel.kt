@@ -5,12 +5,11 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.ProjectTableScreen
 import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.service.ProjectTableRepository
+import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
-import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
@@ -25,8 +24,8 @@ import uy.kohesive.injekt.api.get
 class TableTaskStateScreenModel(
 	taskId: Long,
 
-	private val taskRepository: TableTaskRepository = Injekt.get(),
-	private val projectTableRepository: ProjectTableRepository = Injekt.get(),
+	private val taskRepository: TableTaskApiService = Injekt.get(),
+	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
 	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
@@ -47,7 +46,7 @@ class TableTaskStateScreenModel(
 				}
 				.getOrThrow()
 
-			val table = projectTableRepository
+			val table = projectTableApiService
 				.getById(
 					id = task.tableId,
 					includeTasks = true
@@ -105,7 +104,7 @@ class TableTaskStateScreenModel(
 					return@launchIONoQueue
 				}
 
-			val table = projectTableRepository
+			val table = projectTableApiService
 				.getById(
 					id = tableId,
 					includeTasks = true
@@ -128,9 +127,6 @@ class TableTaskStateScreenModel(
 
 			dismissSheet()
 
-			/**
-			 * The [ProjectTableScreen] needs to be refreshed since data is changed
-			 */
 			ProjectTableSharedState.notifyTableOrTaskAltered()
 		}
 	}
@@ -144,7 +140,7 @@ class TableTaskStateScreenModel(
 
 					// There will always be at least one table (the current one)
 					val tables = successState.sheetTables.ifEmpty {
-						projectTableRepository
+						projectTableApiService
 							.getAllByProjectId(
 								projectId = successState.parentTable.projectId,
 								includeTasks = true

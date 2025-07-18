@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
@@ -20,7 +20,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectScreenModel(
-	private val projectRepository: ProjectRepository = Injekt.get(),
+	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectScreenState>(ProjectScreenState.Loading) {
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
@@ -33,7 +33,7 @@ class ProjectScreenModel(
 
 	private fun requestProjects() {
 		coroutineScope.launchIO {
-			val projects = projectRepository
+			val projects = projectApiService
 				.getAll()
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToRetrieveProjects)
@@ -49,7 +49,7 @@ class ProjectScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectScreenState.Success
 
-			val projects = projectRepository
+			val projects = projectApiService
 				.createProject(project)
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToCreateProject)

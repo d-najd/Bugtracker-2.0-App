@@ -8,7 +8,7 @@ import io.dnajd.bugtracker.R
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
-import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
@@ -26,7 +26,7 @@ typealias UserAuthorityMap = MutableMap<String, List<UserAuthority>>
 class UserManagementScreenModel(
 	val projectId: Long,
 
-	private val userAuthorityRepository: UserAuthorityRepository = Injekt.get(),
+	private val userAuthorityApiService: UserAuthorityApiService = Injekt.get(),
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
 ) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading) {
 	private val _events: Channel<UserManagementEvent> = Channel(Int.MAX_VALUE)
@@ -36,7 +36,7 @@ class UserManagementScreenModel(
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
-			val userAuthorities = userAuthorityRepository
+			val userAuthorities = userAuthorityApiService
 				.getAllByProjectId(projectId)
 				.onFailureWithStackTrace {
 					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
@@ -99,7 +99,7 @@ class UserManagementScreenModel(
 			return
 		}
 
-		userAuthorityRepository
+		userAuthorityApiService
 			.modifyAuthority(
 				userAuthority,
 				true
@@ -152,7 +152,7 @@ class UserManagementScreenModel(
 			return
 		}
 
-		userAuthorityRepository
+		userAuthorityApiService
 			.modifyAuthority(
 				userAuthority,
 				false,

@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.service.ProjectRepository
+import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
@@ -21,7 +21,7 @@ import uy.kohesive.injekt.api.get
 class ProjectDetailsScreenModel(
 	projectId: Long,
 
-	private val projectRepository: ProjectRepository = Injekt.get(),
+	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading) {
 	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
@@ -30,7 +30,7 @@ class ProjectDetailsScreenModel(
 
 	init {
 		coroutineScope.launchIO {
-			val project = projectRepository
+			val project = projectApiService
 				.getById(projectId)
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
@@ -46,7 +46,7 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			projectRepository
+			projectApiService
 				.deleteById(successState.project.id)
 				.onSuccess {
 					_events.send(ProjectDetailsEvent.DeleteProject)
@@ -62,7 +62,7 @@ class ProjectDetailsScreenModel(
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 			val renamedProject = successState.project.copy(title = title)
 
-			val persistedProject = projectRepository
+			val persistedProject = projectApiService
 				.updateProject(renamedProject)
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRenameProject)

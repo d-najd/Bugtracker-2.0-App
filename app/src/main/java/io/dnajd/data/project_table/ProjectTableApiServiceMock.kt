@@ -2,12 +2,12 @@ package io.dnajd.data.project_table
 
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
-import io.dnajd.domain.project_table.service.ProjectTableRepository
+import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
 import io.dnajd.domain.table_task.model.TableTaskBasic
 
-object MockProjectTableRepository : ProjectTableRepository {
+object ProjectTableApiServiceMock : ProjectTableApiService {
 	override suspend fun getAllByProjectId(
 		projectId: Long,
 		includeTasks: Boolean,

@@ -3,7 +3,7 @@ package io.dnajd.domain.project_table.service
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 
-interface ProjectTableRepository {
+interface ProjectTableApiService {
 	/**
 	 * Gets all tables associated with [projectId]
 	 * @param projectId id of the project in which the tables are located at

@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.google_auth.model.CreateUser
-import io.dnajd.domain.google_auth.service.GoogleAuthRepository
+import io.dnajd.domain.google_auth.service.GoogleAuthApiService
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
@@ -18,7 +18,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class AuthScreenModel(
-	private val googleAuthRepository: GoogleAuthRepository = Injekt.get(),
+	private val googleAuthApiService: GoogleAuthApiService = Injekt.get(),
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
 ) : StateScreenModel<AuthScreenState>(AuthScreenState.Success) {
 	private val _events: Channel<AuthEvent> = Channel(Int.MAX_VALUE)
@@ -30,7 +30,7 @@ class AuthScreenModel(
 		googleOAuthToken: String,
 		userInfo: CreateUser,
 	) = mutex.launchIONoQueue(coroutineScope) {
-		val tokenHolder = googleAuthRepository
+		val tokenHolder = googleAuthApiService
 			.googleSignUp(
 				googleOAuthToken,
 				userInfo
@@ -51,7 +51,7 @@ class AuthScreenModel(
 	}
 
 	fun signIn(googleOAuthToken: String) = mutex.launchIONoQueue(coroutineScope) {
-		val tokenHolder = googleAuthRepository
+		val tokenHolder = googleAuthApiService
 			.googleSignIn(googleOAuthToken)
 			.onFailureWithStackTrace {
 				_events.send(AuthEvent.UserSignInFailed)

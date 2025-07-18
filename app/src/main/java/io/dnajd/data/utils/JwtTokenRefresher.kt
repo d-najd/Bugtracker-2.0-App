@@ -1,7 +1,7 @@
 package io.dnajd.data.utils
 
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
-import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthRepository
+import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
 import io.dnajd.domain.utils.JwtUtil
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
@@ -17,7 +17,7 @@ import kotlin.concurrent.schedule
  */
 @OptIn(DelicateCoroutinesApi::class) object JwtTokenRefresher {
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get()
-	private val jwtRefreshAuthRepository: JwtRefreshAuthRepository = Injekt.get()
+	private val jwtRefreshAuthApiService: JwtRefreshAuthApiService = Injekt.get()
 
 	/**
 	 * Checks whether the access and refresh token need refreshing, and sets a timer for when the
@@ -65,7 +65,7 @@ import kotlin.concurrent.schedule
 			}
 
 			if (JwtUtil.refreshTokenNeedsRefresh(refreshToken)) {
-				val newTokenHolder = jwtRefreshAuthRepository
+				val newTokenHolder = jwtRefreshAuthApiService
 					.refreshAccessAndRefreshTokens(refreshToken)
 					.onFailureWithStackTrace {
 						logcat { "Unable to refresh the refresh token, user will be prompted to re-signup" }
@@ -93,7 +93,7 @@ import kotlin.concurrent.schedule
 			}
 
 			if (JwtUtil.accessTokenNeedsRefresh(accessToken)) {
-				val newTokenHolder = jwtRefreshAuthRepository
+				val newTokenHolder = jwtRefreshAuthApiService
 					.refreshAccessToken(refreshToken)
 					.onFailureWithStackTrace {
 						logcat { "Unable to refresh the access token, user will be prompted to re-signup" }
@@ -146,7 +146,7 @@ import kotlin.concurrent.schedule
 						}
 						.getOrThrow()!!
 
-					val newTokenHolder = jwtRefreshAuthRepository
+					val newTokenHolder = jwtRefreshAuthApiService
 						.refreshAccessToken(refreshToken)
 						.onFailureWithStackTrace {
 							logcat { "Unable to refresh the access token, it will expire in ${JwtUtil.SECONDS_THRESHOLD_ACCESS_TOKEN} seconds" }

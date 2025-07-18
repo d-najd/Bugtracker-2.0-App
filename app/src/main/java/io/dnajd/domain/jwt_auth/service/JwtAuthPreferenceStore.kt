@@ -3,6 +3,9 @@ package io.dnajd.domain.jwt_auth.service
 import com.auth0.android.jwt.JWT
 import io.dnajd.domain.auth.model.JwtTokenHolder
 
+/**
+ * TODO this doesn't seem like a correct spot to put this?
+ */
 interface JwtAuthPreferenceStore {
 	/**
 	 * Retrieves available tokens

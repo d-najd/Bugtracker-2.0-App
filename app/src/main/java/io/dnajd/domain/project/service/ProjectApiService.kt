@@ -3,7 +3,7 @@ package io.dnajd.domain.project.service
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.model.ProjectListResponse
 
-interface ProjectRepository {
+interface ProjectApiService {
 	/**
 	 * Gets all projects associated with current user
 	 * @return list of received projects, empty list will be returned if the request failed

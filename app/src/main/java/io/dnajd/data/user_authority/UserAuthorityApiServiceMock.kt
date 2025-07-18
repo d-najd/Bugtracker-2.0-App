@@ -3,9 +3,9 @@ package io.dnajd.data.user_authority
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse
 import io.dnajd.domain.user_authority.model.UserAuthorityType
-import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 
-object MockUserAuthorityRepository : UserAuthorityRepository {
+object UserAuthorityApiServiceMock : UserAuthorityApiService {
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
 		Result.success(
 			mockData()

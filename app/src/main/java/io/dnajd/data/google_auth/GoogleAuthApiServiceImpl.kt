@@ -3,7 +3,7 @@ package io.dnajd.data.google_auth
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.auth.model.JwtTokenHolder
 import io.dnajd.domain.google_auth.model.CreateUser
-import io.dnajd.domain.google_auth.service.GoogleAuthRepository
+import io.dnajd.domain.google_auth.service.GoogleAuthApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,7 +12,7 @@ import retrofit2.http.POST
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object RemoteGoogleAuthRepository : GoogleAuthRepository {
+object GoogleAuthApiServiceImpl : GoogleAuthApiService {
 	private val factory: GoogleAuthRepositoryApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.GOOGLE_AUTH)

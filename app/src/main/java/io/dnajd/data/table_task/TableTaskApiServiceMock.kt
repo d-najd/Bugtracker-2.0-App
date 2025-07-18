@@ -5,10 +5,10 @@ import io.dnajd.domain.table_task.model.TableChildTask
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskAssignee
 import io.dnajd.domain.table_task.model.TableTaskComment
-import io.dnajd.domain.table_task.service.TableTaskRepository
+import io.dnajd.domain.table_task.service.TableTaskApiService
 import java.util.Date
 
-object MockTableTaskRepository : TableTaskRepository {
+object TableTaskApiServiceMock : TableTaskApiService {
 
 	override suspend fun getById(id: Long): Result<TableTask> = Result.success(mockData())
 

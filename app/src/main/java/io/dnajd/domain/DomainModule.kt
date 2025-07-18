@@ -2,23 +2,23 @@ package io.dnajd.domain
 
 import com.google.gson.GsonBuilder
 import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
-import io.dnajd.data.google_auth.RemoteGoogleAuthRepository
-import io.dnajd.data.jwt_auth.RemoteJwtRefreshAuthRepository
-import io.dnajd.data.project.MockProjectRepository
-import io.dnajd.data.project.RemoteProjectRepository
-import io.dnajd.data.project_table.MockProjectTableRepository
-import io.dnajd.data.project_table.RemoteProjectTableRepository
-import io.dnajd.data.table_task.MockTableTaskRepository
-import io.dnajd.data.table_task.RemoteTableTaskRepository
-import io.dnajd.data.user_authority.MockUserAuthorityRepository
-import io.dnajd.data.user_authority.RemoteUserAuthorityRepository
+import io.dnajd.data.google_auth.GoogleAuthApiServiceImpl
+import io.dnajd.data.jwt_auth.JwtRefreshAuthApiServiceImpl
+import io.dnajd.data.project.ProjectApiServiceImpl
+import io.dnajd.data.project.ProjectApiServiceMock
+import io.dnajd.data.project_table.ProjectTableApiServiceImpl
+import io.dnajd.data.project_table.ProjectTableApiServiceMock
+import io.dnajd.data.table_task.TableTaskApiServiceImpl
+import io.dnajd.data.table_task.TableTaskApiServiceMock
+import io.dnajd.data.user_authority.UserAuthorityApiServiceImpl
+import io.dnajd.data.user_authority.UserAuthorityApiServiceMock
 import io.dnajd.data.utils.JwtAuthenticator
-import io.dnajd.domain.google_auth.service.GoogleAuthRepository
-import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthRepository
-import io.dnajd.domain.project.service.ProjectRepository
-import io.dnajd.domain.project_table.service.ProjectTableRepository
-import io.dnajd.domain.table_task.service.TableTaskRepository
-import io.dnajd.domain.user_authority.service.UserAuthorityRepository
+import io.dnajd.domain.google_auth.service.GoogleAuthApiService
+import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
+import io.dnajd.domain.project.service.ProjectApiService
+import io.dnajd.domain.project_table.service.ProjectTableApiService
+import io.dnajd.domain.table_task.service.TableTaskApiService
+import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import okhttp3.OkHttpClient
@@ -74,21 +74,21 @@ class DomainModule : InjektModule {
 
 		when (USE_MOCKS) {
 			true -> {
-				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
-				addSingletonFactory<JwtRefreshAuthRepository> { RemoteJwtRefreshAuthRepository }
-				addSingletonFactory<ProjectRepository> { MockProjectRepository }
-				addSingletonFactory<ProjectTableRepository> { MockProjectTableRepository }
-				addSingletonFactory<TableTaskRepository> { MockTableTaskRepository }
-				addSingletonFactory<UserAuthorityRepository> { MockUserAuthorityRepository }
+				addSingletonFactory<GoogleAuthApiService> { GoogleAuthApiServiceImpl }
+				addSingletonFactory<JwtRefreshAuthApiService> { JwtRefreshAuthApiServiceImpl }
+				addSingletonFactory<ProjectApiService> { ProjectApiServiceMock }
+				addSingletonFactory<ProjectTableApiService> { ProjectTableApiServiceMock }
+				addSingletonFactory<TableTaskApiService> { TableTaskApiServiceMock }
+				addSingletonFactory<UserAuthorityApiService> { UserAuthorityApiServiceMock }
 			}
 
 			false -> {
-				addSingletonFactory<GoogleAuthRepository> { RemoteGoogleAuthRepository }
-				addSingletonFactory<JwtRefreshAuthRepository> { RemoteJwtRefreshAuthRepository }
-				addSingletonFactory<ProjectRepository> { RemoteProjectRepository }
-				addSingletonFactory<ProjectTableRepository> { RemoteProjectTableRepository }
-				addSingletonFactory<TableTaskRepository> { RemoteTableTaskRepository }
-				addSingletonFactory<UserAuthorityRepository> { RemoteUserAuthorityRepository }
+				addSingletonFactory<GoogleAuthApiService> { GoogleAuthApiServiceImpl }
+				addSingletonFactory<JwtRefreshAuthApiService> { JwtRefreshAuthApiServiceImpl }
+				addSingletonFactory<ProjectApiService> { ProjectApiServiceImpl }
+				addSingletonFactory<ProjectTableApiService> { ProjectTableApiServiceImpl }
+				addSingletonFactory<TableTaskApiService> { TableTaskApiServiceImpl }
+				addSingletonFactory<UserAuthorityApiService> { UserAuthorityApiServiceImpl }
 			}
 		}
 	}

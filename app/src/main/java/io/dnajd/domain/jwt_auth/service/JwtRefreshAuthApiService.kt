@@ -3,7 +3,7 @@ package io.dnajd.domain.jwt_auth.service
 import com.auth0.android.jwt.JWT
 import io.dnajd.domain.auth.model.JwtTokenHolder
 
-interface JwtRefreshAuthRepository {
+interface JwtRefreshAuthApiService {
 	/**
 	 * @param refreshToken if specified this token will be used, otherwise previously stored token
 	 * will be retrieved
