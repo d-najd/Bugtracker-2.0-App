@@ -20,8 +20,11 @@ object ProjectRepository {
 
 	private val api: ProjectApiService = Injekt.get()
 
-	suspend fun fetchProjects(ignoreIfFetched: Boolean = true): Result<Unit> {
-		if (ignoreIfFetched && _state.value.fetchedProjects) {
+	/**
+	 * @param forceFetch fetches regardless whether data has already been set
+	 */
+	suspend fun fetchIfNeeded(forceFetch: Boolean = true): Result<Unit> {
+		if (forceFetch && _state.value.fetchedProjects) {
 			return Result.success(Unit)
 		}
 		return api

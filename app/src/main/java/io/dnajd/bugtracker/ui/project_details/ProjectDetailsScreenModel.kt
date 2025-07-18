@@ -5,10 +5,9 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project.model.Project
+import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
-import io.dnajd.util.launchIO
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -22,23 +21,22 @@ class ProjectDetailsScreenModel(
 	projectId: Long,
 
 	private val projectApiService: ProjectApiService = Injekt.get(),
-) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading) {
+) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading(projectId)) {
 	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
 
 	private val mutex = Mutex()
 
 	init {
-		coroutineScope.launchIO {
-			val project = projectApiService
-				.getById(projectId)
+		mutex.launchIONoQueue(coroutineScope) {
+			ProjectRepository
+				.fetchIfNeeded()
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
-					return@launchIO
+					return@launchIONoQueue
 				}
-				.getOrThrow()
 
-			mutableState.update { ProjectDetailsScreenState.Success(project = project) }
+			mutableState.update { ProjectDetailsScreenState.Success(projectId) }
 		}
 	}
 
@@ -47,12 +45,13 @@ class ProjectDetailsScreenModel(
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
 			projectApiService
-				.deleteById(successState.project.id)
-				.onSuccess {
-					_events.send(ProjectDetailsEvent.DeleteProject)
-				}
+				.deleteById(successState.projectId)
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToDeleteProject)
+					return@launchIONoQueue
+				}
+				.onSuccess {
+					_events.send(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 				}
 		}
 	}
@@ -60,7 +59,9 @@ class ProjectDetailsScreenModel(
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
-			val renamedProject = successState.project.copy(title = title)
+			val projects = ProjectRepository.state.value.projects
+			val projectToRename = projects.find { it.id == successState.projectId }!!
+			val renamedProject = projectToRename.copy(title = title)
 
 			val persistedProject = projectApiService
 				.updateProject(renamedProject)
@@ -70,19 +71,23 @@ class ProjectDetailsScreenModel(
 				}
 				.getOrThrow()
 
-			mutableState.update {
-				successState.copy(project = persistedProject)
-			}
+			val projectsModified = projects.toMutableList()
+			projectsModified.remove(projectToRename)
+			projectsModified.add(persistedProject)
+
+			ProjectRepository.updateProjects(projectsModified)
 		}
 	}
 }
 
-sealed class ProjectDetailsScreenState {
-	@Immutable data object Loading : ProjectDetailsScreenState()
+sealed class ProjectDetailsScreenState(
+	projectId: Long,
+) {
+	@Immutable data class Loading(val projectId: Long) : ProjectDetailsScreenState(projectId)
 
 	@Immutable data class Success(
-		val project: Project,
-	) : ProjectDetailsScreenState()
+		val projectId: Long,
+	) : ProjectDetailsScreenState(projectId)
 }
 
 sealed class ProjectDetailsEvent {
@@ -95,5 +100,5 @@ sealed class ProjectDetailsEvent {
 
 	data object FailedToRenameProject : LocalizedMessage(R.string.error_failed_to_rename_project)
 
-	data object DeleteProject : ProjectDetailsEvent()
+	data class DeleteProject(val projectId: Long) : ProjectDetailsEvent()
 }

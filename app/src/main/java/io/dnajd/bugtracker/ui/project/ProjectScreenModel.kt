@@ -25,14 +25,12 @@ class ProjectScreenModel(
 	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
 
-	private val projectState = ProjectRepository.state.value
-
 	private val mutex = Mutex()
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchProjects()
+				.fetchIfNeeded()
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToRetrieveProjects)
 					return@launchIONoQueue

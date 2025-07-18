@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreenState
+import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.BugtrackerExpandableTextField
 import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
 import io.dnajd.presentation.components.ProjectIconFactory
@@ -73,8 +75,11 @@ fun ProjectDetailsContent(
 			}
 		}
 
+		val projectState by ProjectRepository.state.collectAsState()
+		val project = projectState.projects.find { it.id == state.projectId }!!
+
 		var expanded by remember { mutableStateOf(false) }
-		var projectTitle by remember { mutableStateOf(state.project.title) }
+		var projectTitle by remember { mutableStateOf(project.title) }
 		BugtrackerExpandableTextField(
 			modifier = Modifier.padding(horizontal = 16.dp),
 			modifierText = Modifier
@@ -89,7 +94,7 @@ fun ProjectDetailsContent(
 			BugtrackerExpandableTextFieldDefaults.Content(
 				onCancelClicked = { expanded = false },
 				onConfirmClicked = { onRenameProjectClicked(projectTitle) },
-				confirmEnabled = projectTitle != state.project.title && projectTitle.isNotEmpty()
+				confirmEnabled = projectTitle != project.title && projectTitle.isNotEmpty()
 			)
 		}
 
