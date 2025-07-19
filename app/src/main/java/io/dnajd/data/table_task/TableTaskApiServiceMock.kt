@@ -1,7 +1,6 @@
 package io.dnajd.data.table_task
 
 import io.dnajd.domain.table_task.model.ProjectLabel
-import io.dnajd.domain.table_task.model.TableChildTask
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskAssignee
 import io.dnajd.domain.table_task.model.TableTaskComment
@@ -53,12 +52,12 @@ object TableTaskApiServiceMock : TableTaskApiService {
 			)
 		),
 		childTasks = listOf(
-			TableChildTask(
+			TableTask(
 				id = 3L,
 				title = "Child Task 1",
 				tableId = 1L,
 			),
-			TableChildTask(
+			TableTask(
 				id = 4L,
 				title = "Child Task 2",
 				tableId = 2L,

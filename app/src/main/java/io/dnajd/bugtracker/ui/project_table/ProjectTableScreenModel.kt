@@ -10,8 +10,6 @@ import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
-import io.dnajd.domain.table_task.model.TableTaskBasic
-import io.dnajd.domain.table_task.model.toBasic
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
@@ -149,7 +147,7 @@ import uy.kohesive.injekt.api.get
 			tables.remove(table)
 
 			val tasks = table.tasks.toMutableList()
-			tasks.add(createdTask.toBasic())
+			tasks.add(createdTask)
 
 			tables.add(table.copy(tasks = tasks))
 
@@ -299,7 +297,7 @@ import uy.kohesive.injekt.api.get
 	private fun ifMoveTaskSuccess(
 		tables: MutableList<ProjectTable>,
 		table: ProjectTable,
-		sTask: TableTaskBasic,
+		sTask: TableTask,
 		fIndex: Int,
 		sIndex: Int,
 	) {

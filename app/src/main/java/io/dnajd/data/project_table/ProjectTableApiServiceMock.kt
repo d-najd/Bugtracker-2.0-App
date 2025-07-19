@@ -4,8 +4,7 @@ import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.ProjectLabel
-import io.dnajd.domain.table_task.model.ProjectTableChildTaskBasic
-import io.dnajd.domain.table_task.model.TableTaskBasic
+import io.dnajd.domain.table_task.model.TableTask
 
 object ProjectTableApiServiceMock : ProjectTableApiService {
 	override suspend fun getAllByProjectId(
@@ -38,7 +37,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 				title = "Table 1",
 				position = 0,
 				tasks = if (includeTasks) listOf(
-					TableTaskBasic(
+					TableTask(
 						1,
 						title = "Issue 1",
 						tableId = 1,
@@ -56,11 +55,11 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 							),
 						),
 						childTasks = listOf(
-							ProjectTableChildTaskBasic(id = 2),
-							ProjectTableChildTaskBasic(id = 4),
+							TableTask(id = 2),
+							TableTask(id = 4),
 						),
 					),
-					TableTaskBasic(
+					TableTask(
 						id = 2,
 						title = "Issue 2",
 						tableId = 1,
@@ -69,10 +68,10 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 						position = 1,
 						labels = emptyList(),
 						childTasks = listOf(
-							ProjectTableChildTaskBasic(id = 3),
+							TableTask(id = 3),
 						)
 					),
-					TableTaskBasic(
+					TableTask(
 						id = 3,
 						title = "Issue 3",
 						tableId = 1,
@@ -82,7 +81,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 						labels = emptyList(),
 						childTasks = emptyList(),
 					),
-					TableTaskBasic(
+					TableTask(
 						id = 4,
 						title = "Issue 4",
 						tableId = 1,
@@ -99,7 +98,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 				title = "Table 2",
 				position = 1,
 				tasks = if (!includeTasks) listOf(
-					TableTaskBasic(
+					TableTask(
 						id = 5,
 						title = "Issue 5",
 						tableId = 1,
