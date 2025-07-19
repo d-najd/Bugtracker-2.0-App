@@ -11,8 +11,8 @@ object ProjectRepository :
 
 	private val api: ProjectApiService = Injekt.get()
 
-	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = true): Result<Unit> {
-		if (forceFetch && mutableState.value.fetchedData) {
+	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = false): Result<Unit> {
+		if (!forceFetch && mutableState.value.fetchedData) {
 			return Result.success(Unit)
 		}
 		return api
