@@ -12,21 +12,6 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
 	val state: StateFlow<S> = mutableState.asStateFlow()
 
-	init {
-
-		// This fails if the class if [initialState] is not the same as [RepositoryBase.State]
-		// even if [S] is [RepositoryBase.State], but there shouldn't be a case when that happens
-		val isStateOverridden = initialState::class != State::class
-
-		// Only methods in the new class seem to be included
-		val isUpdateOverridden =
-			this::class.java.declaredMethods.any { it.name == RepositoryBase<T, S>::update.name }
-
-		if (isStateOverridden && !isUpdateOverridden) {
-			throw TypeCastException("When using custom state override ${RepositoryBase<T, S>::update.name} as well")
-		}
-	}
-
 	@Composable
 	fun dataCollected(): List<T> {
 		val stateCollected by state.collectAsState()
@@ -60,4 +45,19 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 		val fetchedData: Boolean = false,
 		val data: List<T> = emptyList(),
 	)
+
+	init {
+
+		// This fails if the class if [initialState] is not the same as [RepositoryBase.State]
+		// even if [S] is [RepositoryBase.State], but there shouldn't be a case when that happens
+		val isStateOverridden = initialState::class != State::class
+
+		// Only methods in the new class seem to be included
+		val isUpdateOverridden =
+			this::class.java.declaredMethods.any { it.name == RepositoryBase<T, S>::update.name }
+
+		if (isStateOverridden && !isUpdateOverridden) {
+			throw TypeCastException("When using custom state override ${RepositoryBase<T, S>::update.name} as well")
+		}
+	}
 }
