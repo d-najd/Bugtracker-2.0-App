@@ -26,13 +26,16 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 	 * Must be overridden if custom [State] is used
 	 * @see State
 	 */
-	open fun update(data: T) {
+	open fun update(
+		data: T,
+		setDataFetched: Boolean = true,
+	) {
 
 		// Check is done on init
 		@Suppress("UNCHECKED_CAST")
 
 		mutableState.value = State<T>(
-			fetchedData = true,
+			fetchedData = setDataFetched,
 			data = data
 		) as S
 	}
@@ -43,6 +46,10 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 	 */
 	open class State<T>(
 		val data: T,
+		/**
+		 * Should be set to true only when all data has been set, fetching individual fields should
+		 * not set this to true, if you want finer control consider overriding [State]
+		 */
 		val fetchedData: Boolean = false,
 	)
 

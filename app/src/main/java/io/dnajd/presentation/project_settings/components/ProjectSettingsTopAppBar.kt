@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_settings.ProjectSettingsScreenState
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
+import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.BugtrackerTwoAppBar
 import io.dnajd.presentation.components.BugtrackerTwoAppBarTableBar
 
@@ -34,10 +35,14 @@ fun ProjectSettingsTopAppBar(
 			}
 		},
 		title = {
-			val title =
-				if (state is ProjectSettingsScreenState.Success) state.project.title else stringResource(
+			val projects = ProjectRepository.dataCollected()
+			val title = if (state is ProjectSettingsScreenState.Success) {
+				ProjectRepository.dataCollectedById(state.projectId)!!.title
+			} else {
+				stringResource(
 					R.string.loading
 				)
+			}
 			Text(
 				text = title,
 			)
