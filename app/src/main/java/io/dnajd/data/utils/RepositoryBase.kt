@@ -13,20 +13,20 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 	val state: StateFlow<S> = mutableState.asStateFlow()
 
 	@Composable
-	fun dataCollected(): List<T> {
+	fun dataCollected(): T {
 		val stateCollected by state.collectAsState()
 		return remember(stateCollected) {
 			stateCollected.data
 		}
 	}
 
-	fun data(): List<T> = state.value.data
+	fun data(): T = state.value.data
 
 	/**
 	 * Must be overridden if custom [State] is used
 	 * @see State
 	 */
-	open fun update(data: List<T>) {
+	open fun update(data: T) {
 
 		// Check is done on init
 		@Suppress("UNCHECKED_CAST")
@@ -42,8 +42,8 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 	 * @see update
 	 */
 	open class State<T>(
+		val data: T,
 		val fetchedData: Boolean = false,
-		val data: List<T> = emptyList(),
 	)
 
 	init {

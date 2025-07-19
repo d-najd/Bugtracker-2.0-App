@@ -6,7 +6,9 @@ import io.dnajd.domain.project.service.ProjectApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-object ProjectRepository : RepositoryBase<Project, RepositoryBase.State<Project>>(State()) {
+object ProjectRepository :
+	RepositoryBase<List<Project>, RepositoryBase.State<List<Project>>>(State(emptyList())) {
+
 	private val api: ProjectApiService = Injekt.get()
 
 	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = true): Result<Unit> {
@@ -19,10 +21,5 @@ object ProjectRepository : RepositoryBase<Project, RepositoryBase.State<Project>
 				update(it.data)
 			}
 			.map { }
-	}
-
-	override fun update(data: List<Project>) {
-		val test = ""
-		super.update(data)
 	}
 }
