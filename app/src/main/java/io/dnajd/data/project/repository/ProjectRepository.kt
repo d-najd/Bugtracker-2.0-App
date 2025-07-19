@@ -6,9 +6,7 @@ import io.dnajd.domain.project.service.ProjectApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class NewState : RepositoryBase.State<Project>()
-
-object ProjectRepository : RepositoryBase<Project, RepositoryBase.State<Project>>(NewState()) {
+object ProjectRepository : RepositoryBase<Project, RepositoryBase.State<Project>>(State()) {
 	private val api: ProjectApiService = Injekt.get()
 
 	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = true): Result<Unit> {
