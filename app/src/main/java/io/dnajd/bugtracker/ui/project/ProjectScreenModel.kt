@@ -30,7 +30,7 @@ class ProjectScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchIfNeeded()
+				.fetchAllIfNeeded()
 				.onFailureWithStackTrace {
 					_events.send(ProjectEvent.FailedToRetrieveProjects)
 					return@launchIONoQueue
@@ -54,7 +54,7 @@ class ProjectScreenModel(
 
 			val projectsMutable = ProjectRepository.state.value.projects.toMutableList()
 			projectsMutable.add(persistedProject)
-			ProjectRepository.updateProjects(projectsMutable)
+			ProjectRepository.update(projectsMutable)
 
 			dismissDialog()
 		}

@@ -23,7 +23,7 @@ object ProjectRepository {
 	/**
 	 * @param forceFetch fetches regardless whether data has already been set
 	 */
-	suspend fun fetchIfNeeded(forceFetch: Boolean = true): Result<Unit> {
+	suspend fun fetchAllIfNeeded(forceFetch: Boolean = true): Result<Unit> {
 		if (forceFetch && _state.value.fetchedProjects) {
 			return Result.success(Unit)
 		}
@@ -38,7 +38,7 @@ object ProjectRepository {
 			.map { }
 	}
 
-	fun updateProjects(projects: List<Project>) {
+	fun update(projects: List<Project>) {
 		_state.value = _state.value.copy(
 			projects = projects
 		)

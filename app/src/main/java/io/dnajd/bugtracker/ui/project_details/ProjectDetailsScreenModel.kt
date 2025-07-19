@@ -30,7 +30,7 @@ class ProjectDetailsScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchIfNeeded()
+				.fetchAllIfNeeded()
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
@@ -75,7 +75,7 @@ class ProjectDetailsScreenModel(
 			projectsModified.remove(projectToRename)
 			projectsModified.add(persistedProject)
 
-			ProjectRepository.updateProjects(projectsModified)
+			ProjectRepository.update(projectsModified)
 		}
 	}
 }

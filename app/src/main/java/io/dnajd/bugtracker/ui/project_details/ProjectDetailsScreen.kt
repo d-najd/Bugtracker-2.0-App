@@ -33,7 +33,7 @@ class ProjectDetailsScreen(
 
 						val projectsExceptDeleted =
 							ProjectRepository.state.value.projects.filter { it.id != event.projectId }
-						ProjectRepository.updateProjects(projectsExceptDeleted)
+						ProjectRepository.update(projectsExceptDeleted)
 					}
 
 					is ProjectDetailsEvent.FailedToRetrieveProjectData -> {
