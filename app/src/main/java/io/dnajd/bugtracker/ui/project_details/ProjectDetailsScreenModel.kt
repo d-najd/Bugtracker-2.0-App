@@ -59,7 +59,7 @@ class ProjectDetailsScreenModel(
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
-			val projects = ProjectRepository.projects()
+			val projects = ProjectRepository.data()
 			val projectToRename = projects.find { it.id == successState.projectId }!!
 			val renamedProject = projectToRename.copy(title = title)
 

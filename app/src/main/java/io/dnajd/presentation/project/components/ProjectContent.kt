@@ -44,7 +44,7 @@ fun ProjectContent(
 			fontWeight = FontWeight.Medium,
 		)
 
-		for (project in ProjectRepository.projectsCollected()) {
+		for (project in ProjectRepository.dataCollected()) {
 			ProjectItemContent(
 				project = project,
 				onProjectClicked = onProjectClicked,

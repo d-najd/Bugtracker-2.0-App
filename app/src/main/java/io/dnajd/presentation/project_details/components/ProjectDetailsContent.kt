@@ -77,7 +77,7 @@ fun ProjectDetailsContent(
 		// val projectState by ProjectRepository.state.collectAsState()
 		// val projectState = ProjectRepository.projectsAsState()
 		val project = ProjectRepository
-			.projectsCollected()
+			.dataCollected()
 			.find { it.id == state.projectId }!!
 
 		var expanded by remember { mutableStateOf(false) }

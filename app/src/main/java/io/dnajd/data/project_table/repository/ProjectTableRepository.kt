@@ -36,16 +36,14 @@ object ProjectTableRepository {
 				projectId,
 				fetchTasks
 			)
-			.onSuccess {                // TODO update Tasks repository if tasks fetched
+			.onSuccess {
+
+				// TODO update Tasks repository if tasks fetched
 				_state.value = _state.value.copy(
+					tables = it.data,
 					fetchedTables = true,
-					tables = it.data
 				)
 			}
 			.map { }
-	}
-
-	fun update(tables: List<ProjectTable>) {
-
 	}
 }

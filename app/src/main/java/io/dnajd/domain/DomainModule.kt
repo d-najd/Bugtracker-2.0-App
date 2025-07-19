@@ -8,8 +8,8 @@ import io.dnajd.data.project.api.ProjectApiServiceImpl
 import io.dnajd.data.project.api.ProjectApiServiceMock
 import io.dnajd.data.project_table.api.ProjectTableApiServiceImpl
 import io.dnajd.data.project_table.api.ProjectTableApiServiceMock
-import io.dnajd.data.table_task.TableTaskApiServiceImpl
-import io.dnajd.data.table_task.TableTaskApiServiceMock
+import io.dnajd.data.table_task.api.TableTaskApiServiceImpl
+import io.dnajd.data.table_task.api.TableTaskApiServiceMock
 import io.dnajd.data.user_authority.UserAuthorityApiServiceImpl
 import io.dnajd.data.user_authority.UserAuthorityApiServiceMock
 import io.dnajd.data.utils.JwtAuthenticator

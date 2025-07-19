@@ -53,7 +53,7 @@ class ProjectScreenModel(
 				.getOrThrow()
 
 			val projectsMutable = ProjectRepository
-				.projects()
+				.data()
 				.toMutableList()
 			projectsMutable.add(persistedProject)
 			ProjectRepository.update(projectsMutable)

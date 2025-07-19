@@ -1,4 +1,4 @@
-package io.dnajd.data.table_task
+package io.dnajd.data.table_task.api
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.table_task.model.TableTask

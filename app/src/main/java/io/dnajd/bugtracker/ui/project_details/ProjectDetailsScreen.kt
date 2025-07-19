@@ -32,7 +32,7 @@ class ProjectDetailsScreen(
 						navigator.popUntil { it is ProjectScreen }
 
 						val projectsExceptDeleted = ProjectRepository
-							.projects()
+							.data()
 							.filter { it.id != event.projectId }
 						ProjectRepository.update(projectsExceptDeleted)
 					}
