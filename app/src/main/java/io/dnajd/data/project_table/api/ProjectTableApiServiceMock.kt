@@ -1,4 +1,4 @@
-package io.dnajd.data.project_table
+package io.dnajd.data.project_table.api
 
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse

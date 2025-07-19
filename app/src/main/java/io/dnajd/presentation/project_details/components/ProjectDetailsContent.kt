@@ -15,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,8 +74,11 @@ fun ProjectDetailsContent(
 			}
 		}
 
-		val projectState by ProjectRepository.state.collectAsState()
-		val project = projectState.projects.find { it.id == state.projectId }!!
+		// val projectState by ProjectRepository.state.collectAsState()
+		// val projectState = ProjectRepository.projectsAsState()
+		val project = ProjectRepository
+			.projectsCollected()
+			.find { it.id == state.projectId }!!
 
 		var expanded by remember { mutableStateOf(false) }
 		var projectTitle by remember { mutableStateOf(project.title) }

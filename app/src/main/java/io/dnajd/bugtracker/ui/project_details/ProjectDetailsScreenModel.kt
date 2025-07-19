@@ -30,7 +30,7 @@ class ProjectDetailsScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchAllIfNeeded()
+				.fetchAllIfUninitialized()
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
@@ -59,7 +59,7 @@ class ProjectDetailsScreenModel(
 	fun renameProject(title: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
-			val projects = ProjectRepository.state.value.projects
+			val projects = ProjectRepository.projects()
 			val projectToRename = projects.find { it.id == successState.projectId }!!
 			val renamedProject = projectToRename.copy(title = title)
 

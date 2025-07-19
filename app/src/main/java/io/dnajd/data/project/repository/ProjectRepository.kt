@@ -1,5 +1,9 @@
 package io.dnajd.data.project.repository
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +24,17 @@ object ProjectRepository {
 
 	private val api: ProjectApiService = Injekt.get()
 
-	/**
-	 * @param forceFetch fetches regardless whether data has already been set
-	 */
-	suspend fun fetchAllIfNeeded(forceFetch: Boolean = true): Result<Unit> {
+	@Composable
+	fun projectsCollected(): List<Project> {
+		val stateCollected by state.collectAsState()
+		return remember(stateCollected) {
+			stateCollected.projects
+		}
+	}
+
+	fun projects(): List<Project> = state.value.projects
+
+	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = true): Result<Unit> {
 		if (forceFetch && _state.value.fetchedProjects) {
 			return Result.success(Unit)
 		}
@@ -40,7 +51,8 @@ object ProjectRepository {
 
 	fun update(projects: List<Project>) {
 		_state.value = _state.value.copy(
-			projects = projects
+			projects = projects,
+			fetchedProjects = true,
 		)
 	}
 

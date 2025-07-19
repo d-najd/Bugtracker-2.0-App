@@ -6,8 +6,8 @@ import io.dnajd.data.google_auth.GoogleAuthApiServiceImpl
 import io.dnajd.data.jwt_auth.JwtRefreshAuthApiServiceImpl
 import io.dnajd.data.project.api.ProjectApiServiceImpl
 import io.dnajd.data.project.api.ProjectApiServiceMock
-import io.dnajd.data.project_table.ProjectTableApiServiceImpl
-import io.dnajd.data.project_table.ProjectTableApiServiceMock
+import io.dnajd.data.project_table.api.ProjectTableApiServiceImpl
+import io.dnajd.data.project_table.api.ProjectTableApiServiceMock
 import io.dnajd.data.table_task.TableTaskApiServiceImpl
 import io.dnajd.data.table_task.TableTaskApiServiceMock
 import io.dnajd.data.user_authority.UserAuthorityApiServiceImpl

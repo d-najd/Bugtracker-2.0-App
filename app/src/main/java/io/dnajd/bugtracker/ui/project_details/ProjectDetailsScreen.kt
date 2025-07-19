@@ -31,8 +31,9 @@ class ProjectDetailsScreen(
 					is ProjectDetailsEvent.DeleteProject -> {
 						navigator.popUntil { it is ProjectScreen }
 
-						val projectsExceptDeleted =
-							ProjectRepository.state.value.projects.filter { it.id != event.projectId }
+						val projectsExceptDeleted = ProjectRepository
+							.projects()
+							.filter { it.id != event.projectId }
 						ProjectRepository.update(projectsExceptDeleted)
 					}
 
