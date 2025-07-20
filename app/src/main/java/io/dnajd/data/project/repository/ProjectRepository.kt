@@ -39,20 +39,43 @@ object ProjectRepository :
 		return api
 			.getAll()
 			.onSuccess {
-				update(it.data.toSet())
+				update(
+					data = it.data.toSet(),
+					updateLastFullFetch = true,
+				)
+			}
+			.map { }
+	}
+
+	suspend fun fetchOneIfUninitialized(
+		forceFetch: Boolean = false,
+		projectId: Long,
+	): Result<Unit> {
+		if (!forceFetch && data().any { it.id == projectId }) {
+			return Result.success(Unit)
+		}
+		return api
+			.getById(projectId)
+			.onSuccess {
+				val newData = data().toMutableSet()
+				newData.removeIf { project -> project.id == projectId }
+				newData.add(it)
+
+				update(
+					data = newData,
+					updateLastFullFetch = false,
+				)
 			}
 			.map { }
 	}
 
 	fun update(
 		data: Set<Project>,
-		updateLastFullFetch: Boolean = true,
-	) {
+		updateLastFullFetch: Boolean = false,
+	) {		// TODO the value will all be updated like this, maybe edit it so that values get replaced/added?
 		mutableState.value = ProjectRepositoryState(
 			data = data.associateWith { Date() },
 			lastFullFetch = Date(),
 		)
 	}
-
-	// suspend fun fetchOneIfUninitialized()
 }

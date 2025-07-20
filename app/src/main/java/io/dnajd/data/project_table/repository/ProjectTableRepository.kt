@@ -23,6 +23,8 @@ object ProjectTableRepository :
 
 	private val api: ProjectTableApiService = Injekt.get()
 
+	private fun lastFetchByProjectId(): Map<Long, Date?> = state.value.lastFetchByProjectId
+
 	@Composable
 	fun dataCollectedByProjectId(projectId: Long): Set<ProjectTableBasic> {
 		val stateCollected by state.collectAsState()
@@ -40,11 +42,11 @@ object ProjectTableRepository :
 	 * @param fetchTasks if true the tasks will be fetched and the repository for tasks updated
 	 */
 	suspend fun fetchAllIfUninitialized(
-		projectId: Long,
 		forceFetch: Boolean = false,
+		projectId: Long,
 		fetchTasks: Boolean = false,
 	): Result<Unit> {
-		if (!forceFetch && state.value.lastFetchByProjectId.containsKey(projectId)) {
+		if (!forceFetch && lastFetchByProjectId().containsKey(projectId)) {
 			return Result.success(Unit)
 		}
 		return api
@@ -86,8 +88,9 @@ object ProjectTableRepository :
 	fun update(
 		data: Set<ProjectTableBasic>,
 		vararg lastFetchProjectsUpdated: Long,
-	) {
-		val lastFetches = mutableState.value.lastFetchByProjectId.mapValues {
+	) {		// TODO the value will all be updated like this, maybe edit it so that values get replaced/added?
+
+		val lastFetches = lastFetchByProjectId().mapValues {
 			if (lastFetchProjectsUpdated.contains(it.key)) Date() else it.value
 		}
 

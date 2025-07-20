@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.util.Date
 
 /**
  * Sets are recommended here since ordering of items should be irrelevant and sets not allowing
@@ -29,8 +28,9 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 
 	open class State<T>(
 		/**
-		 * The key is the thing being stored and the value is the last time it was updated
+		 * The key is the thing being stored and the value is for keeping track of
+		 * the last time it was updated
 		 */
-		open val data: Map<T, Date?> = emptyMap(),
+		open val data: Map<T, Any?> = emptyMap(),
 	)
 }

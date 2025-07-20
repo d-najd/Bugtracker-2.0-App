@@ -29,6 +29,8 @@ class ProjectSettingsScreenModel(
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
+
+
 			if (ProjectRepository
 					.data()
 					.none { it.id == projectId } && !ProjectRepository.state.value.fetchedData

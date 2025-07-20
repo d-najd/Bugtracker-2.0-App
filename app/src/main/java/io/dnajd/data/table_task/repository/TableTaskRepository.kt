@@ -18,7 +18,8 @@ object TableTaskRepository :
 	fun update(
 		data: Set<TableTaskBasic>,
 		vararg lastFetchTablesUpdated: Long,
-	) {
+	) {		// TODO the value will all be updated like this, maybe edit it so that values get replaced/added?
+
 		val lastFetches = mutableState.value.lastFetchByTableId.mapValues {
 			if (lastFetchTablesUpdated.contains(it.key)) Date() else it.value
 		}
