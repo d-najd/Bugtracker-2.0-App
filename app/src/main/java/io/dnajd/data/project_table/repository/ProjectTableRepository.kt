@@ -8,11 +8,18 @@ import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project_table.model.ProjectTableBasic
 import io.dnajd.domain.project_table.service.ProjectTableApiService
+import io.dnajd.domain.table_task.model.TableTaskBasic
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.util.Date
+
+data class ProjectTableRepositoryState(
+	override val data: Map<ProjectTableBasic, Date?> = emptyMap(),
+	val lastFetchByProjectId: Map<Long, Date?> = emptyMap(),
+) : RepositoryBase.State<ProjectTableBasic>(data)
 
 object ProjectTableRepository :
-	RepositoryBase<Set<ProjectTableBasic>, RepositoryBase.State<Set<ProjectTableBasic>>>(State(emptySet())) {
+	RepositoryBase<ProjectTableBasic, ProjectTableRepositoryState>(ProjectTableRepositoryState()) {
 
 	private val api: ProjectTableApiService = Injekt.get()
 
@@ -23,7 +30,7 @@ object ProjectTableRepository :
 			stateCollected,
 			projectId
 		) {
-			stateCollected.data
+			stateCollected.data.keys
 				.filter { it.id == projectId }
 				.toSet()
 		}
@@ -37,7 +44,7 @@ object ProjectTableRepository :
 		forceFetch: Boolean = false,
 		fetchTasks: Boolean = false,
 	): Result<Unit> {
-		if (!forceFetch && state.value.fetchedData) {
+		if (!forceFetch && state.value.lastFetchByProjectId.containsKey(projectId)) {
 			return Result.success(Unit)
 		}
 		return api
@@ -50,15 +57,43 @@ object ProjectTableRepository :
 					.map { table -> ProjectTableBasic(table) }
 					.toSet()
 
-				update(tables)
+				update(
+					tables,
+					projectId
+				)
 
 				if (fetchTasks) {
 					val tasks = it.data
 						.flatMap { table -> table.tasks }
+						.map { table -> TableTaskBasic(table) }
 						.toSet()
-					TableTaskRepository.update(tasks)
+
+					val tableIds = tables
+						.map { table -> table.id }
+						.toLongArray()
+					TableTaskRepository.update(
+						tasks,
+						*tableIds
+					)
 				}
 			}
 			.map { }
+	}
+
+	/**
+	 * @param lastFetchProjectsUpdated which projects should be notified that they have been updated
+	 */
+	fun update(
+		data: Set<ProjectTableBasic>,
+		vararg lastFetchProjectsUpdated: Long,
+	) {
+		val lastFetches = mutableState.value.lastFetchByProjectId.mapValues {
+			if (lastFetchProjectsUpdated.contains(it.key)) Date() else it.value
+		}
+
+		mutableState.value = ProjectTableRepositoryState(
+			data = data.associateWith { Date() },
+			lastFetchByProjectId = lastFetches
+		)
 	}
 }

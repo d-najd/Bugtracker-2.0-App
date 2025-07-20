@@ -30,7 +30,7 @@ object AuthScreen : Screen {
 						context.toast(event.stringRes)
 					}
 
-					AuthEvent.UserLoggedIn -> {
+					AuthEvent.UserLoggedIn -> {						// TODO should also reset all of the repositories
 						navigator.replaceAll(ProjectScreen())
 					}
 				}

@@ -19,3 +19,36 @@ data class TableTask(
 	@SerializedName("assigned") val assigned: List<TableTaskAssignee> = emptyList(),
 	@SerializedName("childIssues") val childTasks: List<TableTask> = emptyList(),
 )
+
+data class TableTaskBasic(
+	val id: Long = -1L,
+	val title: String = "",
+	val tableId: Long = -1L,
+	val reporter: String = "",
+	val parentTaskId: Long? = null,
+	val severity: Int = 1,
+	val position: Int = -1,
+	val description: String? = null,
+	val createdAt: Date = Date(),
+	val updatedAt: Date? = null,
+	val comments: List<TableTaskComment> = emptyList(),
+	val labels: List<ProjectLabel> = emptyList(),
+	val assigned: List<TableTaskAssignee> = emptyList(),
+	val childTasks: List<Long> = emptyList(),
+) {
+	constructor(task: TableTask) : this(
+		id = task.id,
+		title = task.title,
+		tableId = task.tableId,
+		reporter = task.reporter,
+		parentTaskId = task.parentTaskId,
+		severity = task.severity,
+		position = task.position,
+		description = task.description,
+		createdAt = task.createdAt,
+		updatedAt = task.updatedAt,
+		comments = task.comments,
+		labels = task.labels,
+		assigned = task.assigned,
+		childTasks = task.childTasks.map { it.id })
+}

@@ -42,10 +42,10 @@ data class ProjectTableBasic(
 	@SerializedName("title") val title: String = "",
 	@SerializedName("position") val position: Int = -1,
 ) {
-	constructor(regularTable: ProjectTable): this(
-		id = regularTable.id,
-		projectId = regularTable.projectId,
-		title = regularTable.title,
-		position = regularTable.position
+	constructor(table: ProjectTable): this(
+		id = table.id,
+		projectId = table.projectId,
+		title = table.title,
+		position = table.position
 	)
 }

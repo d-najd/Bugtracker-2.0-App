@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Date
 
 /**
  * Sets are recommended here since ordering of items should be irrelevant and sets not allowing
@@ -14,19 +15,22 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<T> {
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
-	val state: StateFlow<S> = mutableState.asStateFlow()
+	protected val state: StateFlow<S> = mutableState.asStateFlow()
 
 	@Composable
-	fun dataCollected(): T {
+	open fun dataCollected(): Set<T> {
 		val stateCollected by state.collectAsState()
 		return remember(stateCollected) {
-			stateCollected.data
+			stateCollected.data.keys
 		}
 	}
 
-	fun data(): T = state.value.data
+	open fun data(): Set<T> = state.value.data.keys
 
 	open class State<T>(
-		open val data: T,
+		/**
+		 * The key is the thing being stored and the value is the last time it was updated
+		 */
+		open val data: Map<T, Date?> = emptyMap(),
 	)
 }

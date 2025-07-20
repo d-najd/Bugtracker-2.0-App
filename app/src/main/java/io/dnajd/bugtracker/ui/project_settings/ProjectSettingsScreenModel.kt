@@ -48,7 +48,7 @@ class ProjectSettingsScreenModel(
 
 				ProjectRepository.update(
 					data = projects,
-					setDataFetched = false
+					updateLastFullFetch = false
 				)
 			}
 		}

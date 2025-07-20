@@ -9,30 +9,31 @@ import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.sql.Date
+import java.util.Date
 
 data class ProjectRepositoryState(
 	override val data: Map<Project, Date?> = emptyMap(),
 	val lastFullFetch: Date? = null,
-) : RepositoryBase.State<Map<Project, Date?>>(data)
+) : RepositoryBase.State<Project>(data)
 
 object ProjectRepository :
-	RepositoryBase<Map<Project, Date?>, ProjectRepositoryState>(ProjectRepositoryState()) {
+	RepositoryBase<Project, ProjectRepositoryState>(ProjectRepositoryState()) {
+
 	private val api: ProjectApiService = Injekt.get()
 
 	@Composable
-	fun dataCollectedById(id: Long): Project {
+	fun dataCollectedById(id: Long): Project? {
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
 			id
 		) {
-			stateCollected.data.firstOrNull { it.id == id }
+			stateCollected.data.keys.firstOrNull { it.id == id }
 		}
 	}
 
 	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = false): Result<Unit> {
-		if (!forceFetch && mutableState.value.fetchedData) {
+		if (!forceFetch && mutableState.value.lastFullFetch != null) {
 			return Result.success(Unit)
 		}
 		return api
@@ -43,20 +44,15 @@ object ProjectRepository :
 			.map { }
 	}
 
-	/**
-	 * Must be overridden if custom [State] is used
-	 * @see State
-	 */
 	fun update(
 		data: Set<Project>,
-		setDataFetched: Boolean = true,
+		updateLastFullFetch: Boolean = true,
 	) {
 		mutableState.value = ProjectRepositoryState(
-			fetchedData = setDataFetched,
-			data = data
+			data = data.associateWith { Date() },
+			lastFullFetch = Date(),
 		)
 	}
-
 
 	// suspend fun fetchOneIfUninitialized()
 }
