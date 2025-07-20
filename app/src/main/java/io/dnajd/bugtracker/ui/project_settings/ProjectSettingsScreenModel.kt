@@ -43,7 +43,7 @@ class ProjectSettingsScreenModel(
 
 				val projects = ProjectRepository
 					.data()
-					.toMutableList()
+					.toMutableSet()
 				projects.add(project)
 
 				ProjectRepository.update(

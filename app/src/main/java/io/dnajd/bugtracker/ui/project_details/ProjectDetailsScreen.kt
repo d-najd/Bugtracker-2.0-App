@@ -34,6 +34,7 @@ class ProjectDetailsScreen(
 						val projectsExceptDeleted = ProjectRepository
 							.data()
 							.filter { it.id != event.projectId }
+							.toSet()
 						ProjectRepository.update(projectsExceptDeleted)
 					}
 

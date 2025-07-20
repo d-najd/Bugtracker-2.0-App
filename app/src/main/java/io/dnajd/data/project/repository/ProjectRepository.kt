@@ -11,7 +11,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object ProjectRepository :
-	RepositoryBase<List<Project>, RepositoryBase.State<List<Project>>>(State(emptyList())) {
+	RepositoryBase<Set<Project>, RepositoryBase.State<Set<Project>>>(State(emptySet())) {
 
 	private val api: ProjectApiService = Injekt.get()
 
@@ -33,7 +33,7 @@ object ProjectRepository :
 		return api
 			.getAll()
 			.onSuccess {
-				update(it.data)
+				update(it.data.toSet())
 			}
 			.map { }
 	}

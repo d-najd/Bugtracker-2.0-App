@@ -7,13 +7,8 @@ import io.dnajd.domain.project_table.service.ProjectTableApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-data class ProjectTableRepositoryState(
-	val fetchedTables: Boolean = false,
-	val tables: List<ProjectTable> = emptyList(),
-)
-
 object ProjectTableRepository :
-	RepositoryBase<List<ProjectTable>, RepositoryBase.State<List<ProjectTable>>>(State(emptyList())) {
+	RepositoryBase<Set<ProjectTable>, RepositoryBase.State<Set<ProjectTable>>>(State(emptySet())) {
 
 	private val api: ProjectTableApiService = Injekt.get()
 
@@ -34,9 +29,11 @@ object ProjectTableRepository :
 				fetchTasks
 			)
 			.onSuccess {
-				update(it.data)
+				update(it.data.toSet())
 				if (fetchTasks) {
-					val tasks = it.data.flatMap { table -> table.tasks }
+					val tasks = it.data
+						.flatMap { table -> table.tasks }
+						.toSet()
 					TableTaskRepository.update(tasks)
 				}
 			}

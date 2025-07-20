@@ -71,7 +71,7 @@ class ProjectDetailsScreenModel(
 				}
 				.getOrThrow()
 
-			val projectsModified = projects.toMutableList()
+			val projectsModified = projects.toMutableSet()
 			projectsModified.remove(projectToRename)
 			projectsModified.add(persistedProject)
 
