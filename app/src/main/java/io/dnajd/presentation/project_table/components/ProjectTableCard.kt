@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
+import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -103,6 +104,12 @@ fun ProjectTableCard(
 		)
 
 		// TODO see if this can be removed refresh when project tables get altered
+		val tables = ProjectTableRepository.dataCollected()		/*
+		LaunchedEffect(tables) {
+			reorderableList = table.tasks.sortedBy { it.position }
+		}
+		 */
+
 		LaunchedEffect(state.tables) {
 			reorderableList = table.tasks.sortedBy { it.position }
 		}
@@ -110,10 +117,11 @@ fun ProjectTableCard(
 		/* TODO see if this can be removed
 			refresh when an task gets moved, for some reason moving tasks does not count as state
 			change and events are not reliable so I am stuck with this
-		 */
+		 */        /*
 		LaunchedEffect(state.manualTableTasksRefresh) {
 			reorderableList = table.tasks.sortedBy { it.position }
 		}
+		 */
 
 		LazyColumn(
 			state = reorderableState.listState,
@@ -229,7 +237,7 @@ private fun ProjectTableDropdownMenu(
 		modifier = Modifier.fillMaxWidth()
 	) {
 		DropdownMenu(
-			expanded = table.id == state.dropdownDialogSelectedTableId,
+			expanded = table.id == state.dropdownOpenedInTableId,
 			onDismissRequest = { onSwitchDropdownMenuClicked(null) }) {
 			DropdownMenuItem(
 				text = {
@@ -289,7 +297,7 @@ private fun ProjectTableCardBottom(
 	onCreateTableTaskMenuClicked: (Long?) -> Unit,
 	onCreateTableTaskClicked: (TableTask) -> Unit,
 ) {
-	if (table.id == state.createTableItemSelectedTableId) {
+	if (table.id == state.taskCreatedInTableId) {
 		var title by remember { mutableStateOf("") }
 		ProjectTableTextFieldCardContent(
 			value = title,
@@ -312,7 +320,7 @@ private fun ProjectTableCardBottom(
 			})
 
 		Box(modifier = Modifier.height(4.dp))
-	} else if (state.createTableItemSelectedTableId == null) {
+	} else if (state.taskCreatedInTableId == null) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = modifier.clickable { onCreateTableTaskMenuClicked(table.id) },

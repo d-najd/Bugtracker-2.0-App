@@ -5,7 +5,6 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
@@ -33,7 +32,7 @@ import uy.kohesive.injekt.api.get
 	private val projectApiService: ProjectApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 	private val tableTaskApiService: TableTaskApiService = Injekt.get(),
-) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading) {
+) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading(projectId)) {
 	private val _events: Channel<ProjectTableEvent> = Channel(Int.MAX_VALUE)
 	val events: Flow<ProjectTableEvent> = _events.receiveAsFlow()
 
@@ -45,6 +44,7 @@ import uy.kohesive.injekt.api.get
 		}
 	}
 
+	/*
 	fun reFetchTableData() {
 		mutex.launchIONoQueue(coroutineScope) {
 			mutableState.update {
@@ -54,6 +54,7 @@ import uy.kohesive.injekt.api.get
 			fetchTableData(this)
 		}
 	}
+	 */
 
 	private suspend fun fetchTableData(coroutineScope: CoroutineScope) {
 		val projectResult = coroutineScope.async {
@@ -95,7 +96,7 @@ import uy.kohesive.injekt.api.get
 
 		mutableState.update {
 			ProjectTableScreenState.Success(
-				project = project,
+				projectId = projectId,
 				tables = sortedTables,
 			)
 		}
@@ -126,7 +127,7 @@ import uy.kohesive.injekt.api.get
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update { successState.copy(createTableItemSelectedTableId = tableId) }
+			mutableState.update { successState.copy(taskCreatedInTableId = tableId) }
 		}
 	}
 
@@ -154,7 +155,7 @@ import uy.kohesive.injekt.api.get
 			mutableState.update {
 				successState.copy(
 					tables = tables,
-					createTableItemSelectedTableId = null,
+					taskCreatedInTableId = null,
 				)
 			}
 		}
@@ -236,7 +237,7 @@ import uy.kohesive.injekt.api.get
 			mutableState.update {
 				successState.copy(
 					tables = tables.sortedBy { it.position },
-					dropdownDialogSelectedTableId = null,
+					dropdownOpenedInTableId = null,
 				)
 			}
 		}
@@ -274,12 +275,7 @@ import uy.kohesive.injekt.api.get
 					fTask.id,
 					sTask.id
 				)
-				.onFailureWithStackTrace {                    // TODO what the hell is this?
-					mutableState.update {
-						successState.copy(
-							manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
-						)
-					}
+				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToMoveTableTasks)
 					return@launchIONoQueue
 				}
@@ -347,7 +343,6 @@ import uy.kohesive.injekt.api.get
 		mutableState.update {
 			successState.copy(
 				tables = tables.sortedBy { it.position },
-				manualTableTasksRefresh = successState.manualTableTasksRefresh + 1
 			)
 		}
 	}
@@ -395,10 +390,9 @@ import uy.kohesive.injekt.api.get
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val newTableId =
-				if (successState.dropdownDialogSelectedTableId == tableId) null else tableId
+			val newTableId = if (successState.dropdownOpenedInTableId == tableId) null else tableId
 
-			mutableState.update { successState.copy(dropdownDialogSelectedTableId = newTableId) }
+			mutableState.update { successState.copy(dropdownOpenedInTableId = newTableId) }
 		}
 	}
 }
@@ -435,21 +429,17 @@ sealed class ProjectTableDialog {
 	) : ProjectTableDialog()
 }
 
-sealed class ProjectTableScreenState {
+sealed class ProjectTableScreenState(open val projectId: Long) {
 
-	@Immutable data object Loading : ProjectTableScreenState()
+	@Immutable data class Loading(override val projectId: Long) : ProjectTableScreenState(projectId)
 
-	/**
-	 * TODO find a way to get rid of taskMoved, using events does not work properly
-	 */
 	@Immutable data class Success(
-		val project: Project,
+		override val projectId: Long,
 		val tables: List<ProjectTable>,
-		val dropdownDialogSelectedTableId: Long? = null,
+		val dropdownOpenedInTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
-		val createTableItemSelectedTableId: Long? = null,        // TODO remove this
-		val manualTableTasksRefresh: Int = 0,
+		val taskCreatedInTableId: Long? = null,
 		val dialog: ProjectTableDialog? = null,
-	) : ProjectTableScreenState()
+	) : ProjectTableScreenState(projectId)
 
 }

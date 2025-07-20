@@ -27,6 +27,7 @@ class ProjectTableScreen(
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectTableScreenModel(projectId) }
 
+		/*
 		LaunchedEffect(ProjectTableSharedState.events) {
 			ProjectTableSharedState.events.collectLatest {
 				if (it == ProjectTableSharedState.Event.TableOrTaskAltered) {
@@ -37,6 +38,7 @@ class ProjectTableScreen(
 				}
 			}
 		}
+		 */
 
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->

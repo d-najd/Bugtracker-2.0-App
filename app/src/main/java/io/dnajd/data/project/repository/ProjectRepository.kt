@@ -9,14 +9,19 @@ import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.sql.Date
+
+data class ProjectRepositoryState(
+	override val data: Map<Project, Date?> = emptyMap(),
+	val lastFullFetch: Date? = null,
+) : RepositoryBase.State<Map<Project, Date?>>(data)
 
 object ProjectRepository :
-	RepositoryBase<Set<Project>, RepositoryBase.State<Set<Project>>>(State(emptySet())) {
-
+	RepositoryBase<Map<Project, Date?>, ProjectRepositoryState>(ProjectRepositoryState()) {
 	private val api: ProjectApiService = Injekt.get()
 
 	@Composable
-	fun dataCollectedById(id: Long): Project? {
+	fun dataCollectedById(id: Long): Project {
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
@@ -37,4 +42,21 @@ object ProjectRepository :
 			}
 			.map { }
 	}
+
+	/**
+	 * Must be overridden if custom [State] is used
+	 * @see State
+	 */
+	fun update(
+		data: Set<Project>,
+		setDataFetched: Boolean = true,
+	) {
+		mutableState.value = ProjectRepositoryState(
+			fetchedData = setDataFetched,
+			data = data
+		)
+	}
+
+
+	// suspend fun fetchOneIfUninitialized()
 }

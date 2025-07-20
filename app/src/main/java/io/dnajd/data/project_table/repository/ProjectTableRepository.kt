@@ -1,16 +1,33 @@
 package io.dnajd.data.project_table.repository
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.data.utils.RepositoryBase
-import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.domain.project_table.model.ProjectTableBasic
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object ProjectTableRepository :
-	RepositoryBase<Set<ProjectTable>, RepositoryBase.State<Set<ProjectTable>>>(State(emptySet())) {
+	RepositoryBase<Set<ProjectTableBasic>, RepositoryBase.State<Set<ProjectTableBasic>>>(State(emptySet())) {
 
 	private val api: ProjectTableApiService = Injekt.get()
+
+	@Composable
+	fun dataCollectedByProjectId(projectId: Long): Set<ProjectTableBasic> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			projectId
+		) {
+			stateCollected.data
+				.filter { it.id == projectId }
+				.toSet()
+		}
+	}
 
 	/**
 	 * @param fetchTasks if true the tasks will be fetched and the repository for tasks updated
@@ -29,7 +46,12 @@ object ProjectTableRepository :
 				fetchTasks
 			)
 			.onSuccess {
-				update(it.data.toSet())
+				val tables = it.data
+					.map { table -> ProjectTableBasic(table) }
+					.toSet()
+
+				update(tables)
+
 				if (fetchTasks) {
 					val tasks = it.data
 						.flatMap { table -> table.tasks }
@@ -38,19 +60,5 @@ object ProjectTableRepository :
 				}
 			}
 			.map { }
-	}
-
-	override fun update(
-		data: Set<ProjectTable>,
-		setDataFetched: Boolean,
-	) {
-		val dataWithoutTasks = data
-			.map { it.copy(tasks = emptyList()) }
-			.toSet()
-
-		super.update(
-			dataWithoutTasks,
-			setDataFetched
-		)
 	}
 }

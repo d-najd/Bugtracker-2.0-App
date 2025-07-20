@@ -38,7 +38,7 @@ fun CreateProjectTableDialog(
 				onClick = {
 					onCreateTableClicked(
 						ProjectTable(
-							projectId = state.project.id,
+							projectId = state.projectId,
 							title = title,
 						)
 					)

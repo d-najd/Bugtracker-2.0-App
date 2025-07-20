@@ -26,49 +26,7 @@ open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<
 
 	fun data(): T = state.value.data
 
-	/**
-	 * Must be overridden if custom [State] is used
-	 * @see State
-	 */
-	open fun update(
-		data: T,
-		setDataFetched: Boolean = true,
-	) {
-
-		// Check is done on init
-		@Suppress("UNCHECKED_CAST")
-
-		mutableState.value = State<T>(
-			fetchedData = setDataFetched,
-			data = data
-		) as S
-	}
-
-	/**
-	 * [update] must be overridden if this is overridden
-	 * @see update
-	 */
 	open class State<T>(
-		val data: T,
-		/**
-		 * Should be set to true only when all data has been set, fetching individual fields should
-		 * not set this to true, if you want finer control consider overriding [State]
-		 */
-		val fetchedData: Boolean = false,
+		open val data: T,
 	)
-
-	init {
-
-		// This fails if the class if [initialState] is not the same as [RepositoryBase.State]
-		// even if [S] is [RepositoryBase.State], but there shouldn't be a case when that happens
-		val isStateOverridden = initialState::class != State::class
-
-		// Only methods in the new class seem to be included
-		val isUpdateOverridden =
-			this::class.java.declaredMethods.any { it.name == RepositoryBase<T, S>::update.name }
-
-		if (isStateOverridden && !isUpdateOverridden) {
-			throw TypeCastException("When using custom state override ${RepositoryBase<T, S>::update.name} as well")
-		}
-	}
 }
