@@ -39,4 +39,18 @@ object ProjectTableRepository :
 			}
 			.map { }
 	}
+
+	override fun update(
+		data: Set<ProjectTable>,
+		setDataFetched: Boolean,
+	) {
+		val dataWithoutTasks = data
+			.map { it.copy(tasks = emptyList()) }
+			.toSet()
+
+		super.update(
+			dataWithoutTasks,
+			setDataFetched
+		)
+	}
 }
