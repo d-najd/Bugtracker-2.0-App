@@ -79,9 +79,15 @@ object ProjectRepository :
 		data: Map<Project, Date>,
 		updateLastFullFetch: Boolean = false,
 	) {
+		val newLastFullFetchDate = if (updateLastFullFetch) {
+			Date()
+		} else {
+			mutableState.value.lastFullFetch
+		}
+
 		mutableState.value = ProjectRepositoryState(
 			data = data,
-			lastFullFetch = Date(),
+			lastFullFetch = newLastFullFetchDate,
 		)
 	}
 }

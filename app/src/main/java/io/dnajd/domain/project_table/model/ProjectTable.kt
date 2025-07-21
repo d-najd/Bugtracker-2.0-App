@@ -4,9 +4,7 @@ package io.dnajd.domain.project_table.model
 import com.google.gson.annotations.SerializedName
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
-import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.table_task.model.TableTask
-import java.util.Objects
 
 data class ProjectTableListResponse(
 	@SerializedName("data") val `data`: List<ProjectTable> = emptyList(),
@@ -25,7 +23,7 @@ data class ProjectTable(
 	 * [ProjectTableRepository]'s data shouldn't have tasks and [TableTaskRepository] should be used
 	 * instead.
 	 */
-	@SerializedName("issues") val tasks: List<TableTask> = mutableListOf(),
+	@SerializedName("issues") val tasks: List<TableTask>? = mutableListOf(),
 ) : java.io.Serializable {
 	constructor(basicTable: ProjectTable) : this(
 		id = basicTable.id,
@@ -50,16 +48,4 @@ data class ProjectTableBasic(
 		title = table.title,
 		position = table.position
 	)
-
-	override fun hashCode(): Int {
-		return Objects.hash(id)
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (other !is Project) return false
-
-		if (id != other.id) return false
-
-		return true
-	}
 }

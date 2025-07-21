@@ -6,27 +6,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.data.utils.RepositoryBase
-import io.dnajd.domain.project_table.model.ProjectTableBasic
+import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
-import io.dnajd.domain.table_task.model.TableTaskBasic
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
 
 data class ProjectTableRepositoryState(
-	override val data: Map<ProjectTableBasic, Date?> = emptyMap(),
-	val lastFetchByProjectId: Map<Long, Date?> = emptyMap(),
-) : RepositoryBase.State<ProjectTableBasic>(data)
+	override val data: Map<ProjectTable, Date> = emptyMap(),
+	val lastFetchByProjectId: Map<Long, Date> = emptyMap(),
+) : RepositoryBase.State<ProjectTable, Date>(data)
 
 object ProjectTableRepository :
-	RepositoryBase<ProjectTableBasic, ProjectTableRepositoryState>(ProjectTableRepositoryState()) {
+	RepositoryBase<ProjectTable, Date, ProjectTableRepositoryState>(ProjectTableRepositoryState()) {
 
 	private val api: ProjectTableApiService = Injekt.get()
 
-	private fun lastFetchByProjectId(): Map<Long, Date?> = state.value.lastFetchByProjectId
+	private fun lastFetchByProjectId(): Map<Long, Date> = state.value.lastFetchByProjectId
 
 	@Composable
-	fun dataCollectedByProjectId(projectId: Long): Set<ProjectTableBasic> {
+	fun dataKeysCollectedByProjectId(projectId: Long): Set<ProjectTable> {
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
@@ -56,25 +55,27 @@ object ProjectTableRepository :
 			)
 			.onSuccess {
 				val tables = it.data
-					.map { table -> ProjectTableBasic(table) }
+				val tablesAsEntries = tables
 					.toSet()
+					.associateWith { Date() }
 
 				update(
-					tables,
+					tablesAsEntries,
 					projectId
 				)
 
 				if (fetchTasks) {
-					val tasks = it.data
-						.flatMap { table -> table.tasks }
-						.map { table -> TableTaskBasic(table) }
+					val tasksAsEntries = it.data
+						.flatMap { table -> table.tasks!! }
 						.toSet()
+						.associateWith { Date() }
 
 					val tableIds = tables
 						.map { table -> table.id }
 						.toLongArray()
+
 					TableTaskRepository.update(
-						tasks,
+						tasksAsEntries,
 						*tableIds
 					)
 				}
@@ -86,16 +87,19 @@ object ProjectTableRepository :
 	 * @param lastFetchProjectsUpdated which projects should be notified that they have been updated
 	 */
 	fun update(
-		data: Set<ProjectTableBasic>,
+		data: Map<ProjectTable, Date>,
 		vararg lastFetchProjectsUpdated: Long,
-	) {		// TODO the value will all be updated like this, maybe edit it so that values get replaced/added?
+	) {
+		val dataWithoutTasks = data.mapKeys {
+			it.key.copy(tasks = null)
+		}
 
 		val lastFetches = lastFetchByProjectId().mapValues {
 			if (lastFetchProjectsUpdated.contains(it.key)) Date() else it.value
 		}
 
 		mutableState.value = ProjectTableRepositoryState(
-			data = data.associateWith { Date() },
+			data = dataWithoutTasks,
 			lastFetchByProjectId = lastFetches
 		)
 	}
