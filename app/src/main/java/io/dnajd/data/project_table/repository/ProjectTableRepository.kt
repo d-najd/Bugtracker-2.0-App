@@ -40,7 +40,7 @@ object ProjectTableRepository :
 	/**
 	 * @param fetchTasks if true the tasks will be fetched and the repository for tasks updated
 	 */
-	suspend fun fetchAllIfUninitialized(
+	suspend fun fetchAllIfStale(
 		forceFetch: Boolean = false,
 		projectId: Long,
 		fetchTasks: Boolean = false,

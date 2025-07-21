@@ -33,7 +33,7 @@ object ProjectRepository :
 		}
 	}
 
-	suspend fun fetchAllIfUninitialized(forceFetch: Boolean = false): Result<Unit> {
+	suspend fun fetchAllIfStale(forceFetch: Boolean = false): Result<Unit> {
 		if (!forceFetch && mutableState.value.lastFullFetch != null) {
 			return Result.success(Unit)
 		}
@@ -48,7 +48,7 @@ object ProjectRepository :
 			.map { }
 	}
 
-	suspend fun fetchOneIfUninitialized(
+	suspend fun fetchOneIfStale(
 		forceFetch: Boolean = false,
 		projectId: Long,
 	): Result<Unit> {

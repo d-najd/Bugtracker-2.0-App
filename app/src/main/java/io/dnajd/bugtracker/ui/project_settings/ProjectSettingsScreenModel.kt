@@ -30,7 +30,7 @@ class ProjectSettingsScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchOneIfUninitialized(
+				.fetchOneIfStale(
 					forceFetch = false,
 					projectId = projectId
 				)

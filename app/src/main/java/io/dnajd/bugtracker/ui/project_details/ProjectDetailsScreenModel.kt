@@ -32,7 +32,7 @@ class ProjectDetailsScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchAllIfUninitialized()
+				.fetchAllIfStale()
 				.onFailureWithStackTrace {
 					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
