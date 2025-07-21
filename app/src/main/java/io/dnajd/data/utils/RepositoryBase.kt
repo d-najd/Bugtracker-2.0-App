@@ -12,25 +12,27 @@ import kotlinx.coroutines.flow.asStateFlow
  * Sets are recommended here since ordering of items should be irrelevant and sets not allowing
  * duplicates
  */
-open class RepositoryBase<T, S>(initialState: S) where S : RepositoryBase.State<T> {
+open class RepositoryBase<T1, T2, S>(initialState: S) where S : RepositoryBase.State<T1, T2> {
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
 	protected val state: StateFlow<S> = mutableState.asStateFlow()
 
 	@Composable
-	open fun dataCollected(): Set<T> {
+	open fun dataKeysCollected(): Set<T1> {
 		val stateCollected by state.collectAsState()
 		return remember(stateCollected) {
 			stateCollected.data.keys
 		}
 	}
 
-	open fun data(): Set<T> = state.value.data.keys
+	open fun dataKeys(): Set<T1> = state.value.data.keys
 
-	open class State<T>(
+	open fun data(): Map<T1, T2> = state.value.data
+
+	open class State<T1, T2>(
 		/**
 		 * The key is the thing being stored and the value is for keeping track of
 		 * the last time it was updated
 		 */
-		open val data: Map<T, Any?> = emptyMap(),
+		open val data: Map<T1, T2> = emptyMap(),
 	)
 }

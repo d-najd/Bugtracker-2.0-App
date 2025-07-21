@@ -104,7 +104,7 @@ fun ProjectTableCard(
 		)
 
 		// TODO see if this can be removed refresh when project tables get altered
-		val tables = ProjectTableRepository.dataCollected()		/*
+		val tables = ProjectTableRepository.dataKeysCollected()        /*
 		LaunchedEffect(tables) {
 			reorderableList = table.tasks.sortedBy { it.position }
 		}

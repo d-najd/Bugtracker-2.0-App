@@ -33,8 +33,8 @@ class ProjectDetailsScreen(
 
 						val projectsExceptDeleted = ProjectRepository
 							.data()
-							.filter { it.id != event.projectId }
-							.toSet()
+							.filter { it.key.id != event.projectId }
+
 						ProjectRepository.update(projectsExceptDeleted)
 					}
 

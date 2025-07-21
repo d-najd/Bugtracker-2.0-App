@@ -29,33 +29,18 @@ class ProjectSettingsScreenModel(
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
-
-
-			if (ProjectRepository
-					.data()
-					.none { it.id == projectId } && !ProjectRepository.state.value.fetchedData
-			) {
-				val project = projectApiService
-					.getById(projectId)
-					.onFailureWithStackTrace {
-						_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
-						return@launchIONoQueue
-					}
-					.getOrThrow()
-
-				val projects = ProjectRepository
-					.data()
-					.toMutableSet()
-				projects.add(project)
-
-				ProjectRepository.update(
-					data = projects,
-					updateLastFullFetch = false
+			ProjectRepository
+				.fetchOneIfUninitialized(
+					forceFetch = false,
+					projectId = projectId
 				)
-			}
-		}
+				.onFailureWithStackTrace {
+					_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
+					return@launchIONoQueue
+				}
 
-		mutableState.update { ProjectSettingsScreenState.Success(projectId) }
+			mutableState.update { ProjectSettingsScreenState.Success(projectId) }
+		}
 	}
 }
 

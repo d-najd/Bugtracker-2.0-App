@@ -9,6 +9,7 @@ import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
+import io.dnajd.util.putIfNoneOrReplaceIf
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.util.Date
 
 class ProjectDetailsScreenModel(
 	projectId: Long,
@@ -60,7 +62,7 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 			val projects = ProjectRepository.data()
-			val projectToRename = projects.find { it.id == successState.projectId }!!
+			val projectToRename = projects.keys.find { it.id == successState.projectId }!!
 			val renamedProject = projectToRename.copy(title = title)
 
 			val persistedProject = projectApiService
@@ -71,9 +73,14 @@ class ProjectDetailsScreenModel(
 				}
 				.getOrThrow()
 
-			val projectsModified = projects.toMutableSet()
-			projectsModified.remove(projectToRename)
-			projectsModified.add(persistedProject)
+			val projectsModified = projects
+				.toMutableMap()
+				.putIfNoneOrReplaceIf(
+					persistedProject,
+					Date(),
+				) { k, _ ->
+					k.id == persistedProject.id
+				}
 
 			ProjectRepository.update(projectsModified)
 		}

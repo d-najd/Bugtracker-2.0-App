@@ -47,7 +47,7 @@ class ProjectScreen : ScreenFixed() {
 			state = successState,
 			onProjectClicked = { id ->
 				val project = ProjectRepository
-					.data()
+					.dataKeys()
 					.find { it.id == id }!!
 
 				navigator.push(ProjectTableScreen(project.id))
