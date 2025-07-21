@@ -5,6 +5,9 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
+import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
@@ -25,6 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
 	private val projectId: Long,
@@ -44,27 +48,20 @@ import uy.kohesive.injekt.api.get
 		}
 	}
 
-	/*
-	fun reFetchTableData() {
-		mutex.launchIONoQueue(coroutineScope) {
-			mutableState.update {
-				ProjectTableScreenState.Loading
-			}
-
-			fetchTableData(this)
-		}
-	}
-	 */
-
 	private suspend fun fetchTableData(coroutineScope: CoroutineScope) {
 		val projectResult = coroutineScope.async {
-			projectApiService
-				.getById(projectId)
-				.onFailure { cancel() }
+			ProjectRepository
+				.fetchOneIfStale(projectId)
+				.onFailure {
+					cancel()
+				}
 		}
 		val tablesResult = coroutineScope.async {
-			this@ProjectTableScreenModel.projectTableApiService
-				.getAllByProjectId(this@ProjectTableScreenModel.projectId)
+			ProjectTableRepository
+				.fetchByProjectIdIfStale(
+					projectId,
+					fetchTasks = true,
+				)
 				.onFailure { this.cancel() }
 		}
 
@@ -84,28 +81,15 @@ import uy.kohesive.injekt.api.get
 			return
 		}
 
-		val project = projectResult
-			.getCompleted()
-			.getOrThrow()
-		val tables = tablesResult
-			.getCompleted()
-			.getOrThrow()
-		val sortedTables = tables.data
-			.sortedBy { it.position }
-			.map { table -> table.copy(tasks = table.tasks.sortedBy { it.position }) }
-
 		mutableState.update {
 			ProjectTableScreenState.Success(
-				projectId = projectId,
-				tables = sortedTables,
+				projectId = projectId
 			)
 		}
 	}
 
 	fun createTable(table: ProjectTable) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
-
 			val createdTable = projectTableApiService
 				.createTable(table)
 				.onFailureWithStackTrace {
@@ -114,10 +98,11 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow()
 
-			val tables = successState.tables.toMutableList()
-			tables.add(createdTable)
-
-			mutableState.update { successState.copy(tables = tables) }
+			val tables = ProjectTableRepository
+				.data()
+				.toMutableMap()
+			tables[createdTable] = Date()
+			ProjectTableRepository.update(tables)
 
 			_events.send(ProjectTableEvent.CreatedTable)
 		}
@@ -127,7 +112,7 @@ import uy.kohesive.injekt.api.get
 		mutex.launchUINoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update { successState.copy(taskCreatedInTableId = tableId) }
+			mutableState.update { successState.copy(taskBeingAddedInTableId = tableId) }
 		}
 	}
 
@@ -143,19 +128,15 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow()
 
-			val tables = successState.tables.toMutableList()
-			val table = tables.find { it.id == task.tableId }!!
-			tables.remove(table)
-
-			val tasks = table.tasks.toMutableList()
-			tasks.add(createdTask)
-
-			tables.add(table.copy(tasks = tasks))
+			val tasks = TableTaskRepository
+				.data()
+				.toMutableMap()
+			tasks[createdTask] = Date()
+			TableTaskRepository.update(tasks)
 
 			mutableState.update {
 				successState.copy(
-					tables = tables,
-					taskCreatedInTableId = null,
+					taskBeingAddedInTableId = null
 				)
 			}
 		}
@@ -435,10 +416,10 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 
 	@Immutable data class Success(
 		override val projectId: Long,
-		val tables: List<ProjectTable>,
+		val tables: List<ProjectTable> = emptyList(),
 		val dropdownOpenedInTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
-		val taskCreatedInTableId: Long? = null,
+		val taskBeingAddedInTableId: Long? = null,
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState(projectId)
 

@@ -31,8 +31,7 @@ class ProjectSettingsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
 				.fetchOneIfStale(
-					forceFetch = false,
-					projectId = projectId
+					projectId
 				)
 				.onFailureWithStackTrace {
 					_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)

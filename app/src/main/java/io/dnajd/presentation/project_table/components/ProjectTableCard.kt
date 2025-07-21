@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -69,18 +70,11 @@ fun ProjectTableCard(
 				top = 4.dp
 			),
 	) {
-		ProjectTableCardTop(
-			modifier = Modifier.fillMaxWidth(),
-			state = state,
-			table = table,
-			index = index,
-			onTableRename = onTableRename,
-			onDeleteTableClicked = onDeleteTableClicked,
-			onSwapTablePositionsClicked = onSwapTablePositionsClicked,
-			onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
-		)
+		val tasks = TableTaskRepository
+			.dataKeysCollectedByTableId(table.id)
+			.toList()
 
-		var reorderableList by remember { mutableStateOf(table.tasks) }        // a list is being stored in case the user moves multiple table items
+		var reorderableList by remember { mutableStateOf(tasks) }        // a list is being stored in case the user moves multiple table items
 		val reorderableState = rememberReorderableLazyListState(
 			onMove = { from, to ->
 				reorderableList = reorderableList
@@ -103,25 +97,20 @@ fun ProjectTableCard(
 			},
 		)
 
-		// TODO see if this can be removed refresh when project tables get altered
-		val tables = ProjectTableRepository.dataKeysCollected()        /*
-		LaunchedEffect(tables) {
-			reorderableList = table.tasks.sortedBy { it.position }
-		}
-		 */
-
-		LaunchedEffect(state.tables) {
-			reorderableList = table.tasks.sortedBy { it.position }
+		LaunchedEffect(tasks) {
+			reorderableList = tasks.sortedBy { it.position }
 		}
 
-		/* TODO see if this can be removed
-			refresh when an task gets moved, for some reason moving tasks does not count as state
-			change and events are not reliable so I am stuck with this
-		 */        /*
-		LaunchedEffect(state.manualTableTasksRefresh) {
-			reorderableList = table.tasks.sortedBy { it.position }
-		}
-		 */
+		ProjectTableCardTop(
+			modifier = Modifier.fillMaxWidth(),
+			state = state,
+			table = table,
+			index = index,
+			onTableRename = onTableRename,
+			onDeleteTableClicked = onDeleteTableClicked,
+			onSwapTablePositionsClicked = onSwapTablePositionsClicked,
+			onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
+		)
 
 		LazyColumn(
 			state = reorderableState.listState,
@@ -178,6 +167,8 @@ private fun ProjectTableCardTop(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
+	val tasks = TableTaskRepository.dataKeysCollectedByTableId(table.id)
+
 	Row(
 		modifier = modifier,
 		verticalAlignment = Alignment.CenterVertically
@@ -190,7 +181,7 @@ private fun ProjectTableCardTop(
 		)
 		Text(
 			modifier = Modifier.padding(start = 12.dp),
-			text = table.tasks.size.toString(),
+			text = tasks.size.toString(),
 			fontSize = 16.sp,
 			color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 		)
@@ -232,6 +223,8 @@ private fun ProjectTableDropdownMenu(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
+	val tables = ProjectTableRepository.dataKeysCollectedByProjectId(table.projectId)
+
 	Column(
 		horizontalAlignment = Alignment.End,
 		modifier = Modifier.fillMaxWidth()
@@ -258,12 +251,12 @@ private fun ProjectTableDropdownMenu(
 					onClick = {
 						onSwapTablePositionsClicked(
 							table.id,
-							state.tables.find { it.position == table.position - 1 }!!.id
+							tables.find { it.position == table.position - 1 }!!.id
 						)
 						onSwitchDropdownMenuClicked(null)
 					})
 			}
-			if (index + 1 in state.tables.indices) {
+			if (index + 1 in tables.indices) {
 				DropdownMenuItem(
 					text = {
 						Text(text = stringResource(R.string.action_move_column_right))
@@ -271,7 +264,7 @@ private fun ProjectTableDropdownMenu(
 					onClick = {
 						onSwapTablePositionsClicked(
 							table.id,
-							state.tables.find { it.position == table.position + 1 }!!.id
+							tables.find { it.position == table.position + 1 }!!.id
 						)
 						onSwitchDropdownMenuClicked(null)
 					})
@@ -297,7 +290,7 @@ private fun ProjectTableCardBottom(
 	onCreateTableTaskMenuClicked: (Long?) -> Unit,
 	onCreateTableTaskClicked: (TableTask) -> Unit,
 ) {
-	if (table.id == state.taskCreatedInTableId) {
+	if (table.id == state.taskBeingAddedInTableId) {
 		var title by remember { mutableStateOf("") }
 		ProjectTableTextFieldCardContent(
 			value = title,
@@ -320,7 +313,7 @@ private fun ProjectTableCardBottom(
 			})
 
 		Box(modifier = Modifier.height(4.dp))
-	} else if (state.taskCreatedInTableId == null) {
+	} else if (state.taskBeingAddedInTableId == null) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = modifier.clickable { onCreateTableTaskMenuClicked(table.id) },

@@ -1,5 +1,9 @@
 package io.dnajd.data.table_task.repository
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.table_task.model.TableTask
 import java.util.Date
@@ -12,6 +16,19 @@ data class TableTaskRepositoryState(
 object TableTaskRepository :
 	RepositoryBase<TableTask, Date, TableTaskRepositoryState>(TableTaskRepositoryState()) {
 
+	@Composable
+	fun dataKeysCollectedByTableId(tableId: Long): Set<TableTask> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			tableId
+		) {
+			stateCollected.data.keys
+				.filter { it.id == tableId }
+				.toSet()
+		}
+	}
+
 	/**
 	 * NOTE [data].Key I.E [TableTask] will have all data reset to default except [TableTask.id].
 	 * this is to prevent multiple sources of truth
@@ -20,7 +37,7 @@ object TableTaskRepository :
 	fun update(
 		data: Map<TableTask, Date>,
 		vararg lastFetchTablesUpdated: Long,
-	) {		// Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
+	) {        // Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
 		// of truth
 		val dataWithoutSubtaskData = data.mapKeys {
 			TableTask(id = it.key.id)

@@ -49,8 +49,8 @@ object ProjectRepository :
 	}
 
 	suspend fun fetchOneIfStale(
-		forceFetch: Boolean = false,
 		projectId: Long,
+		forceFetch: Boolean = false,
 	): Result<Unit> {
 		if (!forceFetch && dataKeys().any { it.id == projectId }) {
 			return Result.success(Unit)
