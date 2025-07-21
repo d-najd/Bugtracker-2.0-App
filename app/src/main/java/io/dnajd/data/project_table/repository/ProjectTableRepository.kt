@@ -37,18 +37,6 @@ object ProjectTableRepository :
 		}
 	}
 
-	fun dataByProjectId(projectId: Long): Map<ProjectTable, Date> {
-		return state.value.data.filter { it.key.id == projectId }
-	}
-
-	/*
-	fun dataKeysByProjectId(projectId: Long): Set<ProjectTable> {
-		return state.value.data.keys
-			.filter { it.id == projectId }
-			.toSet()
-	}
-	 */
-
 	/**
 	 * @param fetchTasks if true the tasks will be fetched and the repository for tasks updated
 	 */

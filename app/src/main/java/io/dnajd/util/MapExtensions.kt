@@ -3,6 +3,7 @@ package io.dnajd.util
 /**
  * Puts the value in the map if it no value with given condition exists or if value with condition
  * exists replaces it instead
+ * @throws IllegalArgumentException if more than 1 key matches the given condition
  */
 fun <K, V> MutableMap<K, V>.putIfNoneOrReplaceIf(
 	key: K,
@@ -16,9 +17,17 @@ fun <K, V> MutableMap<K, V>.putIfNoneOrReplaceIf(
 		)
 	}.keys
 
-	if (matchingKeys.isEmpty()) {        // No match exists, insert new
+	if (matchingKeys.size > 1) {
+		throw IllegalArgumentException("More than 1 keys match the given condition")
+	}
+
+	if (matchingKeys.isEmpty()) {
+
+		// No match exists, insert new
 		this[key] = value
-	} else {        // Remove all matching entries and insert new one
+	} else {
+
+		// Remove all matching entries and insert new one
 		matchingKeys.forEach { this.remove(it) }
 		this[key] = value
 	}

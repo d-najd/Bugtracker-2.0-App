@@ -29,6 +29,10 @@ object TableTaskRepository :
 		}
 	}
 
+	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
+		return data().filterKeys { it.tableId == tableId }
+	}
+
 	/**
 	 * NOTE [data].Key I.E [TableTask] will have all data reset to default except [TableTask.id].
 	 * this is to prevent multiple sources of truth
@@ -37,7 +41,9 @@ object TableTaskRepository :
 	fun update(
 		data: Map<TableTask, Date>,
 		vararg lastFetchTablesUpdated: Long,
-	) {        // Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
+	) {
+
+		// Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
 		// of truth
 		val dataWithoutSubtaskData = data.mapKeys {
 			TableTask(id = it.key.id)

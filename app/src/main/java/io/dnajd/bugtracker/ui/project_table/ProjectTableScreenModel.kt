@@ -147,9 +147,10 @@ import java.util.Date
 		newName: String,
 	) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
-			val tables = successState.tables.toMutableList()
-			val table = tables.find { table -> table.id == id }!!
+			val tablesData = ProjectTableRepository
+				.data()
+				.toMutableMap()
+			val table = tablesData.keys.find { table -> table.id == id }!!
 			val renamedTable = table.copy(title = newName)
 
 			val persistedTable = projectTableApiService
@@ -160,12 +161,10 @@ import java.util.Date
 				}
 				.getOrThrow()
 
-			tables.remove(table)
-			tables.add(persistedTable)
+			tablesData.remove(table)
+			tablesData[persistedTable] = Date()
 
-			mutableState.update {
-				successState.copy(tables = tables)
-			}
+			ProjectTableRepository.update(tablesData)
 
 			_events.send(ProjectTableEvent.RenamedTable)
 		}
@@ -180,16 +179,22 @@ import java.util.Date
 	fun swapTablePositions(
 		fId: Long,
 		sId: Long,
+		updateLastFetchTime: Boolean = false,
 	) {
 		if (fId == sId) throw IllegalArgumentException("Can't swap table with itself")
 
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val tables = successState.tables.toMutableList()
+			val tables = ProjectTableRepository
+				.data()
+				.toMutableMap()            // val tables = successState.tables.toMutableList()
 
-			val fTable = tables.find { table -> table.id == sId }!!
-			val sTable = tables.find { table -> table.id == fId }!!
+			val fTable = tables.keys.find { table -> table.id == sId }!!
+			val sTable = tables.keys.find { table -> table.id == fId }!!
+
+			val fTableFetchTime = tables[fTable]!!
+			val sTableFetchTime = tables[sTable]!!
 
 			projectTableApiService
 				.swapTablePositions(
@@ -201,23 +206,16 @@ import java.util.Date
 					return@launchIONoQueue
 				}
 
+			val fTableMoved = fTable.copy(position = sTable.position)
+			val sTableMoved = sTable.copy(position = fTable.position)
+
 			tables.remove(fTable)
 			tables.remove(sTable)
-
-			tables.add(
-				fTable.copy(
-					position = sTable.position
-				)
-			)
-			tables.add(
-				sTable.copy(
-					position = fTable.position
-				)
-			)
+			tables[fTableMoved] = if (updateLastFetchTime) Date() else fTableFetchTime
+			tables[sTableMoved] = if (updateLastFetchTime) Date() else sTableFetchTime
 
 			mutableState.update {
 				successState.copy(
-					tables = tables.sortedBy { it.position },
 					dropdownOpenedInTableId = null,
 				)
 			}
@@ -243,13 +241,9 @@ import java.util.Date
 		}
 
 		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
-
-			val tables = successState.tables.toMutableList()
-
-			val table = tables.find { table -> table.id == tableId }!!
-			val fTask = table.tasks[fIndex]
-			val sTask = table.tasks[sIndex]
+			val tasks = TableTaskRepository.dataByTableId(tableId).keys
+			val fTask = tasks.first { it.position == fIndex }
+			val sTask = tasks.first { it.position == sIndex }
 
 			tableTaskApiService
 				.movePositionTo(
@@ -261,71 +255,63 @@ import java.util.Date
 					return@launchIONoQueue
 				}
 
-			ifMoveTaskSuccess(
-				tables = tables,
-				table = table,
-				sTask = sTask,
+			onTaskMoveSuccess(
+				tableId = tableId,
 				fIndex = fIndex,
-				sIndex = sIndex,
+				sIndex = sIndex
 			)
 		}
 	}
 
-	private fun ifMoveTaskSuccess(
-		tables: MutableList<ProjectTable>,
-		table: ProjectTable,
-		sTask: TableTask,
+	private fun onTaskMoveSuccess(
+		tableId: Long,
 		fIndex: Int,
 		sIndex: Int,
+		updateLastFetchTime: Boolean = false,
 	) {
-		val successState = mutableState.value as ProjectTableScreenState.Success
+		val tasksData = TableTaskRepository.dataByTableId(tableId)
+		val tasks = tasksData.keys.toMutableSet()
+		val sTask = tasks.first { it.position == sIndex }
 
-		tables.remove(table)
-		var tasks = table.tasks.toMutableList()
-		tasks = if (sIndex > fIndex) {
-			tasks
-				.mapIndexed { index, it ->
-					when (index) {
-						in (fIndex + 1)..sIndex -> it.copy(
-							position = it.position - 1
-						)
+		val newCurrentTableTaskData = tasksData.entries.associate { entry ->
+			val newDate = if (updateLastFetchTime) Date() else entry.value
+			val index = entry.key.position
+			val curTask = entry.key
 
-						fIndex -> it.copy(
-							position = sTask.position
-						)
+			if (sIndex > fIndex) {
+				when (index) {
+					in (fIndex + 1)..sIndex -> curTask.copy(
+						position = curTask.position - 1
+					) to newDate
 
-						else -> it
-					}
+					fIndex -> curTask.copy(
+						position = sTask.position
+					) to newDate
+
+					else -> curTask to newDate
 				}
-				.toMutableList()
-		} else {
-			tasks
-				.mapIndexed { index, it ->
-					when (index) {
-						in sIndex until fIndex -> it.copy(
-							position = it.position + 1
-						)
+			} else {
+				when (index) {
+					in sIndex until fIndex -> curTask.copy(
+						position = curTask.position + 1
+					) to newDate
 
-						fIndex -> it.copy(
-							position = sTask.position
-						)
+					fIndex -> curTask.copy(
+						position = sTask.position
+					) to newDate
 
-						else -> it
-					}
+					else -> curTask to newDate
 				}
-				.toMutableList()
+			}
 		}
-		tables.add(
-			table.copy(
-				tasks = tasks.sortedBy { it.position },
-			)
-		)
 
-		mutableState.update {
-			successState.copy(
-				tables = tables.sortedBy { it.position },
-			)
-		}
+		val allTaskData = TableTaskRepository.data()
+		val newTaskData = allTaskData
+			.filter { it.key.tableId != tableId }
+			.toMutableMap()
+		newTaskData.putAll(newCurrentTableTaskData)
+
+		TableTaskRepository.update(newTaskData)
 	}
 
 	fun deleteTable(tableId: Long) {
@@ -334,20 +320,18 @@ import java.util.Date
 
 			projectTableApiService
 				.deleteById(tableId)
-				.onSuccess {
-					val tables = successState.tables.toMutableList()
-					tables.removeIf { it.id == tableId }
-
-					mutableState.update {
-						successState.copy(
-							tables = tables
-						)
-					}
-				}
-				.onFailure {
-					it.printStackTrace()
+				.onFailureWithStackTrace {
 					_events.send(ProjectTableEvent.FailedToDeleteTable)
+					return@launchIONoQueue
 				}
+
+			val tablesWithRemovedTable = ProjectTableRepository
+				.data()
+				.filterKeys { it.id == tableId }
+
+			ProjectTableRepository.update(
+				tablesWithRemovedTable
+			)
 		}
 	}
 
@@ -416,7 +400,6 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 
 	@Immutable data class Success(
 		override val projectId: Long,
-		val tables: List<ProjectTable> = emptyList(),
 		val dropdownOpenedInTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
 		val taskBeingAddedInTableId: Long? = null,
