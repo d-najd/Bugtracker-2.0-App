@@ -216,6 +216,8 @@ import java.util.Date
 			tables[fTableMoved] = if (updateLastFetchTime) Date() else fTableFetchTime
 			tables[sTableMoved] = if (updateLastFetchTime) Date() else sTableFetchTime
 
+			ProjectTableRepository.update(tables)
+
 			mutableState.update {
 				successState.copy(
 					dropdownOpenedInTableId = null,
