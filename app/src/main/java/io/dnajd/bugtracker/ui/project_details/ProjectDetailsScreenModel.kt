@@ -10,9 +10,9 @@ import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.putOrReplaceIf
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -24,8 +24,8 @@ class ProjectDetailsScreenModel(
 
 	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading(projectId)) {
-	private val _events: Channel<ProjectDetailsEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<ProjectDetailsEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<ProjectDetailsEvent> = MutableSharedFlow()
+	val events: SharedFlow<ProjectDetailsEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -34,7 +34,7 @@ class ProjectDetailsScreenModel(
 			ProjectRepository
 				.fetchAllIfStale()
 				.onFailureWithStackTrace {
-					_events.send(ProjectDetailsEvent.FailedToRetrieveProjectData)
+					_events.emit(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
 				}
 
@@ -49,11 +49,11 @@ class ProjectDetailsScreenModel(
 			projectApiService
 				.deleteById(successState.projectId)
 				.onFailureWithStackTrace {
-					_events.send(ProjectDetailsEvent.FailedToDeleteProject)
+					_events.emit(ProjectDetailsEvent.FailedToDeleteProject)
 					return@launchIONoQueue
 				}
 				.onSuccess {
-					_events.send(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
+					_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 				}
 		}
 	}
@@ -68,7 +68,7 @@ class ProjectDetailsScreenModel(
 			val persistedProject = projectApiService
 				.updateProject(renamedProject)
 				.onFailureWithStackTrace {
-					_events.send(ProjectDetailsEvent.FailedToRenameProject)
+					_events.emit(ProjectDetailsEvent.FailedToRenameProject)
 					return@launchIONoQueue
 				}
 				.getOrThrow()

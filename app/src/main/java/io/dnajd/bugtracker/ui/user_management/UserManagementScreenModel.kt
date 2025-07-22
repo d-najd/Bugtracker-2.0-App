@@ -12,9 +12,9 @@ import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -29,8 +29,8 @@ class UserManagementScreenModel(
 	private val userAuthorityApiService: UserAuthorityApiService = Injekt.get(),
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
 ) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading) {
-	private val _events: Channel<UserManagementEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<UserManagementEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<UserManagementEvent> = MutableSharedFlow()
+	val events: SharedFlow<UserManagementEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -39,7 +39,7 @@ class UserManagementScreenModel(
 			val userAuthorities = userAuthorityApiService
 				.getAllByProjectId(projectId)
 				.onFailureWithStackTrace {
-					_events.send(UserManagementEvent.FailedToRetrieveUserAuthorities)
+					_events.emit(UserManagementEvent.FailedToRetrieveUserAuthorities)
 					return@launchIONoQueue
 				}
 				.getOrThrow().data
@@ -95,7 +95,7 @@ class UserManagementScreenModel(
 		val authorities = successState.authorities.toMutableList()
 
 		if (authorities.contains(userAuthority)) {
-			_events.send(UserManagementEvent.AuthorityAlreadyExists)
+			_events.emit(UserManagementEvent.AuthorityAlreadyExists)
 			return
 		}
 
@@ -105,7 +105,7 @@ class UserManagementScreenModel(
 				true
 			)
 			.onFailureWithStackTrace {
-				_events.send(UserManagementEvent.FailedToCreateUserAuthority)
+				_events.emit(UserManagementEvent.FailedToCreateUserAuthority)
 				return
 			}
 			.getOrThrow()
@@ -158,7 +158,7 @@ class UserManagementScreenModel(
 				false,
 			)
 			.onFailureWithStackTrace {
-				_events.send(UserManagementEvent.FailedToModifyUserAuthority)
+				_events.emit(UserManagementEvent.FailedToModifyUserAuthority)
 				return
 			}
 

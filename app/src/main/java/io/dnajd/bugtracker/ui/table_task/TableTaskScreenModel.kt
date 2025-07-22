@@ -13,9 +13,9 @@ import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -27,8 +27,8 @@ class TableTaskStateScreenModel(
 	private val taskRepository: TableTaskApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
-	private val _events: Channel<TableTaskEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<TableTaskEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<TableTaskEvent> = MutableSharedFlow()
+	val events: SharedFlow<TableTaskEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -41,7 +41,7 @@ class TableTaskStateScreenModel(
 			val task = taskRepository
 				.getById(taskId)
 				.onFailureWithStackTrace {
-					_events.send(TableTaskEvent.FailedToRetrieveTask)
+					_events.emit(TableTaskEvent.FailedToRetrieveTask)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -52,7 +52,7 @@ class TableTaskStateScreenModel(
 					includeTasks = true
 				)
 				.onFailureWithStackTrace {
-					_events.send(TableTaskEvent.FailedToRetrieveTable)
+					_events.emit(TableTaskEvent.FailedToRetrieveTable)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -78,7 +78,7 @@ class TableTaskStateScreenModel(
 			val persistedTask = taskRepository
 				.updateTask(renamedTask)
 				.onFailureWithStackTrace {
-					_events.send(TableTaskEvent.FailedToUpdateTaskDescription)
+					_events.emit(TableTaskEvent.FailedToUpdateTaskDescription)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -100,7 +100,7 @@ class TableTaskStateScreenModel(
 					tableId
 				)
 				.onFailureWithStackTrace {
-					_events.send(TableTaskEvent.FailedToSwapTable)
+					_events.emit(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
 
@@ -110,7 +110,7 @@ class TableTaskStateScreenModel(
 					includeTasks = true
 				)
 				.onFailureWithStackTrace {
-					_events.send(TableTaskEvent.FailedToSwapTable)
+					_events.emit(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -146,7 +146,7 @@ class TableTaskStateScreenModel(
 								includeTasks = true
 							)
 							.onFailureWithStackTrace {
-								_events.send(TableTaskEvent.FailedToShowSheet)
+								_events.emit(TableTaskEvent.FailedToShowSheet)
 								return@launchIONoQueue
 							}
 							.getOrThrow().data

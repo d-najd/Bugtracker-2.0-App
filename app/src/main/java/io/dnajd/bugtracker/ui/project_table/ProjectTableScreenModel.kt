@@ -84,7 +84,7 @@ import java.util.Date
 
 		mutableState.update {
 			ProjectTableScreenState.Success(
-				events = _events.asSharedFlow(),
+				events = events,
 				projectId = projectId
 			)
 		}

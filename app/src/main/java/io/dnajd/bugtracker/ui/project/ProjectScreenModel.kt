@@ -11,9 +11,9 @@ import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -23,8 +23,8 @@ import java.util.Date
 class ProjectScreenModel(
 	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectScreenState>(ProjectScreenState.Loading) {
-	private val _events: Channel<ProjectEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<ProjectEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<ProjectEvent> = MutableSharedFlow()
+	val events: SharedFlow<ProjectEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -33,7 +33,7 @@ class ProjectScreenModel(
 			ProjectRepository
 				.fetchAllIfStale()
 				.onFailureWithStackTrace {
-					_events.send(ProjectEvent.FailedToRetrieveProjects)
+					_events.emit(ProjectEvent.FailedToRetrieveProjects)
 					return@launchIONoQueue
 				}
 
@@ -48,7 +48,7 @@ class ProjectScreenModel(
 			val persistedProject = projectApiService
 				.createProject(project)
 				.onFailureWithStackTrace {
-					_events.send(ProjectEvent.FailedToCreateProject)
+					_events.emit(ProjectEvent.FailedToCreateProject)
 					return@launchIONoQueue
 				}
 				.getOrThrow()

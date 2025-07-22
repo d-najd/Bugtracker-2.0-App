@@ -9,9 +9,9 @@ import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -22,8 +22,8 @@ class ProjectSettingsScreenModel(
 
 	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectSettingsScreenState>(ProjectSettingsScreenState.Loading(projectId)) {
-	private val _events: Channel<ProjectSettingsEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<ProjectSettingsEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<ProjectSettingsEvent> = MutableSharedFlow()
+	val events: SharedFlow<ProjectSettingsEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -34,7 +34,7 @@ class ProjectSettingsScreenModel(
 					projectId
 				)
 				.onFailureWithStackTrace {
-					_events.send(ProjectSettingsEvent.FailedToRetrieveProjectData)
+					_events.emit(ProjectSettingsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
 				}
 
