@@ -21,9 +21,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
@@ -37,8 +38,8 @@ import java.util.Date
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 	private val tableTaskApiService: TableTaskApiService = Injekt.get(),
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading(projectId)) {
-	private val _events: Channel<ProjectTableEvent> = Channel(Int.MAX_VALUE)
-	val events: Flow<ProjectTableEvent> = _events.receiveAsFlow()
+	private val _events: MutableSharedFlow<ProjectTableEvent> = MutableSharedFlow()
+	val events: SharedFlow<ProjectTableEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
 
@@ -83,6 +84,7 @@ import java.util.Date
 
 		mutableState.update {
 			ProjectTableScreenState.Success(
+				events = _events.asSharedFlow(),
 				projectId = projectId
 			)
 		}
@@ -93,7 +95,7 @@ import java.util.Date
 			val createdTable = projectTableApiService
 				.createTable(table)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToCreateProjectTable)
+					_events.emit(ProjectTableEvent.FailedToCreateProjectTable)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -104,7 +106,7 @@ import java.util.Date
 			tables[createdTable] = Date()
 			ProjectTableRepository.update(tables)
 
-			_events.send(ProjectTableEvent.CreatedTable)
+			_events.emit(ProjectTableEvent.CreatedTable)
 		}
 	}
 
@@ -123,7 +125,7 @@ import java.util.Date
 			val createdTask = tableTaskApiService
 				.createTask(task)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToCreateTableTask)
+					_events.emit(ProjectTableEvent.FailedToCreateTableTask)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -156,7 +158,7 @@ import java.util.Date
 			val persistedTable = projectTableApiService
 				.updateTable(renamedTable)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToRenameProjectTable)
+					_events.emit(ProjectTableEvent.FailedToRenameProjectTable)
 					return@launchIONoQueue
 				}
 				.getOrThrow()
@@ -166,7 +168,7 @@ import java.util.Date
 
 			ProjectTableRepository.update(tablesData)
 
-			_events.send(ProjectTableEvent.RenamedTable)
+			_events.emit(ProjectTableEvent.RenamedTable)
 		}
 	}
 
@@ -202,7 +204,7 @@ import java.util.Date
 					sId
 				)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToSwapTablePositions)
+					_events.emit(ProjectTableEvent.FailedToSwapTablePositions)
 					return@launchIONoQueue
 				}
 
@@ -245,13 +247,16 @@ import java.util.Date
 			val fTask = tasks.first { it.position == fIndex }
 			val sTask = tasks.first { it.position == sIndex }
 
+			_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
+			return@launchIONoQueue
+
 			tableTaskApiService
 				.movePositionTo(
 					fTask.id,
 					sTask.id
 				)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToMoveTableTasks)
+					_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
 					return@launchIONoQueue
 				}
 
@@ -321,7 +326,7 @@ import java.util.Date
 			projectTableApiService
 				.deleteById(tableId)
 				.onFailureWithStackTrace {
-					_events.send(ProjectTableEvent.FailedToDeleteTable)
+					_events.emit(ProjectTableEvent.FailedToDeleteTable)
 					return@launchIONoQueue
 				}
 
@@ -400,10 +405,10 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 
 	@Immutable data class Success(
 		override val projectId: Long,
+		val events: Flow<ProjectTableEvent>,
 		val dropdownOpenedInTableId: Long? = null,
 		/** This is used in the bottom portion of the table specifically the create button */
 		val taskBeingAddedInTableId: Long? = null,
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState(projectId)
-
 }

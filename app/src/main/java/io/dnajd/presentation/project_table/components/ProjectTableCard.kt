@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.project_table.ProjectTableEvent
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
@@ -73,6 +74,7 @@ fun ProjectTableCard(
 		val tasks = TableTaskRepository
 			.dataKeysCollectedByTableId(table.id)
 			.toList()
+			.sortedBy { it.position }
 
 		var reorderableList by remember { mutableStateOf(tasks) }        // a list is being stored in case the user moves multiple table items
 		val reorderableState = rememberReorderableLazyListState(
@@ -96,6 +98,18 @@ fun ProjectTableCard(
 				}
 			},
 		)
+
+		// Tasks are moved using reorderable state, the thing is this component will move the tasks
+		// in the ui during the request for moving is sent to the server, because no data will be
+		// changed if this request fails we don't have anything to update the tasks so we add an
+		// listener instead, if there are more cases consider an alternative system.
+		LaunchedEffect(state.events) {
+			state.events.collect { event ->
+				if (event is ProjectTableEvent.FailedToMoveTableTasks) {
+					reorderableList = tasks.sortedBy { it.position }
+				}
+			}
+		}
 
 		LaunchedEffect(tasks) {
 			reorderableList = tasks.sortedBy { it.position }
