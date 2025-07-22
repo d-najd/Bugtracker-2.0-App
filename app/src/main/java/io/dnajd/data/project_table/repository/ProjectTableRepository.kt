@@ -54,13 +54,20 @@ object ProjectTableRepository :
 				fetchTasks
 			)
 			.onSuccess {
-				val tables = it.data
-				val tablesAsEntries = tables
+				val oldTables = data()
+				val newTables = it.data
+				val newTablesEntries = newTables
 					.toSet()
 					.associateWith { Date() }
 
+				val tablesCombined = oldTables
+					.filter { oldTableEntry ->
+						newTables.any { newTable -> oldTableEntry.key.id != newTable.id }
+					}
+					.plus(newTablesEntries)
+
 				update(
-					tablesAsEntries,
+					tablesCombined,
 					projectId
 				)
 
@@ -70,7 +77,7 @@ object ProjectTableRepository :
 						.toSet()
 						.associateWith { Date() }
 
-					val tableIds = tables
+					val tableIds = newTables
 						.map { table -> table.id }
 						.toLongArray()
 
