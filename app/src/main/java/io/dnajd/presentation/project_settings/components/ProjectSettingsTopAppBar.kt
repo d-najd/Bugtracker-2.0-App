@@ -37,7 +37,7 @@ fun ProjectSettingsTopAppBar(
 		title = {
 			val projects = ProjectRepository.dataKeysCollected()
 			val title = if (state is ProjectSettingsScreenState.Success) {
-				ProjectRepository.dataKeysCollectedById(state.projectId)!!.title
+				ProjectRepository.dataKeyCollectedById(state.projectId)!!.title
 			} else {
 				stringResource(
 					R.string.loading

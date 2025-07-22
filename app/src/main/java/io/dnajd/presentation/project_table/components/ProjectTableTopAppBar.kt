@@ -38,7 +38,7 @@ fun ProjectTableTopAppBar(
 			}
 		},
 		title = {
-			val project = ProjectRepository.dataKeysCollectedById(state.projectId)!!
+			val project = ProjectRepository.dataKeyCollectedById(state.projectId)!!
 
 			val title =
 				if (state is ProjectTableScreenState.Success) project.title else stringResource(

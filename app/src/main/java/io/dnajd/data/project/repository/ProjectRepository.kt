@@ -23,7 +23,7 @@ object ProjectRepository :
 	private val api: ProjectApiService = Injekt.get()
 
 	@Composable
-	fun dataKeysCollectedById(id: Long): Project? {
+	fun dataKeyCollectedById(id: Long): Project? {
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
