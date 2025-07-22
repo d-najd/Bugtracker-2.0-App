@@ -24,7 +24,7 @@ object TableTaskRepository :
 			tableId
 		) {
 			stateCollected.data.keys
-				.filter { it.id == tableId }
+				.filter { it.tableId == tableId }
 				.toSet()
 		}
 	}
