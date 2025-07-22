@@ -14,7 +14,7 @@ import java.util.Date
 
 data class ProjectTableRepositoryState(
 	override val data: Map<ProjectTable, Date> = emptyMap(),
-	val lastFetchByProjectId: Map<Long, Date> = emptyMap(),
+	val lastFetchedByProjectIds: Map<Long, Date> = emptyMap(),
 ) : RepositoryBase.State<ProjectTable, Date>(data)
 
 object ProjectTableRepository :
@@ -22,7 +22,7 @@ object ProjectTableRepository :
 
 	private val api: ProjectTableApiService = Injekt.get()
 
-	private fun lastFetchByProjectId(): Map<Long, Date> = state.value.lastFetchByProjectId
+	private fun lastFetchedByProjectIds(): Map<Long, Date> = state.value.lastFetchedByProjectIds
 
 	@Composable
 	fun dataKeysCollectedByProjectId(projectId: Long): Set<ProjectTable> {
@@ -32,7 +32,7 @@ object ProjectTableRepository :
 			projectId
 		) {
 			stateCollected.data.keys
-				.filter { it.id == projectId }
+				.filter { it.projectId == projectId }
 				.toSet()
 		}
 	}
@@ -45,7 +45,7 @@ object ProjectTableRepository :
 		forceFetch: Boolean = false,
 		fetchTasks: Boolean = false,
 	): Result<Unit> {
-		if (!forceFetch && lastFetchByProjectId().containsKey(projectId)) {
+		if (!forceFetch && lastFetchedByProjectIds().containsKey(projectId)) {
 			return Result.success(Unit)
 		}
 		return api
@@ -94,13 +94,15 @@ object ProjectTableRepository :
 			it.key.copy(tasks = null)
 		}
 
-		val lastFetches = lastFetchByProjectId().mapValues {
-			if (lastFetchProjectsUpdated.contains(it.key)) Date() else it.value
-		}
+		val lastFetches = lastFetchedByProjectIds().toMutableMap()
+		lastFetches.putAll(
+			lastFetchProjectsUpdated
+				.toSet()
+				.associateWith { Date() })
 
 		mutableState.value = ProjectTableRepositoryState(
 			data = dataWithoutTasks,
-			lastFetchByProjectId = lastFetches
+			lastFetchedByProjectIds = lastFetches
 		)
 	}
 }

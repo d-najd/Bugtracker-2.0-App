@@ -85,9 +85,9 @@ object ProjectRepository :
 			mutableState.value.lastFullFetch
 		}
 
-		mutableState.value = ProjectRepositoryState(
+		mutableState.value = state.value.copy(
 			data = data,
-			lastFullFetch = newLastFullFetchDate,
+			lastFullFetch = newLastFullFetchDate
 		)
 	}
 }

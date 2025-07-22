@@ -10,7 +10,7 @@ import java.util.Date
 
 data class TableTaskRepositoryState(
 	override val data: Map<TableTask, Date> = emptyMap(),
-	val lastFetchByTableId: Map<Long, Date> = emptyMap(),
+	val lastFetchesByTableIds: Map<Long, Date> = emptyMap(),
 ) : RepositoryBase.State<TableTask, Date>(data)
 
 object TableTaskRepository :
@@ -49,13 +49,15 @@ object TableTaskRepository :
 			TableTask(id = it.key.id)
 		}
 
-		val lastFetches = mutableState.value.lastFetchByTableId.mapValues {
-			if (lastFetchTablesUpdated.contains(it.key)) Date() else it.value
-		}
+		val lastFetches = state.value.lastFetchesByTableIds.toMutableMap()
+		lastFetches.putAll(
+			lastFetchTablesUpdated
+				.toSet()
+				.associateWith { Date() })
 
 		mutableState.value = TableTaskRepositoryState(
 			data = dataWithoutSubtaskData,
-			lastFetchByTableId = lastFetches
+			lastFetchesByTableIds = lastFetches
 		)
 	}
 }
