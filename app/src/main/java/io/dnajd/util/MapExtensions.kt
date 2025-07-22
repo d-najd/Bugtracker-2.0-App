@@ -5,7 +5,7 @@ package io.dnajd.util
  * exists replaces it instead
  * @throws IllegalArgumentException if more than 1 key matches the given condition
  */
-fun <K, V> MutableMap<K, V>.putIfNoneOrReplaceIf(
+fun <K, V> MutableMap<K, V>.putOrReplaceIf(
 	key: K,
 	value: V,
 	condition: (K, V) -> Boolean,

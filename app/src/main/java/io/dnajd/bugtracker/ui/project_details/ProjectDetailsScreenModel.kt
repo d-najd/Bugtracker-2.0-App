@@ -9,7 +9,7 @@ import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
-import io.dnajd.util.putIfNoneOrReplaceIf
+import io.dnajd.util.putOrReplaceIf
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -75,7 +75,7 @@ class ProjectDetailsScreenModel(
 
 			val projectsModified = projects
 				.toMutableMap()
-				.putIfNoneOrReplaceIf(
+				.putOrReplaceIf(
 					persistedProject,
 					Date(),
 				) { k, _ ->

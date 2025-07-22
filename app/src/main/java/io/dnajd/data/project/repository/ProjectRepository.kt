@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
-import io.dnajd.util.putIfNoneOrReplaceIf
+import io.dnajd.util.putOrReplaceIf
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
@@ -60,7 +60,7 @@ object ProjectRepository :
 			.onSuccess { retrievedProject ->
 				val newData = data()
 					.toMutableMap()
-					.putIfNoneOrReplaceIf(
+					.putOrReplaceIf(
 						retrievedProject,
 						Date()
 					) { k, _ ->

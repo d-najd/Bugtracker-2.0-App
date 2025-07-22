@@ -56,15 +56,14 @@ object ProjectTableRepository :
 			.onSuccess {
 				val oldTables = data()
 				val newTables = it.data
-				val newTablesEntries = newTables
 					.toSet()
 					.associateWith { Date() }
 
 				val tablesCombined = oldTables
 					.filter { oldTableEntry ->
-						newTables.any { newTable -> oldTableEntry.key.id != newTable.id }
+						newTables.any { newTable -> oldTableEntry.key.id != newTable.key.id }
 					}
-					.plus(newTablesEntries)
+					.plus(newTables)
 
 				update(
 					tablesCombined,
@@ -72,17 +71,24 @@ object ProjectTableRepository :
 				)
 
 				if (fetchTasks) {
-					val tasksAsEntries = it.data
+					val oldTasks = TableTaskRepository.data()
+					val newTasks = it.data
 						.flatMap { table -> table.tasks!! }
 						.toSet()
 						.associateWith { Date() }
 
-					val tableIds = newTables
+					val tasksCombined = oldTasks
+						.filter { oldTask ->
+							newTasks.any { newTask -> oldTask.key.id != newTask.key.id }
+						}
+						.plus(newTasks)
+
+					val tableIds = newTables.keys
 						.map { table -> table.id }
 						.toLongArray()
 
 					TableTaskRepository.update(
-						tasksAsEntries,
+						tasksCombined,
 						*tableIds
 					)
 				}
