@@ -1,6 +1,7 @@
 package io.dnajd.domain.table_task.model
 
 import com.google.gson.annotations.SerializedName
+import io.dnajd.data.table_task.repository.TableTaskRepository
 import java.util.Date
 
 data class TableTask(
@@ -17,38 +18,9 @@ data class TableTask(
 	@SerializedName("comments") val comments: List<TableTaskComment> = emptyList(),
 	@SerializedName("labels") val labels: List<ProjectLabel> = emptyList(),
 	@SerializedName("assigned") val assigned: List<TableTaskAssignee> = emptyList(),
+	/**
+	 * Child tasks in [TableTaskRepository] will only include the id to avoid multiple sources of
+	 * truth
+	 */
 	@SerializedName("childIssues") val childTasks: List<TableTask> = emptyList(),
 )
-
-data class TableTaskBasic(
-	val id: Long = -1L,
-	val title: String = "",
-	val tableId: Long = -1L,
-	val reporter: String = "",
-	val parentTaskId: Long? = null,
-	val severity: Int = 1,
-	val position: Int = -1,
-	val description: String? = null,
-	val createdAt: Date = Date(),
-	val updatedAt: Date? = null,
-	val comments: List<TableTaskComment> = emptyList(),
-	val labels: List<ProjectLabel> = emptyList(),
-	val assigned: List<TableTaskAssignee> = emptyList(),
-	val childTasks: List<Long> = emptyList(),
-) {
-	constructor(task: TableTask) : this(
-		id = task.id,
-		title = task.title,
-		tableId = task.tableId,
-		reporter = task.reporter,
-		parentTaskId = task.parentTaskId,
-		severity = task.severity,
-		position = task.position,
-		description = task.description,
-		createdAt = task.createdAt,
-		updatedAt = task.updatedAt,
-		comments = task.comments,
-		labels = task.labels,
-		assigned = task.assigned,
-		childTasks = task.childTasks.map { it.id })
-}

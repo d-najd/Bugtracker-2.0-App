@@ -45,8 +45,11 @@ object TableTaskRepository :
 
 		// Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
 		// of truth
-		val dataWithoutSubtaskData = data.mapKeys {
-			TableTask(id = it.key.id)
+		val dataWithoutSubtaskData = data.mapKeys { entry ->
+			entry.key.copy(
+				childTasks = entry.key.childTasks.map { childTask ->
+					TableTask(id = childTask.id)
+				})
 		}
 
 		val lastFetches = state.value.lastFetchesByTableIds.toMutableMap()
