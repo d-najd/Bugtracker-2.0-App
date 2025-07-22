@@ -247,9 +247,6 @@ import java.util.Date
 			val fTask = tasks.first { it.position == fIndex }
 			val sTask = tasks.first { it.position == sIndex }
 
-			_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
-			return@launchIONoQueue
-
 			tableTaskApiService
 				.movePositionTo(
 					fTask.id,
@@ -332,7 +329,7 @@ import java.util.Date
 
 			val tablesWithRemovedTable = ProjectTableRepository
 				.data()
-				.filterKeys { it.id == tableId }
+				.filterKeys { it.id != tableId }
 
 			ProjectTableRepository.update(
 				tablesWithRemovedTable
