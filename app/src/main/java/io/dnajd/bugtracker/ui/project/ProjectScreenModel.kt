@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
 
 class ProjectScreenModel(
 	private val projectApiService: ProjectApiService = Injekt.get(),
@@ -44,8 +43,6 @@ class ProjectScreenModel(
 
 	fun createProject(project: Project) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectScreenState.Success
-
 			val persistedProject = projectApiService
 				.createProject(project)
 				.onFailureWithStackTrace {
@@ -54,12 +51,8 @@ class ProjectScreenModel(
 				}
 				.getOrThrow()
 
-			val projectsUpdated = ProjectRepository
-				.data()
-				.toMutableMap()
-			projectsUpdated[persistedProject] = Date()
-
-			ProjectRepository.update(projectsUpdated)
+			val combinedData = ProjectRepository.combineForUpdate(persistedProject)
+			ProjectRepository.update(combinedData)
 
 			dismissDialog()
 		}

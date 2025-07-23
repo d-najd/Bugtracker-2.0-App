@@ -102,11 +102,8 @@ import java.util.Date
 				}
 				.getOrThrow()
 
-			val tables = ProjectTableRepository
-				.data()
-				.toMutableMap()
-			tables[createdTable] = Date()
-			ProjectTableRepository.update(tables)
+			val combinedData = ProjectTableRepository.combineForUpdate(createdTable)
+			ProjectTableRepository.update(combinedData)
 
 			_events.emit(ProjectTableEvent.CreatedTable)
 		}
@@ -151,10 +148,7 @@ import java.util.Date
 		newName: String,
 	) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val tablesData = ProjectTableRepository
-				.data()
-				.toMutableMap()
-			val table = tablesData.keys.find { table -> table.id == id }!!
+			val table = ProjectTableRepository.dataById(id)!!
 			val renamedTable = table.copy(title = newName)
 
 			val persistedTable = projectTableApiService
@@ -165,10 +159,8 @@ import java.util.Date
 				}
 				.getOrThrow()
 
-			tablesData.remove(table)
-			tablesData[persistedTable] = Date()
-
-			ProjectTableRepository.update(tablesData)
+			val combinedData = ProjectTableRepository.combineForUpdate(persistedTable)
+			ProjectTableRepository.update(combinedData)
 
 			_events.emit(ProjectTableEvent.RenamedTable)
 		}

@@ -21,17 +21,6 @@ object ProjectRepository :
 
 	private val api: ProjectApiService = Injekt.get()
 
-	@Composable
-	fun dataKeyCollectedById(id: Long): Project? {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			id
-		) {
-			stateCollected.data.keys.firstOrNull { it.id == id }
-		}
-	}
-
 	suspend fun fetchAllIfStale(forceFetch: Boolean = false): Result<Unit> {
 		if (!forceFetch && mutableState.value.lastFullFetch != null) {
 			return Result.success(Unit)
@@ -44,10 +33,7 @@ object ProjectRepository :
 		}
 
 		val newData = result.getOrThrow()
-		combineForUpdate(
-			Date(),
-			*newData.data.toTypedArray()
-		)
+		combineForUpdate(*newData.data.toTypedArray())
 
 		return api
 			.getAll()
@@ -75,16 +61,17 @@ object ProjectRepository :
 		}
 
 		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(
-			Date(),
-			newData
-		)
+		val combinedData = combineForUpdate(newData)
 		update(
 			combinedData,
 			updateLastFullFetch = false
 		)
 
 		return resultMapped
+	}
+
+	override fun defaultCacheValue(): Date {
+		return Date()
 	}
 
 	fun update(
@@ -101,5 +88,20 @@ object ProjectRepository :
 			data = data,
 			lastFullFetch = newLastFullFetchDate
 		)
+	}
+
+	@Composable
+	fun dataKeyCollectedById(id: Long): Project? {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			id
+		) {
+			stateCollected.data.keys.firstOrNull { it.id == id }
+		}
+	}
+
+	fun dataById(id: Long): Project? {
+		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }

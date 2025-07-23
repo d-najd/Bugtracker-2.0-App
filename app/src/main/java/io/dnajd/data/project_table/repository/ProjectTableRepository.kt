@@ -24,19 +24,6 @@ object ProjectTableRepository :
 
 	private fun lastFetchedByProjectIds(): Map<Long, Date> = state.value.lastFetchedByProjectIds
 
-	@Composable
-	fun dataKeysCollectedByProjectId(projectId: Long): Set<ProjectTable> {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			projectId
-		) {
-			stateCollected.data.keys
-				.filter { it.projectId == projectId }
-				.toSet()
-		}
-	}
-
 	/**
 	 * @param fetchTasks if true the tasks will be fetched and the repository for tasks updated
 	 */
@@ -60,10 +47,7 @@ object ProjectTableRepository :
 
 		val newData = result.getOrThrow()
 
-		val combinedData = combineForUpdate(
-			Date(),
-			*newData.data.toTypedArray()
-		)
+		val combinedData = combineForUpdate(*newData.data.toTypedArray())
 		update(
 			combinedData,
 			projectId
@@ -74,10 +58,7 @@ object ProjectTableRepository :
 		}
 
 		val newTasks = newData.data.flatMap { table -> table.tasks!! }
-		val combinedTasks = TableTaskRepository.combineForUpdate(
-			Date(),
-			*newTasks.toTypedArray()
-		)
+		val combinedTasks = TableTaskRepository.combineForUpdate(*newTasks.toTypedArray())
 
 		val tableIds = newData.data
 			.map { table -> table.id }
@@ -110,13 +91,14 @@ object ProjectTableRepository :
 		}
 
 		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(
-			Date(),
-			newData
-		)
+		val combinedData = combineForUpdate(newData)
 		update(combinedData)
 
 		return resultMapped
+	}
+
+	override fun defaultCacheValue(): Date {
+		return Date()
 	}
 
 	/**
@@ -140,5 +122,22 @@ object ProjectTableRepository :
 			data = dataWithoutTasks,
 			lastFetchedByProjectIds = lastFetches
 		)
+	}
+
+	@Composable
+	fun dataKeysCollectedByProjectId(projectId: Long): Set<ProjectTable> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			projectId
+		) {
+			stateCollected.data.keys
+				.filter { it.projectId == projectId }
+				.toSet()
+		}
+	}
+
+	fun dataById(id: Long): ProjectTable? {
+		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }

@@ -21,34 +21,6 @@ object TableTaskRepository :
 
 	private val api: TableTaskApiService = Injekt.get()
 
-	@Composable
-	fun dataKeysCollectedByTableId(tableId: Long): Set<TableTask> {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			tableId
-		) {
-			stateCollected.data.keys
-				.filter { it.tableId == tableId }
-				.toSet()
-		}
-	}
-
-	@Composable
-	fun dataKeyById(id: Long): TableTask? {
-		val stateCollected by TableTaskRepository.state.collectAsState()
-		return remember(
-			stateCollected,
-			id
-		) {
-			stateCollected.data.keys.firstOrNull { it.id == id }
-		}
-	}
-
-	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
-		return data().filterKeys { it.tableId == tableId }
-	}
-
 	suspend fun fetchByIdIfStale(
 		id: Long,
 		forceFetch: Boolean = false,
@@ -64,13 +36,14 @@ object TableTaskRepository :
 		}
 
 		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(
-			Date(),
-			newData
-		)
+		val combinedData = combineForUpdate(newData)
 		update(combinedData)
 
 		return resultMapped
+	}
+
+	override fun defaultCacheValue(): Date {
+		return Date()
 	}
 
 	/**
@@ -102,5 +75,37 @@ object TableTaskRepository :
 			data = dataWithoutSubtaskData,
 			lastFetchesByTableIds = lastFetches
 		)
+	}
+
+	@Composable
+	fun dataKeysCollectedByTableId(tableId: Long): Set<TableTask> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			tableId
+		) {
+			stateCollected.data.keys
+				.filter { it.tableId == tableId }
+				.toSet()
+		}
+	}
+
+	@Composable
+	fun dataCollectedKeyById(id: Long): TableTask? {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			id
+		) {
+			stateCollected.data.keys.firstOrNull { it.id == id }
+		}
+	}
+
+	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
+		return data().filterKeys { it.tableId == tableId }
+	}
+
+	fun dataKeyById(id: Long): TableTask? {
+		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }

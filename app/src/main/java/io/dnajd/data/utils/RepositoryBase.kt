@@ -35,11 +35,24 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 	open fun data(): Map<K, V> = state.value.data
 
+
+	protected abstract fun defaultCacheValue(): V
+
+	/**
+	 * @see combineForUpdate(V, (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, K...) For full documentation
+	 */
+	internal fun combineForUpdate(vararg newData: K): Map<K, V> {
+		return combineForUpdate(
+			defaultCacheValue(),
+			newData = newData
+		)
+	}
+
 	/**
 	 * @see combineForUpdate(V, (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, K...) For full documentation
 	 */
 	internal fun combineForUpdate(
-		value: V,
+		value: V = defaultCacheValue(),
 		vararg newData: K,
 	): Map<K, V> {
 		return combineForUpdate(
@@ -58,7 +71,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	 * @param newData the data that will be combined with the old data
 	 */
 	internal open fun combineForUpdate(
-		value: V,
+		value: V = defaultCacheValue(),
 		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
 		vararg newData: K,
 	): Map<K, V> {

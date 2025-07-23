@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
+import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
@@ -15,8 +16,6 @@ import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -42,46 +41,27 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val taskResult = async {
-				TableTaskRepository
-					.fetchByIdIfStale(taskId)
-					.onFailureWithStackTrace {
-						_events.emit(TableTaskEvent.FailedToRetrieveTask)
-						cancel()
-					}
-			}
-
-			val tableResult =
-				async {                // ProjectTableRepository.fetchByProjectIdIfStale()
-				}
-
-			/*
-			val task = taskRepository
-				.getById(taskId)
+			TableTaskRepository
+				.fetchByIdIfStale(taskId)
 				.onFailureWithStackTrace {
 					_events.emit(TableTaskEvent.FailedToRetrieveTask)
 					return@launchIONoQueue
 				}
-				.getOrThrow()
+			val task = state.value.taskNonComposable()
 
-			val table = projectTableApiService
-				.getById(
+			ProjectTableRepository
+				.fetchByIdIfStale(
 					id = task.tableId,
-					includeTasks = true
+					fetchTasks = true
 				)
 				.onFailureWithStackTrace {
-					_events.emit(TableTaskEvent.FailedToRetrieveTable)
+					_events.emit(TableTaskEvent.FailedToRetrieveTask)
 					return@launchIONoQueue
 				}
-				.getOrThrow()
 
 			mutableState.update {
-				TableTaskScreenState.Success(
-					task = task,
-					parentTable = table,
-				)
+				TableTaskScreenState.Success(taskId)
 			}
-			 */
 		}
 	}
 
@@ -92,7 +72,9 @@ class TableTaskStateScreenModel(
 	fun updateDescription(newDescription: String) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
-			val renamedTask = successState.task.copy(description = newDescription)
+			val renamedTask = successState
+				.taskNonComposable()
+				.copy(description = newDescription)            // val renamedTask = successState.task.copy(description = newDescription)
 
 			val persistedTask = taskRepository
 				.updateTask(renamedTask)
@@ -102,9 +84,9 @@ class TableTaskStateScreenModel(
 				}
 				.getOrThrow()
 
-			mutableState.update {
-				successState.copy(task = persistedTask)
-			}
+			val combinedData = TableTaskRepository.combineForUpdate(persistedTask)
+			TableTaskRepository.update(combinedData)
+
 			dismissSheet()
 		}
 	}
@@ -212,20 +194,20 @@ sealed class TableTaskEvent {
 
 sealed class TableTaskScreenState(open val taskId: Long) {
 
+	fun taskNonComposable(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
+
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
 	@Immutable data class Success(
 		override val taskId: Long,
-		val task: TableTask,
-		val parentTable: ProjectTable,
+		val task: TableTask = TableTask(),
+		val parentTable: ProjectTable = ProjectTable(),
 		val sheet: TableTaskSheet? = null,
 		val sheetTables: List<ProjectTable> = emptyList(),
 	) : TableTaskScreenState(taskId) {
 
 		@Composable
-		fun task(): TableTask =
-			TableTaskRepository.        // val projectState by ProjectRepository.state.collectAsState()
-				// val projectState = ProjectRepository.projectsAsState()
-			dataKeyById(taskId)!!
+		fun task(): TableTask = TableTaskRepository.dataCollectedKeyById(taskId)!!
+
 	}
 }

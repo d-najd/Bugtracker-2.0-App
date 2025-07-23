@@ -83,7 +83,7 @@ class TableTaskScreen(
 					onAlterDescriptionSheetClicked = {
 						screenModel.showSheet(
 							TableTaskSheet.AlterDescriptionSheet(
-								description = successState.task.description ?: ""
+								description = successState.taskNonComposable().description ?: ""
 							)
 						)
 					},
