@@ -36,6 +36,19 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	open fun data(): Map<K, V> = state.value.data
 
 	/**
+	 * @see combineForUpdate(V, (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, K...) For full documentation
+	 */
+	internal fun combineForUpdate(
+		value: V,
+		vararg newData: K,
+	): Map<K, V> {
+		return combineForUpdate(
+			value,
+			newData = newData
+		)
+	}
+
+	/**
 	 * combines the old data with the new data, meant to be used after data is fetched
 	 * @param value this value will be assigned to all values as current time of last fetch
 	 * @param predicate values matching this predicate will be filtered from the old data, use this

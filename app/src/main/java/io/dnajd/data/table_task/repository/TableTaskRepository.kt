@@ -66,7 +66,7 @@ object TableTaskRepository :
 		val newData = result.getOrThrow()
 		val combinedData = combineForUpdate(
 			Date(),
-			newData = arrayOf(newData)
+			newData
 		)
 		update(combinedData)
 

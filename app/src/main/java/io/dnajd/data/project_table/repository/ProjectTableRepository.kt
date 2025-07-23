@@ -62,7 +62,7 @@ object ProjectTableRepository :
 
 		val combinedData = combineForUpdate(
 			Date(),
-			newData = newData.data.toTypedArray()
+			*newData.data.toTypedArray()
 		)
 		update(
 			combinedData,
@@ -76,7 +76,7 @@ object ProjectTableRepository :
 		val newTasks = newData.data.flatMap { table -> table.tasks!! }
 		val combinedTasks = TableTaskRepository.combineForUpdate(
 			Date(),
-			newData = newTasks.toTypedArray()
+			*newTasks.toTypedArray()
 		)
 
 		val tableIds = newData.data
@@ -112,7 +112,7 @@ object ProjectTableRepository :
 		val newData = result.getOrThrow()
 		val combinedData = combineForUpdate(
 			Date(),
-			newData = arrayOf(newData)
+			newData
 		)
 		update(combinedData)
 

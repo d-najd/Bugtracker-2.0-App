@@ -46,7 +46,7 @@ object ProjectRepository :
 		val newData = result.getOrThrow()
 		combineForUpdate(
 			Date(),
-			newData = newData.data.toTypedArray()
+			*newData.data.toTypedArray()
 		)
 
 		return api
@@ -77,7 +77,7 @@ object ProjectRepository :
 		val newData = result.getOrThrow()
 		val combinedData = combineForUpdate(
 			Date(),
-			newData = arrayOf(newData)
+			newData
 		)
 		update(
 			combinedData,
