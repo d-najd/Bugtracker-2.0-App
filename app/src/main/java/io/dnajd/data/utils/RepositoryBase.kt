@@ -21,7 +21,7 @@ import kotlin.reflect.full.declaredMembers
  */
 abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase.State<K, V>, V : Date {
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
-	protected val state: StateFlow<S> = mutableState.asStateFlow()
+	val state: StateFlow<S> = mutableState.asStateFlow()
 
 	@Composable
 	open fun dataKeysCollected(): Set<K> {

@@ -1,7 +1,11 @@
 package io.dnajd.bugtracker.ui.table_task
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
@@ -29,7 +33,7 @@ class TableTaskStateScreenModel(
 
 	private val taskRepository: TableTaskApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
-) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading) {
+) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading(taskId)) {
 	private val _events: MutableSharedFlow<TableTaskEvent> = MutableSharedFlow()
 	val events: SharedFlow<TableTaskEvent> = _events.asSharedFlow()
 
@@ -51,7 +55,7 @@ class TableTaskStateScreenModel(
 			}
 
 			val tableResult =
-				async {				// ProjectTableRepository.fetchByProjectIdIfStale()
+				async {                // ProjectTableRepository.fetchByProjectIdIfStale()
 				}
 
 			/*
@@ -209,14 +213,27 @@ sealed class TableTaskEvent {
 	data object FailedToShowSheet : LocalizedMessage(R.string.error_failed_to_show_sheet)
 }
 
-sealed class TableTaskScreenState {
+sealed class TableTaskScreenState(open val taskId: Long) {
 
-	@Immutable data object Loading : TableTaskScreenState()
+	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
 	@Immutable data class Success(
+		override val taskId: Long,
 		val task: TableTask,
 		val parentTable: ProjectTable,
 		val sheet: TableTaskSheet? = null,
 		val sheetTables: List<ProjectTable> = emptyList(),
-	) : TableTaskScreenState()
+	) : TableTaskScreenState(taskId) {
+
+		@Composable
+		fun task(): TableTask {
+			val stateCollected by TableTaskRepository.state.collectAsState()
+			return remember(
+				stateCollected,
+				taskId
+			) {
+				stateCollected.data.keys.first { it.id == taskId }
+			}
+		}
+	}
 }
