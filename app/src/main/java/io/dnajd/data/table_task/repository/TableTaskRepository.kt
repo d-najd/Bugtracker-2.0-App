@@ -34,6 +34,17 @@ object TableTaskRepository :
 		}
 	}
 
+	@Composable
+	fun dataKeyById(id: Long): TableTask? {
+		val stateCollected by TableTaskRepository.state.collectAsState()
+		return remember(
+			stateCollected,
+			id
+		) {
+			stateCollected.data.keys.firstOrNull { it.id == id }
+		}
+	}
+
 	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
 		return data().filterKeys { it.tableId == tableId }
 	}

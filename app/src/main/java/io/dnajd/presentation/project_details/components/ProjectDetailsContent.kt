@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreenState
-import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.BugtrackerExpandableTextField
 import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
 import io.dnajd.presentation.components.ProjectIconFactory
@@ -74,11 +73,7 @@ fun ProjectDetailsContent(
 			}
 		}
 
-		// val projectState by ProjectRepository.state.collectAsState()
-		// val projectState = ProjectRepository.projectsAsState()
-		val project = ProjectRepository
-			.dataKeysCollected()
-			.find { it.id == state.projectId }!!
+		val project = state.project()
 
 		var expanded by remember { mutableStateOf(false) }
 		var projectTitle by remember { mutableStateOf(project.title) }

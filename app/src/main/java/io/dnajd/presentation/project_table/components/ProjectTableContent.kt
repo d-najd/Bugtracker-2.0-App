@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
-import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.domain.table_task.model.TableTask
 
 @Composable
@@ -36,7 +35,7 @@ fun ProjectTableContent(
 			.padding(contentPadding)
 			.padding(5.dp),
 	) {
-		val tables = ProjectTableRepository.dataKeysCollectedByProjectId(state.projectId)
+		val tables = state.tables()
 		for ((index, table) in tables
 			.sortedBy { it.position }
 			.withIndex()) {

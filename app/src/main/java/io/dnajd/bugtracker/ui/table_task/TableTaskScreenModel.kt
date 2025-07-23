@@ -3,9 +3,6 @@ package io.dnajd.bugtracker.ui.table_task
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
@@ -226,14 +223,9 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 	) : TableTaskScreenState(taskId) {
 
 		@Composable
-		fun task(): TableTask {
-			val stateCollected by TableTaskRepository.state.collectAsState()
-			return remember(
-				stateCollected,
-				taskId
-			) {
-				stateCollected.data.keys.first { it.id == taskId }
-			}
-		}
+		fun task(): TableTask =
+			TableTaskRepository.        // val projectState by ProjectRepository.state.collectAsState()
+				// val projectState = ProjectRepository.projectsAsState()
+			dataKeyById(taskId)!!
 	}
 }

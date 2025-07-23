@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project_table
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -8,6 +9,7 @@ import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
+import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
@@ -409,5 +411,16 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 		/** This is used in the bottom portion of the table specifically the create button */
 		val taskBeingAddedInTableId: Long? = null,
 		val dialog: ProjectTableDialog? = null,
-	) : ProjectTableScreenState(projectId)
+	) : ProjectTableScreenState(projectId) {
+		@Composable
+		fun project(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+
+		@Composable
+		fun tables(): Set<ProjectTable> =
+			ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
+
+		@Composable
+		fun tasksByTableId(tableId: Long): Set<TableTask> =
+			TableTaskRepository.dataKeysCollectedByTableId(tableId)
+	}
 }

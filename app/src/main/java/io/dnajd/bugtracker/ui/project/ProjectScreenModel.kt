@@ -1,6 +1,7 @@
 package io.dnajd.bugtracker.ui.project
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -91,7 +92,10 @@ sealed class ProjectScreenState {
 
 	@Immutable data class Success(
 		val dialog: ProjectDialog? = null,
-	) : ProjectScreenState()
+	) : ProjectScreenState() {
+		@Composable
+		fun projects(): Set<Project> = ProjectRepository.dataKeysCollected()
+	}
 }
 
 sealed class ProjectDialog {

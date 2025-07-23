@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project.ProjectScreenState
-import io.dnajd.data.project.repository.ProjectRepository
 
 @Composable
 fun ProjectContent(
@@ -44,7 +43,7 @@ fun ProjectContent(
 			fontWeight = FontWeight.Medium,
 		)
 
-		for (project in ProjectRepository.dataKeysCollected()) {
+		for (project in state.projects()) {
 			ProjectItemContent(
 				project = project,
 				onProjectClicked = onProjectClicked,

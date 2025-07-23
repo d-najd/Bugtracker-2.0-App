@@ -1,11 +1,13 @@
 package io.dnajd.bugtracker.ui.project_details
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
@@ -94,7 +96,10 @@ sealed class ProjectDetailsScreenState(
 
 	@Immutable data class Success(
 		val projectId: Long,
-	) : ProjectDetailsScreenState(projectId)
+	) : ProjectDetailsScreenState(projectId) {
+		@Composable
+		fun project(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+	}
 }
 
 sealed class ProjectDetailsEvent {

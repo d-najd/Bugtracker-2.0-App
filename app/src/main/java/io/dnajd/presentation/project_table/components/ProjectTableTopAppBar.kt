@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
-import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.BugtrackerTwoAppBar
 import io.dnajd.presentation.components.BugtrackerTwoAppBarTableBar
 
@@ -38,12 +37,14 @@ fun ProjectTableTopAppBar(
 			}
 		},
 		title = {
-			val project = ProjectRepository.dataKeyCollectedById(state.projectId)!!
 
-			val title =
-				if (state is ProjectTableScreenState.Success) project.title else stringResource(
+			val title = if (state is ProjectTableScreenState.Success) {
+				state.project().title
+			} else {
+				stringResource(
 					R.string.loading
 				)
+			}
 			Text(
 				text = title,
 			)

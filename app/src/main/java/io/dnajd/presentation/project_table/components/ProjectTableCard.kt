@@ -40,8 +40,6 @@ import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableEvent
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
-import io.dnajd.data.project_table.repository.ProjectTableRepository
-import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -71,9 +69,8 @@ fun ProjectTableCard(
 				top = 4.dp
 			),
 	) {
-		val tasks = TableTaskRepository
-			.dataKeysCollectedByTableId(table.id)
-			.toList()
+		val tasks = state
+			.tasksByTableId(table.id)
 			.sortedBy { it.position }
 
 		var reorderableList by remember { mutableStateOf(tasks) }        // a list is being stored in case the user moves multiple table items
@@ -181,7 +178,7 @@ private fun ProjectTableCardTop(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
-	val tasks = TableTaskRepository.dataKeysCollectedByTableId(table.id)
+	val tasks = state.tasksByTableId(table.id)
 
 	Row(
 		modifier = modifier,
@@ -237,7 +234,7 @@ private fun ProjectTableDropdownMenu(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
-	val tables = ProjectTableRepository.dataKeysCollectedByProjectId(table.projectId)
+	val tables = state.tables()
 
 	Column(
 		horizontalAlignment = Alignment.End,
