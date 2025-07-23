@@ -6,7 +6,6 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
-import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
@@ -51,9 +50,9 @@ class TableTaskStateScreenModel(
 					}
 			}
 
-			val tableResult = async {
-				ProjectTableRepository.fetchByProjectIdIfStale()
-			}
+			val tableResult =
+				async {				// ProjectTableRepository.fetchByProjectIdIfStale()
+				}
 
 			/*
 			val task = taskRepository

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
+import kotlin.reflect.full.declaredMembers
 
 /**
  * Sets are recommended here since ordering of items should be irrelevant and sets not allowing
@@ -70,14 +71,14 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	protected open fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
 		return { f, s ->
 
-			val fIdMethod = f.key!!::class.members.firstOrNull { it.name == "id" }
-			val sIdMethod = s.key!!::class.members.firstOrNull { it.name == "id" }
+			val fIdMethod = f.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
+			val sIdMethod = s.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
 
 			if (fIdMethod == null || sIdMethod == null) {
 				throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultCompareForUpdatePredicate.name}. either implement it or use an alternative")
 			}
 
-			fIdMethod.call() == sIdMethod.call()
+			fIdMethod.call(f.key) == sIdMethod.call(s.key)
 		}
 	}
 
