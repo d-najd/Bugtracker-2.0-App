@@ -6,6 +6,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.table_task.service.TableTaskApiService
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import java.util.Date
 
 data class TableTaskRepositoryState(
@@ -15,6 +18,8 @@ data class TableTaskRepositoryState(
 
 object TableTaskRepository :
 	RepositoryBase<TableTask, Date, TableTaskRepositoryState>(TableTaskRepositoryState()) {
+
+	private val api: TableTaskApiService = Injekt.get()
 
 	@Composable
 	fun dataKeysCollectedByTableId(tableId: Long): Set<TableTask> {
@@ -31,6 +36,30 @@ object TableTaskRepository :
 
 	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
 		return data().filterKeys { it.tableId == tableId }
+	}
+
+	suspend fun fetchByIdIfStale(
+		id: Long,
+		forceFetch: Boolean = false,
+	): Result<Unit> {
+		if (!forceFetch && data().any { it.key.id == id }) {
+			Result.success(Unit)
+		}
+
+		val result = api.getById(id)
+		val resultMapped = result.map { }
+		if (result.isFailure) {
+			return resultMapped
+		}
+
+		val newData = result.getOrThrow()
+		val combinedData = combineForUpdate(
+			Date(),
+			newData = arrayOf(newData)
+		)
+		update(combinedData)
+
+		return resultMapped
 	}
 
 	/**

@@ -97,4 +97,5 @@ dependencies {
     implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"
 
     implementation 'com.auth0.android:jwtdecode:2.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }

@@ -48,52 +48,75 @@ object ProjectTableRepository :
 		if (!forceFetch && lastFetchedByProjectIds().containsKey(projectId)) {
 			return Result.success(Unit)
 		}
-		return api
-			.getAllByProjectId(
-				projectId,
-				fetchTasks
-			)
-			.onSuccess {
-				val oldTables = data()
-				val newTables = it.data
-					.toSet()
-					.associateWith { Date() }
 
-				val tablesCombined = oldTables
-					.filter { oldTableEntry ->
-						newTables.any { newTable -> oldTableEntry.key.id != newTable.key.id }
-					}
-					.plus(newTables)
+		val result = api.getAllByProjectId(
+			projectId,
+			fetchTasks
+		)
+		val resultMapped = result.map { }
+		if (result.isFailure) {
+			return resultMapped
+		}
 
-				update(
-					tablesCombined,
-					projectId
-				)
+		val newData = result.getOrThrow()
 
-				if (fetchTasks) {
-					val oldTasks = TableTaskRepository.data()
-					val newTasks = it.data
-						.flatMap { table -> table.tasks!! }
-						.toSet()
-						.associateWith { Date() }
+		val combinedData = combineForUpdate(
+			Date(),
+			newData = newData.data.toTypedArray()
+		)
+		update(
+			combinedData,
+			projectId
+		)
 
-					val tasksCombined = oldTasks
-						.filter { oldTask ->
-							newTasks.any { newTask -> oldTask.key.id != newTask.key.id }
-						}
-						.plus(newTasks)
+		if (!fetchTasks) {
+			return resultMapped
+		}
 
-					val tableIds = newTables.keys
-						.map { table -> table.id }
-						.toLongArray()
+		val newTasks = newData.data.flatMap { table -> table.tasks!! }
+		val combinedTasks = TableTaskRepository.combineForUpdate(
+			Date(),
+			newData = newTasks.toTypedArray()
+		)
 
-					TableTaskRepository.update(
-						tasksCombined,
-						*tableIds
-					)
-				}
-			}
-			.map { }
+		val tableIds = newData.data
+			.map { table -> table.id }
+			.toLongArray()
+
+		TableTaskRepository.update(
+			combinedTasks,
+			*tableIds
+		)
+
+		return resultMapped
+	}
+
+	suspend fun fetchByIdIfStale(
+		id: Long,
+		forceFetch: Boolean = false,
+		fetchTasks: Boolean = true,
+	): Result<Unit> {
+		if (!forceFetch && data().any { it.key.id == id }) {
+			return Result.success(Unit)
+		}
+
+		val result = api.getById(
+			id,
+			fetchTasks
+		)
+		val resultMapped = result.map { }
+		if (result.isFailure) {
+			return resultMapped
+		}
+
+		val newData = result.getOrThrow()
+		val combinedData = combineForUpdate(
+			Date(),
+			newData = arrayOf(newData)
+		)
+		update(combinedData)
+
+		return resultMapped
 	}
 
 	/**

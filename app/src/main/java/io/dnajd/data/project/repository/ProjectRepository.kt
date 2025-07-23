@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
-import io.dnajd.util.putOrReplaceIf
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
@@ -37,6 +36,19 @@ object ProjectRepository :
 		if (!forceFetch && mutableState.value.lastFullFetch != null) {
 			return Result.success(Unit)
 		}
+
+		val result = api.getAll()
+		val resultMapped = result.map { }
+		if (result.isFailure) {
+			return resultMapped
+		}
+
+		val newData = result.getOrThrow()
+		combineForUpdate(
+			Date(),
+			newData = newData.data.toTypedArray()
+		)
+
 		return api
 			.getAll()
 			.onSuccess {
@@ -55,24 +67,24 @@ object ProjectRepository :
 		if (!forceFetch && dataKeys().any { it.id == projectId }) {
 			return Result.success(Unit)
 		}
-		return api
-			.getById(projectId)
-			.onSuccess { retrievedProject ->
-				val newData = data()
-					.toMutableMap()
-					.putOrReplaceIf(
-						retrievedProject,
-						Date()
-					) { k, _ ->
-						k.id == projectId
-					}
 
-				update(
-					data = newData,
-					updateLastFullFetch = false,
-				)
-			}
-			.map { }
+		val result = api.getById(projectId)
+		val resultMapped = result.map { }
+		if (result.isFailure) {
+			return resultMapped
+		}
+
+		val newData = result.getOrThrow()
+		val combinedData = combineForUpdate(
+			Date(),
+			newData = arrayOf(newData)
+		)
+		update(
+			combinedData,
+			updateLastFullFetch = false
+		)
+
+		return resultMapped
 	}
 
 	fun update(

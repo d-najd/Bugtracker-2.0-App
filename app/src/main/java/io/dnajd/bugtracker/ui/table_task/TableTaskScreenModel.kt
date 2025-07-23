@@ -6,6 +6,8 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
+import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
@@ -13,6 +15,8 @@ import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -38,6 +42,20 @@ class TableTaskStateScreenModel(
 
 	private fun requestTaskData(taskId: Long) {
 		mutex.launchIONoQueue(coroutineScope) {
+			val taskResult = async {
+				TableTaskRepository
+					.fetchByIdIfStale(taskId)
+					.onFailureWithStackTrace {
+						_events.emit(TableTaskEvent.FailedToRetrieveTask)
+						cancel()
+					}
+			}
+
+			val tableResult = async {
+				ProjectTableRepository.fetchByProjectIdIfStale()
+			}
+
+			/*
 			val task = taskRepository
 				.getById(taskId)
 				.onFailureWithStackTrace {
@@ -63,6 +81,7 @@ class TableTaskStateScreenModel(
 					parentTable = table,
 				)
 			}
+			 */
 		}
 	}
 
@@ -137,8 +156,6 @@ class TableTaskStateScreenModel(
 
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
-
-					// There will always be at least one table (the current one)
 					val tables = successState.sheetTables.ifEmpty {
 						projectTableApiService
 							.getAllByProjectId(
@@ -203,5 +220,4 @@ sealed class TableTaskScreenState {
 		val sheet: TableTaskSheet? = null,
 		val sheetTables: List<ProjectTable> = emptyList(),
 	) : TableTaskScreenState()
-
 }
