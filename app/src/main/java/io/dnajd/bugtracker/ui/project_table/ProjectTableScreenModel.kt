@@ -129,11 +129,8 @@ import java.util.Date
 				}
 				.getOrThrow()
 
-			val tasks = TableTaskRepository
-				.data()
-				.toMutableMap()
-			tasks[createdTask] = Date()
-			TableTaskRepository.update(tasks)
+			val combinedData = TableTaskRepository.combineForUpdate(createdTask)
+			TableTaskRepository.update(combinedData)
 
 			mutableState.update {
 				successState.copy(
@@ -182,15 +179,10 @@ import java.util.Date
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val tables = ProjectTableRepository
-				.data()
-				.toMutableMap()            // val tables = successState.tables.toMutableList()
+			val tables = ProjectTableRepository.data()
 
-			val fTable = tables.keys.find { table -> table.id == sId }!!
-			val sTable = tables.keys.find { table -> table.id == fId }!!
-
-			val fTableFetchTime = tables[fTable]!!
-			val sTableFetchTime = tables[sTable]!!
+			val fTable = ProjectTableRepository.dataKeyById(fId)!!
+			val sTable = ProjectTableRepository.dataKeyById(sId)!!
 
 			projectTableApiService
 				.swapTablePositions(
@@ -202,15 +194,17 @@ import java.util.Date
 					return@launchIONoQueue
 				}
 
+			val fTableNewCacheValue = if (updateLastFetchTime) Date() else tables[fTable]!!
+			val sTableNewCacheValue = if (updateLastFetchTime) Date() else tables[sTable]!!
+
 			val fTableMoved = fTable.copy(position = sTable.position)
 			val sTableMoved = sTable.copy(position = fTable.position)
 
-			tables.remove(fTable)
-			tables.remove(sTable)
-			tables[fTableMoved] = if (updateLastFetchTime) Date() else fTableFetchTime
-			tables[sTableMoved] = if (updateLastFetchTime) Date() else sTableFetchTime
-
-			ProjectTableRepository.update(tables)
+			val dataCombined = ProjectTableRepository.combineForUpdate(
+				fTableMoved to fTableNewCacheValue,
+				sTableMoved to sTableNewCacheValue
+			)
+			ProjectTableRepository.update(dataCombined)
 
 			mutableState.update {
 				successState.copy(
@@ -314,7 +308,7 @@ import java.util.Date
 
 	fun deleteTable(tableId: Long) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
+			mutableState.value as ProjectTableScreenState.Success
 
 			projectTableApiService
 				.deleteById(tableId)

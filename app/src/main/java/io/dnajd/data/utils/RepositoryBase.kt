@@ -35,64 +35,10 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 	open fun data(): Map<K, V> = state.value.data
 
+	/**
+	 * can't find a way to acquire no-args constructor so I must do this
+	 */
 	protected abstract fun defaultCacheValue(): V
-
-	/**
-	 * @see combineForUpdate(V, (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, K...) For full documentation
-	 */
-	internal fun combineForUpdate(vararg newData: K): Map<K, V> {
-		return combineForUpdate(
-			defaultCacheValue(),
-			newData = newData
-		)
-	}
-
-	/**
-	 * @see combineForUpdate(V, (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, K...) For full documentation
-	 */
-	internal fun combineForUpdate(
-		value: V = defaultCacheValue(),
-		vararg newData: K,
-	): Map<K, V> {
-		return combineForUpdate(
-			value,
-			predicate = defaultCompareForUpdatePredicate(),
-			newData = newData,
-		)
-	}
-
-	/**
-	 * combines the old data with the new data, meant to be used after data is fetched
-	 * @param value this value will be assigned to all values as current time of last fetch
-	 * @param predicate values matching this predicate will be filtered from the old data, use this
-	 * to remove values which already exist in [newData], works same as [Iterable.none], default
-	 * implementation will try to compare id field if it exists using reflection or throw an
-	 * exception otherwise
-	 * @param newData the data that will be combined with the old data
-	 */
-	internal open fun combineForUpdate(
-		value: V = defaultCacheValue(),
-		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
-		vararg newData: K,
-	): Map<K, V> {
-		val oldDataEntries = data()
-		val newDataEntries = newData
-			.toSet()
-			.associateWith {
-				value
-			}
-
-		return oldDataEntries
-			.filter { oldEntry ->
-				newDataEntries.none { newEntry ->
-					predicate(
-						oldEntry,
-						newEntry
-					)
-				}
-			}
-			.plus(newDataEntries)
-	}
 
 	protected open fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
 		return { f, s ->
@@ -106,6 +52,79 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 			fIdMethod.call(f.key) == sIdMethod.call(s.key)
 		}
+	}
+
+	/**
+	 * @see combineForUpdate((Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, Pair<K, V>...)
+	 */
+	internal fun combineForUpdate(vararg newData: K): Map<K, V> {
+		return combineForUpdate(
+			cacheValue = defaultCacheValue(),
+			predicate = defaultCompareForUpdatePredicate(),
+			newData = newData
+		)
+	}
+
+	/**
+	 * @param cacheValue this value will be assigned to all values as current time of last fetch
+	 * @see combineForUpdate((Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, Pair<K, V>...)
+	 */
+	internal fun combineForUpdate(
+		cacheValue: V = defaultCacheValue(),
+		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
+		vararg newData: K,
+	): Map<K, V> {
+		return combineForUpdate(
+			predicate = predicate,
+			newDataEntries = newData
+				.map {
+					Pair(
+						it,
+						cacheValue
+					)
+				}
+				.toTypedArray()
+		)
+	}
+
+	/**
+	 *
+	 * @see combineForUpdate((Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean, Pair<K, V>...)
+	 */
+	internal fun combineForUpdate(
+		vararg newDataEntries: Pair<K, V>,
+	): Map<K, V> {
+		return combineForUpdate(
+			predicate = defaultCompareForUpdatePredicate(),
+			newDataEntries = newDataEntries
+		)
+	}
+
+	/**
+	 * combines the old data with the new data, meant to be used after data is fetched
+	 * @param predicate values matching this predicate will be filtered from the old data, use this
+	 * to remove values which already exist in [newDataEntries], works same as [Iterable.none], default
+	 * implementation will try to compare id field if it exists using reflection or throw an
+	 * exception otherwise
+	 * @param newDataEntries the data that will be combined with the old data
+	 */
+	internal fun combineForUpdate(
+		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
+		vararg newDataEntries: Pair<K, V>,
+	): Map<K, V> {
+		val oldDataEntries = data()
+		val newDataEntriesFormatted = newDataEntries.toMap()
+
+		return oldDataEntries
+			.filter { oldEntry ->
+				newDataEntriesFormatted.none { newEntry ->
+					predicate(
+						oldEntry,
+						newEntry
+					)
+				}
+			}
+			.plus(newDataEntriesFormatted)
 	}
 
 	open class State<K, V>(
