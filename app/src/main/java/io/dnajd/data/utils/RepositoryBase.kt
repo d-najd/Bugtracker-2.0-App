@@ -35,7 +35,6 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 	open fun data(): Map<K, V> = state.value.data
 
-
 	protected abstract fun defaultCacheValue(): V
 
 	/**
@@ -57,7 +56,8 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	): Map<K, V> {
 		return combineForUpdate(
 			value,
-			newData = newData
+			predicate = defaultCompareForUpdatePredicate(),
+			newData = newData,
 		)
 	}
 

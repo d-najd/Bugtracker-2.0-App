@@ -2,6 +2,7 @@ package io.dnajd.data.table_task.api
 
 import io.dnajd.data.utils.Urls
 import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
@@ -20,6 +21,14 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		.baseUrl(Urls.PROJECT_TABLE_ISSUE)
 		.build()
 		.create(TableTaskRepositoryApi::class.java)
+
+	override suspend fun getByTableId(
+		tableId: Long,
+		includeChildTasks: Boolean,
+	): Result<TableTaskListResponse> = factory.getByTableId(
+		tableId,
+		includeChildTasks
+	)
 
 	override suspend fun getById(id: Long): Result<TableTask> = factory.getById(id)
 
@@ -59,6 +68,12 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 }
 
 private interface TableTaskRepositoryApi {
+	@GET("tableId/{tableId}")
+	suspend fun getByTableId(
+		@Path("tableId") tableId: Long,
+		@Query("includeChildIssues") includeChildTasks: Boolean = false,
+	): Result<TableTaskListResponse>
+
 	@GET("{id}")
 	suspend fun getById(
 		@Path("id") id: Long,

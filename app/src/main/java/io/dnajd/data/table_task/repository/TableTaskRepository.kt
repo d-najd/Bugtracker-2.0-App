@@ -91,7 +91,7 @@ object TableTaskRepository :
 	}
 
 	@Composable
-	fun dataCollectedKeyById(id: Long): TableTask? {
+	fun dataKeyCollectedById(id: Long): TableTask? {
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,

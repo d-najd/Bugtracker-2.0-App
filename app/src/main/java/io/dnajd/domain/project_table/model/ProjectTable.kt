@@ -24,28 +24,4 @@ data class ProjectTable(
 	 * instead.
 	 */
 	@SerializedName("issues") val tasks: List<TableTask>? = mutableListOf(),
-) : java.io.Serializable {
-	constructor(basicTable: ProjectTable) : this(
-		id = basicTable.id,
-		projectId = basicTable.projectId,
-		title = basicTable.title,
-		position = basicTable.position
-	)
-}
-
-/**
- * Used primarily for managing state with repositories
- */
-data class ProjectTableBasic(
-	@SerializedName("id") val id: Long = -1L,
-	@SerializedName("projectId") val projectId: Long = -1L,
-	@SerializedName("title") val title: String = "",
-	@SerializedName("position") val position: Int = -1,
-) {
-	constructor(table: ProjectTable) : this(
-		id = table.id,
-		projectId = table.projectId,
-		title = table.title,
-		position = table.position
-	)
-}
+) : java.io.Serializable

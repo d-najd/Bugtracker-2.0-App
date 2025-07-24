@@ -148,7 +148,7 @@ import java.util.Date
 		newName: String,
 	) {
 		mutex.launchIONoQueue(coroutineScope) {
-			val table = ProjectTableRepository.dataById(id)!!
+			val table = ProjectTableRepository.dataKeyById(id)!!
 			val renamedTable = table.copy(title = newName)
 
 			val persistedTable = projectTableApiService

@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import java.util.Date
 
+
+data class TableTaskListResponse(
+	@SerializedName("data") val `data`: List<TableTask> = emptyList(),
+)
+
 data class TableTask(
 	@SerializedName("id") val id: Long = -1L,
 	@SerializedName("title") val title: String = "",

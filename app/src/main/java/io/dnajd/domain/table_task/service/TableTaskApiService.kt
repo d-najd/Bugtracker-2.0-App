@@ -1,8 +1,14 @@
 package io.dnajd.domain.table_task.service
 
 import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.table_task.model.TableTaskListResponse
 
 interface TableTaskApiService {
+	suspend fun getByTableId(
+		tableId: Long,
+		includeChildTasks: Boolean = false,
+	): Result<TableTaskListResponse>
+
 	/**
 	 * Gets a single table task
 	 * @param id id of the task

@@ -4,10 +4,22 @@ import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskAssignee
 import io.dnajd.domain.table_task.model.TableTaskComment
+import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import java.util.Date
 
 object TableTaskApiServiceMock : TableTaskApiService {
+	override suspend fun getByTableId(
+		tableId: Long,
+		includeChildTasks: Boolean,
+	): Result<TableTaskListResponse> = Result.success(
+		TableTaskListResponse(
+			listOf(
+				mockData(),
+				mockData()
+			)
+		)
+	)
 
 	override suspend fun getById(id: Long): Result<TableTask> = Result.success(mockData())
 

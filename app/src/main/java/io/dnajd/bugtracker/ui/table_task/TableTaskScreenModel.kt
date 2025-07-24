@@ -94,10 +94,11 @@ class TableTaskStateScreenModel(
 	fun swapTable(tableId: Long) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
+			val oldTask = successState.taskNonComposable()
 
 			taskRepository
 				.moveToTable(
-					successState.task.id,
+					oldTask.id,
 					tableId
 				)
 				.onFailureWithStackTrace {
@@ -105,6 +106,41 @@ class TableTaskStateScreenModel(
 					return@launchIONoQueue
 				}
 
+			val tasksInPreviousTable = TableTaskRepository
+				.dataByTableId(oldTask.tableId)
+				.filter { it.key.id != oldTask.id }
+			TableTaskRepository.dataByTableId(tableId)
+
+			// subtract 1 from the position for tasks after the current task since the task is moved
+			// to other table
+			tasksInPreviousTable.map { }
+
+			// Fetching all tasks since I don't want to rely on how the backend will position the task
+			// I.E it may put the task as the first task in the new table or something else
+			/*
+			val updatedTasks = taskRepository
+				.getByTableId(tableId)
+				.onFailureWithStackTrace {
+					_events.emit(TableTaskEvent.FailedToSwapTable)
+					return@launchIONoQueue
+				}
+			 */
+
+
+			/*
+			val task = successState.taskNonComposable()
+			task.copy(
+				tableId = tableId
+			)
+			 */
+
+
+			// val combinedData = TableTaskRepository.combineForUpdate(taskUpdated)
+			// TableTaskRepository.update(combinedData)
+
+
+			// TODO finish this, also reduce the api, probably only keep compose functions in repositories? or maybe nothing at all?
+			/*
 			val table = projectTableApiService
 				.getById(
 					id = tableId,
@@ -115,6 +151,7 @@ class TableTaskStateScreenModel(
 					return@launchIONoQueue
 				}
 				.getOrThrow()
+			 */
 
 			mutableState.update {
 				successState.copy(
@@ -196,6 +233,12 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 
 	fun taskNonComposable(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
 
+	fun tasksInTableNonComposable(tableId: Long): Set<TableTask> =
+		TableTaskRepository.dataByTableId(tableId).keys
+
+	fun parentTableNonComposable(): ProjectTable =
+		ProjectTableRepository.dataKeyById(taskNonComposable().tableId)!!
+
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
 	@Immutable data class Success(
@@ -207,7 +250,11 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 	) : TableTaskScreenState(taskId) {
 
 		@Composable
-		fun task(): TableTask = TableTaskRepository.dataCollectedKeyById(taskId)!!
+		fun task(): TableTask = TableTaskRepository.dataKeyCollectedById(taskId)!!
+
+		@Composable
+		fun parentTable(): ProjectTable =
+			ProjectTableRepository.dataKeyCollectedById(task().tableId)!!
 
 	}
 }

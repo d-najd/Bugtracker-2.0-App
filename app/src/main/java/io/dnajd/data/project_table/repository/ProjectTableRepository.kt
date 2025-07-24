@@ -137,7 +137,18 @@ object ProjectTableRepository :
 		}
 	}
 
-	fun dataById(id: Long): ProjectTable? {
+	@Composable
+	fun dataKeyCollectedById(id: Long): ProjectTable? {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			id
+		) {
+			stateCollected.data.keys.firstOrNull { it.id == id }
+		}
+	}
+
+	fun dataKeyById(id: Long): ProjectTable? {
 		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }
