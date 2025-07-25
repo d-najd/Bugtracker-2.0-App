@@ -40,7 +40,7 @@ interface TableTaskApiService {
 	suspend fun swapTaskPositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 
 	/**
 	 * moves task to the given position, this is different from swapping positions because every task
@@ -52,7 +52,7 @@ interface TableTaskApiService {
 	suspend fun movePositionTo(
 		fId: Long,
 		sId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 
 	/**
 	 * Swaps the table of a task
@@ -63,6 +63,6 @@ interface TableTaskApiService {
 	suspend fun moveToTable(
 		id: Long,
 		tableId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 
 }

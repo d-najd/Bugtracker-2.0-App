@@ -6,7 +6,6 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
-import io.dnajd.bugtracker.ui.project_table.ProjectTableSharedState
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project_table.model.ProjectTable
@@ -96,7 +95,7 @@ class TableTaskStateScreenModel(
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 			val oldTask = successState.taskNonComposable()
 
-			taskRepository
+			val persistedTasks = taskRepository
 				.moveToTable(
 					oldTask.id,
 					tableId
@@ -105,67 +104,12 @@ class TableTaskStateScreenModel(
 					_events.emit(TableTaskEvent.FailedToSwapTable)
 					return@launchIONoQueue
 				}
+				.getOrThrow().data
 
-			val tasksInPreviousTable = TableTaskRepository
-				.dataByTableId(oldTask.tableId)
-				.filter { it.key.id != oldTask.id }
-			TableTaskRepository.dataByTableId(tableId)
-
-			// subtract 1 from the position for tasks after the current task since the task is moved
-			// to other table
-			tasksInPreviousTable.map { }
-
-			// Fetching all tasks since I don't want to rely on how the backend will position the task
-			// I.E it may put the task as the first task in the new table or something else
-			/*
-			val updatedTasks = taskRepository
-				.getByTableId(tableId)
-				.onFailureWithStackTrace {
-					_events.emit(TableTaskEvent.FailedToSwapTable)
-					return@launchIONoQueue
-				}
-			 */
-
-
-			/*
-			val task = successState.taskNonComposable()
-			task.copy(
-				tableId = tableId
-			)
-			 */
-
-
-			// val combinedData = TableTaskRepository.combineForUpdate(taskUpdated)
-			// TableTaskRepository.update(combinedData)
-
-
-			// TODO finish this, also reduce the api, probably only keep compose functions in repositories? or maybe nothing at all?
-			/*
-			val table = projectTableApiService
-				.getById(
-					id = tableId,
-					includeTasks = true
-				)
-				.onFailureWithStackTrace {
-					_events.emit(TableTaskEvent.FailedToSwapTable)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
-			 */
-
-			mutableState.update {
-				successState.copy(
-					task = successState.task.copy(
-						tableId = tableId,
-						position = 0,
-					),
-					parentTable = table,
-				)
-			}
+			val combinedData = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
+			TableTaskRepository.update(combinedData)
 
 			dismissSheet()
-
-			ProjectTableSharedState.notifyTableOrTaskAltered()
 		}
 	}
 
@@ -175,22 +119,21 @@ class TableTaskStateScreenModel(
 
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
-					val tables = successState.sheetTables.ifEmpty {
-						projectTableApiService
-							.getAllByProjectId(
-								projectId = successState.parentTable.projectId,
-								includeTasks = true
-							)
-							.onFailureWithStackTrace {
-								_events.emit(TableTaskEvent.FailedToShowSheet)
-								return@launchIONoQueue
-							}
-							.getOrThrow().data
-					}
+
+					val task = successState.taskNonComposable()
+					val table = ProjectTableRepository.dataKeyById(task.tableId)!!
+
+					// the tables are not guaranteed to be fetched up to this point so fetching them
+					// if needed
+					ProjectTableRepository
+						.fetchByProjectIdIfStale(table.projectId)
+						.onFailureWithStackTrace {
+							_events.emit(TableTaskEvent.FailedToShowSheet)
+							return@launchIONoQueue
+						}
 
 					mutableState.update {
 						successState.copy(
-							sheetTables = tables,
 							sheet = sheet,
 						)
 					}
@@ -232,12 +175,6 @@ sealed class TableTaskEvent {
 sealed class TableTaskScreenState(open val taskId: Long) {
 
 	fun taskNonComposable(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
-
-	fun tasksInTableNonComposable(tableId: Long): Set<TableTask> =
-		TableTaskRepository.dataByTableId(tableId).keys
-
-	fun parentTableNonComposable(): ProjectTable =
-		ProjectTableRepository.dataKeyById(taskNonComposable().tableId)!!
 
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 

@@ -48,7 +48,7 @@ interface ProjectTableApiService {
 	suspend fun swapTablePositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit>
+	): Result<ProjectTableListResponse>
 
 	/**
 	 * Deletes a table with given id

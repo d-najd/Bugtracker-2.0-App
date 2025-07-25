@@ -10,7 +10,6 @@ import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.project.model.Project
-import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
@@ -31,12 +30,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
 	private val projectId: Long,
 
-	private val projectApiService: ProjectApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 	private val tableTaskApiService: TableTaskApiService = Injekt.get(),
 ) : StateScreenModel<ProjectTableScreenState>(ProjectTableScreenState.Loading(projectId)) {
@@ -172,19 +169,13 @@ import java.util.Date
 	fun swapTablePositions(
 		fId: Long,
 		sId: Long,
-		updateLastFetchTime: Boolean = false,
 	) {
 		if (fId == sId) throw IllegalArgumentException("Can't swap table with itself")
 
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val tables = ProjectTableRepository.data()
-
-			val fTable = ProjectTableRepository.dataKeyById(fId)!!
-			val sTable = ProjectTableRepository.dataKeyById(sId)!!
-
-			projectTableApiService
+			val persistedTasks = projectTableApiService
 				.swapTablePositions(
 					fId,
 					sId
@@ -193,18 +184,12 @@ import java.util.Date
 					_events.emit(ProjectTableEvent.FailedToSwapTablePositions)
 					return@launchIONoQueue
 				}
+				.getOrThrow().data
 
-			val fTableNewCacheValue = if (updateLastFetchTime) Date() else tables[fTable]!!
-			val sTableNewCacheValue = if (updateLastFetchTime) Date() else tables[sTable]!!
-
-			val fTableMoved = fTable.copy(position = sTable.position)
-			val sTableMoved = sTable.copy(position = fTable.position)
-
-			val dataCombined = ProjectTableRepository.combineForUpdate(
-				fTableMoved to fTableNewCacheValue,
-				sTableMoved to sTableNewCacheValue
+			val combinedData = ProjectTableRepository.combineForUpdate(
+				*persistedTasks.toTypedArray()
 			)
-			ProjectTableRepository.update(dataCombined)
+			ProjectTableRepository.update(combinedData)
 
 			mutableState.update {
 				successState.copy(
@@ -237,7 +222,7 @@ import java.util.Date
 			val fTask = tasks.first { it.position == fIndex }
 			val sTask = tasks.first { it.position == sIndex }
 
-			tableTaskApiService
+			val persistedTasks = tableTaskApiService
 				.movePositionTo(
 					fTask.id,
 					sTask.id
@@ -246,64 +231,11 @@ import java.util.Date
 					_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
 					return@launchIONoQueue
 				}
+				.getOrThrow().data
 
-			onTaskMoveSuccess(
-				tableId = tableId,
-				fIndex = fIndex,
-				sIndex = sIndex
-			)
+			val combinedData = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
+			TableTaskRepository.update(combinedData)
 		}
-	}
-
-	private fun onTaskMoveSuccess(
-		tableId: Long,
-		fIndex: Int,
-		sIndex: Int,
-		updateLastFetchTime: Boolean = false,
-	) {
-		val tasksData = TableTaskRepository.dataByTableId(tableId)
-		val tasks = tasksData.keys.toMutableSet()
-		val sTask = tasks.first { it.position == sIndex }
-
-		val newCurrentTableTaskData = tasksData.entries.associate { entry ->
-			val newDate = if (updateLastFetchTime) Date() else entry.value
-			val index = entry.key.position
-			val curTask = entry.key
-
-			if (sIndex > fIndex) {
-				when (index) {
-					in (fIndex + 1)..sIndex -> curTask.copy(
-						position = curTask.position - 1
-					) to newDate
-
-					fIndex -> curTask.copy(
-						position = sTask.position
-					) to newDate
-
-					else -> curTask to newDate
-				}
-			} else {
-				when (index) {
-					in sIndex until fIndex -> curTask.copy(
-						position = curTask.position + 1
-					) to newDate
-
-					fIndex -> curTask.copy(
-						position = sTask.position
-					) to newDate
-
-					else -> curTask to newDate
-				}
-			}
-		}
-
-		val allTaskData = TableTaskRepository.data()
-		val newTaskData = allTaskData
-			.filter { it.key.tableId != tableId }
-			.toMutableMap()
-		newTaskData.putAll(newCurrentTableTaskData)
-
-		TableTaskRepository.update(newTaskData)
 	}
 
 	fun deleteTable(tableId: Long) {
