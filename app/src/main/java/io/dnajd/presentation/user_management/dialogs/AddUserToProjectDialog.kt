@@ -42,7 +42,8 @@ fun AddUserToProjectDialog(
 					modifier = Modifier.padding(top = 8.dp),
 					label = { Text(text = stringResource(R.string.field_username)) },
 					value = username,
-					onValueChange = { username = it })
+					onValueChange = { username = it },
+				)
 			}
 		},
 		confirmButton = {
@@ -53,17 +54,19 @@ fun AddUserToProjectDialog(
 							username = username,
 							projectId = projectId,
 							authority = UserAuthorityType.project_view,
-						)
+						),
 					)
-				}) {
+				},
+			) {
 				Text(
-					text = stringResource(R.string.action_confirm).uppercase()
+					text = stringResource(R.string.action_confirm).uppercase(),
 				)
 			}
 		},
 		dismissButton = {
 			TextButton(
-				onClick = { onDismissRequest() }) {
+				onClick = { onDismissRequest() },
+			) {
 				Text(text = stringResource(R.string.action_cancel).uppercase())
 			}
 		},
