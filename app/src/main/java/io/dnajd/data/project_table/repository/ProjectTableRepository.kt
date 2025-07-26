@@ -101,10 +101,6 @@ object ProjectTableRepository :
 		return Result.success(retrievedData)
 	}
 
-	override fun defaultCacheValue(): Date {
-		return Date()
-	}
-
 	/**
 	 * @param lastFetchProjectsUpdated which projects should be notified that they have been updated
 	 */

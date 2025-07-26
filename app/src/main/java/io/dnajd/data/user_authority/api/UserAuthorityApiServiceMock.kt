@@ -1,4 +1,4 @@
-package io.dnajd.data.user_authority
+package io.dnajd.data.user_authority.api
 
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityListResponse

@@ -11,6 +11,11 @@ import java.util.Date
 import kotlin.reflect.full.declaredMembers
 
 /**
+ * - If [K] does not have field id then [defaultCompareForUpdatePredicate] must be overridden
+ * - If [V] is subclass of [Date] then [defaultCacheValue] must be overridden
+ *
+ * TODO add init checks for the cases above so it fails when the class is compiled
+ *
  * Recommendations and reasons why stuff is like it is
  *
  * - for fetching data use fetch*IfStale(...) for fetching data, it should return the data that is fetched or
@@ -46,9 +51,11 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	open fun data(): Map<K, V> = state.value.data
 
 	/**
-	 * can't find a way to acquire no-args constructor so I must do this
+	 * Must be overridden if [V] is not [Date] but rather subclass of it
 	 */
-	protected abstract fun defaultCacheValue(): V
+	protected open fun defaultCacheValue(): V {
+		@Suppress("UNCHECKED_CAST") return Date() as V
+	}
 
 	/**
 	 * Check should be done on init to check whether [K] has member id because this will fail on call if it is

@@ -42,10 +42,6 @@ object TableTaskRepository :
 		return Result.success(retrievedData)
 	}
 
-	override fun defaultCacheValue(): Date {
-		return Date()
-	}
-
 	/**
 	 * NOTE [data].Key I.E [TableTask] will have all data reset to default except [TableTask.id].
 	 * this is to prevent multiple sources of truth
