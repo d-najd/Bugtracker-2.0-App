@@ -89,72 +89,64 @@ import uy.kohesive.injekt.api.get
 		}
 	}
 
-	fun createTable(table: ProjectTable) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val createdTable = projectTableApiService
-				.createTable(table)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToCreateProjectTable)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
-
-			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(createdTable))
-
-			_events.emit(ProjectTableEvent.CreatedTable)
-		}
-	}
-
-	fun showCreateTaskMenu(tableId: Long?) {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
-
-			mutableState.update { successState.copy(taskBeingAddedInTableId = tableId) }
-		}
-	}
-
-	fun createTask(task: TableTask) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
-
-			val createdTask = tableTaskApiService
-				.createTask(task)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToCreateTableTask)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
-
-			TableTaskRepository.update(TableTaskRepository.combineForUpdate(createdTask))
-
-			mutableState.update {
-				successState.copy(
-					taskBeingAddedInTableId = null,
-				)
+	fun createTable(table: ProjectTable) = mutex.launchIONoQueue(coroutineScope) {
+		val createdTable = projectTableApiService
+			.createTable(table)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToCreateProjectTable)
+				return@launchIONoQueue
 			}
+			.getOrThrow()
+
+		ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(createdTable))
+
+		_events.emit(ProjectTableEvent.CreatedTable)
+	}
+
+	fun showCreateTaskMenu(tableId: Long?) = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
+
+		mutableState.update { successState.copy(taskBeingAddedInTableId = tableId) }
+	}
+
+	fun createTask(task: TableTask) = mutex.launchIONoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
+
+		val createdTask = tableTaskApiService
+			.createTask(task)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToCreateTableTask)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
+
+		TableTaskRepository.update(TableTaskRepository.combineForUpdate(createdTask))
+
+		mutableState.update {
+			successState.copy(
+				taskBeingAddedInTableId = null,
+			)
 		}
 	}
 
 	fun renameTable(
 		id: Long,
 		newName: String,
-	) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val table = ProjectTableRepository.dataKeyById(id)!!
-			val renamedTable = table.copy(title = newName)
+	) = mutex.launchIONoQueue(coroutineScope) {
+		val table = ProjectTableRepository.dataKeyById(id)!!
+		val renamedTable = table.copy(title = newName)
 
-			val persistedTable = projectTableApiService
-				.updateTable(renamedTable)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToRenameProjectTable)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
+		val persistedTable = projectTableApiService
+			.updateTable(renamedTable)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToRenameProjectTable)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
 
-			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(persistedTable))
+		ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(persistedTable))
 
-			_events.emit(ProjectTableEvent.RenamedTable)
-		}
+		_events.emit(ProjectTableEvent.RenamedTable)
 	}
 
 	/**
@@ -166,30 +158,28 @@ import uy.kohesive.injekt.api.get
 	fun swapTablePositions(
 		fId: Long,
 		sId: Long,
-	) {
+	) = mutex.launchIONoQueue(coroutineScope) {
 		if (fId == sId) throw IllegalArgumentException("Can't swap table with itself")
 
-		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
+		val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val persistedTasks = projectTableApiService
-				.swapTablePositions(
-					fId,
-					sId,
-				)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToSwapTablePositions)
-					return@launchIONoQueue
-				}
-				.getOrThrow().data
-
-			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(*persistedTasks.toTypedArray()))
-
-			mutableState.update {
-				successState.copy(
-					dropdownOpenedInTableId = null,
-				)
+		val persistedTasks = projectTableApiService
+			.swapTablePositions(
+				fId,
+				sId,
+			)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToSwapTablePositions)
+				return@launchIONoQueue
 			}
+			.getOrThrow().data
+
+		ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(*persistedTasks.toTypedArray()))
+
+		mutableState.update {
+			successState.copy(
+				dropdownOpenedInTableId = null,
+			)
 		}
 	}
 
@@ -206,77 +196,67 @@ import uy.kohesive.injekt.api.get
 		tableId: Long,
 		fIndex: Int,
 		sIndex: Int,
-	) {
+	) = mutex.launchIONoQueue(coroutineScope) {
 		if (fIndex == sIndex) {
 			throw IllegalArgumentException("fIndex and sIndex can't be the same")
 		}
 
-		mutex.launchIONoQueue(coroutineScope) {
-			val tasks = TableTaskRepository.dataByTableId(tableId).keys
-			val fTask = tasks.first { it.position == fIndex }
-			val sTask = tasks.first { it.position == sIndex }
+		val tasks = TableTaskRepository.dataByTableId(tableId).keys
+		val fTask = tasks.first { it.position == fIndex }
+		val sTask = tasks.first { it.position == sIndex }
 
-			val persistedTasks = tableTaskApiService
-				.movePositionTo(
-					fTask.id,
-					sTask.id,
-				)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
-					return@launchIONoQueue
-				}
-				.getOrThrow().data
-
-			TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
-		}
-	}
-
-	fun deleteTable(tableId: Long) {
-		mutex.launchIONoQueue(coroutineScope) {
-			mutableState.value as ProjectTableScreenState.Success
-
-			val otherModifiedTables = projectTableApiService
-				.deleteById(tableId)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectTableEvent.FailedToDeleteTable)
-					return@launchIONoQueue
-				}
-				.getOrThrow().data
-
-			val combinedData = ProjectTableRepository
-				.combineForUpdate(*otherModifiedTables.toTypedArray())
-				.filterKeys { it.id != tableId }
-
-			ProjectTableRepository.update(
-				combinedData,
+		val persistedTasks = tableTaskApiService
+			.movePositionTo(
+				fTask.id,
+				sTask.id,
 			)
-		}
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
+				return@launchIONoQueue
+			}
+			.getOrThrow().data
+
+		TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 	}
 
-	fun showDialog(dialog: ProjectTableDialog) {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
+	fun deleteTable(tableId: Long) = mutex.launchIONoQueue(coroutineScope) {
+		mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update { successState.copy(dialog = dialog) }
-		}
+		val otherModifiedTables = projectTableApiService
+			.deleteById(tableId)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectTableEvent.FailedToDeleteTable)
+				return@launchIONoQueue
+			}
+			.getOrThrow().data
+
+		val combinedData = ProjectTableRepository
+			.combineForUpdate(*otherModifiedTables.toTypedArray())
+			.filterKeys { it.id != tableId }
+
+		ProjectTableRepository.update(
+			combinedData,
+		)
 	}
 
-	fun dismissDialog() {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
+	fun showDialog(dialog: ProjectTableDialog) = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
 
-			mutableState.update { successState.copy(dialog = null) }
-		}
+		mutableState.update { successState.copy(dialog = dialog) }
 	}
 
-	fun switchDropdownMenu(tableId: Long?) {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectTableScreenState.Success
+	fun dismissDialog() = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
 
-			val newTableId = if (successState.dropdownOpenedInTableId == tableId) null else tableId
+		mutableState.update { successState.copy(dialog = null) }
+	}
 
-			mutableState.update { successState.copy(dropdownOpenedInTableId = newTableId) }
-		}
+	fun switchDropdownMenu(tableId: Long?) = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectTableScreenState.Success
+
+		val newTableId = if (successState.dropdownOpenedInTableId == tableId) null else tableId
+
+		mutableState.update { successState.copy(dropdownOpenedInTableId = newTableId) }
 	}
 }
 
@@ -321,13 +301,14 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState(projectId) {
 		@Composable
-		fun project(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+		fun projectCollected(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
 
 		@Composable
-		fun tables(): Set<ProjectTable> = ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
+		fun tablesCollected(): Set<ProjectTable> =
+			ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
 
 		@Composable
-		fun tasksByTableId(tableId: Long): Set<TableTask> =
+		fun tasksCollectedByTableId(tableId: Long): Set<TableTask> =
 			TableTaskRepository.dataKeysCollectedByTableId(tableId)
 	}
 }

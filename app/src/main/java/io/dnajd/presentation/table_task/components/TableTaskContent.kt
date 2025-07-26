@@ -55,8 +55,6 @@ fun TableTaskContent(
 				vertical = 36.dp,
 			),
 	) {
-		val task = state.task
-
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			verticalAlignment = Alignment.CenterVertically,
@@ -71,21 +69,21 @@ fun TableTaskContent(
 				modifier = Modifier
 					.padding(start = 12.dp)
 					.fillMaxWidth(),
-				text = "${stringResource(R.string.field_task).uppercase()}-${task.id}",
+				text = "${stringResource(R.string.field_task).uppercase()}-${state.taskCollected().id}",
 				fontSize = 14.sp,
 				color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 			)
 		}
 
 		var expanded by remember { mutableStateOf(false) }
-		var taskTitle = task.title
+		var taskTitle = state.taskCollected().title
 
 		BugtrackerExpandableTextField(
 			modifier = Modifier
 				.padding(top = 13.dp)
 				.fillMaxWidth()
 				.onFocusChanged { expanded = it.isFocused },
-			value = task.title,
+			value = state.taskCollected().title,
 			onValueChange = { taskTitle = it },
 			expanded = expanded,
 			textStyle = TextStyle(
@@ -97,7 +95,7 @@ fun TableTaskContent(
 			BugtrackerExpandableTextFieldDefaults.Content(
 				onCancelClicked = { expanded = false },
 				onConfirmClicked = { },
-				confirmEnabled = taskTitle != task.title && taskTitle.isNotEmpty(),
+				confirmEnabled = taskTitle != state.taskCollected().title && taskTitle.isNotEmpty(),
 			)
 		}
 
@@ -119,7 +117,7 @@ fun TableTaskContent(
 						modifier = Modifier.padding(start = 3.5.dp),
 						fontWeight = FontWeight.Bold,
 						fontSize = 16.sp,
-						text = state.parentTable.title,
+						text = state.parentTableCollected().title,
 					)
 				},
 				includeDropdownArrow = true,

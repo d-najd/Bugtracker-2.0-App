@@ -20,7 +20,7 @@ import io.dnajd.presentation.table_task.components.TableTaskContent
 import io.dnajd.presentation.table_task.sheets.TableTaskBottomSheetContent
 
 @OptIn(
-	ExperimentalMaterial3Api::class,    // ExperimentalMaterialApi::class
+	ExperimentalMaterial3Api::class,
 )
 @Composable
 fun TableTaskScreenContent(
@@ -59,8 +59,7 @@ fun TableTaskScreenContent(
 					.verticalScroll(rememberScrollState()),
 			) {
 				TableTaskBottomSheetContent(
-					curTable = state.parentTable,
-					tables = state.sheetTables,
+					state = state,
 					onChangeTableClicked = onChangeTableClicked,
 				)
 			}

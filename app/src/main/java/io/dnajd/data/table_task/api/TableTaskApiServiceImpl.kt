@@ -1,6 +1,7 @@
 package io.dnajd.data.table_task.api
 
 import io.dnajd.data.utils.Urls
+import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
@@ -15,6 +16,11 @@ import retrofit2.http.Query
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+/**
+ * NOTE another user may modify the [TableTask] after the user fetches the tasks and before he modifies them thus
+ * causing inconsistency in the data on the client side, this can be solved by re-fetching all [TableTask] in
+ * the current [ProjectTable]'s data
+ */
 object TableTaskApiServiceImpl : TableTaskApiService {
 	private val factory: TableTaskRepositoryApi = Injekt
 		.get<Retrofit.Builder>()

@@ -10,7 +10,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.bugtracker.ui.util.ScreenFixed
-import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.presentation.components.LoadingScreen
 import io.dnajd.presentation.project_details.ProjectDetailsScreenContent
 import io.dnajd.util.toast
@@ -30,12 +29,6 @@ class ProjectDetailsScreen(
 				when (event) {
 					is ProjectDetailsEvent.DeleteProject -> {
 						navigator.popUntil { it is ProjectScreen }
-
-						val projectsExceptDeleted = ProjectRepository
-							.data()
-							.filter { it.key.id != event.projectId }
-
-						ProjectRepository.update(projectsExceptDeleted)
 					}
 
 					is ProjectDetailsEvent.FailedToRetrieveProjectData -> {

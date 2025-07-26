@@ -20,7 +20,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class ProjectDetailsScreenModel(
-	projectId: Long,
+	val projectId: Long,
 
 	private val projectApiService: ProjectApiService = Injekt.get(),
 ) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading(projectId)) {
@@ -42,40 +42,42 @@ class ProjectDetailsScreenModel(
 		}
 	}
 
-	fun deleteProject() {
-		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectDetailsScreenState.Success
+	fun deleteProject() = mutex.launchIONoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			projectApiService
-				.deleteById(successState.projectId)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectDetailsEvent.FailedToDeleteProject)
-					return@launchIONoQueue
-				}
-				.onSuccess {
-					_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
-				}
-		}
+		projectApiService
+			.deleteById(successState.projectId)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectDetailsEvent.FailedToDeleteProject)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
+
+		val projectsExceptDeleted = ProjectRepository
+			.data()
+			.filter { it.key.id != projectId }
+
+		ProjectRepository.update(projectsExceptDeleted)
+		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 	}
 
-	fun renameProject(title: String) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			val projectToRename = ProjectRepository.dataKeyById(successState.projectId)!!
-			val renamedProject = projectToRename.copy(title = title)
+	fun renameProject(title: String) = mutex.launchIONoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			val persistedProject = projectApiService
-				.updateProject(renamedProject)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectDetailsEvent.FailedToRenameProject)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
+		val projectToRename = ProjectRepository.dataKeyById(successState.projectId)!!
+		val renamedProject = projectToRename.copy(title = title)
 
-			val combinedData = ProjectRepository.combineForUpdate(persistedProject)
-			ProjectRepository.update(combinedData)
-		}
+		val persistedProject = projectApiService
+			.updateProject(renamedProject)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectDetailsEvent.FailedToRenameProject)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
+
+		val combinedData = ProjectRepository.combineForUpdate(persistedProject)
+		ProjectRepository.update(combinedData)
 	}
 }
 
@@ -88,7 +90,7 @@ sealed class ProjectDetailsScreenState(
 		val projectId: Long,
 	) : ProjectDetailsScreenState(projectId) {
 		@Composable
-		fun project(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+		fun projectCollected(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
 	}
 }
 

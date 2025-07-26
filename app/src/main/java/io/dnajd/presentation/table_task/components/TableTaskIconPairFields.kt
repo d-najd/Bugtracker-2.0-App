@@ -17,10 +17,7 @@ import io.dnajd.util.BugtrackerDateFormat
 @Composable
 fun TableTaskIconPairFields(
 	state: TableTaskScreenState.Success,
-) {
-	val task = state.task
-
-	/* TODO finish this
+) {    /* TODO finish this
 	TableTaskIconPairField(
 		modifier = Modifier.padding(top = 12.dp),
 		title = stringResource(R.string.label_labels),
@@ -33,7 +30,7 @@ fun TableTaskIconPairFields(
 	BugtrackerIconPairField(
 		modifier = Modifier.padding(top = 16.dp),
 		title = stringResource(R.string.field_reporter),
-		text = task.reporter,
+		text = state.taskCollected().reporter,
 		iconContent = {
 			Icon(
 				modifier = Modifier.size(24.dp),
@@ -48,15 +45,18 @@ fun TableTaskIconPairFields(
 		title = stringResource(R.string.field_created),
 		text = BugtrackerDateFormat
 			.defaultRequestDateFormat()
-			.format(task.createdAt),
+			.format(state.taskCollected().createdAt),
 	)
 
 	BugtrackerIconPairField(
 		modifier = Modifier.padding(top = 16.dp),
 		title = stringResource(R.string.field_updated),
-		text = if (task.updatedAt != null) BugtrackerDateFormat
-			.defaultRequestDateFormat()
-			.format(task.updatedAt)
-		else "${stringResource(R.string.field_never)} TM",
+		text = if (state.taskCollected().updatedAt != null) {
+			BugtrackerDateFormat
+				.defaultRequestDateFormat()
+				.format(state.taskCollected().updatedAt!!)
+		} else {
+			"${stringResource(R.string.field_never)} TM"
+		},
 	)
 }

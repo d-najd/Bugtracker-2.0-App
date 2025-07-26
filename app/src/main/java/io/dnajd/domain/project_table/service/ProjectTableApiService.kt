@@ -1,8 +1,14 @@
 package io.dnajd.domain.project_table.service
 
+import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 
+/**
+ * NOTE another user may modify the [ProjectTable] after the user fetches the tasks and before he modifies them thus
+ * causing inconsistency in the data on the client side, this can be solved by re-fetching all [ProjectTable] in
+ * the current [Project]'s data
+ */
 interface ProjectTableApiService {
 	/**
 	 * Gets all tables associated with [projectId]

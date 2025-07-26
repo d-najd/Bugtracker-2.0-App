@@ -70,7 +70,7 @@ fun ProjectTableCard(
 			),
 	) {
 		val tasks = state
-			.tasksByTableId(table.id)
+			.tasksCollectedByTableId(table.id)
 			.sortedBy { it.position }
 
 		var reorderableList by remember { mutableStateOf(tasks) }        // a list is being stored in case the user moves multiple table items
@@ -179,7 +179,7 @@ private fun ProjectTableCardTop(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
-	val tasks = state.tasksByTableId(table.id)
+	val tasks = state.tasksCollectedByTableId(table.id)
 
 	Row(
 		modifier = modifier,
@@ -236,7 +236,7 @@ private fun ProjectTableDropdownMenu(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
-	val tables = state.tables()
+	val tables = state.tablesCollected()
 
 	Column(
 		horizontalAlignment = Alignment.End,

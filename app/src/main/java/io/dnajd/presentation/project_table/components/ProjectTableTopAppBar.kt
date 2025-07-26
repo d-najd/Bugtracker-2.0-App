@@ -39,7 +39,7 @@ fun ProjectTableTopAppBar(
 		title = {
 
 			val title = if (state is ProjectTableScreenState.Success) {
-				state.project().title
+				state.projectCollected().title
 			} else {
 				stringResource(
 					R.string.loading,

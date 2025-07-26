@@ -16,15 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
-import io.dnajd.domain.project_table.model.ProjectTable
+import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 
 /**
  * bottom sheet used for changing the table of the task
  */
 @Composable
 fun TableTaskBottomSheetContent(
-	curTable: ProjectTable,
-	tables: List<ProjectTable>,
+	state: TableTaskScreenState.Success,
 	onChangeTableClicked: (Long) -> Unit,
 ) {
 	SheetItem(
@@ -32,12 +31,13 @@ fun TableTaskBottomSheetContent(
 		textColor = MaterialTheme.colorScheme.onSurface,
 	)
 
-	val tablesSorted = tables.toMutableList()
-	if (!tablesSorted.remove(tablesSorted.find { it.id == curTable.id })) {
-		throw IllegalStateException()
-	}
+	val parentTable = state.parentTableCollected()
+	val tablesOrdered = state
+		.sheetTablesCollected()
+		.sortedBy { it.position }
+		.filter { it.id != parentTable.id }
 
-	for (table in tablesSorted) {
+	for (table in tablesOrdered) {
 		SheetItem(
 			title = table.title,
 			onClick = { onChangeTableClicked(table.id) },

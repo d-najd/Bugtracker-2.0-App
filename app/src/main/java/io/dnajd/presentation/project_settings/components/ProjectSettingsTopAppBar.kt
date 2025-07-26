@@ -35,7 +35,7 @@ fun ProjectSettingsTopAppBar(
 		},
 		title = {
 			val title = if (state is ProjectSettingsScreenState.Success) {
-				state.project().title
+				state.projectCollected().title
 			} else {
 				stringResource(
 					R.string.loading,

@@ -35,7 +35,7 @@ fun ProjectTableContent(
 			.padding(contentPadding)
 			.padding(5.dp),
 	) {
-		val tables = state.tables()
+		val tables = state.tablesCollected()
 		for ((index, table) in tables
 			.sortedBy { it.position }
 			.withIndex()) {

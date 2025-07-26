@@ -27,6 +27,8 @@ fun TableTaskDescriptionField(
 			.padding(top = 8.dp)
 			.clickable { onAlterDescriptionSheetClicked() },
 	) {
+		val task = state.taskCollected()
+
 		Text(
 			modifier = Modifier.padding(top = 20.dp),
 			text = stringResource(R.string.field_description),
@@ -38,8 +40,8 @@ fun TableTaskDescriptionField(
 				.padding(top = 8.dp)
 				.height(92.dp),
 			fontSize = (14.5).sp,
-			text = state.task.description ?: stringResource(R.string.action_tap_to_add_description),
-			color = if (state.task.description != null) Color.Unspecified
+			text = task.description ?: stringResource(R.string.action_tap_to_add_description),
+			color = if (task.description != null) Color.Unspecified
 			else MaterialTheme.colorScheme.onSurface.copy(0.4f),
 			maxLines = 3,
 			minLines = 1,

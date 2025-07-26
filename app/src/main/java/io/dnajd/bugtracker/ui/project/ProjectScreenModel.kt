@@ -41,41 +41,35 @@ class ProjectScreenModel(
 		}
 	}
 
-	fun createProject(project: Project) {
-		mutex.launchIONoQueue(coroutineScope) {
-			val persistedProject = projectApiService
-				.createProject(project)
-				.onFailureWithStackTrace {
-					_events.emit(ProjectEvent.FailedToCreateProject)
-					return@launchIONoQueue
-				}
-				.getOrThrow()
+	fun createProject(project: Project) = mutex.launchIONoQueue(coroutineScope) {
+		val persistedProject = projectApiService
+			.createProject(project)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectEvent.FailedToCreateProject)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
 
-			val combinedData = ProjectRepository.combineForUpdate(persistedProject)
-			ProjectRepository.update(combinedData)
+		val combinedData = ProjectRepository.combineForUpdate(persistedProject)
+		ProjectRepository.update(combinedData)
 
-			dismissDialog()
-		}
+		dismissDialog()
 	}
 
-	fun showDialog(dialog: ProjectDialog) {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectScreenState.Success
+	fun showDialog(dialog: ProjectDialog) = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectScreenState.Success
 
-			when (dialog) {
-				is ProjectDialog.CreateProject -> {
-					mutableState.update { successState.copy(dialog = dialog) }
-				}
+		when (dialog) {
+			is ProjectDialog.CreateProject -> {
+				mutableState.update { successState.copy(dialog = dialog) }
 			}
 		}
 	}
 
-	fun dismissDialog() {
-		mutex.launchUINoQueue(coroutineScope) {
-			val successState = mutableState.value as ProjectScreenState.Success
+	fun dismissDialog() = mutex.launchUINoQueue(coroutineScope) {
+		val successState = mutableState.value as ProjectScreenState.Success
 
-			mutableState.update { successState.copy(dialog = null) }
-		}
+		mutableState.update { successState.copy(dialog = null) }
 	}
 }
 

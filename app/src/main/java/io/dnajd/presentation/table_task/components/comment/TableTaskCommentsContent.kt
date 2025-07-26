@@ -23,7 +23,7 @@ import java.util.Date
 
 @Composable
 fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
-	for (comment in state.task.comments) {
+	for (comment in state.taskCollected().comments) {
 		BugtrackerIconPairField(
 			modifier = Modifier.padding(
 				top = 12.dp,

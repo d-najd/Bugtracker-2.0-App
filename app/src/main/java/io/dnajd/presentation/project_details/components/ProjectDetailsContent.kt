@@ -73,7 +73,7 @@ fun ProjectDetailsContent(
 			}
 		}
 
-		val project = state.project()
+		val project = state.projectCollected()
 
 		var expanded by remember { mutableStateOf(false) }
 		var projectTitle by remember { mutableStateOf(project.title) }

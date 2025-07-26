@@ -33,6 +33,8 @@ fun TableTaskAssignedField(
 	state: TableTaskScreenState.Success,
 ) {
 	var expanded by remember { mutableStateOf(false) }
+	state.taskCollected()
+
 	BugtrackerExpandableMenu(
 		modifier = Modifier.padding(top = 24.dp),
 		expanded = expanded,
@@ -51,7 +53,7 @@ fun TableTaskAssignedField(
 				verticalAlignment = Alignment.CenterVertically,
 			) {
 				Text(
-					text = state.task.assigned.size.toString(),
+					text = state.taskCollected().assigned.size.toString(),
 					color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 				)
 
@@ -67,7 +69,7 @@ fun TableTaskAssignedField(
 			}
 		},
 		expandableContent = {
-			for (assigned in state.task.assigned) {
+			for (assigned in state.taskCollected().assigned) {
 				Row(
 					modifier = Modifier.padding(
 						top = 12.dp,

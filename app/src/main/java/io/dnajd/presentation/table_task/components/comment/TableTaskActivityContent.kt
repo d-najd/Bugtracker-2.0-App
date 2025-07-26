@@ -50,7 +50,7 @@ fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 		}
 	}
 
-	if (state.task.comments.isEmpty()) {
+	if (state.taskCollected().comments.isEmpty()) {
 		TableTaskNoCommentsContent()
 	} else {
 		TableTaskCommentsContent(state = state)
