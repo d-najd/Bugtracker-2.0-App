@@ -99,8 +99,7 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow()
 
-			val combinedData = ProjectTableRepository.combineForUpdate(createdTable)
-			ProjectTableRepository.update(combinedData)
+			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(createdTable))
 
 			_events.emit(ProjectTableEvent.CreatedTable)
 		}
@@ -126,8 +125,7 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow()
 
-			val combinedData = TableTaskRepository.combineForUpdate(createdTask)
-			TableTaskRepository.update(combinedData)
+			TableTaskRepository.update(TableTaskRepository.combineForUpdate(createdTask))
 
 			mutableState.update {
 				successState.copy(
@@ -153,8 +151,7 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow()
 
-			val combinedData = ProjectTableRepository.combineForUpdate(persistedTable)
-			ProjectTableRepository.update(combinedData)
+			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(persistedTable))
 
 			_events.emit(ProjectTableEvent.RenamedTable)
 		}
@@ -186,10 +183,7 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow().data
 
-			val combinedData = ProjectTableRepository.combineForUpdate(
-				*persistedTasks.toTypedArray(),
-			)
-			ProjectTableRepository.update(combinedData)
+			ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 
 			mutableState.update {
 				successState.copy(
@@ -233,8 +227,7 @@ import uy.kohesive.injekt.api.get
 				}
 				.getOrThrow().data
 
-			val combinedData = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
-			TableTaskRepository.update(combinedData)
+			TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 		}
 	}
 
@@ -242,19 +235,20 @@ import uy.kohesive.injekt.api.get
 		mutex.launchIONoQueue(coroutineScope) {
 			mutableState.value as ProjectTableScreenState.Success
 
-			projectTableApiService
+			val otherModifiedTables = projectTableApiService
 				.deleteById(tableId)
 				.onFailureWithStackTrace {
 					_events.emit(ProjectTableEvent.FailedToDeleteTable)
 					return@launchIONoQueue
 				}
+				.getOrThrow().data
 
-			val tablesWithRemovedTable = ProjectTableRepository
-				.data()
+			val combinedData = ProjectTableRepository
+				.combineForUpdate(*otherModifiedTables.toTypedArray())
 				.filterKeys { it.id != tableId }
 
 			ProjectTableRepository.update(
-				tablesWithRemovedTable,
+				combinedData,
 			)
 		}
 	}

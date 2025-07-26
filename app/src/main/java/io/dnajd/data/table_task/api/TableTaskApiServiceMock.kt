@@ -30,17 +30,17 @@ object TableTaskApiServiceMock : TableTaskApiService {
 	override suspend fun swapTaskPositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = Result.success(Unit)
+	): Result<TableTaskListResponse> = Result.failure(TODO())
 
 	override suspend fun movePositionTo(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = Result.success(Unit)
+	): Result<TableTaskListResponse> = Result.success(TODO())
 
 	override suspend fun moveToTable(
 		id: Long,
 		tableId: Long,
-	): Result<Unit> = Result.success(Unit)
+	): Result<TableTaskListResponse> = Result.success(TODO())
 
 	private fun mockData() = TableTask(
 		id = 1L,

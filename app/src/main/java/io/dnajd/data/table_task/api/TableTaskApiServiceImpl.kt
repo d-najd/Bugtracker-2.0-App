@@ -45,7 +45,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 	override suspend fun swapTaskPositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = factory.swapTaskPositions(
+	): Result<TableTaskListResponse> = factory.swapTaskPositions(
 		fId,
 		sId,
 	)
@@ -53,7 +53,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 	override suspend fun movePositionTo(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = factory.moveTaskPositions(
+	): Result<TableTaskListResponse> = factory.moveTaskPositions(
 		fId,
 		sId,
 	)
@@ -61,7 +61,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 	override suspend fun moveToTable(
 		id: Long,
 		tableId: Long,
-	): Result<Unit> = factory.moveToTable(
+	): Result<TableTaskListResponse> = factory.moveToTable(
 		id,
 		tableId,
 	)
@@ -99,17 +99,17 @@ private interface TableTaskRepositoryApi {
 	suspend fun swapTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 
 	@PATCH("{fId}/movePositionTo/{sId}")
 	suspend fun moveTaskPositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 
 	@PATCH("{id}/moveToTable/{tableId}")
 	suspend fun moveToTable(
 		@Path("id") id: Long,
 		@Path("tableId") tableId: Long,
-	): Result<Unit>
+	): Result<TableTaskListResponse>
 }

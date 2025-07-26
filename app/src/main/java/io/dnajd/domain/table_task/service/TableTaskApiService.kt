@@ -35,7 +35,7 @@ interface TableTaskApiService {
 	 * moves task from one position to another, this is different from moving tasks
 	 * @param fId id of the first task
 	 * @param sId id of the second task
-	 * @return true if the request was successful false if it wasn't
+	 * @return tasks that got changed due to the call
 	 */
 	suspend fun swapTaskPositions(
 		fId: Long,
@@ -47,7 +47,7 @@ interface TableTaskApiService {
 	 * that is between the starting and ending position have their position modified
 	 * @param fId id of the first task
 	 * @param sId id of the second task
-	 * @return true if the request was successful false if it wasn't
+	 * @return tasks that got changed due to the call
 	 */
 	suspend fun movePositionTo(
 		fId: Long,
@@ -58,7 +58,7 @@ interface TableTaskApiService {
 	 * Swaps the table of a task
 	 * @param id id of the task
 	 * @param tableId id of the table which the task will be moved to
-	 * @return true if the request was successful false if it wasn't
+	 * @return tasks that got changed due to the call
 	 */
 	suspend fun moveToTable(
 		id: Long,

@@ -21,12 +21,19 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 
 	override suspend fun updateTable(table: ProjectTable): Result<ProjectTable> = Result.success(table)
 
+	/*
 	override suspend fun swapTablePositions(
 		fId: Long,
 		sId: Long,
 	): Result<Unit> = Result.success(Unit)
+	 */
 
-	override suspend fun deleteById(id: Long): Result<Unit> = Result.success(Unit)
+	override suspend fun swapTablePositions(
+		fId: Long,
+		sId: Long,
+	): Result<ProjectTableListResponse> = Result.failure(TODO())
+
+	override suspend fun deleteById(id: Long): Result<ProjectTableListResponse> = Result.failure(TODO())
 
 	private fun mockData(includeTasks: Boolean) = ProjectTableListResponse(
 		listOf(

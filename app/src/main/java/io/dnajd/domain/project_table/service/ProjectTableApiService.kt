@@ -43,7 +43,7 @@ interface ProjectTableApiService {
 	 * Swaps the positions of 2 tables
 	 * @param fId id of the first table
 	 * @param sId id of the second table
-	 * @return true if the request was successful false if it wasn't
+	 * @return the tables that got modified due to the call
 	 */
 	suspend fun swapTablePositions(
 		fId: Long,
@@ -53,8 +53,8 @@ interface ProjectTableApiService {
 	/**
 	 * Deletes a table with given id
 	 * @param id id of the table
-	 * @return true if the request was successful false if it wasn't
+	 * @return the tables that got modified due to the call (deleted table is not included)
 	 */
-	suspend fun deleteById(id: Long): Result<Unit>
+	suspend fun deleteById(id: Long): Result<ProjectTableListResponse>
 
 }

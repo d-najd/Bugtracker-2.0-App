@@ -54,12 +54,12 @@ object ProjectTableApiServiceImpl : ProjectTableApiService {
 	override suspend fun swapTablePositions(
 		fId: Long,
 		sId: Long,
-	): Result<Unit> = factory.swapTablePositions(
+	): Result<ProjectTableListResponse> = factory.swapTablePositions(
 		fId,
 		sId,
 	)
 
-	override suspend fun deleteById(id: Long): Result<Unit> = factory.deleteById(id)
+	override suspend fun deleteById(id: Long): Result<ProjectTableListResponse> = factory.deleteById(id)
 }
 
 private interface ProjectTableRepositoryApi {
@@ -91,8 +91,8 @@ private interface ProjectTableRepositoryApi {
 	suspend fun swapTablePositions(
 		@Path("fId") fId: Long,
 		@Path("sId") sId: Long,
-	): Result<Unit>
+	): Result<ProjectTableListResponse>
 
 	@DELETE("{id}")
-	suspend fun deleteById(@Path("id") id: Long): Result<Unit>
+	suspend fun deleteById(@Path("id") id: Long): Result<ProjectTableListResponse>
 }
