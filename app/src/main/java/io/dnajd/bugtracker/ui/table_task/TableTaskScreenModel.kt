@@ -46,7 +46,7 @@ class TableTaskStateScreenModel(
 					_events.emit(TableTaskEvent.FailedToRetrieveTask)
 					return@launchIONoQueue
 				}
-			val task = state.value.taskNonComposable()
+			val task = state.value.taskCurrent()
 
 			ProjectTableRepository
 				.fetchByIdIfStale(
@@ -72,8 +72,8 @@ class TableTaskStateScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 			val renamedTask = successState
-				.taskNonComposable()
-				.copy(description = newDescription)            // val renamedTask = successState.task.copy(description = newDescription)
+				.taskCurrent()
+				.copy(description = newDescription)			// val renamedTask = successState.task.copy(description = newDescription)
 
 			val persistedTask = taskRepository
 				.updateTask(renamedTask)
@@ -93,7 +93,7 @@ class TableTaskStateScreenModel(
 	fun swapTable(tableId: Long) {
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = (mutableState.value as TableTaskScreenState.Success)
-			val oldTask = successState.taskNonComposable()
+			val oldTask = successState.taskCurrent()
 
 			val persistedTasks = taskRepository
 				.moveToTable(
@@ -120,7 +120,7 @@ class TableTaskStateScreenModel(
 			when (sheet) {
 				is TableTaskSheet.BottomSheet -> {
 
-					val task = successState.taskNonComposable()
+					val task = successState.taskCurrent()
 					val table = ProjectTableRepository.dataKeyById(task.tableId)!!
 
 					// the tables are not guaranteed to be fetched up to this point so fetching them
@@ -174,7 +174,7 @@ sealed class TableTaskEvent {
 
 sealed class TableTaskScreenState(open val taskId: Long) {
 
-	fun taskNonComposable(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
+	fun taskCurrent(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
 
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
