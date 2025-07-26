@@ -30,7 +30,7 @@ fun ProjectItemContent(
 		modifier = Modifier
 			.padding(
 				horizontal = 12.dp,
-				vertical = 4.dp
+				vertical = 4.dp,
 			)
 			.fillMaxWidth()
 			.height(42.dp)
@@ -41,7 +41,7 @@ fun ProjectItemContent(
 					.padding(2.dp)
 					.background(
 						MaterialTheme.colorScheme.onBackground.copy(.75f),
-						RoundedCornerShape(4.dp)
+						RoundedCornerShape(4.dp),
 					),
 			) {
 				Image(
@@ -69,5 +69,6 @@ fun ProjectItemContent(
 				fontWeight = FontWeight.ExtraLight,
 				fontFamily = FontFamily.SansSerif,
 			)
-		})
+		},
+	)
 }

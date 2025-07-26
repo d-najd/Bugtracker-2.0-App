@@ -37,8 +37,8 @@ fun BugtrackerCard(
 		Column(
 			modifier = Modifier.padding(
 				vertical = 6.dp,
-				horizontal = 16.dp
-			)
+				horizontal = 16.dp,
+			),
 		) {
 			if (title != null) {
 				Text(
@@ -64,11 +64,11 @@ private fun BugtrackerCardPreview() {
 	BugtrackerCard(title = "title") {
 		BugtrackerPairField(
 			key = "key1",
-			value = "value1"
+			value = "value1",
 		)
 		BugtrackerPairField(
 			key = "key2",
-			value = "value2"
+			value = "value2",
 		)
 		BugtrackerDropdownMenu(
 			onClick = { dismissMenu = !dismissMenu },
@@ -81,13 +81,16 @@ private fun BugtrackerCardPreview() {
 		) {
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 1") },
-				onClick = { dismissMenu = false })
+				onClick = { dismissMenu = false },
+			)
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 2") },
-				onClick = { dismissMenu = false })
+				onClick = { dismissMenu = false },
+			)
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 3") },
-				onClick = { dismissMenu = false })
+				onClick = { dismissMenu = false },
+			)
 		}
 	}
 }
@@ -95,5 +98,5 @@ private fun BugtrackerCardPreview() {
 val ANALYTICS_CARD_CONTENT_PADDING = PaddingValues(vertical = 6.dp)
 private val ANALYTICS_CARD_PADDING = PaddingValues(
 	horizontal = 24.dp,
-	vertical = 12.dp
+	vertical = 12.dp,
 )

@@ -53,7 +53,7 @@ class TableTaskScreen(
 		val successState = (state as TableTaskScreenState.Success)
 		val bottomState = rememberStandardBottomSheetState(
 			initialValue = SheetValue.Hidden,
-			skipHiddenState = false
+			skipHiddenState = false,
 		)
 
 		LaunchedEffect(Unit) {
@@ -83,13 +83,14 @@ class TableTaskScreen(
 					onAlterDescriptionSheetClicked = {
 						screenModel.showSheet(
 							TableTaskSheet.AlterDescriptionSheet(
-								description = successState.taskNonComposable().description ?: ""
-							)
+								description = successState.taskNonComposable().description ?: "",
+							),
 						)
 					},
 					onBottomSheetDismissed = {
 						screenModel.dismissSheet()
-					})
+					},
+				)
 			}
 
 			is TableTaskSheet.AlterDescriptionSheet -> {

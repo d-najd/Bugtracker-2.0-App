@@ -25,14 +25,13 @@ object ProjectApiServiceImpl : ProjectApiService {
 
 	override suspend fun getById(id: Long): Result<Project> = factory.getById(id)
 
-	override suspend fun createProject(project: Project): Result<Project> =
-		factory.createProject(project)
+	override suspend fun createProject(project: Project): Result<Project> = factory.createProject(project)
 
 	override suspend fun updateProject(
 		project: Project,
 	): Result<Project> = factory.updateProject(
 		project.id,
-		project
+		project,
 	)
 
 	override suspend fun deleteById(id: Long): Result<Unit> = factory.deleteById(id)

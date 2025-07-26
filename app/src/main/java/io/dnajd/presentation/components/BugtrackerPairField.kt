@@ -43,13 +43,13 @@ fun BugtrackerPairField(
 			textAlign = TextAlign.End,
 			modifier = Modifier
 				.padding(cardContentPadding)
-				.fillMaxWidth()
+				.fillMaxWidth(),
 		)
 	}
 }
 
 @Preview(
-	widthDp = 300
+	widthDp = 300,
 )
 @Composable
 private fun BugtrackerPairFieldPreview(
@@ -57,15 +57,15 @@ private fun BugtrackerPairFieldPreview(
 	BugtrackerCard {
 		BugtrackerPairField(
 			key = "key1",
-			value = "value1"
+			value = "value1",
 		)
 		BugtrackerPairField(
 			key = "key2",
-			value = "value2"
+			value = "value2",
 		)
 		BugtrackerPairField(
 			key = "key3",
-			value = "value3"
+			value = "value3",
 		)
 	}
 }

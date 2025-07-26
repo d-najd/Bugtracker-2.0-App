@@ -43,7 +43,7 @@ fun ProjectDetailsContent(
 	onDeleteProjectClicked: () -> Unit,
 ) {
 	Column(
-		modifier = Modifier.padding(contentPadding)
+		modifier = Modifier.padding(contentPadding),
 	) {
 		Column(
 			modifier = Modifier
@@ -54,7 +54,7 @@ fun ProjectDetailsContent(
 			Image(
 				modifier = Modifier.size(100.dp),
 				painter = painterResource(ProjectIconFactory.getRandom()),
-				contentDescription = ""
+				contentDescription = "",
 			)
 			Row(
 				modifier = Modifier.padding(top = 8.dp),
@@ -68,7 +68,7 @@ fun ProjectDetailsContent(
 				)
 				Text(
 					modifier = Modifier.padding(start = 2.dp),
-					text = stringResource(R.string.action_change_avatar)
+					text = stringResource(R.string.action_change_avatar),
 				)
 			}
 		}
@@ -91,14 +91,14 @@ fun ProjectDetailsContent(
 			BugtrackerExpandableTextFieldDefaults.Content(
 				onCancelClicked = { expanded = false },
 				onConfirmClicked = { onRenameProjectClicked(projectTitle) },
-				confirmEnabled = projectTitle != project.title && projectTitle.isNotEmpty()
+				confirmEnabled = projectTitle != project.title && projectTitle.isNotEmpty(),
 			)
 		}
 
 		TextButton(
 			modifier = Modifier.padding(
 				start = 4.dp,
-				top = 20.dp
+				top = 20.dp,
 			),
 			onClick = { onDeleteProjectClicked() },
 		) {

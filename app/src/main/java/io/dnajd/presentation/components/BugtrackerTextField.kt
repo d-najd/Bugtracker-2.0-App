@@ -54,12 +54,12 @@ fun BugtrackerTextField(
 		BasicTextField(
 			modifier = modifierText.padding(
 				top = 8.dp,
-				bottom = 3.dp
+				bottom = 3.dp,
 			),
 			value = value,
 			onValueChange = onValueChange,
 			textStyle = textStyle.copy(
-				color = textColor
+				color = textColor,
 			),
 			singleLine = true,
 			keyboardOptions = keyboardOptions,
@@ -72,7 +72,7 @@ fun BugtrackerTextField(
 				val listener = ViewTreeObserver.OnGlobalLayoutListener {
 					val isKeyboardEnabledTemp = ViewCompat
 						.getRootWindowInsets(view)
-						?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+						?.isVisible(WindowInsetsCompat.Type.ime()) != false
 					isKeyboardEnabled(isKeyboardEnabledTemp)
 				}
 				view.viewTreeObserver.addOnGlobalLayoutListener(listener)
@@ -97,6 +97,7 @@ fun BugtrackerTextFieldPreview() {
 			modifierText = Modifier.fillMaxWidth(),
 			label = stringResource(R.string.field_project_title),
 			value = title,
-			onValueChange = { title = it })
+			onValueChange = { title = it },
+		)
 	}
 }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.dnajd.bugtracker.ui.util.ScreenFixed
@@ -54,7 +53,8 @@ class UserManagementScreen(
 			state = successState,
 			onBackClicked = navigator::pop,
 			onInvertAuthorityClicked = { screenModel.modifyAuthority(it) },
-			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) })
+			onAddUserToProjectClicked = { screenModel.showDialog(UserManagementDialog.AddUserToProject) },
+		)
 
 		when (val dialog = successState.dialog) {
 			null -> {}
@@ -64,10 +64,11 @@ class UserManagementScreen(
 					onConfirmClicked = {
 						screenModel.deleteAuthority(
 							userAuthority = dialog.userAuthority,
-							agreed = true
+							agreed = true,
 						)
 						screenModel.dismissDialog()
-					})
+					},
+				)
 			}
 
 			is UserManagementDialog.AddUserToProject -> {
@@ -77,9 +78,10 @@ class UserManagementScreen(
 					onConfirmClicked = {
 						screenModel.modifyAuthority(
 							it,
-							true
+							true,
 						)
-					})
+					},
+				)
 			}
 		}
 	}

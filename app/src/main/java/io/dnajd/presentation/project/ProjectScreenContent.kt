@@ -39,18 +39,20 @@ fun ProjectScreenContent(
 						Icon(
 							modifier = Modifier.padding(horizontal = 6.dp),
 							imageVector = Icons.Rounded.Search,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 					IconButton(onClick = { onCreateProjectClicked() }) {
 						Icon(
 							modifier = Modifier.padding(horizontal = 6.dp),
 							imageVector = Icons.Rounded.Add,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
-				})
-		}) { contentPadding ->
+				},
+			)
+		},
+	) { contentPadding ->
 		ProjectContent(
 			state = state,
 			contentPadding = contentPadding,

@@ -25,7 +25,8 @@ fun ProjectSettingsScreenContent(
 				onBackClicked = onBackClicked,
 				onSwitchScreenTabClicked = onSwitchScreenTabClicked,
 			)
-		}) { contentPadding ->
+		},
+	) { contentPadding ->
 		BackHandler { onBackClicked() }
 
 		if (state is ProjectSettingsScreenState.Loading) {

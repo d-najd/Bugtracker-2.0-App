@@ -20,5 +20,6 @@ fun AuthContentPickUsername() {
 		onValueChange = { },
 		placeholder = {
 			Text(text = stringResource(R.string.info_pick_username))
-		})
+		},
+	)
 }

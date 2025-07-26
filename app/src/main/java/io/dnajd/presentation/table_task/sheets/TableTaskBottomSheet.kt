@@ -29,7 +29,7 @@ fun TableTaskBottomSheetContent(
 ) {
 	SheetItem(
 		title = stringResource(R.string.field_select_transition),
-		textColor = MaterialTheme.colorScheme.onSurface
+		textColor = MaterialTheme.colorScheme.onSurface,
 	)
 
 	val tablesSorted = tables.toMutableList()
@@ -40,7 +40,8 @@ fun TableTaskBottomSheetContent(
 	for (table in tablesSorted) {
 		SheetItem(
 			title = table.title,
-			onClick = { onChangeTableClicked(table.id) })
+			onClick = { onChangeTableClicked(table.id) },
+		)
 	}
 
 }

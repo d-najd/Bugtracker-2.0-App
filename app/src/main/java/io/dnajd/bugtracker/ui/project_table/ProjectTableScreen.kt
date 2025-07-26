@@ -66,8 +66,8 @@ class ProjectTableScreen(
 				screenModel.showDialog(
 					ProjectTableDialog.RenameTable(
 						id = id,
-						title = title
-					)
+						title = title,
+					),
 				)
 			},
 			onMoveTableTasks = screenModel::moveTableTasks,
@@ -96,7 +96,8 @@ class ProjectTableScreen(
 						onDismissRequest = screenModel::dismissDialog,
 						onCreateTableClicked = {
 							screenModel.createTable(table = it)
-						})
+						},
+					)
 				}
 
 				is ProjectTableDialog.RenameTable -> {
@@ -106,9 +107,10 @@ class ProjectTableScreen(
 						onRenameProjectTableClicked = {
 							screenModel.renameTable(
 								id = dialog.id,
-								newName = it
+								newName = it,
 							)
-						})
+						},
+					)
 				}
 			}
 		}

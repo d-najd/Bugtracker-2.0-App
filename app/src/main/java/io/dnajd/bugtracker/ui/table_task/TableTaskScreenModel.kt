@@ -51,7 +51,7 @@ class TableTaskStateScreenModel(
 			ProjectTableRepository
 				.fetchByIdIfStale(
 					id = task.tableId,
-					fetchTasks = true
+					fetchTasks = true,
 				)
 				.onFailureWithStackTrace {
 					_events.emit(TableTaskEvent.FailedToRetrieveTask)
@@ -98,7 +98,7 @@ class TableTaskStateScreenModel(
 			val persistedTasks = taskRepository
 				.moveToTable(
 					oldTask.id,
-					tableId
+					tableId,
 				)
 				.onFailureWithStackTrace {
 					_events.emit(TableTaskEvent.FailedToSwapTable)
@@ -190,8 +190,7 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 		fun task(): TableTask = TableTaskRepository.dataKeyCollectedById(taskId)!!
 
 		@Composable
-		fun parentTable(): ProjectTable =
-			ProjectTableRepository.dataKeyCollectedById(task().tableId)!!
+		fun parentTable(): ProjectTable = ProjectTableRepository.dataKeyCollectedById(task().tableId)!!
 
 	}
 }

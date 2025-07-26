@@ -37,7 +37,7 @@ fun ProjectUserManagementScreenContent(
 						Icon(
 							modifier = Modifier.padding(horizontal = 8.dp),
 							imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				},
@@ -51,10 +51,11 @@ fun ProjectUserManagementScreenContent(
 						Icon(
 							modifier = Modifier.padding(horizontal = 6.dp),
 							imageVector = Icons.Rounded.Add,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
-				})
+				},
+			)
 		},
 	) { contentPadding ->
 		BackHandler { onBackClicked() }

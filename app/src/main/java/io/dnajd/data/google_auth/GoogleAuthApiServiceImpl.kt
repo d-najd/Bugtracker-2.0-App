@@ -27,7 +27,7 @@ object GoogleAuthApiServiceImpl : GoogleAuthApiService {
 		userDto: CreateUser,
 	): Result<JwtTokenHolder> = factory.googleSignUp(
 		"Bearer $googleToken",
-		userDto
+		userDto,
 	)
 }
 

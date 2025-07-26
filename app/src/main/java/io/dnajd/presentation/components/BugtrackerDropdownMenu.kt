@@ -53,7 +53,7 @@ fun BugtrackerDropdownMenu(
 	includeDropdownArrow: Boolean = true,
 	offset: DpOffset = DpOffset(
 		0.dp,
-		0.dp
+		0.dp,
 	),
 	onDismissRequest: () -> Unit,
 	onClick: () -> Unit,
@@ -106,13 +106,16 @@ private fun BugtrackerDropdownMenuPreview() {
 		) {
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 1") },
-				onClick = { expanded = false })
+				onClick = { expanded = false },
+			)
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 2") },
-				onClick = { expanded = false })
+				onClick = { expanded = false },
+			)
 			DropdownMenuItem(
 				text = { Text(text = "Dropdown Item 3") },
-				onClick = { expanded = false })
+				onClick = { expanded = false },
+			)
 		}
 	}
 }

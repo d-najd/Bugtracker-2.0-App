@@ -33,12 +33,12 @@ object UserAuthorityApiServiceImpl : UserAuthorityApiService {
 		if (userAuthority.authority == UserAuthorityType.project_manage_users) {
 			return factory.modifyManagerAuthority(
 				userAuthority,
-				value
+				value,
 			)
 		}
 		return factory.modifyUserAuthority(
 			userAuthority,
-			value
+			value,
 		)
 	}
 }

@@ -20,7 +20,7 @@ class MutableListTypeAdapter<T>(private val delegate: TypeAdapter<MutableList<T>
 	) {
 		delegate?.write(
 			out,
-			value
+			value,
 		)
 	}
 
@@ -41,7 +41,7 @@ internal class MutableListTypeAdapterFactory : TypeAdapterFactory {
 	): TypeAdapter<T>? {
 		val delegate = gson.getDelegateAdapter(
 			this,
-			type
+			type,
 		)
 		val rawType = type.rawType as? Class<T>
 		return when (rawType) {

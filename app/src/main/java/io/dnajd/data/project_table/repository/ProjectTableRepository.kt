@@ -38,7 +38,7 @@ object ProjectTableRepository :
 
 		val result = api.getAllByProjectId(
 			projectId,
-			fetchTasks
+			fetchTasks,
 		)
 		val resultMapped = result.map { }
 		if (result.isFailure) {
@@ -50,7 +50,7 @@ object ProjectTableRepository :
 		val combinedData = combineForUpdate(*newData.data.toTypedArray())
 		update(
 			combinedData,
-			projectId
+			projectId,
 		)
 
 		if (!fetchTasks) {
@@ -66,7 +66,7 @@ object ProjectTableRepository :
 
 		TableTaskRepository.update(
 			combinedTasks,
-			*tableIds
+			*tableIds,
 		)
 
 		return resultMapped
@@ -83,7 +83,7 @@ object ProjectTableRepository :
 
 		val result = api.getById(
 			id,
-			fetchTasks
+			fetchTasks,
 		)
 		val resultMapped = result.map { }
 		if (result.isFailure) {
@@ -116,11 +116,12 @@ object ProjectTableRepository :
 		lastFetches.putAll(
 			lastFetchProjectsUpdated
 				.toSet()
-				.associateWith { Date() })
+				.associateWith { Date() },
+		)
 
 		mutableState.value = ProjectTableRepositoryState(
 			data = dataWithoutTasks,
-			lastFetchedByProjectIds = lastFetches
+			lastFetchedByProjectIds = lastFetches,
 		)
 	}
 
@@ -129,7 +130,7 @@ object ProjectTableRepository :
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
-			projectId
+			projectId,
 		) {
 			stateCollected.data.keys
 				.filter { it.projectId == projectId }
@@ -142,7 +143,7 @@ object ProjectTableRepository :
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
-			id
+			id,
 		) {
 			stateCollected.data.keys.firstOrNull { it.id == id }
 		}

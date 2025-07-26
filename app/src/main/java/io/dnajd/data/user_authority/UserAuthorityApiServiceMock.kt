@@ -8,7 +8,7 @@ import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 object UserAuthorityApiServiceMock : UserAuthorityApiService {
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
 		Result.success(
-			mockData()
+			mockData(),
 		)
 
 	override suspend fun modifyAuthority(
@@ -21,28 +21,28 @@ object UserAuthorityApiServiceMock : UserAuthorityApiService {
 			UserAuthority(
 				"user1",
 				1,
-				UserAuthorityType.project_owner
+				UserAuthorityType.project_owner,
 			),
 			UserAuthority(
 				"user2",
 				1,
-				UserAuthorityType.project_view
+				UserAuthorityType.project_view,
 			),
 			UserAuthority(
 				"user2",
 				1,
-				UserAuthorityType.project_create
+				UserAuthorityType.project_create,
 			),
 			UserAuthority(
 				"user2",
 				1,
-				UserAuthorityType.project_manage_users
+				UserAuthorityType.project_manage_users,
 			),
 			UserAuthority(
 				"user3",
 				1,
-				UserAuthorityType.project_view
+				UserAuthorityType.project_view,
 			),
-		)
+		),
 	)
 }

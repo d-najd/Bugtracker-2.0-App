@@ -39,7 +39,8 @@ class MainActivity : ComponentActivity() {
 							},
 							userSignUpNeeded = {
 								checkingTokens = CheckingTokensState.REFRESH_INVALID
-							})
+							},
+						)
 						checkingTokensStarted = true
 					}
 				}

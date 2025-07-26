@@ -29,7 +29,7 @@ fun ProjectSettingsTopAppBar(
 				Icon(
 					modifier = Modifier.padding(horizontal = 8.dp),
 					imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			}
 		},
@@ -38,7 +38,7 @@ fun ProjectSettingsTopAppBar(
 				state.project().title
 			} else {
 				stringResource(
-					R.string.loading
+					R.string.loading,
 				)
 			}
 			Text(
@@ -50,5 +50,6 @@ fun ProjectSettingsTopAppBar(
 				selectedTab = ProjectTableSelectedTab.SETTINGS,
 				onTabClicked = onSwitchScreenTabClicked,
 			)
-		})
+		},
+	)
 }

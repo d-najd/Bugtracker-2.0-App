@@ -12,7 +12,7 @@ class AndroidPreferenceStore(
 	context: Context,
 	private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
 		"MyPreferences",
-		Context.MODE_PRIVATE
+		Context.MODE_PRIVATE,
 	),
 ) : PreferenceStore {
 
@@ -26,7 +26,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 
@@ -38,7 +38,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 
@@ -50,7 +50,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 
@@ -62,7 +62,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 
@@ -74,7 +74,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 
@@ -86,7 +86,7 @@ class AndroidPreferenceStore(
 			sharedPreferences,
 			keyFlow,
 			key,
-			defaultValue
+			defaultValue,
 		)
 	}
 

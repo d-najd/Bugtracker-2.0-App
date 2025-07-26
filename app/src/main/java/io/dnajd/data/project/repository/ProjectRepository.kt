@@ -16,8 +16,7 @@ data class ProjectRepositoryState(
 	val lastFullFetch: Date? = null,
 ) : RepositoryBase.State<Project, Date>(data)
 
-object ProjectRepository :
-	RepositoryBase<Project, Date, ProjectRepositoryState>(ProjectRepositoryState()) {
+object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>(ProjectRepositoryState()) {
 
 	private val api: ProjectApiService = Injekt.get()
 
@@ -64,7 +63,7 @@ object ProjectRepository :
 		val combinedData = combineForUpdate(newData)
 		update(
 			combinedData,
-			updateLastFullFetch = false
+			updateLastFullFetch = false,
 		)
 
 		return resultMapped
@@ -86,7 +85,7 @@ object ProjectRepository :
 
 		mutableState.value = state.value.copy(
 			data = data,
-			lastFullFetch = newLastFullFetchDate
+			lastFullFetch = newLastFullFetchDate,
 		)
 	}
 
@@ -95,7 +94,7 @@ object ProjectRepository :
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
-			id
+			id,
 		) {
 			stateCollected.data.keys.firstOrNull { it.id == id }
 		}

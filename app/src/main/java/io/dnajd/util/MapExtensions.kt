@@ -13,7 +13,7 @@ fun <K, V> MutableMap<K, V>.putOrReplaceIf(
 	val matchingKeys = this.filter { (k, v) ->
 		condition(
 			k,
-			v
+			v,
 		)
 	}.keys
 

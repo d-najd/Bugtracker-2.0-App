@@ -27,13 +27,13 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
 		BugtrackerIconPairField(
 			modifier = Modifier.padding(
 				top = 12.dp,
-				bottom = 3.dp
+				bottom = 3.dp,
 			),
 			iconContent = {
 				Icon(
 					modifier = Modifier.size(30.dp),
 					imageVector = Icons.Default.AccountCircle,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			},
 			textContent = {
@@ -72,8 +72,9 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
 					text = comment.message,
 					fontWeight = FontWeight.Light,
 					fontFamily = FontFamily.SansSerif,
-					fontSize = 15.sp
+					fontSize = 15.sp,
 				)
-			})
+			},
+		)
 	}
 }

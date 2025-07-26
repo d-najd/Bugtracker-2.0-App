@@ -25,7 +25,7 @@ object JwtAuthenticator : Interceptor {
 		val builder = response.newBuilder()
 		builder.addHeader(
 			"Authorization",
-			"Bearer $accessToken"
+			"Bearer $accessToken",
 		)
 		return chain.proceed(builder.build())
 	}

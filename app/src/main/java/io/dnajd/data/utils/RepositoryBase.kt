@@ -61,7 +61,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 		return combineForUpdate(
 			cacheValue = defaultCacheValue(),
 			predicate = defaultCompareForUpdatePredicate(),
-			newData = newData
+			newData = newData,
 		)
 	}
 
@@ -80,10 +80,10 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 				.map {
 					Pair(
 						it,
-						cacheValue
+						cacheValue,
 					)
 				}
-				.toTypedArray()
+				.toTypedArray(),
 		)
 	}
 
@@ -96,7 +96,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	): Map<K, V> {
 		return combineForUpdate(
 			predicate = defaultCompareForUpdatePredicate(),
-			newDataEntries = newDataEntries
+			newDataEntries = newDataEntries,
 		)
 	}
 
@@ -120,7 +120,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 				newDataEntriesFormatted.none { newEntry ->
 					predicate(
 						oldEntry,
-						newEntry
+						newEntry,
 					)
 				}
 			}

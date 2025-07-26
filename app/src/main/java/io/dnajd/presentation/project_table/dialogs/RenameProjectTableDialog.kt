@@ -34,15 +34,17 @@ fun RenameProjectTableDialog(
 				enabled = newTitle.isNotBlank() && newTitle != originalTitle,
 				onClick = {
 					onRenameProjectTableClicked(newTitle)
-				}) {
+				},
+			) {
 				Text(
-					text = stringResource(R.string.action_rename).uppercase()
+					text = stringResource(R.string.action_rename).uppercase(),
 				)
 			}
 		},
 		dismissButton = {
 			TextButton(
-				onClick = { onDismissRequest() }) {
+				onClick = { onDismissRequest() },
+			) {
 				Text(text = stringResource(R.string.action_cancel).uppercase())
 			}
 		},
@@ -51,6 +53,8 @@ fun RenameProjectTableDialog(
 				modifierText = Modifier.fillMaxWidth(),
 				label = stringResource(R.string.field_column_name),
 				value = newTitle,
-				onValueChange = { newTitle = it })
-		})
+				onValueChange = { newTitle = it },
+			)
+		},
+	)
 }

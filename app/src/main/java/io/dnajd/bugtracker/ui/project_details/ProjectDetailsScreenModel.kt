@@ -95,8 +95,7 @@ sealed class ProjectDetailsScreenState(
 sealed class ProjectDetailsEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectDetailsEvent()
 
-	data object FailedToRetrieveProjectData :
-		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
+	data object FailedToRetrieveProjectData : LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
 
 	data object FailedToDeleteProject : LocalizedMessage(R.string.error_failed_to_delete_project)
 

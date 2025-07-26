@@ -65,19 +65,19 @@ fun BugtrackerTwoAppBarTableBar(
 			.padding(
 				start = 8.dp,
 				top = 2.dp,
-				end = 8.dp
+				end = 8.dp,
 			)
 			.composed {
 				if (selectedTab == tab) {
 					return@composed bottomBorder(
 						strokeWidth = (1.5).dp,
-						color = MaterialTheme.colorScheme.primary
+						color = MaterialTheme.colorScheme.primary,
 					)
 				}
 				this
 			}
 		Column(
-			modifier = tabModifier
+			modifier = tabModifier,
 		) {
 			Text(
 				color = if (selectedTab == tab) colorEnabled else colorDisabled,

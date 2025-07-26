@@ -95,7 +95,7 @@ fun BugtrackerExpandableMenu(
 
 		if (displaySecondaryDivider) {
 			HorizontalDivider(
-				modifier = Modifier.padding(top = if (displayMainDivider) 14.dp else 0.dp)
+				modifier = Modifier.padding(top = if (displayMainDivider) 14.dp else 0.dp),
 			)
 		}
 	}
@@ -115,7 +115,7 @@ private fun BugtrackerExpandableMenuPreview() {
 			id = 2,
 			title = "Title 2",
 			tableId = 2,
-		)
+		),
 	)
 
 	BugtrackerCard {
@@ -145,11 +145,11 @@ private fun BugtrackerExpandableMenuPreview() {
 						Icon(
 							modifier = Modifier.padding(
 								start = 3.dp,
-								end = 4.dp
+								end = 4.dp,
 							),
 							tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 							imageVector = Icons.Default.ArrowDropDown,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				}
@@ -162,7 +162,7 @@ private fun BugtrackerExpandableMenuPreview() {
 							Icon(
 								imageVector = Icons.Default.TaskAlt,
 								tint = MaterialTheme.colorScheme.primary,
-								contentDescription = ""
+								contentDescription = "",
 							)
 						},
 						textContent = {
@@ -185,8 +185,10 @@ private fun BugtrackerExpandableMenuPreview() {
 									color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 								)
 							}
-						})
+						},
+					)
 				}
-			})
+			},
+		)
 	}
 }

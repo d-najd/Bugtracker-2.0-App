@@ -33,7 +33,7 @@ class AuthScreenModel(
 		val tokenHolder = googleAuthApiService
 			.googleSignUp(
 				googleOAuthToken,
-				userInfo
+				userInfo,
 			)
 			.onFailureWithStackTrace {
 				_events.emit(AuthEvent.UserSignUpFailed)

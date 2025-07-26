@@ -40,17 +40,19 @@ fun CreateProjectTableDialog(
 						ProjectTable(
 							projectId = state.projectId,
 							title = title,
-						)
+						),
 					)
-				}) {
+				},
+			) {
 				Text(
-					text = stringResource(R.string.action_add).uppercase()
+					text = stringResource(R.string.action_add).uppercase(),
 				)
 			}
 		},
 		dismissButton = {
 			TextButton(
-				onClick = { onDismissRequest() }) {
+				onClick = { onDismissRequest() },
+			) {
 				Text(text = stringResource(R.string.action_cancel).uppercase())
 			}
 		},
@@ -59,6 +61,8 @@ fun CreateProjectTableDialog(
 				modifierText = Modifier.fillMaxWidth(),
 				label = stringResource(R.string.field_column_name),
 				value = title,
-				onValueChange = { title = it })
-		})
+				onValueChange = { title = it },
+			)
+		},
+	)
 }

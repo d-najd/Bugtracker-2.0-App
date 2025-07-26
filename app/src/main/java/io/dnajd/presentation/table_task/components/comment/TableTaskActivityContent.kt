@@ -33,7 +33,7 @@ fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 		)
 		Row(
 			horizontalArrangement = Arrangement.End,
-			modifier = Modifier.fillMaxWidth()
+			modifier = Modifier.fillMaxWidth(),
 		) {
 			Text(
 				text = stringResource(R.string.field_comments),
@@ -45,7 +45,7 @@ fun TableTaskActivityContent(state: TableTaskScreenState.Success) {
 				modifier = Modifier,
 				tint = MaterialTheme.colorScheme.primary,
 				imageVector = Icons.Default.ArrowDropDown,
-				contentDescription = ""
+				contentDescription = "",
 			)
 		}
 	}

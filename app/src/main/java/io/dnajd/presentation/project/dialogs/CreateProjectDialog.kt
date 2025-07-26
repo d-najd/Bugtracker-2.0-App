@@ -37,15 +37,17 @@ fun CreateProjectDialog(
 						title = title,
 					)
 					onCreateProjectClicked(project)
-				}) {
+				},
+			) {
 				Text(
-					text = stringResource(R.string.action_create).uppercase()
+					text = stringResource(R.string.action_create).uppercase(),
 				)
 			}
 		},
 		dismissButton = {
 			TextButton(
-				onClick = { onDismissRequest() }) {
+				onClick = { onDismissRequest() },
+			) {
 				Text(text = stringResource(R.string.action_cancel).uppercase())
 			}
 		},
@@ -54,6 +56,8 @@ fun CreateProjectDialog(
 				modifierText = Modifier.fillMaxWidth(),
 				label = stringResource(R.string.field_project_title),
 				value = title,
-				onValueChange = { title = it })
-		})
+				onValueChange = { title = it },
+			)
+		},
+	)
 }

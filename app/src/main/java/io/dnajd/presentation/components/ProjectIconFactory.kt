@@ -14,7 +14,7 @@ object ProjectIconFactory {
 	fun getRandom(): Int = LocalContext.current.resources.getIdentifier(
 		NAME_PREFIX + (1..COUNT).random(),
 		"drawable",
-		LocalContext.current.packageName
+		LocalContext.current.packageName,
 	)
 
 	// adding hundreds of lines of code will probably be slower in this case and much more verbose
@@ -25,6 +25,6 @@ object ProjectIconFactory {
 	): Int = LocalContext.current.resources.getIdentifier(
 		NAME_PREFIX + index,
 		"drawable",
-		LocalContext.current.packageName
+		LocalContext.current.packageName,
 	)
 }

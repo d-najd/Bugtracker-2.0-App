@@ -98,8 +98,7 @@ sealed class ProjectDialog {
 sealed class ProjectEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectEvent()
 
-	data object FailedToRetrieveProjects :
-		LocalizedMessage(R.string.error_failed_to_retrieve_projects)
+	data object FailedToRetrieveProjects : LocalizedMessage(R.string.error_failed_to_retrieve_projects)
 
 	data object FailedToCreateProject : LocalizedMessage(R.string.error_failed_to_create_project)
 }

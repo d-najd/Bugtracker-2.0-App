@@ -12,7 +12,7 @@ data class JwtTokenHolder(
 		refresh: JWT?,
 	) : this(
 		access?.toString(),
-		refresh?.toString()
+		refresh?.toString(),
 	)
 
 	fun access(): JWT? {

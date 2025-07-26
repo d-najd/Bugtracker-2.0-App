@@ -52,7 +52,7 @@ class DomainModule : InjektModule {
 				.setDateFormat(
 					BugtrackerDateFormat
 						.defaultRequestDateFormat()
-						.toPattern()
+						.toPattern(),
 				)
 				.registerTypeAdapterFactory(MutableListTypeAdapterFactory())
 				.create()

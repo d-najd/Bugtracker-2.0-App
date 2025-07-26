@@ -38,9 +38,10 @@ fun TableTaskIconPairFields(
 			Icon(
 				modifier = Modifier.size(24.dp),
 				imageVector = Icons.Default.AccountCircle,
-				contentDescription = ""
+				contentDescription = "",
 			)
-		})
+		},
+	)
 
 	BugtrackerIconPairField(
 		modifier = Modifier.padding(top = 16.dp),

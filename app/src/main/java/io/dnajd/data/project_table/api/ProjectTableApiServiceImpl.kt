@@ -28,7 +28,7 @@ object ProjectTableApiServiceImpl : ProjectTableApiService {
 		includeTasks: Boolean,
 	): Result<ProjectTableListResponse> = factory.getAllByProjectId(
 		projectId,
-		includeTasks
+		includeTasks,
 	)
 
 	override suspend fun getById(
@@ -36,20 +36,19 @@ object ProjectTableApiServiceImpl : ProjectTableApiService {
 		includeTasks: Boolean,
 	): Result<ProjectTable> = factory.getById(
 		id,
-		includeTasks
+		includeTasks,
 	)
 
-	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		factory.createTable(
-			table.projectId,
-			table
-		)
+	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> = factory.createTable(
+		table.projectId,
+		table,
+	)
 
 	override suspend fun updateTable(
 		table: ProjectTable,
 	): Result<ProjectTable> = factory.updateTable(
 		table.id,
-		table
+		table,
 	)
 
 	override suspend fun swapTablePositions(
@@ -57,7 +56,7 @@ object ProjectTableApiServiceImpl : ProjectTableApiService {
 		sId: Long,
 	): Result<Unit> = factory.swapTablePositions(
 		fId,
-		sId
+		sId,
 	)
 
 	override suspend fun deleteById(id: Long): Result<Unit> = factory.deleteById(id)

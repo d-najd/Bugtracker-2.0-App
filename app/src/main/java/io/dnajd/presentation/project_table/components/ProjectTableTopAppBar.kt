@@ -32,7 +32,7 @@ fun ProjectTableTopAppBar(
 				Icon(
 					modifier = Modifier.padding(horizontal = 8.dp),
 					imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			}
 		},
@@ -42,7 +42,7 @@ fun ProjectTableTopAppBar(
 				state.project().title
 			} else {
 				stringResource(
-					R.string.loading
+					R.string.loading,
 				)
 			}
 			Text(
@@ -54,14 +54,14 @@ fun ProjectTableTopAppBar(
 				Icon(
 					modifier = Modifier.padding(horizontal = 6.dp),
 					imageVector = Icons.Rounded.FilterList,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			}
 			IconButton(onClick = { onCreateTableClicked() }) {
 				Icon(
 					modifier = Modifier.padding(horizontal = 6.dp),
 					imageVector = Icons.Rounded.Add,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			}
 		},
@@ -70,5 +70,6 @@ fun ProjectTableTopAppBar(
 				selectedTab = ProjectTableSelectedTab.BOARD,
 				onTabClicked = onSwitchScreenTabClicked,
 			)
-		})
+		},
+	)
 }

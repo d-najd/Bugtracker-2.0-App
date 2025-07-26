@@ -26,7 +26,7 @@ fun AuthScreenContent(
 			AuthContentOAuth(
 				contentPadding,
 				onSignUpClicked,
-				onSignInClicked
+				onSignInClicked,
 			)
 		}
 	}

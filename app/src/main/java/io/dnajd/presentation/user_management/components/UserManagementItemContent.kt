@@ -37,7 +37,7 @@ fun ProjectUserManagementItemContent(
 		modifier = Modifier
 			.padding(
 				horizontal = 12.dp,
-				vertical = 4.dp
+				vertical = 4.dp,
 			)
 			.fillMaxWidth(),
 		onClick = { expanded = !expanded },
@@ -52,7 +52,7 @@ fun ProjectUserManagementItemContent(
 					Icon(
 						modifier = Modifier.size(28.dp),
 						imageVector = Icons.Default.AccountCircle,
-						contentDescription = ""
+						contentDescription = "",
 					)
 				},
 				textContent = {
@@ -81,7 +81,8 @@ fun ProjectUserManagementItemContent(
 						fontWeight = FontWeight.ExtraLight,
 						fontFamily = FontFamily.SansSerif,
 					)
-				})
+				},
+			)
 		},
 		expandableContent = {
 
@@ -90,7 +91,7 @@ fun ProjectUserManagementItemContent(
 				authorities = userWithAuthorities.value,
 				username = userWithAuthorities.key,
 				selfAuthorities = selfAuthorities,
-				onInvertAuthorityClicked = onInvertAuthorityClicked
+				onInvertAuthorityClicked = onInvertAuthorityClicked,
 			)
 		},
 	)

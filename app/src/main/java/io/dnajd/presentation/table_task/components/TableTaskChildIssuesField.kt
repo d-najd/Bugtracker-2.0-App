@@ -60,11 +60,11 @@ fun TableTaskChildIssuesField(
 					Icon(
 						modifier = Modifier.padding(
 							start = 3.dp,
-							end = 4.dp
+							end = 4.dp,
 						),
 						tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 						imageVector = Icons.Default.ArrowDropDown,
-						contentDescription = ""
+						contentDescription = "",
 					)
 				}
 			}
@@ -99,7 +99,9 @@ fun TableTaskChildIssuesField(
 								color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 							)
 						}
-					})
+					},
+				)
 			}
-		})
+		},
+	)
 }

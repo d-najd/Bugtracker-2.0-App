@@ -60,7 +60,7 @@ fun BugtrackerExpandableTextField(
 			onValueChange = onValueChange,
 			label = label,
 			textStyle = textStyle.copy(
-				color = textColor
+				color = textColor,
 			),
 			keyboardActions = keyboardActions,
 			keyboardOptions = keyboardOptions,
@@ -104,7 +104,8 @@ private fun BugtrackerExpandableTextFieldPreview() {
 			BugtrackerExpandableTextFieldDefaults.Content(
 				confirmEnabled = (title != originalTitle) && title.isNotBlank(),
 				onConfirmClicked = { },
-				onCancelClicked = { })
+				onCancelClicked = { },
+			)
 		}
 	}
 }

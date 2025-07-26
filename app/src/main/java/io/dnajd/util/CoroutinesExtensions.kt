@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 fun launchUI(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(
 	Dispatchers.Main,
 	CoroutineStart.DEFAULT,
-	block
+	block,
 )
 
 /**
@@ -37,7 +37,7 @@ fun launchUI(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch
 fun launchIO(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(
 	Dispatchers.IO,
 	CoroutineStart.DEFAULT,
-	block
+	block,
 )
 
 /**
@@ -51,37 +51,37 @@ fun launchIO(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch
 fun launchNow(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(
 	Dispatchers.Main,
 	CoroutineStart.UNDISPATCHED,
-	block
+	block,
 )
 
 fun CoroutineScope.launchUI(block: suspend CoroutineScope.() -> Unit): Job = launch(
 	Dispatchers.Main,
-	block = block
+	block = block,
 )
 
 fun CoroutineScope.launchIO(block: suspend CoroutineScope.() -> Unit): Job = launch(
 	Dispatchers.IO,
-	block = block
+	block = block,
 )
 
 fun CoroutineScope.launchNonCancellable(block: suspend CoroutineScope.() -> Unit): Job = launchIO {
 	withContext(
 		NonCancellable,
-		block
+		block,
 	)
 }
 
 suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T) = withContext(
 	Dispatchers.Main,
-	block
+	block,
 )
 
 suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T) = withContext(
 	Dispatchers.IO,
-	block
+	block,
 )
 
 suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) = withContext(
 	NonCancellable,
-	block
+	block,
 )

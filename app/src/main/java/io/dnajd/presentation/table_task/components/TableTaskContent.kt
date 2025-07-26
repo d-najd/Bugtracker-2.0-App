@@ -52,7 +52,7 @@ fun TableTaskContent(
 			.padding(contentPadding)
 			.padding(
 				horizontal = 12.dp,
-				vertical = 36.dp
+				vertical = 36.dp,
 			),
 	) {
 		val task = state.task
@@ -65,7 +65,8 @@ fun TableTaskContent(
 			Checkbox(
 				modifier = Modifier.size(16.dp),
 				checked = true,
-				onCheckedChange = { })
+				onCheckedChange = { },
+			)
 			Text(
 				modifier = Modifier
 					.padding(start = 12.dp)
@@ -96,7 +97,7 @@ fun TableTaskContent(
 			BugtrackerExpandableTextFieldDefaults.Content(
 				onCancelClicked = { expanded = false },
 				onConfirmClicked = { },
-				confirmEnabled = taskTitle != task.title && taskTitle.isNotEmpty()
+				confirmEnabled = taskTitle != task.title && taskTitle.isNotEmpty(),
 			)
 		}
 
@@ -111,7 +112,7 @@ fun TableTaskContent(
 					top = 8.dp,
 					bottom = 8.dp,
 					start = 4.dp,
-					end = 2.dp
+					end = 2.dp,
 				),
 				text = {
 					Text(

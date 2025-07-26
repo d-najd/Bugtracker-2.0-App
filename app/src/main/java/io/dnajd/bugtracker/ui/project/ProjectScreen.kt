@@ -61,7 +61,7 @@ class ProjectScreen : ScreenFixed() {
 			is ProjectDialog.CreateProject -> {
 				CreateProjectDialog(
 					onDismissRequest = screenModel::dismissDialog,
-					onCreateProjectClicked = screenModel::createProject
+					onCreateProjectClicked = screenModel::createProject,
 				)
 			}
 		}

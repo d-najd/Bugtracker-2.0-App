@@ -36,7 +36,8 @@ fun ProjectTableScreenContent(
 				onCreateTableClicked = onCreateTableClicked,
 				onSwitchScreenTabClicked = onSwitchScreenTabClicked,
 			)
-		}) { contentPadding ->
+		},
+	) { contentPadding ->
 		BackHandler { onBackClicked() }
 
 		if (state is ProjectTableScreenState.Loading) {

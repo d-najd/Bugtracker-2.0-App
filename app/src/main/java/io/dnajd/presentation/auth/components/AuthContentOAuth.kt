@@ -47,18 +47,18 @@ fun AuthContentOAuth(
 		modifier = Modifier
 			.padding(contentPadding)
 			.padding(top = 58.dp)
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	) {
 		Text(
 			text = stringResource(R.string.info_log_in_to_app),
 			fontSize = 24.sp,
-			fontWeight = FontWeight.ExtraBold
+			fontWeight = FontWeight.ExtraBold,
 		)
 
 		Text(
 			modifier = Modifier.padding(top = 36.dp),
 			text = stringResource(R.string.field_username),
-			fontWeight = FontWeight.SemiBold
+			fontWeight = FontWeight.SemiBold,
 		)
 
 		var username by remember { mutableStateOf("") }
@@ -79,8 +79,8 @@ fun AuthContentOAuth(
 		LaunchedEffect(Unit) {
 			GoogleAuthProvider.create(
 				credentials = GoogleAuthCredentials(
-					serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com"
-				)
+					serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com",
+				),
 			)
 			authReady = true
 		}
@@ -99,9 +99,10 @@ fun AuthContentOAuth(
 
 					onSignUpClicked(
 						googleUser.idToken,
-						CreateUser(username)
+						CreateUser(username),
 					)
-				}) {
+				},
+			) {
 				GoogleSignInButton(
 					modifier = Modifier.fillMaxSize(),
 					mode = GoogleButtonMode.Dark,
@@ -117,7 +118,8 @@ fun AuthContentOAuth(
 						}
 
 						this.onClick()
-					})
+					},
+				)
 			}
 		}
 
@@ -125,7 +127,7 @@ fun AuthContentOAuth(
 			modifier = Modifier
 				.padding(top = 36.dp)
 				.fillMaxWidth(),
-			contentAlignment = Alignment.Center
+			contentAlignment = Alignment.Center,
 		) {
 			HorizontalDivider(
 				modifier = Modifier,
@@ -152,7 +154,8 @@ fun AuthContentOAuth(
 					}
 
 					onSignInClicked(googleUser.idToken)
-				}) {
+				},
+			) {
 				GoogleSignInButton(
 					modifier = Modifier.fillMaxSize(),
 					mode = GoogleButtonMode.Light,
@@ -163,7 +166,8 @@ fun AuthContentOAuth(
 						}
 
 						this.onClick()
-					})
+					},
+				)
 			}
 		}
 	}

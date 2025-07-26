@@ -104,7 +104,7 @@ private fun ProjectTableCardContentLocal(
 			.height(65.dp)
 			.padding(
 				vertical = 2.dp,
-				horizontal = 8.dp
+				horizontal = 8.dp,
 			),
 	) {
 		var cardModifier = Modifier
@@ -119,7 +119,7 @@ private fun ProjectTableCardContentLocal(
 			} else {
 				Log.d(
 					"Debug",
-					"Task not clickable"
+					"Task not clickable",
 				)
 			}
 		}
@@ -131,7 +131,7 @@ private fun ProjectTableCardContentLocal(
 					modifier = Modifier.padding(
 						top = 8.dp,
 						start = 12.dp,
-						end = 12.dp
+						end = 12.dp,
 					),
 					text = value,
 					maxLines = 2,
@@ -144,7 +144,7 @@ private fun ProjectTableCardContentLocal(
 						.padding(
 							top = 8.dp,
 							start = 12.dp,
-							end = 12.dp
+							end = 12.dp,
 						)
 						.focusRequester(focusRequester)
 						.onFocusChanged {
@@ -161,7 +161,7 @@ private fun ProjectTableCardContentLocal(
 					maxLines = 1,
 					textStyle = TextStyle(
 						fontSize = 14.sp,
-						color = MaterialTheme.colorScheme.onSurface
+						color = MaterialTheme.colorScheme.onSurface,
 					),
 					keyboardActions = keyboardActions,
 					keyboardOptions = keyboardOptions,

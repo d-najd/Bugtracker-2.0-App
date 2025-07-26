@@ -41,7 +41,7 @@ sealed class AndroidPreference<T>(
 			read(
 				preferences,
 				key,
-				defaultValue
+				defaultValue,
 			)
 		} catch (e: ClassCastException) {
 			logcat { "Invalid value for $key; deleting" }
@@ -54,8 +54,8 @@ sealed class AndroidPreference<T>(
 		preferences.edit(
 			action = write(
 				key,
-				value
-			)
+				value,
+			),
 		)
 	}
 
@@ -85,7 +85,7 @@ sealed class AndroidPreference<T>(
 		return changes().stateIn(
 			scope,
 			SharingStarted.Eagerly,
-			get()
+			get(),
 		)
 	}
 
@@ -98,7 +98,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -107,7 +107,7 @@ sealed class AndroidPreference<T>(
 		): String {
 			return preferences.getString(
 				key,
-				defaultValue
+				defaultValue,
 			) ?: defaultValue
 		}
 
@@ -117,7 +117,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putString(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -131,7 +131,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -140,7 +140,7 @@ sealed class AndroidPreference<T>(
 		): Long {
 			return preferences.getLong(
 				key,
-				defaultValue
+				defaultValue,
 			)
 		}
 
@@ -150,7 +150,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putLong(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -164,7 +164,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -173,7 +173,7 @@ sealed class AndroidPreference<T>(
 		): Int {
 			return preferences.getInt(
 				key,
-				defaultValue
+				defaultValue,
 			)
 		}
 
@@ -183,7 +183,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putInt(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -197,7 +197,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -206,7 +206,7 @@ sealed class AndroidPreference<T>(
 		): Float {
 			return preferences.getFloat(
 				key,
-				defaultValue
+				defaultValue,
 			)
 		}
 
@@ -216,7 +216,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putFloat(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -230,7 +230,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -239,7 +239,7 @@ sealed class AndroidPreference<T>(
 		): Boolean {
 			return preferences.getBoolean(
 				key,
-				defaultValue
+				defaultValue,
 			)
 		}
 
@@ -249,7 +249,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putBoolean(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -263,7 +263,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -272,7 +272,7 @@ sealed class AndroidPreference<T>(
 		): Set<String> {
 			return preferences.getStringSet(
 				key,
-				defaultValue
+				defaultValue,
 			) ?: defaultValue
 		}
 
@@ -282,7 +282,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putStringSet(
 				key,
-				value
+				value,
 			)
 		}
 	}
@@ -298,7 +298,7 @@ sealed class AndroidPreference<T>(
 		preferences,
 		keyFlow,
 		key,
-		defaultValue
+		defaultValue,
 	) {
 		override fun read(
 			preferences: SharedPreferences,
@@ -309,7 +309,7 @@ sealed class AndroidPreference<T>(
 				preferences
 					.getString(
 						key,
-						null
+						null,
 					)
 					?.let(deserializer) ?: defaultValue
 			} catch (e: Exception) {
@@ -323,7 +323,7 @@ sealed class AndroidPreference<T>(
 		): Editor.() -> Unit = {
 			putString(
 				key,
-				serializer(value)
+				serializer(value),
 			)
 		}
 	}

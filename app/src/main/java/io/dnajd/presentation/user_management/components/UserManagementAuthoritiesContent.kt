@@ -29,7 +29,7 @@ fun ProjectUserManagementAuthoritiesContent(
 	onInvertAuthorityClicked: (UserAuthority) -> Unit,
 ) {
 	Column(
-		modifier = modifier
+		modifier = modifier,
 	) {
 		val isSelfOwner = selfAuthorities.any { it.authority == UserAuthorityType.project_owner }
 		val isSelfManager =
@@ -63,8 +63,7 @@ fun ProjectUserManagementAuthoritiesContent(
 			// Don't allow managing of self
 			enabled = enabled && !isCurrentUserSelf
 
-			val checked =
-				authorities.any { it.authority == authorityType } || containsOwnerAuthority
+			val checked = authorities.any { it.authority == authorityType } || containsOwnerAuthority
 			val description = stringResource(authorityType.descriptionResId)
 			var localModifier = Modifier
 				.fillMaxWidth()
@@ -76,7 +75,7 @@ fun ProjectUserManagementAuthoritiesContent(
 							username = username,
 							projectId = state.projectId,
 							authority = authorityType,
-						)
+						),
 					)
 				}
 			}
@@ -88,13 +87,13 @@ fun ProjectUserManagementAuthoritiesContent(
 				BugtrackerIconPairField(
 					modifier = Modifier.padding(
 						horizontal = 8.dp,
-						vertical = 10.dp
+						vertical = 10.dp,
 					),
 					titleContent = {
 						Text(
 							modifier = Modifier.padding(
 								start = 2.dp,
-								bottom = 6.dp
+								bottom = 6.dp,
 							),
 							text = stringResource(authorityType.titleResId),
 							fontWeight = FontWeight.SemiBold,
@@ -111,7 +110,7 @@ fun ProjectUserManagementAuthoritiesContent(
 					textContent = {
 						Text(
 							modifier = Modifier.padding(start = 2.dp),
-							text = description
+							text = description,
 						)
 					},
 				)

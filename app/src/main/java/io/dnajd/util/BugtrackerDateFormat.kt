@@ -14,13 +14,13 @@ class BugtrackerDateFormat {
 		/** for displaying data */
 		fun defaultDateFormat(): SimpleDateFormat = SimpleDateFormat(
 			DEFAULT_APP_DATE_FORMAT,
-			Locale.getDefault()
+			Locale.getDefault(),
 		)
 
 		/** for parsing data from the api */
 		fun defaultRequestDateFormat(): SimpleDateFormat = SimpleDateFormat(
 			DEFAULT_API_DATE_FORMAT,
-			Locale.getDefault()
+			Locale.getDefault(),
 		)
 
 		/**
@@ -43,7 +43,7 @@ class BugtrackerDateFormat {
 					val hours = timeSeconds / 3600f
 					"${hours.conditionalIncludeDecimals(condition = hours < 10)} " + pluralStringResource(
 						id = R.plurals.hours,
-						count = hours.roundToInt()
+						count = hours.roundToInt(),
 					)
 				}
 
@@ -51,14 +51,14 @@ class BugtrackerDateFormat {
 					val minutes = timeSeconds / 60f
 					"${minutes.conditionalIncludeDecimals(condition = minutes < 10)} " + pluralStringResource(
 						id = R.plurals.minutes,
-						count = (minutes).roundToInt()
+						count = (minutes).roundToInt(),
 					)
 				}
 
 				in 0..59 -> {
 					"$timeSeconds " + pluralStringResource(
 						id = R.plurals.seconds,
-						count = timeSeconds.toInt()
+						count = timeSeconds.toInt(),
 					)
 				}
 
@@ -77,7 +77,7 @@ class BugtrackerDateFormat {
 					"${days.roundToInt()} ${
 						pluralStringResource(
 							id = R.plurals.days,
-							count = days.roundToInt()
+							count = days.roundToInt(),
 						)
 					}"
 				}
@@ -87,7 +87,7 @@ class BugtrackerDateFormat {
 					"${hours.roundToInt()} ${
 						pluralStringResource(
 							id = R.plurals.hours,
-							count = hours.roundToInt()
+							count = hours.roundToInt(),
 						)
 					}"
 				}
@@ -97,7 +97,7 @@ class BugtrackerDateFormat {
 					"${minutes.roundToInt()} ${
 						pluralStringResource(
 							id = R.plurals.minutes,
-							count = minutes.roundToInt()
+							count = minutes.roundToInt(),
 						)
 					}"
 				}
@@ -106,7 +106,7 @@ class BugtrackerDateFormat {
 					"$timeSeconds ${
 						pluralStringResource(
 							id = R.plurals.seconds,
-							count = timeSeconds.toInt()
+							count = timeSeconds.toInt(),
 						)
 					}"
 				}

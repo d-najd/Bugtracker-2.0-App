@@ -17,11 +17,9 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 		includeTasks: Boolean,
 	): Result<ProjectTable> = Result.success(mockData(includeTasks).data[0])
 
-	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> =
-		Result.success(table)
+	override suspend fun createTable(table: ProjectTable): Result<ProjectTable> = Result.success(table)
 
-	override suspend fun updateTable(table: ProjectTable): Result<ProjectTable> =
-		Result.success(table)
+	override suspend fun updateTable(table: ProjectTable): Result<ProjectTable> = Result.success(table)
 
 	override suspend fun swapTablePositions(
 		fId: Long,
@@ -69,7 +67,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 						labels = emptyList(),
 						childTasks = listOf(
 							TableTask(id = 3),
-						)
+						),
 					),
 					TableTask(
 						id = 3,
@@ -91,7 +89,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 						labels = emptyList(),
 						childTasks = emptyList(),
 					),
-				) else emptyList()
+				) else emptyList(),
 			),
 			ProjectTable(
 				id = 2,
@@ -116,7 +114,7 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 				position = 2,
 				tasks = emptyList(),
 			),
-		)
+		),
 	)
 }
 

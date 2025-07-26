@@ -8,7 +8,7 @@ fun Double.includeDecimals(
 ): Double = toBigDecimal()
 	.setScale(
 		decimals,
-		roundingMode
+		roundingMode,
 	)
 	.toDouble()
 
@@ -18,7 +18,7 @@ fun Float.includeDecimals(
 ): Float = toBigDecimal()
 	.setScale(
 		decimals,
-		roundingMode
+		roundingMode,
 	)
 	.toFloat()
 
@@ -31,12 +31,12 @@ fun Float.conditionalIncludeDecimals(
 ): Float = when (condition) {
 	true -> this.includeDecimals(
 		ifTrue,
-		roundingModeTrue
+		roundingModeTrue,
 	)
 
 	false -> this.includeDecimals(
 		ifFalse,
-		roundModeFalse
+		roundModeFalse,
 	)
 }
 
@@ -49,11 +49,11 @@ fun Double.conditionalIncludeDecimals(
 ): Double = when (condition) {
 	true -> this.includeDecimals(
 		ifTrue,
-		roundingModeTrue
+		roundingModeTrue,
 	)
 
 	false -> this.includeDecimals(
 		ifFalse,
-		roundModeFalse
+		roundModeFalse,
 	)
 }

@@ -25,7 +25,8 @@ fun TableTaskDescriptionField(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(top = 8.dp)
-			.clickable { onAlterDescriptionSheetClicked() }) {
+			.clickable { onAlterDescriptionSheetClicked() },
+	) {
 		Text(
 			modifier = Modifier.padding(top = 20.dp),
 			text = stringResource(R.string.field_description),

@@ -7,7 +7,7 @@ import java.util.Date
 
 object ProjectApiServiceMock : ProjectApiService {
 	override suspend fun getAll(): Result<ProjectListResponse> = Result.success(
-		mockData()
+		mockData(),
 	)
 
 	override suspend fun getById(id: Long): Result<Project> = Result.success(mockData().data[0])
@@ -25,16 +25,16 @@ object ProjectApiServiceMock : ProjectApiService {
 				"user1",
 				"Example Title",
 				null,
-				Date()
+				Date(),
 			),
 			Project(
 				2,
 				"user2",
 				"Title 2",
 				"Example Description",
-				Date()
-			)
-		)
+				Date(),
+			),
+		),
 	)
 }
 

@@ -62,18 +62,20 @@ object TableTaskRepository :
 			entry.key.copy(
 				childTasks = entry.key.childTasks.map { childTask ->
 					TableTask(id = childTask.id)
-				})
+				},
+			)
 		}
 
 		val lastFetches = state.value.lastFetchesByTableIds.toMutableMap()
 		lastFetches.putAll(
 			lastFetchTablesUpdated
 				.toSet()
-				.associateWith { Date() })
+				.associateWith { Date() },
+		)
 
 		mutableState.value = TableTaskRepositoryState(
 			data = dataWithoutSubtaskData,
-			lastFetchesByTableIds = lastFetches
+			lastFetchesByTableIds = lastFetches,
 		)
 	}
 
@@ -82,7 +84,7 @@ object TableTaskRepository :
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
-			tableId
+			tableId,
 		) {
 			stateCollected.data.keys
 				.filter { it.tableId == tableId }
@@ -95,7 +97,7 @@ object TableTaskRepository :
 		val stateCollected by state.collectAsState()
 		return remember(
 			stateCollected,
-			id
+			id,
 		) {
 			stateCollected.data.keys.firstOrNull { it.id == id }
 		}

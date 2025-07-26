@@ -42,7 +42,7 @@ fun Mutex.launchUINoQueue(
 	block: suspend CoroutineScope.() -> Unit,
 ): Job {
 	return scope.launchUI {
-		when (val result = withLockNoQueue { block() }) {
+		when (withLockNoQueue { block() }) {
 			is ExecutionResult.Executed -> {}
 			ExecutionResult.Skipped -> onSkip()
 		}
@@ -64,7 +64,7 @@ fun Mutex.launchIONoQueue(
 	block: suspend CoroutineScope.() -> Unit,
 ): Job {
 	return scope.launchIO {
-		when (val result = withLockNoQueue { block() }) {
+		when (withLockNoQueue { block() }) {
 			is ExecutionResult.Executed -> {}
 			ExecutionResult.Skipped -> onSkip()
 		}

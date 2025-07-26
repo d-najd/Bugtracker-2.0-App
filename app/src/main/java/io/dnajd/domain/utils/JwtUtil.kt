@@ -1,6 +1,8 @@
 package io.dnajd.domain.utils
 
 import com.auth0.android.jwt.JWT
+import io.dnajd.domain.utils.JwtUtil.SECONDS_THRESHOLD_REFRESH_TOKEN
+import io.dnajd.domain.utils.JwtUtil.refreshTokenLongEnough
 
 /**
  * Tokens are refreshed before they exceed certain threshold

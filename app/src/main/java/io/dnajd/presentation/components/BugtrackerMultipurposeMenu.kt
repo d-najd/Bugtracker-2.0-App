@@ -57,7 +57,7 @@ fun BugtrackerMultipurposeMenu(
 	text: @Composable RowScope.() -> Unit,
 ) {
 	Column(
-		modifier = modifier
+		modifier = modifier,
 	) {
 		if (title != null) {
 			Text(
@@ -77,12 +77,12 @@ fun BugtrackerMultipurposeMenu(
 				if (includeDropdownArrow) {
 					Column(
 						verticalArrangement = Arrangement.Center,
-						horizontalAlignment = Alignment.End
+						horizontalAlignment = Alignment.End,
 					) {
 						Icon(
 							modifier = Modifier.align(Alignment.End),
 							imageVector = Icons.Default.ArrowDropDown,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				}
@@ -91,7 +91,7 @@ fun BugtrackerMultipurposeMenu(
 			if (includeDivider) {
 				HorizontalDivider(
 					thickness = dividerThickness,
-					color = dividerColor
+					color = dividerColor,
 				)
 			}
 		}

@@ -54,7 +54,7 @@ fun TableTaskAlterDescriptionSheet(
 				title = {
 					Text(
 						text = stringResource(R.string.field_edit_description),
-						fontSize = 18.sp
+						fontSize = 18.sp,
 					)
 				},
 				navigationIcon = {
@@ -62,7 +62,7 @@ fun TableTaskAlterDescriptionSheet(
 						Icon(
 							modifier = Modifier.padding(horizontal = 8.dp),
 							imageVector = Icons.Rounded.Close,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				},
@@ -70,25 +70,28 @@ fun TableTaskAlterDescriptionSheet(
 					IconButton(onClick = { /*TODO*/ }) {
 						Icon(
 							imageVector = Icons.AutoMirrored.Rounded.Undo,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 					IconButton(onClick = { /*TODO*/ }) {
 						Icon(
 							imageVector = Icons.AutoMirrored.Rounded.Redo,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 					TextButton(
 						enabled = mutableDescription != description,
-						onClick = { onDescriptionChange(mutableDescription) }) {
+						onClick = { onDescriptionChange(mutableDescription) },
+					) {
 						Text(
 							fontSize = 15.sp,
-							text = stringResource(R.string.action_save)
+							text = stringResource(R.string.action_save),
 						)
 					}
-				})
-		}) { paddingValues ->
+				},
+			)
+		},
+	) { paddingValues ->
 		BackHandler { onBackClicked() }
 		val focusRequester = remember { FocusRequester() }
 
@@ -109,11 +112,12 @@ fun TableTaskAlterDescriptionSheet(
 			value = mutableDescription,
 			onValueChange = { mutableDescription = it },
 			textStyle = TextStyle(
-				fontSize = (14.5).sp
+				fontSize = (14.5).sp,
 			),
 			placeholder = {
 				Text(text = stringResource(R.string.action_tap_to_add_description))
-			})
+			},
+		)
 
 		LaunchedEffect(Unit) {
 			focusRequester.requestFocus()

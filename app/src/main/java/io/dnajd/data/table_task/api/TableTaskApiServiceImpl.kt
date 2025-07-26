@@ -27,19 +27,19 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		includeChildTasks: Boolean,
 	): Result<TableTaskListResponse> = factory.getByTableId(
 		tableId,
-		includeChildTasks
+		includeChildTasks,
 	)
 
 	override suspend fun getById(id: Long): Result<TableTask> = factory.getById(id)
 
 	override suspend fun createTask(task: TableTask): Result<TableTask> = factory.createTask(
 		task.tableId,
-		task
+		task,
 	)
 
 	override suspend fun updateTask(task: TableTask): Result<TableTask> = factory.updateTask(
 		task.id,
-		task
+		task,
 	)
 
 	override suspend fun swapTaskPositions(
@@ -47,7 +47,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		sId: Long,
 	): Result<Unit> = factory.swapTaskPositions(
 		fId,
-		sId
+		sId,
 	)
 
 	override suspend fun movePositionTo(
@@ -55,7 +55,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		sId: Long,
 	): Result<Unit> = factory.moveTaskPositions(
 		fId,
-		sId
+		sId,
 	)
 
 	override suspend fun moveToTable(
@@ -63,7 +63,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		tableId: Long,
 	): Result<Unit> = factory.moveToTable(
 		id,
-		tableId
+		tableId,
 	)
 }
 

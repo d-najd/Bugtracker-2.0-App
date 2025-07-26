@@ -56,7 +56,7 @@ fun BugtrackerIconPairField(
 
 	Column(
 		modifier = modifier,
-		verticalArrangement = Arrangement.Center
+		verticalArrangement = Arrangement.Center,
 	) {
 		if (title != null) {
 			Text(
@@ -72,8 +72,7 @@ fun BugtrackerIconPairField(
 		) {
 			iconContent?.let { iconContent() }
 
-			val textPadding =
-				if ((textContent != null || text != null) && iconContent != null) 8.dp else 0.dp
+			val textPadding = if ((textContent != null || text != null) && iconContent != null) 8.dp else 0.dp
 			Column(
 				modifier = Modifier.padding(start = textPadding),
 				verticalArrangement = Arrangement.Center,
@@ -106,7 +105,7 @@ fun BugtrackerIconPairFieldPreview() {
 					Icon(
 						modifier = Modifier.size(24.dp),
 						imageVector = Icons.Default.AccountCircle,
-						contentDescription = ""
+						contentDescription = "",
 					)
 				},
 			)
@@ -117,7 +116,7 @@ fun BugtrackerIconPairFieldPreview() {
 					Icon(
 						imageVector = Icons.Default.TaskAlt,
 						tint = MaterialTheme.colorScheme.primary,
-						contentDescription = ""
+						contentDescription = "",
 					)
 				},
 				textContent = {
@@ -140,7 +139,8 @@ fun BugtrackerIconPairFieldPreview() {
 							color = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 						)
 					}
-				})
+				},
+			)
 		}
 	}
 }

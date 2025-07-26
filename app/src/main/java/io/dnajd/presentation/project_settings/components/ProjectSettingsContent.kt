@@ -38,10 +38,12 @@ fun ProjectSettingsContent(
 	) {
 		ProjectSettingsItem(
 			title = stringResource(R.string.action_details),
-			onClick = { onProjectDetailsClicked() })
+			onClick = { onProjectDetailsClicked() },
+		)
 		ProjectSettingsItem(
 			title = stringResource(R.string.action_user_management),
-			onClick = { onUserManagementClicked() })
+			onClick = { onUserManagementClicked() },
+		)
 	}
 }
 
@@ -53,7 +55,8 @@ fun ProjectSettingsItem(
 	Column(
 		modifier = Modifier
 			.clickable { onClick() }
-			.fillMaxWidth()) {
+			.fillMaxWidth(),
+	) {
 		Row(
 			modifier = Modifier
 				.padding(vertical = 16.dp)

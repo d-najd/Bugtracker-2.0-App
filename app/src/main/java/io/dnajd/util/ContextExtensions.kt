@@ -47,7 +47,7 @@ fun Context.toast(
 	return toast(
 		getString(resource),
 		duration,
-		block
+		block,
 	)
 }
 
@@ -66,7 +66,7 @@ fun Context.toast(
 		.makeText(
 			applicationContext,
 			text.orEmpty(),
-			duration
+			duration,
 		)
 		.also {
 			block(it)

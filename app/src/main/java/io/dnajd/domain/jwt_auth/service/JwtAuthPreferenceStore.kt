@@ -26,7 +26,7 @@ interface JwtAuthPreferenceStore {
 			JwtTokenHolder(
 				access = accessTokenResult.getOrNull(),
 				refresh = refreshTokenResult.getOrNull(),
-			)
+			),
 		)
 	}
 

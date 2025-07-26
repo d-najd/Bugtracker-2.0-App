@@ -16,9 +16,9 @@ object TableTaskApiServiceMock : TableTaskApiService {
 		TableTaskListResponse(
 			listOf(
 				mockData(),
-				mockData()
-			)
-		)
+				mockData(),
+			),
+		),
 	)
 
 	override suspend fun getById(id: Long): Result<TableTask> = Result.success(mockData())
@@ -52,16 +52,16 @@ object TableTaskApiServiceMock : TableTaskApiService {
 		labels = listOf(
 			ProjectLabel(
 				1L,
-				"Label 1"
+				"Label 1",
 			),
 			ProjectLabel(
 				2L,
-				"Label 2"
+				"Label 2",
 			),
 			ProjectLabel(
 				3L,
-				"Label 3"
-			)
+				"Label 3",
+			),
 		),
 		childTasks = listOf(
 			TableTask(
@@ -73,7 +73,7 @@ object TableTaskApiServiceMock : TableTaskApiService {
 				id = 4L,
 				title = "Child Task 2",
 				tableId = 2L,
-			)
+			),
 		),
 		reporter = "user1",
 		description = "This is an example description",
@@ -87,7 +87,7 @@ object TableTaskApiServiceMock : TableTaskApiService {
 			TableTaskAssignee(
 				assignedUsername = "user1",
 				assignerUsername = "user1",
-			)
+			),
 		),
 		comments = listOf(
 			TableTaskComment(
@@ -110,7 +110,7 @@ object TableTaskApiServiceMock : TableTaskApiService {
 				message = "This is a edited comment by another user",
 				createdAt = Date(Date().time - 1800000),
 				editedAt = Date(Date().time - 900000),
-			)
-		)
+			),
+		),
 	)
 }

@@ -67,7 +67,7 @@ import uy.kohesive.injekt.api.get
 
 		awaitAll(
 			projectResult,
-			tablesResult
+			tablesResult,
 		)
 
 		if (projectResult.isCancelled || tablesResult.isCancelled) {
@@ -84,7 +84,7 @@ import uy.kohesive.injekt.api.get
 		mutableState.update {
 			ProjectTableScreenState.Success(
 				events = events,
-				projectId = projectId
+				projectId = projectId,
 			)
 		}
 	}
@@ -131,7 +131,7 @@ import uy.kohesive.injekt.api.get
 
 			mutableState.update {
 				successState.copy(
-					taskBeingAddedInTableId = null
+					taskBeingAddedInTableId = null,
 				)
 			}
 		}
@@ -178,7 +178,7 @@ import uy.kohesive.injekt.api.get
 			val persistedTasks = projectTableApiService
 				.swapTablePositions(
 					fId,
-					sId
+					sId,
 				)
 				.onFailureWithStackTrace {
 					_events.emit(ProjectTableEvent.FailedToSwapTablePositions)
@@ -187,7 +187,7 @@ import uy.kohesive.injekt.api.get
 				.getOrThrow().data
 
 			val combinedData = ProjectTableRepository.combineForUpdate(
-				*persistedTasks.toTypedArray()
+				*persistedTasks.toTypedArray(),
 			)
 			ProjectTableRepository.update(combinedData)
 
@@ -225,7 +225,7 @@ import uy.kohesive.injekt.api.get
 			val persistedTasks = tableTaskApiService
 				.movePositionTo(
 					fTask.id,
-					sTask.id
+					sTask.id,
 				)
 				.onFailureWithStackTrace {
 					_events.emit(ProjectTableEvent.FailedToMoveTableTasks)
@@ -254,7 +254,7 @@ import uy.kohesive.injekt.api.get
 				.filterKeys { it.id != tableId }
 
 			ProjectTableRepository.update(
-				tablesWithRemovedTable
+				tablesWithRemovedTable,
 			)
 		}
 	}
@@ -291,19 +291,15 @@ sealed class ProjectTableEvent {
 
 	data object CreatedTable : ProjectTableEvent()
 
-	data object FailedToCreateProjectTable :
-		LocalizedMessage(R.string.error_failed_to_create_project_table)
+	data object FailedToCreateProjectTable : LocalizedMessage(R.string.error_failed_to_create_project_table)
 
-	data object FailedToCreateTableTask :
-		LocalizedMessage(R.string.error_failed_to_create_table_task)
+	data object FailedToCreateTableTask : LocalizedMessage(R.string.error_failed_to_create_table_task)
 
 	data object RenamedTable : ProjectTableEvent()
 
-	data object FailedToRenameProjectTable :
-		LocalizedMessage(R.string.error_failed_to_rename_project_table)
+	data object FailedToRenameProjectTable : LocalizedMessage(R.string.error_failed_to_rename_project_table)
 
-	data object FailedToSwapTablePositions :
-		LocalizedMessage(R.string.error_failed_to_swap_table_positions)
+	data object FailedToSwapTablePositions : LocalizedMessage(R.string.error_failed_to_swap_table_positions)
 
 	data object FailedToMoveTableTasks : LocalizedMessage(R.string.error_failed_to_move_table_tasks)
 
@@ -334,8 +330,7 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 		fun project(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
 
 		@Composable
-		fun tables(): Set<ProjectTable> =
-			ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
+		fun tables(): Set<ProjectTable> = ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
 
 		@Composable
 		fun tasksByTableId(tableId: Long): Set<TableTask> =

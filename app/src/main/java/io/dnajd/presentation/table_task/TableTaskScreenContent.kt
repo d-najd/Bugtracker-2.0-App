@@ -50,7 +50,8 @@ fun TableTaskScreenContent(
 			sheetState = sheetState,
 			onDismissRequest = {
 				onBottomSheetDismissed()
-			}) {
+			},
+		) {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()

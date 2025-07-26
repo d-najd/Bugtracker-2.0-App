@@ -52,7 +52,7 @@ class UserManagementScreenModel(
 				UserManagementScreenState.Success(
 					projectId = projectId,
 					authorities = userAuthorities,
-					selfUsername = selfUsername
+					selfUsername = selfUsername,
 				)
 			}
 		}
@@ -102,7 +102,7 @@ class UserManagementScreenModel(
 		userAuthorityApiService
 			.modifyAuthority(
 				userAuthority,
-				true
+				true,
 			)
 			.onFailureWithStackTrace {
 				_events.emit(UserManagementEvent.FailedToCreateUserAuthority)
@@ -126,7 +126,7 @@ class UserManagementScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			deleteAuthorityInternal(
 				userAuthority,
-				agreed
+				agreed,
 			)
 		}
 	}
@@ -146,7 +146,7 @@ class UserManagementScreenModel(
 		if (!agreed && (currentUserAuthorities.size <= 1 || userAuthority.authority == UserAuthorityType.project_view)) {
 			mutableState.update {
 				successState.copy(
-					dialog = UserManagementDialog.ConfirmLastAuthorityRemoval(userAuthority)
+					dialog = UserManagementDialog.ConfirmLastAuthorityRemoval(userAuthority),
 				)
 			}
 			return
@@ -186,22 +186,18 @@ class UserManagementScreenModel(
 sealed class UserManagementEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : UserManagementEvent()
 
-	data object FailedToModifyUserAuthority :
-		LocalizedMessage(R.string.error_failed_to_modify_user_authority)
+	data object FailedToModifyUserAuthority : LocalizedMessage(R.string.error_failed_to_modify_user_authority)
 
 	data object FailedToRetrieveUserAuthorities :
 		LocalizedMessage(R.string.error_failed_tor_retrieve_user_authorities)
 
-	data object FailedToCreateUserAuthority :
-		LocalizedMessage(R.string.error_failed_to_create_user_authority)
+	data object FailedToCreateUserAuthority : LocalizedMessage(R.string.error_failed_to_create_user_authority)
 
-	data object AuthorityAlreadyExists :
-		LocalizedMessage(R.string.error_user_authority_already_exists)
+	data object AuthorityAlreadyExists : LocalizedMessage(R.string.error_user_authority_already_exists)
 }
 
 sealed class UserManagementDialog {
-	data class ConfirmLastAuthorityRemoval(val userAuthority: UserAuthority) :
-		UserManagementDialog()
+	data class ConfirmLastAuthorityRemoval(val userAuthority: UserAuthority) : UserManagementDialog()
 
 	data object AddUserToProject : UserManagementDialog()
 }
@@ -224,7 +220,8 @@ sealed class UserManagementScreenState {
 						val mutableList = u?.toMutableList() ?: mutableListOf()
 						mutableList.add(authority)
 						return@BiFunction mutableList
-					})
+					},
+				)
 			}
 			return authorityMap.toSortedMap()
 		}

@@ -33,7 +33,7 @@ class ProjectSettingsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
 				.fetchOneIfStale(
-					projectId
+					projectId,
 				)
 				.onFailureWithStackTrace {
 					_events.emit(ProjectSettingsEvent.FailedToRetrieveProjectData)
@@ -48,14 +48,12 @@ class ProjectSettingsScreenModel(
 sealed class ProjectSettingsEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : ProjectSettingsEvent()
 
-	data object FailedToRetrieveProjectData :
-		LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
+	data object FailedToRetrieveProjectData : LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
 }
 
 sealed class ProjectSettingsScreenState(open val projectId: Long) {
 
-	@Immutable data class Loading(override val projectId: Long) :
-		ProjectSettingsScreenState(projectId)
+	@Immutable data class Loading(override val projectId: Long) : ProjectSettingsScreenState(projectId)
 
 	@Immutable data class Success(
 		override val projectId: Long,

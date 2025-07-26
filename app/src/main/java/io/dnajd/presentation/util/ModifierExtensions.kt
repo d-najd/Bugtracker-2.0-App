@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 
 @SuppressLint(
 	"ModifierFactoryUnreferencedReceiver",
-	"ComposableModifierFactory"
+	"ComposableModifierFactory",
 )
 @Composable
 fun Modifier.bottomBorder(
@@ -33,13 +33,14 @@ fun Modifier.bottomBorder(
 				color = color,
 				start = Offset(
 					x = 0f,
-					y = height
+					y = height,
 				),
 				end = Offset(
 					x = width,
-					y = height
+					y = height,
 				),
-				strokeWidth = strokeWidthPx
+				strokeWidth = strokeWidthPx,
 			)
 		}
-	})
+	},
+)

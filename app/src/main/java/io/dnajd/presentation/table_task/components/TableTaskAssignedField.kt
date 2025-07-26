@@ -58,11 +58,11 @@ fun TableTaskAssignedField(
 				Icon(
 					modifier = Modifier.padding(
 						start = 3.dp,
-						end = 4.dp
+						end = 4.dp,
 					),
 					tint = MaterialTheme.colorScheme.onSurface.copy(0.8f),
 					imageVector = Icons.Default.ArrowDropDown,
-					contentDescription = ""
+					contentDescription = "",
 				)
 			}
 		},
@@ -72,7 +72,7 @@ fun TableTaskAssignedField(
 					modifier = Modifier.padding(
 						top = 12.dp,
 						start = 16.dp,
-						end = 16.dp
+						end = 16.dp,
 					),
 					horizontalArrangement = Arrangement.Center,
 					verticalAlignment = Alignment.CenterVertically,
@@ -86,12 +86,12 @@ fun TableTaskAssignedField(
 						Icon(
 							modifier = Modifier.size(28.dp),
 							imageVector = Icons.Default.AccountCircle,
-							contentDescription = ""
+							contentDescription = "",
 						)
 
 						Text(
 							modifier = Modifier.padding(start = 8.dp),
-							text = assigned.assignerUsername
+							text = assigned.assignerUsername,
 						)
 					}
 
@@ -121,10 +121,11 @@ fun TableTaskAssignedField(
 						Icon(
 							modifier = Modifier.size(28.dp),
 							imageVector = Icons.Default.AccountCircle,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				}
 			}
-		})
+		},
+	)
 }

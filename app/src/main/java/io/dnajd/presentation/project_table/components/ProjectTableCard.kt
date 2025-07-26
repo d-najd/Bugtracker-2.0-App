@@ -66,7 +66,7 @@ fun ProjectTableCard(
 			.width(333.dp)
 			.padding(
 				start = 8.dp,
-				top = 4.dp
+				top = 4.dp,
 			),
 	) {
 		val tasks = state
@@ -81,7 +81,7 @@ fun ProjectTableCard(
 					.apply {
 						add(
 							to.index,
-							removeAt(from.index)
+							removeAt(from.index),
 						)
 					}
 			},
@@ -128,14 +128,15 @@ fun ProjectTableCard(
 			modifier = Modifier
 				.fillMaxWidth()
 				.reorderable(reorderableState)
-				.heightIn(max = 2000.dp)
+				.heightIn(max = 2000.dp),
 		) {
 			items(
 				reorderableList,
-				{ task -> task.id }) { task ->
+				{ task -> task.id },
+			) { task ->
 				ReorderableItem(
 					reorderableState = reorderableState,
-					key = task.id
+					key = task.id,
 				) { isDragging ->
 					ProjectTableCardContent(
 						value = task.title,
@@ -155,7 +156,7 @@ fun ProjectTableCard(
 					top = 8.dp,
 					bottom = 8.dp,
 					start = 8.dp,
-					end = 8.dp
+					end = 8.dp,
 				)
 				.fillMaxWidth(),
 			state = state,
@@ -182,7 +183,7 @@ private fun ProjectTableCardTop(
 
 	Row(
 		modifier = modifier,
-		verticalAlignment = Alignment.CenterVertically
+		verticalAlignment = Alignment.CenterVertically,
 	) {
 		Text(
 			modifier = Modifier.padding(start = 8.dp),
@@ -203,7 +204,8 @@ private fun ProjectTableCardTop(
 			IconButton(
 				onClick = {
 					onSwitchDropdownMenuClicked(table.id)
-				}) {
+				},
+			) {
 				Icon(
 					imageVector = Icons.Rounded.MoreVert,
 					contentDescription = "",
@@ -238,11 +240,12 @@ private fun ProjectTableDropdownMenu(
 
 	Column(
 		horizontalAlignment = Alignment.End,
-		modifier = Modifier.fillMaxWidth()
+		modifier = Modifier.fillMaxWidth(),
 	) {
 		DropdownMenu(
 			expanded = table.id == state.dropdownOpenedInTableId,
-			onDismissRequest = { onSwitchDropdownMenuClicked(null) }) {
+			onDismissRequest = { onSwitchDropdownMenuClicked(null) },
+		) {
 			DropdownMenuItem(
 				text = {
 					Text(text = stringResource(R.string.action_rename_column))
@@ -250,10 +253,11 @@ private fun ProjectTableDropdownMenu(
 				onClick = {
 					onTableRename(
 						table.id,
-						table.title
+						table.title,
 					)
 					onSwitchDropdownMenuClicked(null)
-				})
+				},
+			)
 			if (index != 0) {
 				DropdownMenuItem(
 					text = {
@@ -262,10 +266,11 @@ private fun ProjectTableDropdownMenu(
 					onClick = {
 						onSwapTablePositionsClicked(
 							table.id,
-							tables.find { it.position == table.position - 1 }!!.id
+							tables.find { it.position == table.position - 1 }!!.id,
 						)
 						onSwitchDropdownMenuClicked(null)
-					})
+					},
+				)
 			}
 			if (index + 1 in tables.indices) {
 				DropdownMenuItem(
@@ -275,10 +280,11 @@ private fun ProjectTableDropdownMenu(
 					onClick = {
 						onSwapTablePositionsClicked(
 							table.id,
-							tables.find { it.position == table.position + 1 }!!.id
+							tables.find { it.position == table.position + 1 }!!.id,
 						)
 						onSwitchDropdownMenuClicked(null)
-					})
+					},
+				)
 			}
 			DropdownMenuItem(
 				text = {
@@ -287,7 +293,8 @@ private fun ProjectTableDropdownMenu(
 				onClick = {
 					onDeleteTableClicked(table.id)
 					onSwitchDropdownMenuClicked(null)
-				})
+				},
+			)
 		}
 	}
 }
@@ -314,14 +321,16 @@ private fun ProjectTableCardBottom(
 							title = title,
 							tableId = table.id,
 							reporter = "user1",
-						)
+						),
 					)
-				}),
+				},
+			),
 			isKeyboardEnabled = {
 				if (!it) {
 					onCreateTableTaskMenuClicked(null)
 				}
-			})
+			},
+		)
 
 		Box(modifier = Modifier.height(4.dp))
 	} else if (state.taskBeingAddedInTableId == null) {

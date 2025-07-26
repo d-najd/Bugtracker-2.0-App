@@ -35,7 +35,7 @@ fun ProjectDetailsScreenContent(
 						Icon(
 							modifier = Modifier.padding(horizontal = 8.dp),
 							imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-							contentDescription = ""
+							contentDescription = "",
 						)
 					}
 				},
@@ -45,7 +45,8 @@ fun ProjectDetailsScreenContent(
 					)
 				},
 			)
-		}) { contentPadding ->
+		},
+	) { contentPadding ->
 		BackHandler { onBackClicked() }
 
 		ProjectDetailsContent(
