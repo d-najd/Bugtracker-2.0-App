@@ -31,36 +31,30 @@ object ProjectTableRepository :
 		projectId: Long,
 		forceFetch: Boolean = false,
 		fetchTasks: Boolean = false,
-	): Result<Unit> {
+	): Result<Set<ProjectTable>> {
 		if (!forceFetch && lastFetchedByProjectIds().containsKey(projectId)) {
-			return Result.success(Unit)
+			return Result.success(dataKeysByProjectId(projectId))
 		}
 
-		val result = api.getAllByProjectId(
-			projectId,
-			fetchTasks,
-		)
-		val resultMapped = result.map { }
-		if (result.isFailure) {
-			return resultMapped
-		}
+		val retrievedData = api
+			.getAllByProjectId(
+				projectId,
+				fetchTasks,
+			)
+			.onFailure {
+				return Result.failure(it)
+			}
+			.getOrThrow().data
 
-		val newData = result.getOrThrow()
-
-		val combinedData = combineForUpdate(*newData.data.toTypedArray())
 		update(
-			combinedData,
+			combineForUpdate(*retrievedData.toTypedArray()),
 			projectId,
 		)
 
-		if (!fetchTasks) {
-			return resultMapped
-		}
-
-		val newTasks = newData.data.flatMap { table -> table.tasks!! }
+		val newTasks = retrievedData.flatMap { table -> table.tasks!! }
 		val combinedTasks = TableTaskRepository.combineForUpdate(*newTasks.toTypedArray())
 
-		val tableIds = newData.data
+		val tableIds = retrievedData
 			.map { table -> table.id }
 			.toLongArray()
 
@@ -69,32 +63,42 @@ object ProjectTableRepository :
 			*tableIds,
 		)
 
-		return resultMapped
+		return Result.success(retrievedData.toSet())
 	}
 
 	suspend fun fetchByIdIfStale(
 		id: Long,
 		forceFetch: Boolean = false,
 		fetchTasks: Boolean = true,
-	): Result<Unit> {
-		if (!forceFetch && data().any { it.key.id == id }) {
-			return Result.success(Unit)
+	): Result<ProjectTable> {
+		val table = dataKeyById(id)
+		if (!forceFetch && table != null) {
+			return Result.success(table)
 		}
 
-		val result = api.getById(
-			id,
-			fetchTasks,
+		val retrievedData = api
+			.getById(
+				id,
+				fetchTasks,
+			)
+			.onFailure {
+				return Result.failure(it)
+			}
+			.getOrThrow()
+
+		update(
+			combineForUpdate(retrievedData),
 		)
-		val resultMapped = result.map { }
-		if (result.isFailure) {
-			return resultMapped
-		}
 
-		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(newData)
-		update(combinedData)
+		val newTasks = retrievedData.tasks!!
+		val combinedTasks = TableTaskRepository.combineForUpdate(*newTasks.toTypedArray())
 
-		return resultMapped
+		TableTaskRepository.update(
+			combinedTasks,
+			retrievedData.id,
+		)
+
+		return Result.success(retrievedData)
 	}
 
 	override fun defaultCacheValue(): Date {
@@ -151,5 +155,11 @@ object ProjectTableRepository :
 
 	fun dataKeyById(id: Long): ProjectTable? {
 		return state.value.data.keys.firstOrNull { it.id == id }
+	}
+
+	fun dataKeysByProjectId(projectId: Long): Set<ProjectTable> {
+		return dataKeys()
+			.filter { it.projectId == projectId }
+			.toSet()
 	}
 }

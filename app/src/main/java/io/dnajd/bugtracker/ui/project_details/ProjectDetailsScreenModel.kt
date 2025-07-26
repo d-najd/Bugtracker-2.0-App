@@ -62,7 +62,7 @@ class ProjectDetailsScreenModel(
 		mutex.launchIONoQueue(coroutineScope) {
 			val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-			val projectToRename = ProjectRepository.dataById(successState.projectId)!!
+			val projectToRename = ProjectRepository.dataKeyById(successState.projectId)!!
 			val renamedProject = projectToRename.copy(title = title)
 
 			val persistedProject = projectApiService

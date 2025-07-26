@@ -11,10 +11,20 @@ import java.util.Date
 import kotlin.reflect.full.declaredMembers
 
 /**
- * Sets are recommended here since ordering of items should be irrelevant and sets not allowing
- * duplicates
+ * Recommendations and reasons why stuff is like it is
  *
- * [V] is instance of [Date] because in most cases repositories will begin using [Date], and maybe
+ * - for fetching data use fetch*IfStale(...) for fetching data, it should return the data that is fetched or
+ * if not stale return the data that would have been returned by the fetch, this should also return the just
+ * the key (not the cache value)
+ *
+ * - create method update(data: Map<K, V>) for updating the data, this method should override the current states
+ * data, if there is need also add other parameters to update(...) method, and this is the main reason why
+ * update method is not defined here since it would be too generic for all use cases
+ *
+ * - [Set] are preferred over [List] because [List] can contain duplicates and [List] preserves ordering and
+ * ordering should not be used here.
+ *
+ * - [V] is instance of [Date] because in most cases repositories will begin using [Date], and maybe
  * begin using another value later down the line. In this case we will have default implementation
  * for base [Date] and we can check whether [V] is [Date] itself and if it is use the original
  * implementation till we transition fully (if at all).
@@ -40,6 +50,10 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	 */
 	protected abstract fun defaultCacheValue(): V
 
+	/**
+	 * Check should be done on init to check whether [K] has member id because this will fail on call if it is
+	 * not overridden and there is no id field
+	 */
 	protected open fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
 		return { f, s ->
 

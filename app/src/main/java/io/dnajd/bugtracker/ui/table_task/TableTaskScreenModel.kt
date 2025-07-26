@@ -73,7 +73,7 @@ class TableTaskStateScreenModel(
 			val successState = (mutableState.value as TableTaskScreenState.Success)
 			val renamedTask = successState
 				.taskCurrent()
-				.copy(description = newDescription)			// val renamedTask = successState.task.copy(description = newDescription)
+				.copy(description = newDescription)
 
 			val persistedTask = taskRepository
 				.updateTask(renamedTask)
@@ -83,8 +83,7 @@ class TableTaskStateScreenModel(
 				}
 				.getOrThrow()
 
-			val combinedData = TableTaskRepository.combineForUpdate(persistedTask)
-			TableTaskRepository.update(combinedData)
+			TableTaskRepository.update(TableTaskRepository.combineForUpdate(persistedTask))
 
 			dismissSheet()
 		}
@@ -106,8 +105,7 @@ class TableTaskStateScreenModel(
 				}
 				.getOrThrow().data
 
-			val combinedData = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
-			TableTaskRepository.update(combinedData)
+			TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 
 			dismissSheet()
 		}

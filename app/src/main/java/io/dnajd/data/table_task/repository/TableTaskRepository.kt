@@ -24,22 +24,22 @@ object TableTaskRepository :
 	suspend fun fetchByIdIfStale(
 		id: Long,
 		forceFetch: Boolean = false,
-	): Result<Unit> {
-		if (!forceFetch && data().any { it.key.id == id }) {
-			Result.success(Unit)
+	): Result<TableTask> {
+		val task = dataKeyById(id)
+		if (!forceFetch && task != null) {
+			Result.success(task)
 		}
 
-		val result = api.getById(id)
-		val resultMapped = result.map { }
-		if (result.isFailure) {
-			return resultMapped
-		}
+		val retrievedData = api
+			.getById(id)
+			.onFailure {
+				return Result.failure(it)
+			}
+			.getOrThrow()
 
-		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(newData)
-		update(combinedData)
+		update(combineForUpdate(retrievedData))
 
-		return resultMapped
+		return Result.success(retrievedData)
 	}
 
 	override fun defaultCacheValue(): Date {

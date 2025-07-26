@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
+import io.dnajd.domain.utils.onFailureWithStackTrace
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
@@ -20,53 +21,48 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 
 	private val api: ProjectApiService = Injekt.get()
 
-	suspend fun fetchAllIfStale(forceFetch: Boolean = false): Result<Unit> {
+	suspend fun fetchAllIfStale(forceFetch: Boolean = false): Result<Set<Project>> {
 		if (!forceFetch && mutableState.value.lastFullFetch != null) {
-			return Result.success(Unit)
+			return Result.success(dataKeys())
 		}
 
-		val result = api.getAll()
-		val resultMapped = result.map { }
-		if (result.isFailure) {
-			return resultMapped
-		}
-
-		val newData = result.getOrThrow()
-		combineForUpdate(*newData.data.toTypedArray())
-
-		return api
+		val retrievedData = api
 			.getAll()
-			.onSuccess {
-				update(
-					data = it.data.associateWith { Date() },
-					updateLastFullFetch = true,
-				)
+			.onFailureWithStackTrace {
+				return Result.failure(it)
 			}
-			.map { }
+			.getOrThrow()
+
+		update(
+			data = retrievedData.data.associateWith { Date() },
+			updateLastFullFetch = true,
+		)
+
+		return Result.success(dataKeys())
 	}
 
 	suspend fun fetchOneIfStale(
 		projectId: Long,
 		forceFetch: Boolean = false,
-	): Result<Unit> {
-		if (!forceFetch && dataKeys().any { it.id == projectId }) {
-			return Result.success(Unit)
+	): Result<Project> {
+		val previousProject = dataKeyById(projectId)
+		if (!forceFetch && previousProject != null) {
+			return Result.success(previousProject)
 		}
 
-		val result = api.getById(projectId)
-		val resultMapped = result.map { }
-		if (result.isFailure) {
-			return resultMapped
-		}
+		val retrievedData = api
+			.getById(projectId)
+			.onFailure {
+				return Result.failure(it)
+			}
+			.getOrThrow()
 
-		val newData = result.getOrThrow()
-		val combinedData = combineForUpdate(newData)
 		update(
-			combinedData,
+			combineForUpdate(retrievedData),
 			updateLastFullFetch = false,
 		)
 
-		return resultMapped
+		return Result.success(retrievedData)
 	}
 
 	override fun defaultCacheValue(): Date {
@@ -100,7 +96,7 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 		}
 	}
 
-	fun dataById(id: Long): Project? {
+	fun dataKeyById(id: Long): Project? {
 		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }
