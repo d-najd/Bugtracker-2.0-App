@@ -58,6 +58,8 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	}
 
 	/**
+	 * If the condition is true then the value will be removed so it can be replaced later
+	 *
 	 * Check should be done on init to check whether [K] has member id because this will fail on call if it is
 	 * not overridden and there is no id field
 	 */

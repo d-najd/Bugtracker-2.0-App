@@ -1,10 +1,16 @@
 package io.dnajd.bugtracker.ui.user_management
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
+import io.dnajd.data.user_authority.repository.UserAuthorityRepository
+import io.dnajd.data.user_authority.repository.UserAuthorityRepository.state
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
@@ -28,7 +34,7 @@ class UserManagementScreenModel(
 
 	private val userAuthorityApiService: UserAuthorityApiService = Injekt.get(),
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get(),
-) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading) {
+) : StateScreenModel<UserManagementScreenState>(UserManagementScreenState.Loading(projectId)) {
 	private val _events: MutableSharedFlow<UserManagementEvent> = MutableSharedFlow()
 	val events: SharedFlow<UserManagementEvent> = _events.asSharedFlow()
 
@@ -36,13 +42,13 @@ class UserManagementScreenModel(
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
-			val userAuthorities = userAuthorityApiService
-				.getAllByProjectId(projectId)
+			UserAuthorityRepository
+				.fetchByProjectIdIfStale(projectId)
 				.onFailureWithStackTrace {
 					_events.emit(UserManagementEvent.FailedToRetrieveUserAuthorities)
 					return@launchIONoQueue
 				}
-				.getOrThrow().data
+				.getOrThrow()
 
 			val selfUsername = jwtAuthPreferenceStore
 				.retrieveAccessToken()
@@ -51,7 +57,6 @@ class UserManagementScreenModel(
 			mutableState.update {
 				UserManagementScreenState.Success(
 					projectId = projectId,
-					authorities = userAuthorities,
 					selfUsername = selfUsername,
 				)
 			}
@@ -68,33 +73,36 @@ class UserManagementScreenModel(
 	fun modifyAuthority(
 		userAuthority: UserAuthority,
 		value: Boolean? = null,
-	) {
-		mutex.launchIONoQueue(coroutineScope) {
-			if (value == null) {
-				val successState = mutableState.value as UserManagementScreenState.Success
+	) = mutex.launchIONoQueue(coroutineScope) {
+		if (value == null) {
+			val successState = mutableState.value as UserManagementScreenState.Success
 
-				if (successState.authorities.contains(userAuthority)) {
-					deleteAuthorityInternal(userAuthority)
-				} else {
-					createAuthorityInternal(userAuthority)
-				}
-
-				return@launchIONoQueue
-			} else if (value) {
-				createAuthorityInternal(userAuthority)
-				return@launchIONoQueue
-			} else {
+			if (successState
+					.authoritiesCurrent()
+					.contains(userAuthority)
+			) {
 				deleteAuthorityInternal(userAuthority)
-				return@launchIONoQueue
+			} else {
+				createAuthorityInternal(userAuthority)
 			}
+
+			return@launchIONoQueue
+		} else if (value) {
+			createAuthorityInternal(userAuthority)
+			return@launchIONoQueue
+		} else {
+			deleteAuthorityInternal(userAuthority)
+			return@launchIONoQueue
 		}
 	}
 
 	private suspend fun createAuthorityInternal(userAuthority: UserAuthority) {
 		val successState = mutableState.value as UserManagementScreenState.Success
-		val authorities = successState.authorities.toMutableList()
 
-		if (authorities.contains(userAuthority)) {
+		if (successState
+				.authoritiesCurrent()
+				.contains(userAuthority)
+		) {
 			_events.emit(UserManagementEvent.AuthorityAlreadyExists)
 			return
 		}
@@ -110,8 +118,12 @@ class UserManagementScreenModel(
 			}
 			.getOrThrow()
 
-		authorities.add(userAuthority)
-		mutableState.update { successState.copy(authorities = authorities) }
+		UserAuthorityRepository
+			.reFetchReplaceByProjectId(projectId)
+			.onFailureWithStackTrace {
+				_events.emit(UserManagementEvent.FailedToCreateUserAuthority)
+				return
+			}
 	}
 
 
@@ -140,8 +152,9 @@ class UserManagementScreenModel(
 		agreed: Boolean = false,
 	) {
 		val successState = mutableState.value as UserManagementScreenState.Success
-		val authorities = successState.authorities.toMutableList()
-		val currentUserAuthorities = authorities.filter { it.username == userAuthority.username }
+		val currentUserAuthorities = successState
+			.authoritiesCurrent()
+			.filter { it.username == userAuthority.username }
 
 		if (!agreed && (currentUserAuthorities.size <= 1 || userAuthority.authority == UserAuthorityType.project_view)) {
 			mutableState.update {
@@ -162,8 +175,14 @@ class UserManagementScreenModel(
 				return
 			}
 
-		authorities.remove(userAuthority)
-		mutableState.update { successState.copy(authorities = authorities) }
+		UserAuthorityRepository
+			.reFetchReplaceByProjectId(
+				projectId,
+			)
+			.onFailureWithStackTrace {
+				_events.emit(UserManagementEvent.FailedToCreateUserAuthority)
+				return
+			}
 	}
 
 	fun showDialog(dialog: UserManagementDialog) {
@@ -202,28 +221,41 @@ sealed class UserManagementDialog {
 	data object AddUserToProject : UserManagementDialog()
 }
 
-sealed class UserManagementScreenState {
-	@Immutable data object Loading : UserManagementScreenState()
+sealed class UserManagementScreenState(
+	open val projectId: Long,
+) {
+	@Immutable data class Loading(override val projectId: Long) : UserManagementScreenState(projectId)
 
 	@Immutable data class Success(
-		val projectId: Long,
-		val authorities: List<UserAuthority>,
+		override val projectId: Long,
 		val selfUsername: String,
 		val dialog: UserManagementDialog? = null,
-	) : UserManagementScreenState() {
-		fun getUsersWithAuthorities(): Map<String, List<UserAuthority>> {
-			val authorityMap: UserAuthorityMap = mutableMapOf()
-			for (authority in authorities) {
-				authorityMap.compute(
-					authority.username,
-					BiFunction { _, u ->
-						val mutableList = u?.toMutableList() ?: mutableListOf()
-						mutableList.add(authority)
-						return@BiFunction mutableList
-					},
-				)
+	) : UserManagementScreenState(projectId) {
+		fun authoritiesCurrent() = UserAuthorityRepository.dataKeysByProjectId(projectId)
+
+		@Composable
+		fun authoritiesCollectedByUser(): Map<String, List<UserAuthority>> {
+			val stateCollected by state.collectAsState()
+
+			return remember(
+				stateCollected,
+				projectId,
+			) {
+				val authorityMap: UserAuthorityMap = mutableMapOf()
+
+				for (authority in stateCollected.data.keys) {
+					authorityMap.compute(
+						authority.username,
+						BiFunction { _, u ->
+							val mutableList = u?.toMutableList() ?: mutableListOf()
+							mutableList.add(authority)
+							return@BiFunction mutableList
+						},
+					)
+				}
+
+				authorityMap.toSortedMap()
 			}
-			return authorityMap.toSortedMap()
 		}
 	}
 }

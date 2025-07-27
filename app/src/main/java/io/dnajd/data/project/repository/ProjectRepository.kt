@@ -65,10 +65,6 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 		return Result.success(retrievedData)
 	}
 
-	override fun defaultCacheValue(): Date {
-		return Date()
-	}
-
 	fun update(
 		data: Map<Project, Date>,
 		updateLastFullFetch: Boolean = false,

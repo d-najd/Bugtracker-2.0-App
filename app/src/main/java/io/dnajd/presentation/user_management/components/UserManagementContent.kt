@@ -6,11 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import io.dnajd.bugtracker.ui.user_management.UserManagementScreenState
 import io.dnajd.domain.user_authority.model.UserAuthority
@@ -27,11 +22,7 @@ fun ProjectUserManagementContent(
 			.padding(contentPadding)
 			.verticalScroll(rememberScrollState()),
 	) {
-		var usersWithAuthorities by remember { mutableStateOf(state.getUsersWithAuthorities()) }
-		LaunchedEffect(state.authorities) {
-			usersWithAuthorities = state.getUsersWithAuthorities()
-		}
-
+		val usersWithAuthorities = state.authoritiesCollectedByUser()
 		val selfAuthorities = usersWithAuthorities[state.selfUsername]!!
 
 		for (userWithAuthorities in usersWithAuthorities) {
