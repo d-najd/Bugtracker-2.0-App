@@ -27,6 +27,8 @@ fun TableTaskScreenContent(
 	state: TableTaskScreenState.Success,
 	sheetState: SheetState,
 	onBackClicked: () -> Unit,
+
+	onRenameTaskClicked: (String) -> Unit,
 	onChangeTableClicked: (Long) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
@@ -38,6 +40,7 @@ fun TableTaskScreenContent(
 		TableTaskContent(
 			state = state,
 			contentPadding = contentPadding,
+			onRenameTaskClicked = onRenameTaskClicked,
 			onChangeTableSheetClicked = onChangeTableSheetClicked,
 			onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
 		)

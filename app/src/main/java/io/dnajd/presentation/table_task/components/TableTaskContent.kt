@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ fun TableTaskContent(
 	state: TableTaskScreenState.Success,
 	contentPadding: PaddingValues,
 
+	onRenameTaskClicked: (String) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
 ) {
@@ -58,8 +60,7 @@ fun TableTaskContent(
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			verticalAlignment = Alignment.CenterVertically,
-		) {            /* TODO add functionality for this and the other one in the tables screen, when pressed
-				the completed state should revert from false to true and vice versa */
+		) {
 			Checkbox(
 				modifier = Modifier.size(16.dp),
 				checked = true,
@@ -76,14 +77,19 @@ fun TableTaskContent(
 		}
 
 		var expanded by remember { mutableStateOf(false) }
-		var taskTitle = state.taskCollected().title
+
+		var taskTitle by remember { mutableStateOf(state.taskCurrent().title) }
+		val taskCollected = state.taskCollected()
+		LaunchedEffect(taskCollected.title) {
+			taskTitle = taskCollected.title
+		}
 
 		BugtrackerExpandableTextField(
 			modifier = Modifier
 				.padding(top = 13.dp)
 				.fillMaxWidth()
 				.onFocusChanged { expanded = it.isFocused },
-			value = state.taskCollected().title,
+			value = taskTitle,
 			onValueChange = { taskTitle = it },
 			expanded = expanded,
 			textStyle = TextStyle(
@@ -93,9 +99,14 @@ fun TableTaskContent(
 			includeDivider = false,
 		) {
 			BugtrackerExpandableTextFieldDefaults.Content(
-				onCancelClicked = { expanded = false },
-				onConfirmClicked = { },
-				confirmEnabled = taskTitle != state.taskCollected().title && taskTitle.isNotEmpty(),
+				onCancelClicked = {
+					expanded = false
+					taskTitle = taskCollected.title
+				},
+				onConfirmClicked = {
+					onRenameTaskClicked(taskTitle)
+				},
+				confirmEnabled = taskTitle != taskCollected.title && taskTitle.isNotEmpty(),
 			)
 		}
 

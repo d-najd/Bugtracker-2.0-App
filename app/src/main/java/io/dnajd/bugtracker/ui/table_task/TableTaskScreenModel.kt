@@ -26,13 +26,15 @@ import uy.kohesive.injekt.api.get
 class TableTaskStateScreenModel(
 	taskId: Long,
 
-	private val taskRepository: TableTaskApiService = Injekt.get(),
+	private val taskApiService: TableTaskApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading(taskId)) {
 	private val _events: MutableSharedFlow<TableTaskEvent> = MutableSharedFlow()
 	val events: SharedFlow<TableTaskEvent> = _events.asSharedFlow()
 
 	private val mutex = Mutex()
+
+	fun successState(): TableTaskScreenState.Success = (mutableState.value as TableTaskScreenState.Success)
 
 	init {
 		requestTaskData(taskId)
@@ -62,17 +64,28 @@ class TableTaskStateScreenModel(
 		}
 	}
 
-	private fun renameTask(newTitle: String) {
+	fun renameTask(newTitle: String) = mutex.launchIONoQueue(coroutineScope) {
+		val renamedTask = successState()
+			.taskCurrent()
+			.copy(title = newTitle)
 
+		val persistedTask = taskApiService
+			.updateTask(renamedTask)
+			.onFailureWithStackTrace {
+				_events.emit(TableTaskEvent.FailedToRenameTask)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
+
+		TableTaskRepository.update(TableTaskRepository.combineForUpdate(persistedTask))
 	}
 
 	fun updateDescription(newDescription: String) = mutex.launchIONoQueue(coroutineScope) {
-		val successState = (mutableState.value as TableTaskScreenState.Success)
-		val renamedTask = successState
+		val renamedTask = successState()
 			.taskCurrent()
 			.copy(description = newDescription)
 
-		val persistedTask = taskRepository
+		val persistedTask = taskApiService
 			.updateTask(renamedTask)
 			.onFailureWithStackTrace {
 				_events.emit(TableTaskEvent.FailedToUpdateTaskDescription)
@@ -86,10 +99,9 @@ class TableTaskStateScreenModel(
 	}
 
 	fun swapTable(tableId: Long) = mutex.launchIONoQueue(coroutineScope) {
-		val successState = (mutableState.value as TableTaskScreenState.Success)
-		val oldTask = successState.taskCurrent()
+		val oldTask = successState().taskCurrent()
 
-		val persistedTasks = taskRepository
+		val persistedTasks = taskApiService
 			.moveToTable(
 				oldTask.id,
 				tableId,
@@ -106,11 +118,9 @@ class TableTaskStateScreenModel(
 	}
 
 	fun showSheet(sheet: TableTaskSheet) = mutex.launchIONoQueue(coroutineScope) {
-		val successState = (mutableState.value as TableTaskScreenState.Success)
-
 		when (sheet) {
 			is TableTaskSheet.BottomSheet -> {
-				val task = successState.taskCurrent()
+				val task = successState().taskCurrent()
 				val table = ProjectTableRepository.dataKeyById(task.tableId)!!
 
 				// the tables are not guaranteed to be fetched up to this point so fetching them
@@ -123,22 +133,20 @@ class TableTaskStateScreenModel(
 					}
 
 				mutableState.update {
-					successState.copy(
+					successState().copy(
 						sheet = sheet,
 					)
 				}
 			}
 
 			else -> {
-				mutableState.update { successState.copy(sheet = sheet) }
+				mutableState.update { successState().copy(sheet = sheet) }
 			}
 		}
 	}
 
 	fun dismissSheet() = mutex.launchUINoQueue(coroutineScope) {
-		val successState = (mutableState.value as TableTaskScreenState.Success)
-
-		mutableState.update { successState.copy(sheet = null) }
+		mutableState.update { successState().copy(sheet = null) }
 	}
 }
 
@@ -149,6 +157,8 @@ sealed class TableTaskSheet {
 
 sealed class TableTaskEvent {
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
+
+	data object FailedToRenameTask : LocalizedMessage(R.string.error_failed_to_rename_task)
 
 	data object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
 	data object FailedToUpdateTaskDescription :
