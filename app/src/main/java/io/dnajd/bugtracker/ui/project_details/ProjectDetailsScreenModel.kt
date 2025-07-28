@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
@@ -53,11 +54,7 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		val projectsExceptDeleted = ProjectRepository
-			.data()
-			.filter { it.key.id != projectId }
-
-		ProjectRepository.update(projectsExceptDeleted)
+		ProjectTableRepository.delete(successState.projectId)
 		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 	}
 

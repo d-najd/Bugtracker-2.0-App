@@ -99,8 +99,8 @@ object TableTaskRepository :
 		}
 	}
 
-	fun dataByTableId(tableId: Long): Map<TableTask, Date> {
-		return data().filterKeys { it.tableId == tableId }
+	fun dataByTableIds(vararg tableIds: Long): Map<TableTask, Date> {
+		return data().filterKeys { tableIds.contains(it.tableId) }
 	}
 
 	fun dataKeyById(id: Long): TableTask? {

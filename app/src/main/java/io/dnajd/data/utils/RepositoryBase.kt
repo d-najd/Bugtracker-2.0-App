@@ -8,7 +8,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
+import kotlin.reflect.KProperty
 import kotlin.reflect.full.declaredMembers
+import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.full.isSupertypeOf
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.starProjectedType
 
 /**
  * - If [K] does not have field id then [defaultCompareForUpdatePredicate] must be overridden
@@ -50,6 +55,26 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 	open fun data(): Map<K, V> = state.value.data
 
+	open fun delete(
+		vararg dataById: Any,
+	) {
+		val dataIds = dataById.toSet()
+		val newData = state.value.data.filterKeys {
+			val idMethod = it!!::class.declaredMembers.firstOrNull { it.name == "id" }
+
+			if (idMethod == null) {
+				throw NotImplementedError("Unable to determine id using reflection in: ${this::delete.name}. either implement it or use an alternative")
+			}
+
+			!dataIds.contains(idMethod.call(it))
+		}
+
+		mutableState.value = copyDataObject(
+			state.value,
+			state.value::data to newData,
+		)
+	}
+
 	/**
 	 * Must be overridden if [V] is not [Date] but rather subclass of it
 	 */
@@ -58,23 +83,23 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	}
 
 	/**
-	 * If the condition is true then the value will be removed so it can be replaced later
+	 * This value is used for comparison, I don't want to override [equals] or force the user to implement an
+	 * method to retrieve the id, although that may be safer
 	 *
-	 * Check should be done on init to check whether [K] has member id because this will fail on call if it is
-	 * not overridden and there is no id field
+	 * This method is used to determine id from given key, this is done with reflection by checking for a field
+	 * id, will throw an exception if there is no such field in such case override the default implementation.
+	 *
+	 * @see combineForUpdate
+	 * @see delete
 	 */
-	protected open fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
-		return { f, s ->
+	protected open fun defaultRetrieveId(value: K): Any? {
+		val fIdMethod = value!!::class.declaredMembers.firstOrNull { it.name == "id" }
 
-			val fIdMethod = f.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
-			val sIdMethod = s.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
-
-			if (fIdMethod == null || sIdMethod == null) {
-				throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultCompareForUpdatePredicate.name}. either implement it or use an alternative")
-			}
-
-			fIdMethod.call(f.key) == sIdMethod.call(s.key)
+		if (fIdMethod == null) {
+			throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultRetrieveId.name}. either implement it or use an alternative")
 		}
+
+		return fIdMethod.call(value)
 	}
 
 	/**
@@ -83,7 +108,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	internal fun combineForUpdate(vararg newData: K): Map<K, V> {
 		return combineForUpdate(
 			cacheValue = defaultCacheValue(),
-			predicate = defaultCompareForUpdatePredicate(),
+			filterPredicate = defaultCompareForUpdatePredicate(),
 			newData = newData,
 		)
 	}
@@ -94,11 +119,11 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	 */
 	internal fun combineForUpdate(
 		cacheValue: V = defaultCacheValue(),
-		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
+		filterPredicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
 		vararg newData: K,
 	): Map<K, V> {
 		return combineForUpdate(
-			predicate = predicate,
+			filterPredicate = filterPredicate,
 			newDataEntries = newData
 				.map {
 					Pair(
@@ -118,21 +143,21 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 		vararg newDataEntries: Pair<K, V>,
 	): Map<K, V> {
 		return combineForUpdate(
-			predicate = defaultCompareForUpdatePredicate(),
+			filterPredicate = defaultCompareForUpdatePredicate(),
 			newDataEntries = newDataEntries,
 		)
 	}
 
 	/**
 	 * combines the old data with the new data, meant to be used after data is fetched
-	 * @param predicate values matching this predicate will be filtered from the old data, use this
-	 * to remove values which already exist in [newDataEntries], works same as [Iterable.none], default
+	 * @param filterPredicate values not matching this predicate will be filtered from the old data, use this
+	 * to remove values which already exist in [newDataEntries], works same as [Iterable.any], default
 	 * implementation will try to compare id field if it exists using reflection or throw an
-	 * exception otherwise
+	 * exception otherwise, inspired from [Iterable.filter]
 	 * @param newDataEntries the data that will be combined with the old data
 	 */
 	internal fun combineForUpdate(
-		predicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
+		filterPredicate: (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean = defaultCompareForUpdatePredicate(),
 		vararg newDataEntries: Pair<K, V>,
 	): Map<K, V> {
 		val oldDataEntries = data()
@@ -140,14 +165,58 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 		return oldDataEntries
 			.filter { oldEntry ->
-				newDataEntriesFormatted.none { newEntry ->
-					predicate(
+				newDataEntriesFormatted.any { newEntry ->
+					filterPredicate(
 						oldEntry,
 						newEntry,
 					)
 				}
 			}
 			.plus(newDataEntriesFormatted)
+	}
+
+	private fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
+		return { f, s ->
+
+			val fIdMethod = f.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
+			val sIdMethod = s.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
+
+			if (fIdMethod == null || sIdMethod == null) {
+				throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultCompareForUpdatePredicate.name}. either implement it or use an alternative")
+			}
+
+			defaultRetrieveId(f.key) == defaultRetrieveId(s.key)
+		}
+	}
+
+	private fun <T : Any> copyDataObject(
+		toCopy: T,
+		vararg properties: Pair<KProperty<*>, Any?>,
+	): T {
+		val dataClass = toCopy::class
+		require(dataClass.isData) { "Type of object to copy must be a data class" }
+		val copyFunction = dataClass.memberFunctions.first { it.name == "copy" }
+		val parameters = buildMap {
+			put(
+				copyFunction.instanceParameter!!,
+				toCopy,
+			)
+			properties.forEach { (property, value) ->
+				val parameter = requireNotNull(
+					copyFunction.parameters.firstOrNull { it.name == property.name },
+				) { "Parameter not found for property ${property.name}" }
+				value?.let {
+					require(
+						parameter.type.isSupertypeOf(it::class.starProjectedType),
+					) { "Incompatible type of value for property ${property.name}" }
+				}
+				put(
+					parameter,
+					value,
+				)
+			}
+		}
+		@Suppress("UNCHECKED_CAST") return copyFunction.callBy(parameters) as T
 	}
 
 	open class State<K, V>(

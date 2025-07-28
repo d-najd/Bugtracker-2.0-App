@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.data.user_authority.repository.UserAuthorityRepository
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
@@ -79,6 +81,23 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 			data = data,
 			lastFullFetch = newLastFullFetchDate,
 		)
+	}
+
+	override fun delete(vararg dataById: Any) {
+		super.delete(dataById)
+
+		@Suppress("UNCHECKED_CAST") val dataAsLongId = (dataById.toSet() as Set<Long>).toLongArray()
+
+		val tables = ProjectTableRepository.dataKeysByProjectIds(*dataAsLongId)
+
+		ProjectTableRepository.delete(
+			*tables
+				.map { it.id }
+				.toTypedArray(),
+		)
+
+		val authorities = UserAuthorityRepository.dataKeysByProjectId(*dataAsLongId)
+		UserAuthorityRepository.delete(*authorities.toTypedArray())
 	}
 
 	@Composable

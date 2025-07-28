@@ -201,7 +201,7 @@ import uy.kohesive.injekt.api.get
 			throw IllegalArgumentException("fIndex and sIndex can't be the same")
 		}
 
-		val tasks = TableTaskRepository.dataByTableId(tableId).keys
+		val tasks = TableTaskRepository.dataByTableIds(tableId).keys
 		val fTask = tasks.first { it.position == fIndex }
 		val sTask = tasks.first { it.position == sIndex }
 

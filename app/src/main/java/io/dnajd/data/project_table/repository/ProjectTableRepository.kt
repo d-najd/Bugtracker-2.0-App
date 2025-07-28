@@ -8,6 +8,7 @@ import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
+import io.dnajd.domain.table_task.model.TableTask
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
@@ -33,7 +34,7 @@ object ProjectTableRepository :
 		fetchTasks: Boolean = false,
 	): Result<Set<ProjectTable>> {
 		if (!forceFetch && lastFetchedByProjectIds().containsKey(projectId)) {
-			return Result.success(dataKeysByProjectId(projectId))
+			return Result.success(dataKeysByProjectIds(projectId))
 		}
 
 		val retrievedData = api
@@ -48,19 +49,8 @@ object ProjectTableRepository :
 
 		update(
 			combineForUpdate(*retrievedData.toTypedArray()),
+			updateTasks = fetchTasks,
 			projectId,
-		)
-
-		val newTasks = retrievedData.flatMap { table -> table.tasks!! }
-		val combinedTasks = TableTaskRepository.combineForUpdate(*newTasks.toTypedArray())
-
-		val tableIds = retrievedData
-			.map { table -> table.id }
-			.toLongArray()
-
-		TableTaskRepository.update(
-			combinedTasks,
-			*tableIds,
 		)
 
 		return Result.success(retrievedData.toSet())
@@ -88,24 +78,34 @@ object ProjectTableRepository :
 
 		update(
 			combineForUpdate(retrievedData),
-		)
-
-		val newTasks = retrievedData.tasks!!
-		val combinedTasks = TableTaskRepository.combineForUpdate(*newTasks.toTypedArray())
-
-		TableTaskRepository.update(
-			combinedTasks,
-			retrievedData.id,
+			updateTasks = fetchTasks,
 		)
 
 		return Result.success(retrievedData)
 	}
 
+	override fun delete(vararg dataById: Any) {
+		super.delete(*dataById)
+
+		@Suppress("UNCHECKED_CAST") val dataAsLongId = dataById.toSet() as Set<Long>
+
+		val tasks = TableTaskRepository.dataByTableIds(*dataAsLongId.toLongArray())
+
+		TableTaskRepository.delete(
+			*tasks
+				.map { it.key.id }
+				.toTypedArray(),
+		)
+	}
+
 	/**
+	 * @param updateTasks if true will first filter out all the [TableTask] from [TableTaskRepository]
+	 * matching by [ProjectTable.id], and then add the new ones
 	 * @param lastFetchProjectsUpdated which projects should be notified that they have been updated
 	 */
 	fun update(
 		data: Map<ProjectTable, Date>,
+		updateTasks: Boolean = false,
 		vararg lastFetchProjectsUpdated: Long,
 	) {
 		val dataWithoutTasks = data.mapKeys {
@@ -122,6 +122,32 @@ object ProjectTableRepository :
 		mutableState.value = ProjectTableRepositoryState(
 			data = dataWithoutTasks,
 			lastFetchedByProjectIds = lastFetches,
+		)
+
+		if (!updateTasks) {
+			return
+		}
+
+		if (data.keys.any { it.tasks == null }) {
+			throw IllegalArgumentException("Tasks are null, this is used to mean that task must be null, check ${TableTask::class.simpleName}:${TableTask::childTasks.name} for more info")
+		}
+
+		val newTasks = data.keys
+			.flatMap { table -> table.tasks!! }
+			.associateWith { Date() }
+
+		val combinedTasks = TableTaskRepository
+			.data()
+			.filterKeys { oldTask -> newTasks.none { newTask -> oldTask.tableId == newTask.key.tableId } }
+			.plus(newTasks)
+
+		val tableIds = data.keys
+			.map { table -> table.id }
+			.toLongArray()
+
+		TableTaskRepository.update(
+			combinedTasks,
+			*tableIds,
 		)
 	}
 
@@ -153,9 +179,9 @@ object ProjectTableRepository :
 		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 
-	fun dataKeysByProjectId(projectId: Long): Set<ProjectTable> {
+	fun dataKeysByProjectIds(vararg projectIds: Long): Set<ProjectTable> {
 		return dataKeys()
-			.filter { it.projectId == projectId }
+			.filter { projectIds.contains(it.projectId) }
 			.toSet()
 	}
 }

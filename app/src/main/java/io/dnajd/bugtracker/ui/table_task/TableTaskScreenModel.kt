@@ -188,7 +188,7 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 
 		@Composable
 		fun sheetTablesCollected(): List<ProjectTable> = ProjectTableRepository
-			.dataKeysByProjectId(parentTableCollected().projectId)
+			.dataKeysByProjectIds(parentTableCollected().projectId)
 			.toList()
 	}
 }

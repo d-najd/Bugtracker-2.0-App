@@ -44,6 +44,10 @@ object UserAuthorityRepository :
 		return Result.success(retrievedData.toSet())
 	}
 
+	override fun defaultRetrieveId(value: UserAuthority): Any? {
+		return value
+	}
+
 	/**
 	 * Removes the old authorities matching projectId and replaces them with new
 	 * @return the new authorities retrieved
@@ -58,7 +62,7 @@ object UserAuthorityRepository :
 
 		val combinedData = combineForUpdate(
 			newData = retrievedData.toTypedArray(),
-			predicate = { old, _ -> old.key.projectId == projectId },
+			filterPredicate = { old, _ -> old.key.projectId != projectId },
 		)
 
 		update(
@@ -86,8 +90,8 @@ object UserAuthorityRepository :
 		)
 	}
 
-	fun dataKeysByProjectId(projectId: Long): Set<UserAuthority> = dataKeys()
-		.filter { it.projectId == projectId }
+	fun dataKeysByProjectId(vararg projectIds: Long): Set<UserAuthority> = dataKeys()
+		.filter { projectIds.contains(it.projectId) }
 		.toSet()
 
 	@Composable
@@ -102,19 +106,4 @@ object UserAuthorityRepository :
 				.toSet()
 		}
 	}
-
-	/*
-	@Composable
-	fun authoritiesCollectedByUser() {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			projectId,
-		) {
-			stateCollected.data.keys
-				.filter { it.projectId == projectId }
-				.toSet()
-		}
-	}
-	 */
 }
