@@ -59,6 +59,8 @@ sealed class ProjectSettingsScreenState(open val projectId: Long) {
 		override val projectId: Long,
 	) : ProjectSettingsScreenState(projectId) {
 		@Composable
-		fun projectCollected(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+		fun projectCollected(): Project = ProjectRepository
+			.dataKeysCollectedById(projectId)
+			.first()
 	}
 }

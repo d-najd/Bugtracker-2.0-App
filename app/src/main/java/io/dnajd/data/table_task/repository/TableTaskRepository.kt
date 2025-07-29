@@ -17,7 +17,7 @@ data class TableTaskRepositoryState(
 ) : RepositoryBase.State<TableTask, Date>(data)
 
 object TableTaskRepository :
-	RepositoryBase<TableTask, Date, TableTaskRepositoryState>(TableTaskRepositoryState()) {
+	RepositoryBase<TableTask, Long, Date, TableTaskRepositoryState>(TableTaskRepositoryState()) {
 
 	private val api: TableTaskApiService = Injekt.get()
 
@@ -25,7 +25,7 @@ object TableTaskRepository :
 		id: Long,
 		forceFetch: Boolean = false,
 	): Result<TableTask> {
-		val task = dataKeyById(id)
+		val task = dataKeysById(id).firstOrNull()
 		if (!forceFetch && task != null) {
 			Result.success(task)
 		}
@@ -75,6 +75,21 @@ object TableTaskRepository :
 		)
 	}
 
+	override fun <T : Long> delete(vararg dataById: T) {
+		val newData = state.value.data.filterKeys {
+			!dataById.contains(it.getId())
+		}
+
+		val lastFetchesByTableIds = state.value.lastFetchesByTableIds.filterKeys { tableId ->
+			newData.keys.any { it.tableId == tableId }
+		}
+
+		mutableState.value = state.value.copy(
+			data = newData,
+			lastFetchesByTableIds = lastFetchesByTableIds,
+		)
+	}
+
 	@Composable
 	fun dataKeysCollectedByTableId(tableId: Long): Set<TableTask> {
 		val stateCollected by state.collectAsState()
@@ -88,22 +103,7 @@ object TableTaskRepository :
 		}
 	}
 
-	@Composable
-	fun dataKeyCollectedById(id: Long): TableTask? {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			id,
-		) {
-			stateCollected.data.keys.firstOrNull { it.id == id }
-		}
-	}
-
 	fun dataByTableIds(vararg tableIds: Long): Map<TableTask, Date> {
 		return data().filterKeys { tableIds.contains(it.tableId) }
-	}
-
-	fun dataKeyById(id: Long): TableTask? {
-		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }

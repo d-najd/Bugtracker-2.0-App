@@ -19,7 +19,7 @@ data class ProjectTableRepositoryState(
 ) : RepositoryBase.State<ProjectTable, Date>(data)
 
 object ProjectTableRepository :
-	RepositoryBase<ProjectTable, Date, ProjectTableRepositoryState>(ProjectTableRepositoryState()) {
+	RepositoryBase<ProjectTable, Long, Date, ProjectTableRepositoryState>(ProjectTableRepositoryState()) {
 
 	private val api: ProjectTableApiService = Injekt.get()
 
@@ -61,7 +61,7 @@ object ProjectTableRepository :
 		forceFetch: Boolean = false,
 		fetchTasks: Boolean = true,
 	): Result<ProjectTable> {
-		val table = dataKeyById(id)
+		val table = dataKeysById(id).firstOrNull()
 		if (!forceFetch && table != null) {
 			return Result.success(table)
 		}
@@ -82,20 +82,6 @@ object ProjectTableRepository :
 		)
 
 		return Result.success(retrievedData)
-	}
-
-	override fun delete(vararg dataById: Any) {
-		super.delete(*dataById)
-
-		@Suppress("UNCHECKED_CAST") val dataAsLongId = dataById.toSet() as Set<Long>
-
-		val tasks = TableTaskRepository.dataByTableIds(*dataAsLongId.toLongArray())
-
-		TableTaskRepository.delete(
-			*tasks
-				.map { it.key.id }
-				.toTypedArray(),
-		)
 	}
 
 	/**
@@ -151,6 +137,27 @@ object ProjectTableRepository :
 		)
 	}
 
+	override fun <T : Long> delete(vararg dataById: T) {
+		val newData = state.value.data.filterKeys {
+			!dataById.contains(it.getId())
+		}
+
+		val newLastFetchByProjectId = lastFetchedByProjectIds().filterKeys { projectId ->
+			newData.keys.any { it.projectId == projectId }
+		}
+
+		mutableState.value = state.value.copy(
+			data = newData,
+			lastFetchedByProjectIds = newLastFetchByProjectId,
+		)
+
+		val tasksIds = TableTaskRepository
+			.dataByTableIds(*dataById.toLongArray())
+			.map { it.key.id }
+
+		TableTaskRepository.delete(*tasksIds.toTypedArray())
+	}
+
 	@Composable
 	fun dataKeysCollectedByProjectId(projectId: Long): Set<ProjectTable> {
 		val stateCollected by state.collectAsState()
@@ -162,21 +169,6 @@ object ProjectTableRepository :
 				.filter { it.projectId == projectId }
 				.toSet()
 		}
-	}
-
-	@Composable
-	fun dataKeyCollectedById(id: Long): ProjectTable? {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			id,
-		) {
-			stateCollected.data.keys.firstOrNull { it.id == id }
-		}
-	}
-
-	fun dataKeyById(id: Long): ProjectTable? {
-		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 
 	fun dataKeysByProjectIds(vararg projectIds: Long): Set<ProjectTable> {

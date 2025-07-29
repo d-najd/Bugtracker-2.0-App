@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import io.dnajd.domain.BaseApiEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
 import kotlin.reflect.KProperty
-import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.full.instanceParameter
 import kotlin.reflect.full.isSupertypeOf
 import kotlin.reflect.full.memberFunctions
@@ -17,7 +17,9 @@ import kotlin.reflect.full.starProjectedType
 
 /**
  * - If [K] does not have field id then [defaultCompareForUpdatePredicate] must be overridden
+ * - [KRT] means "Key Return Type"
  * - If [V] is subclass of [Date] then [defaultCacheValue] must be overridden
+ * - [S] means state
  *
  * TODO add init checks for the cases above so it fails when the class is compiled
  *
@@ -39,34 +41,65 @@ import kotlin.reflect.full.starProjectedType
  * for base [Date] and we can check whether [V] is [Date] itself and if it is use the original
  * implementation till we transition fully (if at all).
  */
-abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase.State<K, V>, V : Date {
+abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEntity<KRT>, V : Date, S : RepositoryBase.State<K, V> {
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
 	val state: StateFlow<S> = mutableState.asStateFlow()
 
+	open class State<K, V>(
+		/**
+		 * The key is the thing being stored and the value is for keeping track of
+		 * the last time it was updated
+		 */
+		open val data: Map<K, V> = emptyMap(),
+	) where V : Date
+
 	@Composable
-	open fun dataKeysCollected(): Set<K> {
+	fun dataKeysCollected(): Set<K> {
 		val stateCollected by state.collectAsState()
 		return remember(stateCollected) {
 			stateCollected.data.keys
 		}
 	}
 
-	open fun dataKeys(): Set<K> = state.value.data.keys
+	@Composable
+	fun dataKeysCollectedById(vararg ids: KRT): Set<K> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			ids,
+		) {
+			stateCollected.data.keys
+				.filterNot { ids.contains(it.getId()) }
+				.toSet()
+		}
+	}
 
-	open fun data(): Map<K, V> = state.value.data
+	fun dataKeys(): Set<K> = state.value.data.keys
 
-	open fun delete(
-		vararg dataById: Any,
+	fun dataKeysById(vararg ids: KRT): Set<K> = state.value.data.keys
+		.filterNot { ids.contains(it.getId()) }
+		.toSet()
+
+	fun data(): Map<K, V> = state.value.data
+
+	/**
+	 * The base implementation will remove only instances matching id in [RepositoryBase.State.data], if you
+	 * want more complex behaviour like removing from sub-repositories or removing more data override this
+	 *
+	 * The reason why this method is used instead of some implementation of update is because doing so will
+	 * increase the chance of memory leaks [RepositoryBase.State] may have more fields to subclass in future
+	 * and even if not it will be harder to maintain multiple implementations or even worse data that should
+	 * be removed being shown or not fetching due to not being removed when it should be.
+	 *
+	 * [T] instances is recommended to always be [KRT] and not a subclass, this would have been the case here
+	 * but since kotlin doesn't support overriding generic vararg arguments and this is a workaround for that
+	 * behaviour
+	 */
+	open fun <T : KRT> delete(
+		vararg dataById: T,
 	) {
-		val dataIds = dataById.toSet()
 		val newData = state.value.data.filterKeys {
-			val idMethod = it!!::class.declaredMembers.firstOrNull { it.name == "id" }
-
-			if (idMethod == null) {
-				throw NotImplementedError("Unable to determine id using reflection in: ${this::delete.name}. either implement it or use an alternative")
-			}
-
-			!dataIds.contains(idMethod.call(it))
+			!dataById.contains(it.getId())
 		}
 
 		mutableState.value = copyDataObject(
@@ -80,26 +113,6 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 	 */
 	protected open fun defaultCacheValue(): V {
 		@Suppress("UNCHECKED_CAST") return Date() as V
-	}
-
-	/**
-	 * This value is used for comparison, I don't want to override [equals] or force the user to implement an
-	 * method to retrieve the id, although that may be safer
-	 *
-	 * This method is used to determine id from given key, this is done with reflection by checking for a field
-	 * id, will throw an exception if there is no such field in such case override the default implementation.
-	 *
-	 * @see combineForUpdate
-	 * @see delete
-	 */
-	protected open fun defaultRetrieveId(value: K): Any? {
-		val fIdMethod = value!!::class.declaredMembers.firstOrNull { it.name == "id" }
-
-		if (fIdMethod == null) {
-			throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultRetrieveId.name}. either implement it or use an alternative")
-		}
-
-		return fIdMethod.call(value)
 	}
 
 	/**
@@ -177,15 +190,7 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 
 	private fun defaultCompareForUpdatePredicate(): (Map.Entry<K, V>, Map.Entry<K, V>) -> Boolean {
 		return { f, s ->
-
-			val fIdMethod = f.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
-			val sIdMethod = s.key!!::class.declaredMembers.firstOrNull { it.name == "id" }
-
-			if (fIdMethod == null || sIdMethod == null) {
-				throw NotImplementedError("Unable to determine id using reflection in: ${this::defaultCompareForUpdatePredicate.name}. either implement it or use an alternative")
-			}
-
-			defaultRetrieveId(f.key) == defaultRetrieveId(s.key)
+			f.key.getId() == s.key.getId()
 		}
 	}
 
@@ -218,12 +223,4 @@ abstract class RepositoryBase<K, V, S>(initialState: S) where S : RepositoryBase
 		}
 		@Suppress("UNCHECKED_CAST") return copyFunction.callBy(parameters) as T
 	}
-
-	open class State<K, V>(
-		/**
-		 * The key is the thing being stored and the value is for keeping track of
-		 * the last time it was updated
-		 */
-		open val data: Map<K, V> = emptyMap(),
-	) where V : Date
 }

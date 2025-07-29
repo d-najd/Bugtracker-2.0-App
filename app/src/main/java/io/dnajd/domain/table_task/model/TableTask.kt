@@ -2,6 +2,7 @@ package io.dnajd.domain.table_task.model
 
 import com.google.gson.annotations.SerializedName
 import io.dnajd.data.table_task.repository.TableTaskRepository
+import io.dnajd.domain.BaseApiEntity
 import java.util.Date
 
 
@@ -28,4 +29,8 @@ data class TableTask(
 	 * truth
 	 */
 	@SerializedName("childIssues") val childTasks: List<TableTask> = emptyList(),
-)
+) : java.io.Serializable, BaseApiEntity<Long> {
+	override fun getId(): Long {
+		return id
+	}
+}

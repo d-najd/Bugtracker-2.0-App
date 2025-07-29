@@ -54,7 +54,7 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		ProjectTableRepository.delete(successState.projectId)
+		ProjectTableRepository.delete(setOf(successState.projectId))
 		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 	}
 
@@ -62,7 +62,9 @@ class ProjectDetailsScreenModel(
 	fun renameProject(title: String) = mutex.launchIONoQueue(coroutineScope) {
 		val successState = mutableState.value as ProjectDetailsScreenState.Success
 
-		val projectToRename = ProjectRepository.dataKeyById(successState.projectId)!!
+		val projectToRename = ProjectRepository
+			.dataKeysById(successState.projectId)
+			.first()
 		val renamedProject = projectToRename.copy(title = title)
 
 		val persistedProject = projectApiService
@@ -87,7 +89,9 @@ sealed class ProjectDetailsScreenState(
 		val projectId: Long,
 	) : ProjectDetailsScreenState(projectId) {
 		@Composable
-		fun projectCollected(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+		fun projectCollected(): Project = ProjectRepository
+			.dataKeysCollectedById(projectId)
+			.first()
 	}
 }
 

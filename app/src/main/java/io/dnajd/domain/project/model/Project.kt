@@ -2,6 +2,7 @@ package io.dnajd.domain.project.model
 
 
 import com.google.gson.annotations.SerializedName
+import io.dnajd.domain.BaseApiEntity
 import java.util.Date
 
 data class ProjectListResponse(
@@ -14,4 +15,8 @@ data class Project(
 	@SerializedName("title") val title: String = "",
 	@SerializedName("description") val description: String? = null,
 	@SerializedName("createdAt") val createdAt: Date = Date(),
-) : java.io.Serializable
+) : java.io.Serializable, BaseApiEntity<Long> {
+	override fun getId(): Long {
+		return id
+	}
+}

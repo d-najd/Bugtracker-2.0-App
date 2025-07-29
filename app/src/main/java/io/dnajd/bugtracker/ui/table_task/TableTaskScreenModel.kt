@@ -121,7 +121,9 @@ class TableTaskStateScreenModel(
 		when (sheet) {
 			is TableTaskSheet.BottomSheet -> {
 				val task = successState().taskCurrent()
-				val table = ProjectTableRepository.dataKeyById(task.tableId)!!
+				val table = ProjectTableRepository
+					.dataKeysById(task.tableId)
+					.first()
 
 				// the tables are not guaranteed to be fetched up to this point so fetching them
 				// if needed
@@ -170,7 +172,7 @@ sealed class TableTaskEvent {
 }
 
 sealed class TableTaskScreenState(open val taskId: Long) {
-	fun taskCurrent(): TableTask = TableTaskRepository.dataKeyById(taskId)!!
+	fun taskCurrent(): TableTask = TableTaskRepository.dataKeysById(taskId).first()
 
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
@@ -180,11 +182,12 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 	) : TableTaskScreenState(taskId) {
 
 		@Composable
-		fun taskCollected(): TableTask = TableTaskRepository.dataKeyCollectedById(taskId)!!
+		fun taskCollected(): TableTask = TableTaskRepository.dataKeysCollectedById(taskId).first()
 
 		@Composable
-		fun parentTableCollected(): ProjectTable =
-			ProjectTableRepository.dataKeyCollectedById(taskCollected().tableId)!!
+		fun parentTableCollected(): ProjectTable = ProjectTableRepository
+			.dataKeysCollectedByProjectId(taskCollected().tableId)
+			.first()
 
 		@Composable
 		fun sheetTablesCollected(): List<ProjectTable> = ProjectTableRepository

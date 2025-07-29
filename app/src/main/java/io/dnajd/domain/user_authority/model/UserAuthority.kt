@@ -2,6 +2,7 @@ package io.dnajd.domain.user_authority.model
 
 
 import com.google.gson.annotations.SerializedName
+import io.dnajd.domain.BaseApiEntity
 
 
 data class UserAuthorityListResponse(
@@ -12,4 +13,8 @@ data class UserAuthority(
 	@SerializedName("username") val username: String,
 	@SerializedName("projectId") val projectId: Long,
 	@SerializedName("authority") val authority: UserAuthorityType,
-)
+) : java.io.Serializable, BaseApiEntity<UserAuthority> {
+	override fun getId(): UserAuthority {
+		return this
+	}
+}

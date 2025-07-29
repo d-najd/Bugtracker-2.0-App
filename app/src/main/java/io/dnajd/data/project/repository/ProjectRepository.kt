@@ -1,9 +1,5 @@
 package io.dnajd.data.project.repository
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.user_authority.repository.UserAuthorityRepository
 import io.dnajd.data.utils.RepositoryBase
@@ -19,7 +15,8 @@ data class ProjectRepositoryState(
 	val lastFullFetch: Date? = null,
 ) : RepositoryBase.State<Project, Date>(data)
 
-object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>(ProjectRepositoryState()) {
+object ProjectRepository :
+	RepositoryBase<Project, Long, Date, ProjectRepositoryState>(ProjectRepositoryState()) {
 
 	private val api: ProjectApiService = Injekt.get()
 
@@ -47,7 +44,7 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 		projectId: Long,
 		forceFetch: Boolean = false,
 	): Result<Project> {
-		val previousProject = dataKeyById(projectId)
+		val previousProject = dataKeysById(projectId).firstOrNull()
 		if (!forceFetch && previousProject != null) {
 			return Result.success(previousProject)
 		}
@@ -83,35 +80,16 @@ object ProjectRepository : RepositoryBase<Project, Date, ProjectRepositoryState>
 		)
 	}
 
-	override fun delete(vararg dataById: Any) {
-		super.delete(dataById)
+	override fun <T : Long> delete(vararg dataById: T) {
+		super.delete(*dataById)
 
-		@Suppress("UNCHECKED_CAST") val dataAsLongId = (dataById.toSet() as Set<Long>).toLongArray()
+		val tableIds = ProjectTableRepository
+			.dataKeysByProjectIds(*dataById.toLongArray())
+			.map { it.id }
 
-		val tables = ProjectTableRepository.dataKeysByProjectIds(*dataAsLongId)
+		ProjectTableRepository.delete(*tableIds.toTypedArray())
 
-		ProjectTableRepository.delete(
-			*tables
-				.map { it.id }
-				.toTypedArray(),
-		)
-
-		val authorities = UserAuthorityRepository.dataKeysByProjectId(*dataAsLongId)
+		val authorities = UserAuthorityRepository.dataKeysByProjectId(*dataById.toLongArray())
 		UserAuthorityRepository.delete(*authorities.toTypedArray())
-	}
-
-	@Composable
-	fun dataKeyCollectedById(id: Long): Project? {
-		val stateCollected by state.collectAsState()
-		return remember(
-			stateCollected,
-			id,
-		) {
-			stateCollected.data.keys.firstOrNull { it.id == id }
-		}
-	}
-
-	fun dataKeyById(id: Long): Project? {
-		return state.value.data.keys.firstOrNull { it.id == id }
 	}
 }

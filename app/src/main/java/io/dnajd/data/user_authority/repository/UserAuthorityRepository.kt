@@ -13,21 +13,21 @@ import java.util.Date
 
 data class UserAuthorityRepositoryState(
 	override val data: Map<UserAuthority, Date> = emptyMap(),
-	val lastFetchesByProjectId: Map<Long, Date> = emptyMap(),
+	val lastFetchesByProjectIds: Map<Long, Date> = emptyMap(),
 ) : RepositoryBase.State<UserAuthority, Date>(data)
 
 object UserAuthorityRepository :
-	RepositoryBase<UserAuthority, Date, UserAuthorityRepositoryState>(UserAuthorityRepositoryState()) {
+	RepositoryBase<UserAuthority, UserAuthority, Date, UserAuthorityRepositoryState>(UserAuthorityRepositoryState()) {
 
 	private val api: UserAuthorityApiService = Injekt.get()
 
-	private fun lastFetchesByProjectId() = state.value.lastFetchesByProjectId
+	private fun lastFetchesByProjectIds() = state.value.lastFetchesByProjectIds
 
 	suspend fun fetchByProjectIdIfStale(
 		projectId: Long,
 		forceFetch: Boolean = false,
 	): Result<Set<UserAuthority>> {
-		if (!forceFetch && lastFetchesByProjectId().containsKey(projectId)) {
+		if (!forceFetch && lastFetchesByProjectIds().containsKey(projectId)) {
 			return Result.success(dataKeysByProjectId(projectId))
 		}
 
@@ -37,15 +37,14 @@ object UserAuthorityRepository :
 			.getOrThrow().data
 
 		update(
-			combineForUpdate(*retrievedData.toTypedArray()),
+			combineForUpdate(
+				newData = retrievedData.toTypedArray(),
+				filterPredicate = filterByProjectIdPredicate(projectId),
+			),
 			projectId,
 		)
 
 		return Result.success(retrievedData.toSet())
-	}
-
-	override fun defaultRetrieveId(value: UserAuthority): Any? {
-		return value
 	}
 
 	/**
@@ -62,7 +61,7 @@ object UserAuthorityRepository :
 
 		val combinedData = combineForUpdate(
 			newData = retrievedData.toTypedArray(),
-			filterPredicate = { old, _ -> old.key.projectId != projectId },
+			filterPredicate = filterByProjectIdPredicate(projectId),
 		)
 
 		update(
@@ -77,7 +76,7 @@ object UserAuthorityRepository :
 		data: Map<UserAuthority, Date>,
 		vararg lastFetchProjectsUpdated: Long,
 	) {
-		val lastFetches = lastFetchesByProjectId().toMutableMap()
+		val lastFetches = lastFetchesByProjectIds().toMutableMap()
 		lastFetches.putAll(
 			lastFetchProjectsUpdated
 				.toSet()
@@ -86,8 +85,27 @@ object UserAuthorityRepository :
 
 		mutableState.value = state.value.copy(
 			data = data,
-			lastFetchesByProjectId = lastFetches,
+			lastFetchesByProjectIds = lastFetches,
 		)
+	}
+
+	override fun <T : UserAuthority> delete(vararg dataById: T) {
+		val newData = state.value.data.filterKeys {
+			!dataById.contains(it.getId())
+		}
+
+		val lastFetchesByProjectIds = lastFetchesByProjectIds().filterKeys { projectId ->
+			newData.keys.any { it.projectId == projectId }
+		}
+
+		mutableState.value = state.value.copy(
+			data = newData,
+			lastFetchesByProjectIds = lastFetchesByProjectIds,
+		)
+	}
+
+	private fun filterByProjectIdPredicate(projectId: Long): (Map.Entry<UserAuthority, Date>, Map.Entry<UserAuthority, Date>) -> Boolean {
+		return { old, _ -> old.key.projectId != projectId }
 	}
 
 	fun dataKeysByProjectId(vararg projectIds: Long): Set<UserAuthority> = dataKeys()

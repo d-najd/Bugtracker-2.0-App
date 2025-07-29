@@ -4,6 +4,7 @@ package io.dnajd.domain.project_table.model
 import com.google.gson.annotations.SerializedName
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
+import io.dnajd.domain.BaseApiEntity
 import io.dnajd.domain.table_task.model.TableTask
 
 data class ProjectTableListResponse(
@@ -24,4 +25,8 @@ data class ProjectTable(
 	 * instead.
 	 */
 	@SerializedName("issues") val tasks: List<TableTask>? = mutableListOf(),
-) : java.io.Serializable
+) : java.io.Serializable, BaseApiEntity<Long> {
+	override fun getId(): Long {
+		return id
+	}
+}

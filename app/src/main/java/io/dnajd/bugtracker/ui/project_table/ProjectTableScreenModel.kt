@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
 	private val projectId: Long,
@@ -133,7 +134,9 @@ import uy.kohesive.injekt.api.get
 		id: Long,
 		newName: String,
 	) = mutex.launchIONoQueue(coroutineScope) {
-		val table = ProjectTableRepository.dataKeyById(id)!!
+		val table = ProjectTableRepository
+			.dataKeysById(id)
+			.first()
 		val renamedTable = table.copy(title = newName)
 
 		val persistedTable = projectTableApiService
@@ -228,15 +231,10 @@ import uy.kohesive.injekt.api.get
 				_events.emit(ProjectTableEvent.FailedToDeleteTable)
 				return@launchIONoQueue
 			}
-			.getOrThrow().data
+			.getOrThrow().data.associateWith { Date() }
 
-		val combinedData = ProjectTableRepository
-			.combineForUpdate(*otherModifiedTables.toTypedArray())
-			.filterKeys { it.id != tableId }
-
-		ProjectTableRepository.update(
-			combinedData,
-		)
+		ProjectTableRepository.delete(tableId)
+		ProjectTableRepository.update(otherModifiedTables)
 	}
 
 	fun showDialog(dialog: ProjectTableDialog) = mutex.launchUINoQueue(coroutineScope) {
@@ -301,7 +299,9 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 		val dialog: ProjectTableDialog? = null,
 	) : ProjectTableScreenState(projectId) {
 		@Composable
-		fun projectCollected(): Project = ProjectRepository.dataKeyCollectedById(projectId)!!
+		fun projectCollected(): Project = ProjectRepository
+			.dataKeysCollectedById(projectId)
+			.first()
 
 		@Composable
 		fun tablesCollected(): Set<ProjectTable> =
