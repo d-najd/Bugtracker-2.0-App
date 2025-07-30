@@ -23,7 +23,7 @@ import io.dnajd.bugtracker.R
 		R.string.authority_project_delete,
 		R.string.info_authority_project_delete,
 	),
-	project_manage_users(
+	project_manage(
 		R.string.authority_manage_users,
 		R.string.info_authority_manage_users,
 	),

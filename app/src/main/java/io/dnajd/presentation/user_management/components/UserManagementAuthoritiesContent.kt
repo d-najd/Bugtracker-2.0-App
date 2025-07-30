@@ -33,7 +33,7 @@ fun ProjectUserManagementAuthoritiesContent(
 	) {
 		val isSelfOwner = selfAuthorities.any { it.authority == UserAuthorityType.project_owner }
 		val isSelfManager =
-			selfAuthorities.any { it.authority == UserAuthorityType.project_manage_users } || isSelfOwner
+			selfAuthorities.any { it.authority == UserAuthorityType.project_manage } || isSelfOwner
 		val isCurrentUserSelf = username == state.selfUsername
 
 		val containsOwnerAuthority = authorities.any {
@@ -51,7 +51,7 @@ fun ProjectUserManagementAuthoritiesContent(
 					isSelfOwner || (isSelfManager && selfAuthorities.any { it.authority == authorityType })
 				}
 
-				UserAuthorityType.project_manage_users -> {
+				UserAuthorityType.project_manage -> {
 
 					// Adding admins is only allowed to owners
 					isSelfOwner

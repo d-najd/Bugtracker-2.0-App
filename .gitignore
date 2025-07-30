@@ -87,3 +87,4 @@ lint/tmp/
 /.idea/git_toolbox_blame.xml
 /.idea/material_theme_project_new.xml
 /.idea/appInsightsSettings.xml
+/.kotlin/sessions/

@@ -54,7 +54,7 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		ProjectTableRepository.delete(setOf(successState.projectId))
+		ProjectTableRepository.delete(successState.projectId)
 		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 	}
 

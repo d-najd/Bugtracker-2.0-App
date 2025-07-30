@@ -114,12 +114,8 @@ object ProjectTableRepository :
 			return
 		}
 
-		if (data.keys.any { it.tasks == null }) {
-			throw IllegalArgumentException("Tasks are null, this is used to mean that task must be null, check ${TableTask::class.simpleName}:${TableTask::childTasks.name} for more info")
-		}
-
 		val newTasks = data.keys
-			.flatMap { table -> table.tasks!! }
+			.flatMap { table -> table.tasks ?: emptyList() }
 			.associateWith { Date() }
 
 		val combinedTasks = TableTaskRepository

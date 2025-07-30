@@ -36,7 +36,7 @@ object UserAuthorityApiServiceMock : UserAuthorityApiService {
 			UserAuthority(
 				"user2",
 				1,
-				UserAuthorityType.project_manage_users,
+				UserAuthorityType.project_manage,
 			),
 			UserAuthority(
 				"user3",

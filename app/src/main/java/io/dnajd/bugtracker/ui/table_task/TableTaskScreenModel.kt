@@ -24,7 +24,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 class TableTaskStateScreenModel(
-	taskId: Long,
+	val taskId: Long,
 
 	private val taskApiService: TableTaskApiService = Injekt.get(),
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
@@ -37,10 +37,10 @@ class TableTaskStateScreenModel(
 	fun successState(): TableTaskScreenState.Success = (mutableState.value as TableTaskScreenState.Success)
 
 	init {
-		requestTaskData(taskId)
+		requestTaskData()
 	}
 
-	private fun requestTaskData(taskId: Long) = mutex.launchIONoQueue(coroutineScope) {
+	private fun requestTaskData() = mutex.launchIONoQueue(coroutineScope) {
 		val task = TableTaskRepository
 			.fetchByIdIfStale(taskId)
 			.onFailureWithStackTrace {
@@ -172,7 +172,9 @@ sealed class TableTaskEvent {
 }
 
 sealed class TableTaskScreenState(open val taskId: Long) {
-	fun taskCurrent(): TableTask = TableTaskRepository.dataKeysById(taskId).first()
+	fun taskCurrent(): TableTask = TableTaskRepository
+		.dataKeysById(taskId)
+		.first()
 
 	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
@@ -182,11 +184,13 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 	) : TableTaskScreenState(taskId) {
 
 		@Composable
-		fun taskCollected(): TableTask = TableTaskRepository.dataKeysCollectedById(taskId).first()
+		fun taskCollected(): TableTask = TableTaskRepository
+			.dataKeysCollectedById(taskId)
+			.first()
 
 		@Composable
 		fun parentTableCollected(): ProjectTable = ProjectTableRepository
-			.dataKeysCollectedByProjectId(taskCollected().tableId)
+			.dataKeysCollectedById(taskCollected().tableId)
 			.first()
 
 		@Composable

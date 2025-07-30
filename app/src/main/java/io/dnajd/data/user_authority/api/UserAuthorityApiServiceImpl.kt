@@ -30,7 +30,7 @@ object UserAuthorityApiServiceImpl : UserAuthorityApiService {
 		if (userAuthority.authority == UserAuthorityType.project_owner) {
 			throw IllegalArgumentException("Can't modify project owner permission")
 		}
-		if (userAuthority.authority == UserAuthorityType.project_manage_users) {
+		if (userAuthority.authority == UserAuthorityType.project_manage) {
 			return factory.modifyManagerAuthority(
 				userAuthority,
 				value,

@@ -69,15 +69,15 @@ abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEn
 			ids,
 		) {
 			stateCollected.data.keys
-				.filterNot { ids.contains(it.getId()) }
+				.filter { ids.contains(it.getId()) }
 				.toSet()
 		}
 	}
 
 	fun dataKeys(): Set<K> = state.value.data.keys
 
-	fun dataKeysById(vararg ids: KRT): Set<K> = state.value.data.keys
-		.filterNot { ids.contains(it.getId()) }
+	fun dataKeysById(vararg ids: KRT): Set<K> = dataKeys()
+		.filter { ids.contains(it.getId()) }
 		.toSet()
 
 	fun data(): Map<K, V> = state.value.data
@@ -177,7 +177,7 @@ abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEn
 		val newDataEntriesFormatted = newDataEntries.toMap()
 
 		return oldDataEntries
-			.filter { oldEntry ->
+			.filterNot { oldEntry ->
 				newDataEntriesFormatted.any { newEntry ->
 					filterPredicate(
 						oldEntry,
