@@ -194,6 +194,9 @@ abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEn
 		}
 	}
 
+	/**
+	 * invokes copy method on data object using reflection
+	 */
 	private fun <T : Any> copyDataObject(
 		toCopy: T,
 		vararg properties: Pair<KProperty<*>, Any?>,
