@@ -3,9 +3,9 @@ package io.dnajd.data.table_task.api
 import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.model.TableTaskAssignee
-import io.dnajd.domain.table_task.model.TableTaskComment
 import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
+import io.dnajd.domain.task_comment.model.TableTaskComment
 import java.util.Date
 
 object TableTaskApiServiceMock : TableTaskApiService {

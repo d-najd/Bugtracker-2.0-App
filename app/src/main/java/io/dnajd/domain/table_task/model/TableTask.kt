@@ -3,6 +3,7 @@ package io.dnajd.domain.table_task.model
 import com.google.gson.annotations.SerializedName
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.task_comment.model.TableTaskComment
 import java.util.Date
 
 

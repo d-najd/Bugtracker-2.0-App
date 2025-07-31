@@ -1,4 +1,4 @@
-package io.dnajd.domain.table_task.model
+package io.dnajd.domain.task_comment.model
 
 import com.google.gson.annotations.SerializedName
 import java.util.Date
