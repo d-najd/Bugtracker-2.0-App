@@ -1,6 +1,9 @@
 package io.dnajd.presentation.table_task.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,8 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,11 +54,33 @@ fun TableTaskContent(
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
 ) {
+	Box(
+		modifier = Modifier.padding(contentPadding),
+	) {
+		Content(
+			state = state,
+			onRenameTaskClicked = onRenameTaskClicked,
+			onChangeTableSheetClicked = onChangeTableSheetClicked,
+			onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
+		)
+
+
+		LeaveComment()
+	}
+}
+
+@Composable
+private fun BoxScope.Content(
+	state: TableTaskScreenState.Success,
+
+	onRenameTaskClicked: (String) -> Unit,
+	onChangeTableSheetClicked: () -> Unit,
+	onAlterDescriptionSheetClicked: () -> Unit,
+) {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState())
-			.padding(contentPadding)
 			.padding(
 				horizontal = 12.dp,
 				vertical = 36.dp,
@@ -148,7 +177,30 @@ fun TableTaskContent(
 		TableTaskIconPairFields(state = state)
 
 		TableTaskActivityContent(state = state)
+	}
+}
 
-		// TableTaskBasicInfo(state)
+@Composable
+fun BoxScope.LeaveComment() {
+	Column(
+		modifier = Modifier.align(Alignment.BottomCenter),
+		verticalArrangement = Arrangement.Bottom,
+	) {
+		HorizontalDivider()
+
+		TextField(
+			modifier = Modifier.fillMaxWidth(),
+			value = "Test",
+			onValueChange = { },
+			placeholder = {
+				Text(stringResource(R.string.info_comment_first))
+			},
+			colors = TextFieldDefaults.colors(
+				focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+				unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+				focusedIndicatorColor = Color.Transparent,
+				unfocusedIndicatorColor = Color.Transparent,
+			),
+		)
 	}
 }
