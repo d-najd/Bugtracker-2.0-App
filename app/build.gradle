@@ -1,101 +1,101 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.compose'
+	id 'com.android.application'
+	id 'org.jetbrains.kotlin.android'
+	id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 android {
-    namespace 'io.dnajd.bugtracker'
-    compileSdk 34
+	namespace 'io.dnajd.bugtracker'
+	compileSdk 34
 
-    defaultConfig {
-        applicationId "io.dnajd.bugtracker"
-        minSdk 28
-        targetSdk 34
-        versionCode 1
-        versionName "0.3.0"
+	defaultConfig {
+		applicationId "io.dnajd.bugtracker"
+		minSdk 28
+		targetSdk 34
+		versionCode 1
+		versionName "0.3.1"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
-        }
-    }
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		vectorDrawables {
+			useSupportLibrary true
+		}
+	}
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "${compose_compiler_version}"
-    }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
-    }
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+	}
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+	kotlinOptions {
+		jvmTarget = '1.8'
+	}
+	buildFeatures {
+		compose true
+	}
+	composeOptions {
+		kotlinCompilerExtensionVersion = "${compose_compiler_version}"
+	}
+	packagingOptions {
+		resources {
+			excludes += '/META-INF/{AL2.0,LGPL2.1}'
+		}
+	}
 }
 
 dependencies {
-    // Base Android
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation "androidx.appcompat:appcompat:$app_compat_version"
+	// Base Android
+	implementation 'androidx.core:core-ktx:1.9.0'
+	implementation "androidx.appcompat:appcompat:$app_compat_version"
 
-    // Compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material3:material3:$material3_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.activity:activity-compose:$activity_compose_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+	// Compose
+	implementation "androidx.compose.ui:ui:$compose_version"
+	implementation "androidx.compose.material3:material3:$material3_version"
+	implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+	implementation "androidx.compose.material:material-icons-extended:$compose_version"
+	implementation "androidx.activity:activity-compose:$activity_compose_version"
+	implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
-    // implementation 'androidx.compose.material:material:1.3.1'
-    implementation "com.google.android.material:material:$material_version"
+	// implementation 'androidx.compose.material:material:1.3.1'
+	implementation "com.google.android.material:material:$material_version"
 
-    // Preview support
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+	// Preview support
+	debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+	debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
-    // Networking
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+	// Networking
+	implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+	implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+	implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+	implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-    // Voyager
-    implementation "cafe.adriel.voyager:voyager-navigator:$voyager_version"
-    implementation "cafe.adriel.voyager:voyager-androidx:$voyager_version"
+	// Voyager
+	implementation "cafe.adriel.voyager:voyager-navigator:$voyager_version"
+	implementation "cafe.adriel.voyager:voyager-androidx:$voyager_version"
 
-    // Injekt
-    implementation "uy.kohesive.injekt:injekt-core:1.16.1"
+	// Injekt
+	implementation "uy.kohesive.injekt:injekt-core:1.16.1"
 
-    // Testing
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+	// Testing
+	testImplementation "junit:junit:$junit_version"
+	androidTestImplementation "androidx.test.ext:junit:1.1.5"
+	androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+	androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
-    // Additional dependencies
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'org.burnoutcrew.composereorderable:reorderable:0.9.6'
+	// Additional dependencies
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'org.burnoutcrew.composereorderable:reorderable:0.9.6'
 
-    implementation "io.github.mirzemehdi:kmpauth-google:$kmpauth_version"
-    implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
+	implementation "io.github.mirzemehdi:kmpauth-google:$kmpauth_version"
+	implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
 
-    implementation "com.squareup.logcat:logcat:0.1"
-    implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"
+	implementation "com.squareup.logcat:logcat:0.1"
+	implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"
 
-    implementation 'com.auth0.android:jwtdecode:2.0.2'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+	implementation 'com.auth0.android:jwtdecode:2.0.2'
+	implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
