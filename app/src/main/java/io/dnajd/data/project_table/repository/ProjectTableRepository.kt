@@ -102,7 +102,7 @@ object ProjectTableRepository :
 		lastFetches.putAll(
 			lastFetchProjectsUpdated
 				.toSet()
-				.associateWith { Date() },
+				.associateWith { defaultCacheValue() },
 		)
 
 		mutableState.value = ProjectTableRepositoryState(
@@ -116,7 +116,7 @@ object ProjectTableRepository :
 
 		val newTasks = data.keys
 			.flatMap { table -> table.tasks ?: emptyList() }
-			.associateWith { Date() }
+			.associateWith { defaultCacheValue() }
 
 		val combinedTasks = TableTaskRepository
 			.data()

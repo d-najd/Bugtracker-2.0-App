@@ -2,8 +2,6 @@ package io.dnajd.domain.project_table.model
 
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.data.project_table.repository.ProjectTableRepository
-import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.BaseApiEntity
 import io.dnajd.domain.table_task.model.TableTask
 
@@ -19,12 +17,7 @@ data class ProjectTable(
 	@SerializedName("projectId") val projectId: Long = -1L,
 	@SerializedName("title") val title: String = "",
 	@SerializedName("position") val position: Int = -1,
-	/**
-	 * this is nullable for places where tasks accessing is illegal, for example
-	 * [ProjectTableRepository]'s data shouldn't have tasks and [TableTaskRepository] should be used
-	 * instead.
-	 */
-	@SerializedName("issues") val tasks: List<TableTask>? = mutableListOf(),
+	@SerializedName("issues") val tasks: List<TableTask> = listOf(),
 ) : java.io.Serializable, BaseApiEntity<Long> {
 	override fun getId(): Long {
 		return id

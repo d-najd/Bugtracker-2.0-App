@@ -3,8 +3,8 @@ package io.dnajd.data.project_table.api
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.model.ProjectTableListResponse
 import io.dnajd.domain.project_table.service.ProjectTableApiService
-import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.TableTask
+import io.dnajd.domain.task_label.model.TaskLabel
 
 object ProjectTableApiServiceMock : ProjectTableApiService {
 	override suspend fun getAllByProjectId(
@@ -50,11 +50,11 @@ object ProjectTableApiServiceMock : ProjectTableApiService {
 						severity = 1,
 						position = 0,
 						labels = listOf(
-							ProjectLabel(
+							TaskLabel(
 								id = 1,
 								label = "LABEL 1",
 							),
-							ProjectLabel(
+							TaskLabel(
 								id = 2,
 								label = "LABEL 2",
 							),

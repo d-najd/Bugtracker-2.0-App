@@ -182,6 +182,8 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 		override val taskId: Long,
 		val sheet: TableTaskSheet? = null,
 	) : TableTaskScreenState(taskId) {
+		@Composable
+		fun childTasksCollected(): Set<TableTask> = TableTaskRepository.childTaskDataKeysCollectedById(taskId)
 
 		@Composable
 		fun taskCollected(): TableTask = TableTaskRepository
@@ -194,8 +196,7 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 			.first()
 
 		@Composable
-		fun sheetTablesCollected(): List<ProjectTable> = ProjectTableRepository
-			.dataKeysByProjectIds(parentTableCollected().projectId)
-			.toList()
+		fun sheetTablesCollected(): Set<ProjectTable> =
+			ProjectTableRepository.dataKeysByProjectIds(parentTableCollected().projectId)
 	}
 }

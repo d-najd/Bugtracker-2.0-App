@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import io.dnajd.data.task_assigned.repository.TaskAssignedRepository
+import io.dnajd.data.task_comment.repository.TaskCommentRepository
+import io.dnajd.data.task_label.repository.TaskLabelRepository
 import io.dnajd.data.utils.RepositoryBase
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskApiService
@@ -20,6 +23,14 @@ object TableTaskRepository :
 	RepositoryBase<TableTask, Long, Date, TableTaskRepositoryState>(TableTaskRepositoryState()) {
 
 	private val api: TableTaskApiService = Injekt.get()
+
+	/**
+	 * @return true if task has sub data like [TableTask.comments], [TableTask.assigned]... fetched
+	 * false otherwise (false if the task isn't fetched as well)
+	 */
+	fun isTaskDeepFetched(id: Long): Boolean {
+		return false
+	}
 
 	suspend fun fetchByIdIfStale(
 		id: Long,
@@ -51,14 +62,12 @@ object TableTaskRepository :
 		data: Map<TableTask, Date>,
 		vararg lastFetchTablesUpdated: Long,
 	) {
-
-		// Only the id's are kept, fetch the other data manually, this is to avoid multiple sources
-		// of truth
-		val dataWithoutSubtaskData = data.mapKeys { entry ->
+		val taskDataOnly = data.mapKeys { entry ->
 			entry.key.copy(
-				childTasks = entry.key.childTasks.map { childTask ->
-					TableTask(id = childTask.id)
-				},
+				childTasks = emptyList(),
+				comments = emptyList(),
+				labels = emptyList(),
+				assigned = emptyList(),
 			)
 		}
 
@@ -66,18 +75,48 @@ object TableTaskRepository :
 		lastFetches.putAll(
 			lastFetchTablesUpdated
 				.toSet()
-				.associateWith { Date() },
+				.associateWith { defaultCacheValue() },
 		)
 
+		// TODO remove commend data and others and add them to repositories that they belong to
+
 		mutableState.value = TableTaskRepositoryState(
-			data = dataWithoutSubtaskData,
+			data = taskDataOnly,
 			lastFetchesByTableIds = lastFetches,
+		)
+
+		val taskUpdatedIds = data.keys
+			.map { it.id }
+			.toLongArray()
+
+		val comments = data.keys
+			.flatMap { it.comments }
+			.toTypedArray()
+		TaskCommentRepository.update(
+			data = TaskCommentRepository.combineForUpdate(*comments),
+			lastFetchTasksUpdated = taskUpdatedIds,
+		)
+
+		val labels = data.keys
+			.flatMap { it.labels }
+			.toTypedArray()
+		TaskLabelRepository.update(
+			data = TaskLabelRepository.combineForUpdate(*labels),
+			lastFetchTasksUpdated = taskUpdatedIds,
+		)
+
+		val assigned = data.keys
+			.flatMap { it.assigned }
+			.toTypedArray()
+		TaskAssignedRepository.update(
+			data = TaskAssignedRepository.combineForUpdate(*assigned),
+			lastFetchTasksUpdated = taskUpdatedIds,
 		)
 	}
 
-	override fun <T : Long> delete(vararg dataById: T) {
+	override fun <T : Long> delete(vararg dataByIds: T) {
 		val newData = state.value.data.filterKeys {
-			!dataById.contains(it.getId())
+			!dataByIds.contains(it.getId())
 		}
 
 		val lastFetchesByTableIds = state.value.lastFetchesByTableIds.filterKeys { tableId ->
@@ -88,6 +127,34 @@ object TableTaskRepository :
 			data = newData,
 			lastFetchesByTableIds = lastFetchesByTableIds,
 		)
+
+		val commendIds = TaskCommentRepository
+			.dataByTaskIds(*dataByIds.toLongArray())
+			.map { it.key.id }
+		TaskCommentRepository.delete(*commendIds.toTypedArray())
+
+		val labelIds = TaskLabelRepository
+			.dataByTaskIds(*dataByIds.toLongArray())
+			.map { it.key.id }
+		TaskLabelRepository.delete(*labelIds.toTypedArray())
+
+		val assignedIds = TaskAssignedRepository
+			.dataByTaskIds(*dataByIds.toLongArray())
+			.map { it.key }
+		TaskAssignedRepository.delete(*assignedIds.toTypedArray())
+	}
+
+	@Composable
+	fun childTaskDataKeysCollectedById(id: Long): Set<TableTask> {
+		val stateCollected by state.collectAsState()
+		return remember(
+			stateCollected,
+			id,
+		) {
+			stateCollected.data.keys
+				.filter { it.parentTaskId == id }
+				.toSet()
+		}
 	}
 
 	@Composable

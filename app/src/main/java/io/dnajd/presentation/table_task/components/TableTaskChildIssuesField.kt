@@ -53,7 +53,7 @@ fun TableTaskChildIssuesField(
 					verticalAlignment = Alignment.CenterVertically,
 				) {
 					Text(
-						text = state.taskCollected().childTasks.size.toString(),
+						text = state.childTasksCollected().size.toString(),
 						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 					)
 
@@ -70,7 +70,7 @@ fun TableTaskChildIssuesField(
 			}
 		},
 		expandableContent = {
-			for (childTask in state.taskCollected().childTasks) {
+			for (childTask in state.childTasksCollected()) {
 				BugtrackerIconPairField(
 					modifier = Modifier.padding(top = 6.dp),
 					iconContent = {

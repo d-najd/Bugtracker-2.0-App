@@ -1,12 +1,8 @@
 package io.dnajd.data.table_task.api
 
-import io.dnajd.domain.table_task.model.ProjectLabel
 import io.dnajd.domain.table_task.model.TableTask
-import io.dnajd.domain.table_task.model.TableTaskAssignee
 import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
-import io.dnajd.domain.task_comment.model.TableTaskComment
-import java.util.Date
 
 object TableTaskApiServiceMock : TableTaskApiService {
 	override suspend fun getByTableId(
@@ -49,7 +45,8 @@ object TableTaskApiServiceMock : TableTaskApiService {
 		parentTaskId = 2L,
 		severity = 3,
 		position = 0,
-		labels = listOf(
+		labels = listOf(),
+	)			/*
 			ProjectLabel(
 				1L,
 				"Label 1",
@@ -90,21 +87,21 @@ object TableTaskApiServiceMock : TableTaskApiService {
 			),
 		),
 		comments = listOf(
-			TableTaskComment(
+			TaskComment(
 				id = 1L,
 				user = "user1",
 				message = "This is a basic comment",
 				createdAt = Date(Date().time - 3600000),
 				editedAt = null,
 			),
-			TableTaskComment(
+			TaskComment(
 				id = 2L,
 				user = "user1",
 				message = "This is a edited comment",
 				createdAt = Date(Date().time - 3600000),
 				editedAt = Date(Date().time - 1800000),
 			),
-			TableTaskComment(
+			TaskComment(
 				id = 3L,
 				user = "user2",
 				message = "This is a edited comment by another user",
@@ -112,5 +109,7 @@ object TableTaskApiServiceMock : TableTaskApiService {
 				editedAt = Date(Date().time - 900000),
 			),
 		),
+
 	)
+			 */
 }

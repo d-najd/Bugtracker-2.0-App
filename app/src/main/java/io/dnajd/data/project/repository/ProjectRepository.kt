@@ -33,7 +33,7 @@ object ProjectRepository :
 			.getOrThrow()
 
 		update(
-			data = retrievedData.data.associateWith { Date() },
+			data = retrievedData.data.associateWith { defaultCacheValue() },
 			updateLastFullFetch = true,
 		)
 

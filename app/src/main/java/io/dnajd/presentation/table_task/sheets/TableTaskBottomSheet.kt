@@ -34,6 +34,7 @@ fun TableTaskBottomSheetContent(
 	val parentTable = state.parentTableCollected()
 	val tablesOrdered = state
 		.sheetTablesCollected()
+		.toList()
 		.sortedBy { it.position }
 		.filter { it.id != parentTable.id }
 

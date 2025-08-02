@@ -1,9 +1,10 @@
 package io.dnajd.domain.table_task.model
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.domain.BaseApiEntity
-import io.dnajd.domain.task_comment.model.TableTaskComment
+import io.dnajd.domain.task_assigned.model.TaskAssigned
+import io.dnajd.domain.task_comment.model.TaskComment
+import io.dnajd.domain.task_label.model.TaskLabel
 import java.util.Date
 
 
@@ -22,13 +23,9 @@ data class TableTask(
 	@SerializedName("description") val description: String? = null,
 	@SerializedName("createdAt") val createdAt: Date = Date(),
 	@SerializedName("updatedAt") val updatedAt: Date? = null,
-	@SerializedName("comments") val comments: List<TableTaskComment> = emptyList(),
-	@SerializedName("labels") val labels: List<ProjectLabel> = emptyList(),
-	@SerializedName("assigned") val assigned: List<TableTaskAssignee> = emptyList(),
-	/**
-	 * Child tasks in [TableTaskRepository] will only include the id to avoid multiple sources of
-	 * truth
-	 */
+	@SerializedName("comments") val comments: List<TaskComment> = emptyList(),
+	@SerializedName("labels") val labels: List<TaskLabel> = emptyList(),
+	@SerializedName("assigned") val assigned: List<TaskAssigned> = emptyList(),
 	@SerializedName("childIssues") val childTasks: List<TableTask> = emptyList(),
 ) : java.io.Serializable, BaseApiEntity<Long> {
 	override fun getId(): Long {
