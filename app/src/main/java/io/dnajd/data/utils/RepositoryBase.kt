@@ -4,7 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.project.model.Project
+import io.dnajd.domain.project_table.model.ProjectTable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,6 +44,15 @@ import kotlin.reflect.full.starProjectedType
  * begin using another value later down the line. In this case we will have default implementation
  * for base [Date] and we can check whether [V] is [Date] itself and if it is use the original
  * implementation till we transition fully (if at all).
+ *
+ * TODO the child repositories dependency on removal could be inverted, for example currently in
+ * [ProjectRepository] if [Project] is removed then the [ProjectRepository] will remove the [ProjectTable]
+ * from [ProjectTableRepository] associated with that project, instead we can invert this and make it so that
+ * on [Project] modification from [ProjectRepository], [ProjectTableRepository] to listen and if it sees any
+ * [ProjectTable] related to that [ProjectTable] to remove it, NOTE this will not allow for [ProjectTable] to
+ * exist without a [Project] and updates that update child repos as well will have to still call the child
+ * repository like in [ProjectTableRepository] and there must be system to prevent child data being entered
+ * without parent
  */
 abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEntity<KRT>, V : Date, S : RepositoryBase.State<K, V> {
 	protected val mutableState: MutableStateFlow<S> = MutableStateFlow(initialState)
