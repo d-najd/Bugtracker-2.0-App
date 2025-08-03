@@ -33,10 +33,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
+import io.dnajd.bugtracker.ui.table_task.TableTaskEvent
+import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.presentation.util.rememberKeyboardState
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun TableTaskLeaveComment() {
+fun TableTaskLeaveComment(
+	state: TableTaskScreenState.Success,
+	onCommentSend: (String) -> Unit,
+) {
 	Column(
 		modifier = Modifier.fillMaxWidth(),
 		verticalArrangement = Arrangement.Bottom,
@@ -53,9 +59,20 @@ fun TableTaskLeaveComment() {
 			val focusManager = LocalFocusManager.current
 			var isFocused by remember { mutableStateOf(false) }
 
-			LaunchedEffect(isKeyboardOpen, isFocused) {
+			var commentText by remember { mutableStateOf("") }
+
+			LaunchedEffect(isKeyboardOpen) {
 				if (!isKeyboardOpen && isFocused) {
-					focusManager.clearFocus(true)
+					focusManager.clearFocus()
+				}
+			}
+
+			LaunchedEffect(state.events) {
+				state.events.collectLatest {
+					if (it is TableTaskEvent.CommentSuccessfullyCreated && isFocused) {
+						focusManager.clearFocus()
+						commentText = ""
+					}
 				}
 			}
 
@@ -66,8 +83,10 @@ fun TableTaskLeaveComment() {
 					.onFocusChanged { focusState ->
 						isFocused = focusState.isFocused
 					},
-				value = "Test",
-				onValueChange = { },
+				value = commentText,
+				onValueChange = {
+					commentText = it
+				},
 				placeholder = {
 					Text(stringResource(R.string.info_comment_first))
 				},
@@ -82,7 +101,7 @@ fun TableTaskLeaveComment() {
 				),
 				keyboardActions = KeyboardActions(
 					onSend = {
-
+						onCommentSend(commentText)
 					},
 				),
 			)
@@ -91,7 +110,7 @@ fun TableTaskLeaveComment() {
 				modifier = Modifier
 					.padding(end = 8.dp),
 				onClick = {
-
+					onCommentSend(commentText)
 				},
 			) {
 				Icon(

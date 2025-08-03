@@ -8,13 +8,16 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
+import io.dnajd.data.task_comment.repository.TaskCommentRepository
 import io.dnajd.domain.project_table.model.ProjectTable
-import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskApiService
+import io.dnajd.domain.task_comment.model.TaskComment
+import io.dnajd.domain.task_comment.service.TaskCommentApiService
 import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,8 +29,8 @@ import uy.kohesive.injekt.api.get
 class TableTaskStateScreenModel(
 	val taskId: Long,
 
-	private val taskApiService: TableTaskApiService = Injekt.get(),
-	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
+	private val apiService: TableTaskApiService = Injekt.get(),
+	private val commentApiService: TaskCommentApiService = Injekt.get(),
 ) : StateScreenModel<TableTaskScreenState>(TableTaskScreenState.Loading(taskId)) {
 	private val _events: MutableSharedFlow<TableTaskEvent> = MutableSharedFlow()
 	val events: SharedFlow<TableTaskEvent> = _events.asSharedFlow()
@@ -60,7 +63,10 @@ class TableTaskStateScreenModel(
 			}
 
 		mutableState.update {
-			TableTaskScreenState.Success(taskId)
+			TableTaskScreenState.Success(
+				taskId = taskId,
+				events = events,
+			)
 		}
 	}
 
@@ -69,8 +75,7 @@ class TableTaskStateScreenModel(
 			.taskCurrent()
 			.copy(title = newTitle)
 
-		val persistedTask = taskApiService
-			.updateTask(renamedTask)
+		val persistedTask = apiService.updateTask(renamedTask)
 			.onFailureWithStackTrace {
 				_events.emit(TableTaskEvent.FailedToRenameTask)
 				return@launchIONoQueue
@@ -85,7 +90,7 @@ class TableTaskStateScreenModel(
 			.taskCurrent()
 			.copy(description = newDescription)
 
-		val persistedTask = taskApiService
+		val persistedTask = apiService
 			.updateTask(renamedTask)
 			.onFailureWithStackTrace {
 				_events.emit(TableTaskEvent.FailedToUpdateTaskDescription)
@@ -101,7 +106,7 @@ class TableTaskStateScreenModel(
 	fun swapTable(tableId: Long) = mutex.launchIONoQueue(coroutineScope) {
 		val oldTask = successState().taskCurrent()
 
-		val persistedTasks = taskApiService
+		val persistedTasks = apiService
 			.moveToTable(
 				oldTask.id,
 				tableId,
@@ -115,6 +120,25 @@ class TableTaskStateScreenModel(
 		TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 
 		dismissSheet()
+	}
+
+	fun sendComment(comment: String) = mutex.launchIONoQueue(coroutineScope) {
+		val curTask = successState().taskCurrent()
+		val taskComment = TaskComment(message = comment)
+
+		val persistedComment = commentApiService
+			.create(
+				taskId = curTask.id,
+				comment = taskComment,
+			)
+			.onFailureWithStackTrace {
+				_events.emit(TableTaskEvent.FailedToLeaveComment)
+				return@launchIONoQueue
+			}
+			.getOrThrow()
+
+		TaskCommentRepository.update(TaskCommentRepository.combineForUpdate(persistedComment))
+		_events.emit(TableTaskEvent.CommentSuccessfullyCreated)
 	}
 
 	fun showSheet(sheet: TableTaskSheet) = mutex.launchIONoQueue(coroutineScope) {
@@ -158,9 +182,12 @@ sealed class TableTaskSheet {
 }
 
 sealed class TableTaskEvent {
+	data object CommentSuccessfullyCreated : TableTaskEvent()
+
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
 
 	data object FailedToRenameTask : LocalizedMessage(R.string.error_failed_to_rename_task)
+	data object FailedToLeaveComment : LocalizedMessage(R.string.error_failed_to_leave_comment)
 
 	data object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
 	data object FailedToUpdateTaskDescription :
@@ -176,10 +203,13 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 		.dataKeysById(taskId)
 		.first()
 
-	@Immutable data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
+	@Immutable
+	data class Loading(override val taskId: Long) : TableTaskScreenState(taskId)
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		override val taskId: Long,
+		val events: Flow<TableTaskEvent>,
 		val sheet: TableTaskSheet? = null,
 	) : TableTaskScreenState(taskId) {
 		@Composable
@@ -198,5 +228,8 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 		@Composable
 		fun sheetTablesCollected(): Set<ProjectTable> =
 			ProjectTableRepository.dataKeysByProjectIds(parentTableCollected().projectId)
+
+		@Composable
+		fun commentsCollected(): Set<TaskComment> = TaskCommentRepository.dataKeysCollectedByTaskIds(taskId)
 	}
 }

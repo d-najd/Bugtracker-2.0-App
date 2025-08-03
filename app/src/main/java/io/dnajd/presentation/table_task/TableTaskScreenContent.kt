@@ -33,11 +33,15 @@ fun TableTaskScreenContent(
 	onChangeTableClicked: (Long) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
+	onCommentSend: (String) -> Unit,
 	onBottomSheetDismissed: () -> Unit,
 ) {
 	Scaffold(
 		bottomBar = {
-			TableTaskLeaveComment()
+			TableTaskLeaveComment(
+				state = state,
+				onCommentSend = onCommentSend,
+			)
 		},
 	) { contentPadding ->
 		BackHandler { onBackClicked() }

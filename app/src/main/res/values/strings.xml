@@ -111,5 +111,6 @@
 	<string name="field_sign_in_google">Sign in with Google</string>
 	<string name="field_or">or</string>
 	<string name="error_failed_to_rename_task">Failed to rename task</string>
+	<string name="error_failed_to_leave_comment">Failed to leave comment\n</string>
 
 </resources>

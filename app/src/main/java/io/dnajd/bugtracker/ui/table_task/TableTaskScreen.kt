@@ -34,13 +34,15 @@ class TableTaskScreen(
 					is TableTaskEvent.FailedToRetrieveTable,
 					is TableTaskEvent.FailedToRetrieveTask,
 						-> {
-						context.toast((event as TableTaskEvent.LocalizedMessage).stringRes)
+						context.toast(event.stringRes)
 						navigator.pop()
 					}
 
 					is TableTaskEvent.LocalizedMessage -> {
 						context.toast(event.stringRes)
 					}
+
+					else -> {}
 				}
 			}
 		}
@@ -87,6 +89,11 @@ class TableTaskScreen(
 								description = successState.taskCurrent().description ?: "",
 							),
 						)
+					},
+					onCommentSend = {
+						if (it.isNotBlank()) {
+							screenModel.sendComment(it)
+						}
 					},
 					onBottomSheetDismissed = {
 						screenModel.dismissSheet()

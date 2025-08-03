@@ -23,7 +23,11 @@ import java.util.Date
 
 @Composable
 fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
-	for (comment in state.taskCollected().comments) {
+	val commentsOrdered = state.commentsCollected()
+		.toList()
+		.sortedBy { it.createdAt }
+
+	for (comment in commentsOrdered) {
 		BugtrackerIconPairField(
 			modifier = Modifier.padding(
 				top = 12.dp,
@@ -46,10 +50,13 @@ fun TableTaskCommentsContent(state: TableTaskScreenState.Success) {
 						fontWeight = fontWeight,
 					)
 
-					val dateSeconds: Long =
-						if (comment.editedAt != null) (Date().time - comment.editedAt.time) / 1000 else (Date().time - comment.createdAt.time) / 1000
-					val dateString =
-						if (dateSeconds > 0) BugtrackerDateFormat.generateStringFromTime(timeSeconds = dateSeconds) else "Invalid Date"
+					val dateSeconds: Long = if (comment.editedAt != null) {
+						Date().toInstant().epochSecond - comment.editedAt.toInstant().epochSecond
+					} else {
+						Date().toInstant().epochSecond - comment.createdAt.toInstant().epochSecond
+					}
+					val dateString = BugtrackerDateFormat.generateStringFromTime(timeSeconds = dateSeconds)
+
 					Text(
 						modifier = Modifier.padding(start = 6.dp),
 						text = "$dateString ${stringResource(R.string.field_ago).lowercase()}",
