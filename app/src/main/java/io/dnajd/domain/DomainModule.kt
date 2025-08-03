@@ -23,6 +23,7 @@ import io.dnajd.domain.task_comment.service.TaskCommentApiService
 import io.dnajd.domain.user_authority.service.UserAuthorityApiService
 import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
+import io.dnajd.util.GsonUTCDateAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,6 +33,7 @@ import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
+import java.util.Date
 
 class DomainModule : InjektModule {
 	companion object {
@@ -55,6 +57,10 @@ class DomainModule : InjektModule {
 					BugtrackerDateFormat
 						.defaultRequestDateFormat()
 						.toPattern(),
+				)
+				.registerTypeAdapter(
+					Date::class.java,
+					GsonUTCDateAdapter(BugtrackerDateFormat.defaultRequestDateFormat()),
 				)
 				.registerTypeAdapterFactory(MutableListTypeAdapterFactory())
 				.create()
