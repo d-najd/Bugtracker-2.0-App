@@ -34,5 +34,19 @@ ij_c_function_call_arguments_wrap = on_every_item
 ij_c_template_declaration_function_wrap = on_every_item
 ij_any_method_call_chain_wrap = on_every_item
 ij_kotlin_method_call_chain_wrap = split_into_lines
-# ij_c_method_call_chain_wrap = on_every_item
+#
+# # ij_kotlin_block_comment_at_first_column = false
+# ij_kotlin_block_comment_add_space = false
+# ij_kotlin_line_comment_add_space_on_reformat = false
+# ij_kotlin_keep_first_column_comment = false
+# ij_kotlin_line_comment_add_space = false
+# ij_kotlin_line_comment_at_first_column = false
+#
+# ktlint_standard_block-comment-initial-star-alignment = disabled
+# ktlint_standard_spacing-between-declarations-with-comments = disabled
+# ktlint_standard_no-consecutive-comments = disabled
+# ktlint_standard_comment-wrapping = disabled
+# ktlint_standard_discouraged-comment-location = disabled
+#
+# # ij_c_method_call_chain_wrap = on_every_item
 # ij_any_wrap_first_method_in_call_chain = false
