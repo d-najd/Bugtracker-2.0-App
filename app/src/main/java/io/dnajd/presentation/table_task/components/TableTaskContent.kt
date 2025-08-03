@@ -32,9 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
@@ -57,21 +60,28 @@ fun TableTaskContent(
 	Box(
 		modifier = Modifier.padding(contentPadding),
 	) {
+		var leaveCommentHeightDp by remember {
+			mutableStateOf(0.dp)
+		}
+
 		Content(
 			state = state,
+			leaveCommentHeightDp = leaveCommentHeightDp,
 			onRenameTaskClicked = onRenameTaskClicked,
 			onChangeTableSheetClicked = onChangeTableSheetClicked,
 			onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
 		)
 
-
-		LeaveComment()
+		LeaveComment(
+			onHeightChanged = { leaveCommentHeightDp = it },
+		)
 	}
 }
 
 @Composable
 private fun BoxScope.Content(
 	state: TableTaskScreenState.Success,
+	leaveCommentHeightDp: Dp,
 
 	onRenameTaskClicked: (String) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
@@ -84,7 +94,8 @@ private fun BoxScope.Content(
 			.padding(
 				horizontal = 12.dp,
 				vertical = 36.dp,
-			),
+			)
+			.padding(bottom = leaveCommentHeightDp),
 	) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
@@ -181,9 +192,20 @@ private fun BoxScope.Content(
 }
 
 @Composable
-fun BoxScope.LeaveComment() {
+fun BoxScope.LeaveComment(
+	onHeightChanged: (Dp) -> Unit,
+) {
+	// TODO retrieving height like this causes recomposition, its possible to do this without it but its much
+	// more complex
+	// https://stackoverflow.com/questions/73354911/how-to-get-exact-size-without-recomposition
+	val localDensity = LocalDensity.current
 	Column(
-		modifier = Modifier.align(Alignment.BottomCenter),
+		modifier = Modifier
+			.align(Alignment.BottomCenter)
+			.onGloballyPositioned { coordinates ->
+				val curHeight = with(localDensity) { coordinates.size.height.toDp() }
+				onHeightChanged.invoke(curHeight)
+			},
 		verticalArrangement = Arrangement.Bottom,
 	) {
 		HorizontalDivider()
