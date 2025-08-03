@@ -7,6 +7,5 @@ import io.dnajd.domain.table_task.model.TableTask
  * used to grab them using the data with matching data from the current entity (its id)
  */
 interface BaseApiEntity<T> {
-	val te: TableTask
 	fun getId(): T
 }

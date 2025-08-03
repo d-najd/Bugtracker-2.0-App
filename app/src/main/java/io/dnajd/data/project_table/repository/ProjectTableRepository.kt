@@ -95,7 +95,7 @@ object ProjectTableRepository :
 		vararg lastFetchProjectsUpdated: Long,
 	) {
 		val dataWithoutTasks = data.mapKeys {
-			it.key.copy(tasks = null)
+			it.key.copy(tasks = emptyList())
 		}
 
 		val lastFetches = lastFetchedByProjectIds().toMutableMap()
