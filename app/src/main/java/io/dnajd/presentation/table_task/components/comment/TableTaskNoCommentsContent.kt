@@ -19,7 +19,9 @@ import io.dnajd.bugtracker.R
 @Composable
 fun TableTaskNoCommentsContent() {
 	Column(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 18.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
 		Icon(

@@ -57,7 +57,7 @@ fun TableTaskContent(
 				.verticalScroll(rememberScrollState())
 				.padding(
 					horizontal = 12.dp,
-					vertical = 36.dp,
+					vertical = 12.dp,
 				),
 		) {
 			Row(
