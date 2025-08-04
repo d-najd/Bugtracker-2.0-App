@@ -29,13 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
+import io.dnajd.presentation.util.transparentColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,13 +96,7 @@ fun TableTaskAlterDescriptionSheet(
 		val focusRequester = remember { FocusRequester() }
 
 		TextField(
-			colors = TextFieldDefaults.colors(
-				focusedContainerColor = Color.Transparent,
-				unfocusedContainerColor = Color.Transparent,
-				disabledContainerColor = Color.Transparent,
-				focusedIndicatorColor = Color.Transparent,
-				unfocusedIndicatorColor = Color.Transparent,
-			),
+			colors = TextFieldDefaults.transparentColors(),
 			modifier = Modifier
 				.fillMaxWidth()
 				.fillMaxHeight()

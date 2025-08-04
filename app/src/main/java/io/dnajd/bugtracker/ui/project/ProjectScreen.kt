@@ -53,7 +53,6 @@ class ProjectScreen : ScreenFixed() {
 				navigator.push(ProjectTableScreen(project.id))
 			},
 			onCreateProjectClicked = { screenModel.showDialog(ProjectDialog.CreateProject()) },
-			onFilterByNameClicked = { },
 		)
 
 		when (successState.dialog) {

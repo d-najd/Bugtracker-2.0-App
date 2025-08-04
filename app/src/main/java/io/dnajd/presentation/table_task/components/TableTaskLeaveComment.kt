@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -36,6 +35,7 @@ import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.table_task.TableTaskEvent
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.presentation.util.rememberKeyboardState
+import io.dnajd.presentation.util.transparentColors
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -90,12 +90,7 @@ fun TableTaskLeaveComment(
 				placeholder = {
 					Text(stringResource(R.string.info_comment_first))
 				},
-				colors = TextFieldDefaults.colors(
-					focusedContainerColor = Color.Transparent,
-					unfocusedContainerColor = Color.Transparent,
-					focusedIndicatorColor = Color.Transparent,
-					unfocusedIndicatorColor = Color.Transparent,
-				),
+				colors = TextFieldDefaults.transparentColors(),
 				keyboardOptions = KeyboardOptions.Default.copy(
 					imeAction = ImeAction.Send,
 				),

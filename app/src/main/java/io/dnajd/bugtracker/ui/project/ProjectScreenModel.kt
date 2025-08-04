@@ -75,9 +75,11 @@ class ProjectScreenModel(
 
 sealed class ProjectScreenState {
 
-	@Immutable data object Loading : ProjectScreenState()
+	@Immutable
+	data object Loading : ProjectScreenState()
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		val dialog: ProjectDialog? = null,
 	) : ProjectScreenState() {
 		@Composable
