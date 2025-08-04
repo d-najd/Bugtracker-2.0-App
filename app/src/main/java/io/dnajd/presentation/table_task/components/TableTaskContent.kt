@@ -144,9 +144,11 @@ fun TableTaskContent(
 				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
 			)
 
+			/*
 			TableTaskChildIssuesField(state = state)
 
 			TableTaskAssignedField(state = state)
+			 */
 
 			TableTaskIconPairFields(state = state)
 
