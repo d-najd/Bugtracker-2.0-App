@@ -49,6 +49,7 @@ import org.burnoutcrew.reorderable.reorderable
 @Composable
 fun ProjectTableCard(
 	state: ProjectTableScreenState.Success,
+	taskFilterString: String?,
 	table: ProjectTable,
 	index: Int,
 
@@ -71,9 +72,11 @@ fun ProjectTableCard(
 	) {
 		val tasks = state
 			.tasksCollectedByTableId(table.id)
-			.sortedBy { it.position }
+			.filterAndSort(taskFilterString)
 
-		var reorderableList by remember { mutableStateOf(tasks) }        // a list is being stored in case the user moves multiple table items
+		var reorderableList by remember { mutableStateOf(tasks) }
+
+		// a list is being stored in case the user moves multiple table items
 		val reorderableState = rememberReorderableLazyListState(
 			onMove = { from, to ->
 				reorderableList = reorderableList
@@ -87,10 +90,11 @@ fun ProjectTableCard(
 			},
 			onDragEnd = { from, to ->
 				if (from != to) {
+					val tasksInCurTable = tasks.filter { it.tableId == table.id }
 					onMoveTableTasks(
 						table.id,
-						from,
-						to,
+						tasksInCurTable[from].position,
+						tasksInCurTable[to].position,
 					)
 				}
 			},
@@ -103,13 +107,13 @@ fun ProjectTableCard(
 		LaunchedEffect(state.events) {
 			state.events.collect { event ->
 				if (event is ProjectTableEvent.FailedToMoveTableTasks) {
-					reorderableList = tasks.sortedBy { it.position }
+					reorderableList = tasks.filterAndSort(taskFilterString)
 				}
 			}
 		}
 
-		LaunchedEffect(tasks) {
-			reorderableList = tasks.sortedBy { it.position }
+		LaunchedEffect(tasks, taskFilterString) {
+			reorderableList = tasks.filterAndSort(taskFilterString)
 		}
 
 		ProjectTableCardTop(
@@ -165,6 +169,17 @@ fun ProjectTableCard(
 			onCreateTableTaskClicked = onCreateTableTaskClicked,
 		)
 	}
+}
+
+private fun Collection<TableTask>.filterAndSort(taskFilterString: String?): List<TableTask> {
+	return this.filter { task ->
+		@Suppress("NullableBooleanElvis") // more readable like this
+		taskFilterString?.let {
+			task.title.lowercase()
+				.contains(it.lowercase())
+		} ?: true
+	}
+		.sortedBy { it.position }
 }
 
 @Composable

@@ -114,5 +114,6 @@
 	<string name="error_failed_to_leave_comment">Failed to leave comment\n</string>
 	<string name="field_search_projects">Search Projects</string>
 	<string name="field_filtered_projects">Filtered Projects</string>
+	<string name="field_search_in_tasks">Search in tasks</string>
 
 </resources>

@@ -4,6 +4,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.bugtracker.ui.util.ProjectTableSelectedTab
 import io.dnajd.domain.table_task.model.TableTask
@@ -28,10 +32,17 @@ fun ProjectTableScreenContent(
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 	onSwitchScreenTabClicked: (ProjectTableSelectedTab) -> Unit,
 ) {
+	/**
+	 * If null no filtering, if empty filtering but no string, if string filtering with string
+	 */
+	var taskFilterString by remember { mutableStateOf<String?>(null) }
+
 	Scaffold(
 		topBar = {
 			ProjectTableTopAppBar(
 				state = state,
+				taskFilterString = taskFilterString,
+				onTaskFilterStringChange = { taskFilterString = it },
 				onBackClicked = onBackClicked,
 				onCreateTableClicked = onCreateTableClicked,
 				onSwitchScreenTabClicked = onSwitchScreenTabClicked,
@@ -49,6 +60,7 @@ fun ProjectTableScreenContent(
 
 		ProjectTableContent(
 			state = successState,
+			taskFilterString = taskFilterString,
 			contentPadding = contentPadding,
 			onTableRename = onTableRename,
 			onMoveTableTasks = onMoveTableTasks,

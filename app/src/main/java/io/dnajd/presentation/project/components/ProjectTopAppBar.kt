@@ -68,6 +68,7 @@ fun ProjectTopAppBar(
 			if (projectFilterString == null) {
 				Text(
 					text = stringResource(R.string.field_projects),
+					fontSize = 20.sp,
 				)
 			} else {
 				TextField(

@@ -16,6 +16,7 @@ import io.dnajd.domain.table_task.model.TableTask
 @Composable
 fun ProjectTableContent(
 	state: ProjectTableScreenState.Success,
+	taskFilterString: String?,
 	contentPadding: PaddingValues,
 
 	onTableRename: (Long, String) -> Unit,
@@ -41,6 +42,7 @@ fun ProjectTableContent(
 			.withIndex()) {
 			ProjectTableCard(
 				state = state,
+				taskFilterString = taskFilterString,
 				table = table,
 				index = index,
 				onTableRename = onTableRename,
