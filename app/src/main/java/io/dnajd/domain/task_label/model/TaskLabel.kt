@@ -1,7 +1,7 @@
 package io.dnajd.domain.task_label.model
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.base.BaseApiEntity
 
 data class TaskLabel(
 	@SerializedName("id") val id: Long = -1,

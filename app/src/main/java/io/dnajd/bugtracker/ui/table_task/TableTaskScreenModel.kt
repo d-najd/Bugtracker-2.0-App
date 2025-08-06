@@ -9,12 +9,12 @@ import io.dnajd.bugtracker.R
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
 import io.dnajd.data.task_comment.repository.TaskCommentRepository
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.task_comment.model.TaskComment
 import io.dnajd.domain.task_comment.service.TaskCommentApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.flow.Flow

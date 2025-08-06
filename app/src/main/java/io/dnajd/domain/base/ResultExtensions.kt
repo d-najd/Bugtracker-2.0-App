@@ -1,4 +1,4 @@
-package io.dnajd.domain.utils
+package io.dnajd.domain.base
 
 /**
  * Same as [Result.onFailure] but also prints stack trace instead of requiring to do so manually

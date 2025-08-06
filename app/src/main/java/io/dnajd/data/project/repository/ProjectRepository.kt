@@ -3,9 +3,9 @@ package io.dnajd.data.project.repository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.user_authority.repository.UserAuthorityRepository
 import io.dnajd.data.utils.RepositoryBase
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date

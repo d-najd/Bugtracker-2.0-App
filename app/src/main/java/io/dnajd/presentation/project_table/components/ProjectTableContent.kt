@@ -19,8 +19,10 @@ fun ProjectTableContent(
 	taskFilterString: String?,
 	contentPadding: PaddingValues,
 
+	onTaskDraggedStateChange: (Boolean) -> Unit,
+
 	onTableRename: (Long, String) -> Unit,
-	onMoveTableTasks: (Long, Int, Int) -> Unit,
+	onMoveTableTasks: (Long, Long) -> Unit,
 	onDeleteTableClicked: (Long) -> Unit,
 	onCreateTableTaskMenuClicked: (Long?) -> Unit,
 	onCreateTableTaskClicked: (TableTask) -> Unit,
@@ -45,6 +47,7 @@ fun ProjectTableContent(
 				taskFilterString = taskFilterString,
 				table = table,
 				index = index,
+				onTaskDraggedStateChange = onTaskDraggedStateChange,
 				onTableRename = onTableRename,
 				onMoveTableTasks = onMoveTableTasks,
 				onDeleteTableClicked = onDeleteTableClicked,

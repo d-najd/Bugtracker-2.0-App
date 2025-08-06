@@ -2,7 +2,7 @@ package io.dnajd.domain.user_authority.model
 
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.base.BaseApiEntity
 
 
 data class UserAuthorityListResponse(

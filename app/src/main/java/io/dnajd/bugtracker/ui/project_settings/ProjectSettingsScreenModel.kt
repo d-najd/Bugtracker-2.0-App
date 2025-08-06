@@ -7,9 +7,9 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -53,9 +53,11 @@ sealed class ProjectSettingsEvent {
 
 sealed class ProjectSettingsScreenState(open val projectId: Long) {
 
-	@Immutable data class Loading(override val projectId: Long) : ProjectSettingsScreenState(projectId)
+	@Immutable
+	data class Loading(override val projectId: Long) : ProjectSettingsScreenState(projectId)
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		override val projectId: Long,
 	) : ProjectSettingsScreenState(projectId) {
 		@Composable

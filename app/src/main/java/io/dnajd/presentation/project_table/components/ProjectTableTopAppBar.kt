@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import io.dnajd.presentation.util.transparentColors
 fun ProjectTableTopAppBar(
 	state: ProjectTableScreenState,
 	taskFilterString: String?,
+	isTaskDragged: Boolean,
 	onTaskFilterStringChange: (String?) -> Unit,
 	onBackClicked: () -> Unit,
 
@@ -87,6 +89,12 @@ fun ProjectTableTopAppBar(
 					fontSize = 20.sp,
 				)
 			} else {
+				val taskNotDraggedColors = TextFieldDefaults.transparentColors()
+				val taskDraggedColors = taskNotDraggedColors.copy(
+					focusedTextColor = taskNotDraggedColors.disabledTextColor,
+					cursorColor = Color.Transparent,
+				)
+
 				TextField(
 					modifier = Modifier
 						.focusRequester(focusRequester = taskFilterFocusRequester)
@@ -97,8 +105,12 @@ fun ProjectTableTopAppBar(
 							}
 						},
 					value = taskFilterString,
-					onValueChange = { onTaskFilterStringChange.invoke(it) },
-					colors = TextFieldDefaults.transparentColors(),
+					onValueChange = {
+						if (!isTaskDragged) {
+							onTaskFilterStringChange.invoke(it)
+						}
+					},
+					colors = if (!isTaskDragged) taskNotDraggedColors else taskDraggedColors,
 					textStyle = TextStyle(
 						fontSize = 20.sp,
 					),

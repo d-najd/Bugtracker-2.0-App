@@ -1,4 +1,4 @@
-package io.dnajd.domain.utils
+package io.dnajd.domain.base
 
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter

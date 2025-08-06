@@ -1,9 +1,9 @@
 package io.dnajd.data.utils
 
+import io.dnajd.domain.base.JwtUtil
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
-import io.dnajd.domain.utils.JwtUtil
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIO
 import kotlinx.coroutines.DelicateCoroutinesApi
 import logcat.logcat
@@ -15,7 +15,8 @@ import kotlin.concurrent.schedule
 /**
  * Manages refreshing of access and refresh token
  */
-@OptIn(DelicateCoroutinesApi::class) object JwtTokenRefresher {
+@OptIn(DelicateCoroutinesApi::class)
+object JwtTokenRefresher {
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get()
 	private val jwtRefreshAuthApiService: JwtRefreshAuthApiService = Injekt.get()
 
@@ -130,7 +131,9 @@ import kotlin.concurrent.schedule
 				.getOrThrow()!!
 
 			val accessNeedsRefreshIn =
-				(JwtUtil.accessTokenExpirationWithToleranceMilli(accessToken) - System.currentTimeMillis()).coerceAtLeast(0)
+				(JwtUtil.accessTokenExpirationWithToleranceMilli(accessToken) - System.currentTimeMillis()).coerceAtLeast(
+					0,
+				)
 			Timer().schedule(accessNeedsRefreshIn) {
 				launchIO {
 					if (!JwtUtil.accessTokenNeedsRefresh(accessToken)) {

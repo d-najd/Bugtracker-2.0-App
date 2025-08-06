@@ -43,6 +43,7 @@ import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
 import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.ReorderableLazyListState
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
@@ -53,8 +54,10 @@ fun ProjectTableCard(
 	table: ProjectTable,
 	index: Int,
 
+	onTaskDraggedStateChange: (Boolean) -> Unit,
+
 	onTableRename: (Long, String) -> Unit,
-	onMoveTableTasks: (Long, Int, Int) -> Unit,
+	onMoveTableTasks: (Long, Long) -> Unit,
 	onDeleteTableClicked: (Long) -> Unit,
 	onCreateTableTaskMenuClicked: (Long?) -> Unit,
 	onCreateTableTaskClicked: (TableTask) -> Unit,
@@ -76,9 +79,20 @@ fun ProjectTableCard(
 
 		var reorderableList by remember { mutableStateOf(tasks) }
 
-		// a list is being stored in case the user moves multiple table items
-		val reorderableState = rememberReorderableLazyListState(
+		/**
+		 * for some reason [taskFilterString] is not passed correctly in [ReorderableLazyListState.onDragEnd]
+		 * and [reorderableList] is not reliable due to [ReorderableLazyListState.onMove] being called before
+		 * [ReorderableLazyListState.onDragEnd] so I do this to determine the index of the correct item instead
+		 */
+		var preOnMoveReorderableList by remember { mutableStateOf<List<TableTask>?>(null) }
+
+		val reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(
 			onMove = { from, to ->
+				if (preOnMoveReorderableList == null) {
+					onTaskDraggedStateChange.invoke(true)
+					preOnMoveReorderableList = reorderableList
+				}
+
 				reorderableList = reorderableList
 					.toMutableList()
 					.apply {
@@ -90,13 +104,22 @@ fun ProjectTableCard(
 			},
 			onDragEnd = { from, to ->
 				if (from != to) {
-					val tasksInCurTable = tasks.filter { it.tableId == table.id }
+					val tasksInCurTable = preOnMoveReorderableList!!
+					/*
+					val tasksInCurTable = tasks.filterAndSort(taskFilterString)
+						.filter { it.tableId == table.id }
+					 */
+					val fTask = tasksInCurTable[from]
+					val sTask = tasksInCurTable[to]
+
 					onMoveTableTasks(
-						table.id,
-						tasksInCurTable[from].position,
-						tasksInCurTable[to].position,
+						fTask.id,
+						sTask.id,
 					)
 				}
+
+				preOnMoveReorderableList = null
+				onTaskDraggedStateChange.invoke(false)
 			},
 		)
 

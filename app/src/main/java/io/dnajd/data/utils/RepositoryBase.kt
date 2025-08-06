@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
-import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.base.BaseApiEntity
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask

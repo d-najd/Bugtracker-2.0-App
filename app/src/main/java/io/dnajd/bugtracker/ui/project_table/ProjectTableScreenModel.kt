@@ -10,12 +10,12 @@ import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.table_task.repository.TableTaskRepository
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.Date
 
-@OptIn(ExperimentalCoroutinesApi::class) class ProjectTableScreenModel(
+@OptIn(ExperimentalCoroutinesApi::class)
+class ProjectTableScreenModel(
 	private val projectId: Long,
 
 	private val projectTableApiService: ProjectTableApiService = Injekt.get(),
@@ -188,26 +189,28 @@ import java.util.Date
 	}
 
 	/**
-	 * moves 2 table tasks, this is different from swapping positions
+	 * moves 2 table tasks, this is different from swapping positions, the tasks must be in the same table
 	 *
-	 * @param fIndex index of the first task in the table
-	 * @param sIndex index of the second task in the table
-	 * @param tableId id of the table in which the tasks are located at, this is used mainly to save
-	 * the need to find the id manually
-	 * @throws IllegalArgumentException if [fIndex] == [sIndex]
+	 * @param fId id of the first task
+	 * @param sId id of the second task
+	 * @throws IllegalArgumentException if [fId] == [sId] or if the [TableTask.tableId] aren't the same
 	 */
 	fun moveTableTasks(
-		tableId: Long,
-		fIndex: Int,
-		sIndex: Int,
+		fId: Long,
+		sId: Long,
 	) = mutex.launchIONoQueue(coroutineScope) {
-		if (fIndex == sIndex) {
+		if (fId == sId) {
 			throw IllegalArgumentException("fIndex and sIndex can't be the same")
 		}
 
-		val tasks = TableTaskRepository.dataByTableIds(tableId).keys
-		val fTask = tasks.first { it.position == fIndex }
-		val sTask = tasks.first { it.position == sIndex }
+		val fTask = TableTaskRepository.dataKeysById(fId)
+			.first()
+		val sTask = TableTaskRepository.dataKeysById(sId)
+			.first()
+
+		if (fTask.tableId != sTask.tableId) {
+			throw IllegalArgumentException("Trying to move tasks between different tables")
+		}
 
 		val persistedTasks = tableTaskApiService
 			.movePositionTo(
@@ -318,9 +321,11 @@ sealed class ProjectTableDialog {
 
 sealed class ProjectTableScreenState(open val projectId: Long) {
 
-	@Immutable data class Loading(override val projectId: Long) : ProjectTableScreenState(projectId)
+	@Immutable
+	data class Loading(override val projectId: Long) : ProjectTableScreenState(projectId)
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		override val projectId: Long,
 		val events: Flow<ProjectTableEvent>,
 		val dropdownOpenedInTableId: Long? = null,

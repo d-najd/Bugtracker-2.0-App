@@ -8,9 +8,9 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -83,9 +83,11 @@ class ProjectDetailsScreenModel(
 sealed class ProjectDetailsScreenState(
 	projectId: Long,
 ) {
-	@Immutable data class Loading(val projectId: Long) : ProjectDetailsScreenState(projectId)
+	@Immutable
+	data class Loading(val projectId: Long) : ProjectDetailsScreenState(projectId)
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		val projectId: Long,
 	) : ProjectDetailsScreenState(projectId) {
 		@Composable

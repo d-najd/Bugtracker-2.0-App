@@ -22,7 +22,7 @@ fun ProjectTableScreenContent(
 	onBackClicked: () -> Unit,
 
 	onTableRename: (Long, String) -> Unit,
-	onMoveTableTasks: (Long, Int, Int) -> Unit,
+	onMoveTableTasks: (Long, Long) -> Unit,
 	onDeleteTableClicked: (Long) -> Unit,
 	onCreateTableClicked: () -> Unit,
 	onCreateTableTaskMenuClicked: (Long?) -> Unit,
@@ -36,12 +36,14 @@ fun ProjectTableScreenContent(
 	 * If null no filtering, if empty filtering but no string, if string filtering with string
 	 */
 	var taskFilterString by remember { mutableStateOf<String?>(null) }
+	var isTaskDragged by remember { mutableStateOf(false) }
 
 	Scaffold(
 		topBar = {
 			ProjectTableTopAppBar(
 				state = state,
 				taskFilterString = taskFilterString,
+				isTaskDragged = isTaskDragged,
 				onTaskFilterStringChange = { taskFilterString = it },
 				onBackClicked = onBackClicked,
 				onCreateTableClicked = onCreateTableClicked,
@@ -62,6 +64,7 @@ fun ProjectTableScreenContent(
 			state = successState,
 			taskFilterString = taskFilterString,
 			contentPadding = contentPadding,
+			onTaskDraggedStateChange = { isTaskDragged = it },
 			onTableRename = onTableRename,
 			onMoveTableTasks = onMoveTableTasks,
 			onDeleteTableClicked = onDeleteTableClicked,

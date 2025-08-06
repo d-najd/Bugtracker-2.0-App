@@ -1,7 +1,7 @@
 package io.dnajd.domain.task_comment.model
 
 import com.google.gson.annotations.SerializedName
-import io.dnajd.domain.BaseApiEntity
+import io.dnajd.domain.base.BaseApiEntity
 import java.util.Date
 
 data class TaskComment(

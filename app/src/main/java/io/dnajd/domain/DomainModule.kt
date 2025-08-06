@@ -14,6 +14,8 @@ import io.dnajd.data.task_comment.api.TaskCommentApiServiceImpl
 import io.dnajd.data.user_authority.api.UserAuthorityApiServiceImpl
 import io.dnajd.data.user_authority.api.UserAuthorityApiServiceMock
 import io.dnajd.data.utils.JwtAuthenticator
+import io.dnajd.domain.base.HostnameVerifierAlwaysTrue
+import io.dnajd.domain.base.MutableListTypeAdapterFactory
 import io.dnajd.domain.google_auth.service.GoogleAuthApiService
 import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
 import io.dnajd.domain.project.service.ProjectApiService
@@ -21,7 +23,6 @@ import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.task_comment.service.TaskCommentApiService
 import io.dnajd.domain.user_authority.service.UserAuthorityApiService
-import io.dnajd.domain.utils.MutableListTypeAdapterFactory
 import io.dnajd.util.BugtrackerDateFormat
 import io.dnajd.util.GsonUTCDateAdapter
 import okhttp3.OkHttpClient
@@ -48,6 +49,7 @@ class DomainModule : InjektModule {
 				.Builder()
 				.addInterceptor(loggingInterceptor)
 				.addInterceptor(JwtAuthenticator)
+				.hostnameVerifier(HostnameVerifierAlwaysTrue)
 				.build()
 		}
 

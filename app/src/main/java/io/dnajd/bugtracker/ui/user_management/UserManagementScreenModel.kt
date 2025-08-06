@@ -11,11 +11,11 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.user_authority.repository.UserAuthorityRepository
 import io.dnajd.data.user_authority.repository.UserAuthorityRepository.state
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
 import io.dnajd.domain.user_authority.model.UserAuthority
 import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.domain.user_authority.service.UserAuthorityApiService
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -224,9 +224,11 @@ sealed class UserManagementDialog {
 sealed class UserManagementScreenState(
 	open val projectId: Long,
 ) {
-	@Immutable data class Loading(override val projectId: Long) : UserManagementScreenState(projectId)
+	@Immutable
+	data class Loading(override val projectId: Long) : UserManagementScreenState(projectId)
 
-	@Immutable data class Success(
+	@Immutable
+	data class Success(
 		override val projectId: Long,
 		val selfUsername: String,
 		val dialog: UserManagementDialog? = null,

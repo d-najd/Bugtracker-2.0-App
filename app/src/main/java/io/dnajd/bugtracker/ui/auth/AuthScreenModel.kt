@@ -5,10 +5,10 @@ import androidx.compose.runtime.Immutable
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
+import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.google_auth.model.CreateUser
 import io.dnajd.domain.google_auth.service.GoogleAuthApiService
 import io.dnajd.domain.jwt_auth.service.JwtAuthPreferenceStore
-import io.dnajd.domain.utils.onFailureWithStackTrace
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -70,7 +70,8 @@ class AuthScreenModel(
 }
 
 sealed class AuthScreenState {
-	@Immutable data object Success : AuthScreenState()
+	@Immutable
+	data object Success : AuthScreenState()
 }
 
 sealed class AuthEvent {
