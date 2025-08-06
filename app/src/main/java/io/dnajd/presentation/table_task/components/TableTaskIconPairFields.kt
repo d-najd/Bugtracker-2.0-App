@@ -48,15 +48,17 @@ fun TableTaskIconPairFields(
 			.format(state.taskCollected().createdAt),
 	)
 
-	BugtrackerIconPairField(
-		modifier = Modifier.padding(top = 16.dp),
-		title = stringResource(R.string.field_updated),
-		text = if (state.taskCollected().updatedAt != null) {
-			BugtrackerDateFormat
-				.defaultRequestDateFormat()
-				.format(state.taskCollected().updatedAt!!)
-		} else {
-			"${stringResource(R.string.field_never)} TM"
-		},
-	)
+	if (state.taskCollected().updatedAt != null) {
+		BugtrackerIconPairField(
+			modifier = Modifier.padding(top = 16.dp),
+			title = stringResource(R.string.field_updated),
+			text = if (state.taskCollected().updatedAt != null) {
+				BugtrackerDateFormat
+					.defaultRequestDateFormat()
+					.format(state.taskCollected().updatedAt!!)
+			} else {
+				stringResource(R.string.field_never)
+			},
+		)
+	}
 }

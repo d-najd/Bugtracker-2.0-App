@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Redo
-import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -67,6 +65,7 @@ fun TableTaskAlterDescriptionSheet(
 					}
 				},
 				actions = {
+					/* TODO finish this
 					IconButton(onClick = { /*TODO*/ }) {
 						Icon(
 							imageVector = Icons.AutoMirrored.Rounded.Undo,
@@ -79,6 +78,7 @@ fun TableTaskAlterDescriptionSheet(
 							contentDescription = "",
 						)
 					}
+					 */
 					TextButton(
 						enabled = mutableDescription != description,
 						onClick = { onDescriptionChange(mutableDescription) },

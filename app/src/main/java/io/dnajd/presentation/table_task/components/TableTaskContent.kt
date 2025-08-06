@@ -144,7 +144,7 @@ fun TableTaskContent(
 				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
 			)
 
-			/*
+			/* TODO finish this
 			TableTaskChildIssuesField(state = state)
 
 			TableTaskAssignedField(state = state)
