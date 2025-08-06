@@ -115,5 +115,9 @@
 	<string name="field_search_projects">Search Projects</string>
 	<string name="field_filtered_projects">Filtered Projects</string>
 	<string name="field_search_in_tasks">Search in tasks</string>
+	<string name="field_role_owner">Role Owner</string>
+	<string name="field_role_manager">Role Manager</string>
+	<string name="field_role_editor">Role Editor</string>
+	<string name="field_role_viewer">Role Viewer</string>
 
 </resources>
