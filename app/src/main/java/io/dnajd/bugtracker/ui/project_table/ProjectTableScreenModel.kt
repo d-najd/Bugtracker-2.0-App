@@ -1,6 +1,5 @@
 package io.dnajd.bugtracker.ui.project_table
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -222,35 +221,6 @@ class ProjectTableScreenModel(
 				return@launchIONoQueue
 			}
 			.getOrThrow().data
-
-		val previousTest = TableTaskRepository.data()
-		val previousTasks = TableTaskRepository.dataKeys()
-
-		val se = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
-		Log.e(
-			"Mine Test",
-			"Previous",
-		)
-		previousTest.forEach {
-			Log.e(
-				"Mine Test",
-				"T of ID: ${it.key.id} position: ${it.key.position} has ${it.value}",
-			)
-		}
-		Log.e(
-			"Mine Test",
-			"New",
-		)
-		se.forEach {
-			Log.e(
-				"Mine Test",
-				"T of ID: ${it.key.id} position: ${it.key.position} has ${it.value}",
-			)
-		}
-
-		previousTest.toString()
-		se.toString()
-		previousTasks.toString()
 
 		TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
 	}

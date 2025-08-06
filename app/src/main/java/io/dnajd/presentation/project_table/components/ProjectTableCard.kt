@@ -140,6 +140,7 @@ fun ProjectTableCard(
 			state = state,
 			table = table,
 			index = index,
+			tasksWithFilter = tasks,
 			onTableRename = onTableRename,
 			onDeleteTableClicked = onDeleteTableClicked,
 			onSwapTablePositionsClicked = onSwapTablePositionsClicked,
@@ -206,6 +207,7 @@ private fun ProjectTableCardTop(
 	modifier: Modifier = Modifier,
 	state: ProjectTableScreenState.Success,
 	table: ProjectTable,
+	tasksWithFilter: List<TableTask>,
 	index: Int,
 
 	onTableRename: (Long, String) -> Unit,
@@ -213,8 +215,6 @@ private fun ProjectTableCardTop(
 	onSwapTablePositionsClicked: (Long, Long) -> Unit,
 	onSwitchDropdownMenuClicked: (Long?) -> Unit,
 ) {
-	val tasks = state.tasksCollectedByTableId(table.id)
-
 	Row(
 		modifier = modifier,
 		verticalAlignment = Alignment.CenterVertically,
@@ -227,7 +227,7 @@ private fun ProjectTableCardTop(
 		)
 		Text(
 			modifier = Modifier.padding(start = 12.dp),
-			text = tasks.size.toString(),
+			text = tasksWithFilter.size.toString(),
 			fontSize = 16.sp,
 			color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 		)
