@@ -36,6 +36,12 @@ fun ProjectTableScreenContent(
 	 * If null no filtering, if empty filtering but no string, if string filtering with string
 	 */
 	var taskFilterString by remember { mutableStateOf<String?>(null) }
+
+	/**
+	 * This is used in edge case where the user modifies the filter text after a task has began to be dragged
+	 * and thus moved, this may not be needed in the future but is needed in the current implementation to
+	 * decide which task was moved after the drag is finished
+	 */
 	var isTaskDragged by remember { mutableStateOf(false) }
 
 	Scaffold(

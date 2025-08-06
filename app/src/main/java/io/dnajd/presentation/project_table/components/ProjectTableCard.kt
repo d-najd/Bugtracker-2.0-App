@@ -105,10 +105,6 @@ fun ProjectTableCard(
 			onDragEnd = { from, to ->
 				if (from != to) {
 					val tasksInCurTable = preOnMoveReorderableList!!
-					/*
-					val tasksInCurTable = tasks.filterAndSort(taskFilterString)
-						.filter { it.tableId == table.id }
-					 */
 					val fTask = tasksInCurTable[from]
 					val sTask = tasksInCurTable[to]
 
