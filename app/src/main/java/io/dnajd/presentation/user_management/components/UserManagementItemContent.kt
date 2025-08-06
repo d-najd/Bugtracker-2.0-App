@@ -15,12 +15,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.user_management.UserManagementScreenState
 import io.dnajd.domain.user_authority.model.UserAuthority
+import io.dnajd.domain.user_authority.model.UserAuthorityType
 import io.dnajd.presentation.components.BugtrackerExpandableMenu
 import io.dnajd.presentation.components.BugtrackerIconPairField
 
@@ -65,17 +68,9 @@ fun ProjectUserManagementItemContent(
 						fontWeight = FontWeight.Light,
 					)
 
-					/**
-					 * TODO
-					 * there should be multiple roles,
-					 * Viewer - only view
-					 * Editor - view along with atleast one of create edit delete
-					 * Manager - view, manage users along with atleast one of create edit delete
-					 * Owner - The owner of the project
-					 */
 					Text(
 						modifier = Modifier.padding(start = 2.dp),
-						text = "ROLE-CUSTOM",
+						text = getRolesText(userWithAuthorities.value),
 						color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 						fontSize = 12.sp,
 						fontWeight = FontWeight.ExtraLight,
@@ -85,7 +80,6 @@ fun ProjectUserManagementItemContent(
 			)
 		},
 		expandableContent = {
-
 			ProjectUserManagementAuthoritiesContent(
 				state = state,
 				authorities = userWithAuthorities.value,
@@ -95,4 +89,25 @@ fun ProjectUserManagementItemContent(
 			)
 		},
 	)
+}
+
+@Composable
+private fun getRolesText(
+	userAuthorities: List<UserAuthority>,
+): String {
+	return if (userAuthorities.any { it.authority == UserAuthorityType.project_owner }) {
+		stringResource(R.string.field_role_owner)
+	} else if (userAuthorities.any { it.authority == UserAuthorityType.project_manage }) {
+		stringResource(R.string.field_role_manager)
+	} else if (userAuthorities.any {
+			it.authority == UserAuthorityType.project_create ||
+			it.authority == UserAuthorityType.project_edit ||
+			it.authority == UserAuthorityType.project_delete
+		}) {
+		stringResource(R.string.field_role_editor)
+	} else if (userAuthorities.any { it.authority == UserAuthorityType.project_view }) {
+		stringResource(R.string.field_role_viewer)
+	} else {
+		throw IllegalArgumentException("Invalid role configuration, unable to determine role text")
+	}
 }
