@@ -34,6 +34,9 @@ ij_c_function_call_arguments_wrap = on_every_item
 ij_c_template_declaration_function_wrap = on_every_item
 ij_any_method_call_chain_wrap = on_every_item
 ij_kotlin_method_call_chain_wrap = split_into_lines
+ij_kotlin_continuation_indent_for_expression_bodies = false
+ij_kotlin_continuation_indent_for_binary_expressions = false
+ij_kotlin_align_multiline_binary_operation = true
 # ij_kotlin_continuation_indent_for_chained_calls = false
 
 #

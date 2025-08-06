@@ -3,7 +3,8 @@ package io.dnajd.domain.user_authority.model
 import androidx.annotation.StringRes
 import io.dnajd.bugtracker.R
 
-@Suppress("EnumEntryName") enum class UserAuthorityType(
+@Suppress("EnumEntryName")
+enum class UserAuthorityType(
 	@StringRes val titleResId: Int,
 	@StringRes val descriptionResId: Int,
 ) {

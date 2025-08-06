@@ -46,7 +46,7 @@ object TableTaskApiServiceMock : TableTaskApiService {
 		severity = 3,
 		position = 0,
 		labels = listOf(),
-	)			/*
+	)            /*
 			ProjectLabel(
 				1L,
 				"Label 1",

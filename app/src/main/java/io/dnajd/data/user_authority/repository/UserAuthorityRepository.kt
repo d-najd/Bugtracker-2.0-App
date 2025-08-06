@@ -17,7 +17,9 @@ data class UserAuthorityRepositoryState(
 ) : RepositoryBase.State<UserAuthority, Date>(data)
 
 object UserAuthorityRepository :
-	RepositoryBase<UserAuthority, UserAuthority, Date, UserAuthorityRepositoryState>(UserAuthorityRepositoryState()) {
+	RepositoryBase<UserAuthority, UserAuthority, Date, UserAuthorityRepositoryState>(
+		UserAuthorityRepositoryState(),
+	) {
 
 	private val api: UserAuthorityApiService = Injekt.get()
 
