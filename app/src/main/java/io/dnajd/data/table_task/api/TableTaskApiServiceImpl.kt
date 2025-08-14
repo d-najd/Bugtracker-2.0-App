@@ -22,11 +22,11 @@ import uy.kohesive.injekt.api.get
  * the current [ProjectTable]'s data
  */
 object TableTaskApiServiceImpl : TableTaskApiService {
-	private val factory: TableTaskRepositoryApi = Injekt
+	private val factory: TableTaskApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_TABLE_ISSUE)
 		.build()
-		.create(TableTaskRepositoryApi::class.java)
+		.create(TableTaskApi::class.java)
 
 	override suspend fun getByTableId(
 		tableId: Long,
@@ -73,7 +73,7 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 	)
 }
 
-private interface TableTaskRepositoryApi {
+private interface TableTaskApi {
 	@GET("tableId/{tableId}")
 	suspend fun getByTableId(
 		@Path("tableId") tableId: Long,

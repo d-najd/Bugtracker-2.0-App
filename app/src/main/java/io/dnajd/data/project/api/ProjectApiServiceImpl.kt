@@ -15,11 +15,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object ProjectApiServiceImpl : ProjectApiService {
-	private val factory: ProjectRepositoryApi = Injekt
+	private val factory: ProjectApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT)
 		.build()
-		.create(ProjectRepositoryApi::class.java)
+		.create(ProjectApi::class.java)
 
 	override suspend fun getAll(): Result<ProjectListResponse> = factory.getAll()
 
@@ -37,7 +37,7 @@ object ProjectApiServiceImpl : ProjectApiService {
 	override suspend fun deleteById(id: Long): Result<Unit> = factory.deleteById(id)
 }
 
-interface ProjectRepositoryApi {
+interface ProjectApi {
 	@GET("allByUsername")
 	suspend fun getAll(
 		// @Header("Authorization") authTest: String = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiaXNzIjoiZC1uYWpkLmJ1Z3RyYWNrZXIuYmFja2VuZCIsImF1ZCI6ImQtbmFqZC5idWd0cmFja2VyLmFuZHJvaWQiLCJzdWIiOiJkaW10aHJvdzEyMyIsImlhdCI6MTc0OTc2MTQ0NiwiZXhwIjoyMDY1MTIxNDQ2fQ.zcSuluRriiRxa6MMp6xIisulwKyI1S1pJajqaHFNQa1bxMBWlY3UzviYoXVyq13ZvXg4X9yO-0Lu-_bPWrYljA",

@@ -14,11 +14,11 @@ import uy.kohesive.injekt.api.get
 object JwtRefreshAuthApiServiceImpl : JwtRefreshAuthApiService {
 	private val jwtAuthPreferenceStore: JwtAuthPreferenceStore = Injekt.get()
 
-	private val factory: JwtRefreshAuthRepositoryApi = Injekt
+	private val factory: JwtRefreshAuthApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.JWT_REFRESH_AUTH)
 		.build()
-		.create(JwtRefreshAuthRepositoryApi::class.java)
+		.create(JwtRefreshAuthApi::class.java)
 
 	override suspend fun refreshAccessToken(refreshToken: JWT?): Result<JwtTokenHolder> {
 		val safeRefreshToken = retrieveSafeRefreshToken(refreshToken)
@@ -55,7 +55,7 @@ object JwtRefreshAuthApiServiceImpl : JwtRefreshAuthApiService {
 	}
 }
 
-private interface JwtRefreshAuthRepositoryApi {
+private interface JwtRefreshAuthApi {
 	@GET("access_token")
 	suspend fun refreshAccessToken(
 		@Header("Authorization") authHeader: String,

@@ -13,11 +13,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object GoogleAuthApiServiceImpl : GoogleAuthApiService {
-	private val factory: GoogleAuthRepositoryApi = Injekt
+	private val factory: GoogleAuthApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.GOOGLE_AUTH)
 		.build()
-		.create(GoogleAuthRepositoryApi::class.java)
+		.create(GoogleAuthApi::class.java)
 
 	override suspend fun googleSignIn(googleToken: String): Result<JwtTokenHolder> =
 		factory.googleSignIn("Bearer $googleToken")
@@ -31,7 +31,7 @@ object GoogleAuthApiServiceImpl : GoogleAuthApiService {
 	)
 }
 
-private interface GoogleAuthRepositoryApi {
+private interface GoogleAuthApi {
 	/**
 	 * @param authHeader should be the google OAuth 2.0 token like "Bearer $[authHeader]"
 	 */

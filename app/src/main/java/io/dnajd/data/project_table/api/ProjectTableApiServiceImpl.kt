@@ -17,11 +17,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object ProjectTableApiServiceImpl : ProjectTableApiService {
-	private val factory: ProjectTableRepositoryApi = Injekt
+	private val factory: ProjectTableApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_TABLE)
 		.build()
-		.create(ProjectTableRepositoryApi::class.java)
+		.create(ProjectTableApi::class.java)
 
 	override suspend fun getAllByProjectId(
 		projectId: Long,
@@ -62,7 +62,7 @@ object ProjectTableApiServiceImpl : ProjectTableApiService {
 	override suspend fun deleteById(id: Long): Result<ProjectTableListResponse> = factory.deleteById(id)
 }
 
-private interface ProjectTableRepositoryApi {
+private interface ProjectTableApi {
 	@GET("projectId/{projectId}")
 	suspend fun getAllByProjectId(
 		@Path("projectId") projectId: Long,

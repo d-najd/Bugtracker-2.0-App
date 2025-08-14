@@ -14,11 +14,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object UserAuthorityApiServiceImpl : UserAuthorityApiService {
-	private val factory: UserAuthorityRepositoryApi = Injekt
+	private val factory: UserAuthorityApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.PROJECT_AUTHORITY)
 		.build()
-		.create(UserAuthorityRepositoryApi::class.java)
+		.create(UserAuthorityApi::class.java)
 
 	override suspend fun getAllByProjectId(projectId: Long): Result<UserAuthorityListResponse> =
 		factory.get(projectId)
@@ -43,7 +43,7 @@ object UserAuthorityApiServiceImpl : UserAuthorityApiService {
 	}
 }
 
-private interface UserAuthorityRepositoryApi {
+private interface UserAuthorityApi {
 	@GET("projectId/{projectId}")
 	suspend fun get(
 		@Path("projectId") projectId: Long,

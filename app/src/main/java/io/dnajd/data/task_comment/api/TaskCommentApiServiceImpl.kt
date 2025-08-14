@@ -13,11 +13,11 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
 object TaskCommentApiServiceImpl : TaskCommentApiService {
-	private val factory: TaskCommentRepositoryApi = Injekt
+	private val factory: TaskCommentApi = Injekt
 		.get<Retrofit.Builder>()
 		.baseUrl(Urls.TASK_COMMENT)
 		.build()
-		.create(TaskCommentRepositoryApi::class.java)
+		.create(TaskCommentApi::class.java)
 
 	override suspend fun create(
 		taskId: Long,
@@ -30,7 +30,7 @@ object TaskCommentApiServiceImpl : TaskCommentApiService {
 	override suspend fun delete(id: Long): Result<Unit> = factory.delete(id)
 }
 
-private interface TaskCommentRepositoryApi {
+private interface TaskCommentApi {
 	@POST("issueId/{taskId}")
 	suspend fun create(
 		@Path("taskId") taskId: Long,
