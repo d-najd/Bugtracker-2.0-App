@@ -6,6 +6,7 @@ import io.dnajd.data.google_auth.GoogleAuthApiServiceImpl
 import io.dnajd.data.jwt_auth.JwtRefreshAuthApiServiceImpl
 import io.dnajd.data.project.api.ProjectApiServiceImpl
 import io.dnajd.data.project.api.ProjectApiServiceMock
+import io.dnajd.data.project_icon.api.ProjectIconApiServiceImpl
 import io.dnajd.data.project_table.api.ProjectTableApiServiceImpl
 import io.dnajd.data.project_table.api.ProjectTableApiServiceMock
 import io.dnajd.data.table_task.api.TableTaskApiServiceImpl
@@ -19,6 +20,7 @@ import io.dnajd.domain.base.MutableListTypeAdapterFactory
 import io.dnajd.domain.google_auth.service.GoogleAuthApiService
 import io.dnajd.domain.jwt_auth.service.JwtRefreshAuthApiService
 import io.dnajd.domain.project.service.ProjectApiService
+import io.dnajd.domain.project_icon.service.ProjectIconApiService
 import io.dnajd.domain.project_table.service.ProjectTableApiService
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import io.dnajd.domain.task_comment.service.TaskCommentApiService
@@ -91,6 +93,7 @@ class DomainModule : InjektModule {
 				addSingletonFactory<TableTaskApiService> { TableTaskApiServiceMock }
 				addSingletonFactory<TaskCommentApiService> { TaskCommentApiServiceImpl }
 				addSingletonFactory<UserAuthorityApiService> { UserAuthorityApiServiceMock }
+				addSingletonFactory<ProjectIconApiService> { ProjectIconApiServiceImpl }
 			}
 
 			false -> {
@@ -101,6 +104,7 @@ class DomainModule : InjektModule {
 				addSingletonFactory<TableTaskApiService> { TableTaskApiServiceImpl }
 				addSingletonFactory<TaskCommentApiService> { TaskCommentApiServiceImpl }
 				addSingletonFactory<UserAuthorityApiService> { UserAuthorityApiServiceImpl }
+				addSingletonFactory<ProjectIconApiService> { ProjectIconApiServiceImpl }
 			}
 		}
 	}

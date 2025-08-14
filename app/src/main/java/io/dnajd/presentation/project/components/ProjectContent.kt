@@ -61,6 +61,7 @@ fun ProjectContent(
 
 		for (project in projectsFiltered) {
 			ProjectItemContent(
+				state = state,
 				project = project,
 				onProjectClicked = onProjectClicked,
 			)

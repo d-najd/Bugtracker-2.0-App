@@ -7,9 +7,12 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
+import io.dnajd.data.project_icon.repository.ProjectIconRepository
 import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
+import io.dnajd.domain.project_icon.model.ProjectIcon
+import io.dnajd.domain.project_icon.service.ProjectIconApiService
 import io.dnajd.util.launchIONoQueue
 import io.dnajd.util.launchUINoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +25,7 @@ import uy.kohesive.injekt.api.get
 
 class ProjectScreenModel(
 	private val projectApiService: ProjectApiService = Injekt.get(),
+	private val projectIconApiService: ProjectIconApiService = Injekt.get(),
 ) : StateScreenModel<ProjectScreenState>(ProjectScreenState.Loading) {
 	private val _events: MutableSharedFlow<ProjectEvent> = MutableSharedFlow()
 	val events: SharedFlow<ProjectEvent> = _events.asSharedFlow()
@@ -30,8 +34,17 @@ class ProjectScreenModel(
 
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
-			ProjectRepository
+			val projects = ProjectRepository
 				.fetchAllIfStale()
+				.onFailureWithStackTrace {
+					_events.emit(ProjectEvent.FailedToRetrieveProjects)
+					return@launchIONoQueue
+				}
+				.getOrThrow()
+
+			val projectIds = projects.map { it.id }
+
+			ProjectIconRepository.fetchByProjectIdsIfStale(*projectIds.toLongArray())
 				.onFailureWithStackTrace {
 					_events.emit(ProjectEvent.FailedToRetrieveProjects)
 					return@launchIONoQueue
@@ -84,6 +97,9 @@ sealed class ProjectScreenState {
 	) : ProjectScreenState() {
 		@Composable
 		fun projects(): Set<Project> = ProjectRepository.dataKeysCollected()
+
+		@Composable
+		fun projectIcons(): Set<ProjectIcon> = ProjectIconRepository.dataKeysCollected()
 	}
 }
 

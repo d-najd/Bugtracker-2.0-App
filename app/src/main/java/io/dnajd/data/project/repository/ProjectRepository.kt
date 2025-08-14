@@ -1,9 +1,9 @@
 package io.dnajd.data.project.repository
 
+import io.dnajd.data.project_icon.repository.ProjectIconRepository
 import io.dnajd.data.project_table.repository.ProjectTableRepository
 import io.dnajd.data.user_authority.repository.UserAuthorityRepository
 import io.dnajd.data.utils.RepositoryBase
-import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
 import uy.kohesive.injekt.Injekt
@@ -27,7 +27,7 @@ object ProjectRepository :
 
 		val retrievedData = api
 			.getAll()
-			.onFailureWithStackTrace {
+			.onFailure {
 				return Result.failure(it)
 			}
 			.getOrThrow()
@@ -91,5 +91,10 @@ object ProjectRepository :
 
 		val authorities = UserAuthorityRepository.dataKeysByProjectId(*dataById.toLongArray())
 		UserAuthorityRepository.delete(*authorities.toTypedArray())
+
+		ProjectIconRepository.delete(
+			*dataById.toLongArray()
+				.toTypedArray(),
+		)
 	}
 }

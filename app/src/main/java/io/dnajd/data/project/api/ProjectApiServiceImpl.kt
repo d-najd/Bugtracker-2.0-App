@@ -39,9 +39,7 @@ object ProjectApiServiceImpl : ProjectApiService {
 
 interface ProjectApi {
 	@GET("allByUsername")
-	suspend fun getAll(
-		// @Header("Authorization") authTest: String = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiaXNzIjoiZC1uYWpkLmJ1Z3RyYWNrZXIuYmFja2VuZCIsImF1ZCI6ImQtbmFqZC5idWd0cmFja2VyLmFuZHJvaWQiLCJzdWIiOiJkaW10aHJvdzEyMyIsImlhdCI6MTc0OTc2MTQ0NiwiZXhwIjoyMDY1MTIxNDQ2fQ.zcSuluRriiRxa6MMp6xIisulwKyI1S1pJajqaHFNQa1bxMBWlY3UzviYoXVyq13ZvXg4X9yO-0Lu-_bPWrYljA",
-	): Result<ProjectListResponse>
+	suspend fun getAll(): Result<ProjectListResponse>
 
 	@GET("{id}")
 	suspend fun getById(@Path("id") id: Long): Result<Project>
