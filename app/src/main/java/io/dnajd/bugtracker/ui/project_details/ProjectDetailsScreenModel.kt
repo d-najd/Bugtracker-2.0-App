@@ -66,10 +66,9 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		ProjectRepository.delete(projectId)
 		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
+		ProjectRepository.delete(projectId)
 	}
-
 
 	fun renameProject(title: String) = mutex.launchIONoQueue(coroutineScope) {
 		val successState = mutableState.value as ProjectDetailsScreenState.Success

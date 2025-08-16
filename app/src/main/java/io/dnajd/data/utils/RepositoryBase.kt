@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.instanceParameter
-import kotlin.reflect.full.isSupertypeOf
 import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.full.starProjectedType
 
 /**
  * - If [K] does not have field id then [defaultCompareForUpdatePredicate] must be overridden
@@ -226,11 +224,13 @@ abstract class RepositoryBase<K, KRT, V, S>(initialState: S) where K : BaseApiEn
 				val parameter = requireNotNull(
 					copyFunction.parameters.firstOrNull { it.name == property.name },
 				) { "Parameter not found for property ${property.name}" }
+				/*
 				value?.let {
 					require(
 						parameter.type.isSupertypeOf(it::class.starProjectedType),
 					) { "Incompatible type of value for property ${property.name}" }
 				}
+				 */
 				put(
 					parameter,
 					value,
