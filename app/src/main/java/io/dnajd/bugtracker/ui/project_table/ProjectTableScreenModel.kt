@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProjectTableScreenModel(
@@ -178,7 +177,8 @@ class ProjectTableScreenModel(
 			}
 			.getOrThrow().data
 
-		ProjectTableRepository.update(ProjectTableRepository.combineForUpdate(*persistedTasks.toTypedArray()))
+		val combinedData = ProjectTableRepository.combineForUpdate(*persistedTasks.toTypedArray())
+		ProjectTableRepository.update(combinedData)
 
 		mutableState.update {
 			successState.copy(
@@ -222,7 +222,8 @@ class ProjectTableScreenModel(
 			}
 			.getOrThrow().data
 
-		TableTaskRepository.update(TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray()))
+		val combinedData = TableTaskRepository.combineForUpdate(*persistedTasks.toTypedArray())
+		TableTaskRepository.update(combinedData)
 	}
 
 	fun deleteTable(tableId: Long) = mutex.launchIONoQueue(coroutineScope) {
@@ -234,10 +235,12 @@ class ProjectTableScreenModel(
 				_events.emit(ProjectTableEvent.FailedToDeleteTable)
 				return@launchIONoQueue
 			}
-			.getOrThrow().data.associateWith { Date() }
+			.getOrThrow().data
 
 		ProjectTableRepository.delete(tableId)
-		ProjectTableRepository.update(otherModifiedTables)
+		val combinedData =
+			ProjectTableRepository.combineForUpdate(newData = otherModifiedTables.toTypedArray())
+		ProjectTableRepository.update(combinedData)
 	}
 
 	fun showDialog(dialog: ProjectTableDialog) = mutex.launchUINoQueue(coroutineScope) {

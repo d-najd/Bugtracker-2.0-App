@@ -99,14 +99,13 @@ class ProjectDetailsScreenModel(
 				return@launchIONoQueue
 			}
 
-		ProjectIconRepository.update(
-			ProjectIconRepository.combineForUpdate(
-				ProjectIcon(
-					projectId,
-					bitmap,
-				),
-			),
+		val projectIcon = ProjectIcon(
+			projectId,
+			bitmap,
 		)
+
+		val combinedData = ProjectIconRepository.combineForUpdate(projectIcon)
+		ProjectIconRepository.update(combinedData)
 	}
 }
 
