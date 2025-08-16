@@ -1,5 +1,6 @@
 package io.dnajd.bugtracker.ui.project_details
 
+import android.graphics.BitmapFactory
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -7,10 +8,12 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import io.dnajd.bugtracker.R
 import io.dnajd.data.project.repository.ProjectRepository
-import io.dnajd.data.project_table.repository.ProjectTableRepository
+import io.dnajd.data.project_icon.repository.ProjectIconRepository
 import io.dnajd.domain.base.onFailureWithStackTrace
 import io.dnajd.domain.project.model.Project
 import io.dnajd.domain.project.service.ProjectApiService
+import io.dnajd.domain.project_icon.model.ProjectIcon
+import io.dnajd.domain.project_icon.service.ProjectIconApiService
 import io.dnajd.util.launchIONoQueue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,11 +22,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.io.File
 
 class ProjectDetailsScreenModel(
 	val projectId: Long,
 
 	private val projectApiService: ProjectApiService = Injekt.get(),
+	private val projectIconApiService: ProjectIconApiService = Injekt.get(),
 ) : StateScreenModel<ProjectDetailsScreenState>(ProjectDetailsScreenState.Loading(projectId)) {
 	private val _events: MutableSharedFlow<ProjectDetailsEvent> = MutableSharedFlow()
 	val events: SharedFlow<ProjectDetailsEvent> = _events.asSharedFlow()
@@ -33,7 +38,14 @@ class ProjectDetailsScreenModel(
 	init {
 		mutex.launchIONoQueue(coroutineScope) {
 			ProjectRepository
-				.fetchAllIfStale()
+				.fetchOneIfStale(projectId)
+				.onFailureWithStackTrace {
+					_events.emit(ProjectDetailsEvent.FailedToRetrieveProjectData)
+					return@launchIONoQueue
+				}
+
+			ProjectIconRepository
+				.fetchByProjectIdsIfStale(projectId)
 				.onFailureWithStackTrace {
 					_events.emit(ProjectDetailsEvent.FailedToRetrieveProjectData)
 					return@launchIONoQueue
@@ -54,7 +66,7 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		ProjectTableRepository.delete(successState.projectId)
+		ProjectRepository.delete(projectId)
 		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
 	}
 
@@ -78,6 +90,27 @@ class ProjectDetailsScreenModel(
 		val combinedData = ProjectRepository.combineForUpdate(persistedProject)
 		ProjectRepository.update(combinedData)
 	}
+
+	fun changeProjectIcon(icon: File) = mutex.launchIONoQueue(coroutineScope) {
+		val bitmap = BitmapFactory.decodeStream(icon.inputStream())
+
+		projectIconApiService.updateByProjectId(projectId, icon)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectDetailsEvent.FailedToUpdateProjectIcon)
+				return@launchIONoQueue
+			}
+
+		val se = ProjectIconRepository.combineForUpdate(
+			ProjectIcon(
+				projectId,
+				bitmap,
+			),
+		)
+
+		ProjectIconRepository.update(
+			se,
+		)
+	}
 }
 
 sealed class ProjectDetailsScreenState(
@@ -94,6 +127,11 @@ sealed class ProjectDetailsScreenState(
 		fun projectCollected(): Project = ProjectRepository
 			.dataKeysCollectedById(projectId)
 			.first()
+
+		@Composable
+		fun projectIconCollected(): ProjectIcon = ProjectIconRepository
+			.dataKeysCollectedById(projectId)
+			.first()
 	}
 }
 
@@ -103,6 +141,8 @@ sealed class ProjectDetailsEvent {
 	data object FailedToRetrieveProjectData : LocalizedMessage(R.string.error_failed_to_retrieve_project_data)
 
 	data object FailedToDeleteProject : LocalizedMessage(R.string.error_failed_to_delete_project)
+
+	data object FailedToUpdateProjectIcon : LocalizedMessage(R.string.error_failed_to_update_project_icon)
 
 	data object FailedToRenameProject : LocalizedMessage(R.string.error_failed_to_rename_project)
 

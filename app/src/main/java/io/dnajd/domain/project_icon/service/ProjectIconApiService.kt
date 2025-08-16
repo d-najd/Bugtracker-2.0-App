@@ -2,8 +2,8 @@ package io.dnajd.domain.project_icon.service
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import java.io.File
 
 interface ProjectIconApiService {
 
@@ -24,6 +24,6 @@ interface ProjectIconApiService {
 		}
 	}
 
-	suspend fun updateByProjectId(projectId: Long, file: MultipartBody.Part): Result<Unit>
+	suspend fun updateByProjectId(projectId: Long, file: File): Result<Unit>
 
 }

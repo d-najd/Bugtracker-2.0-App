@@ -1,6 +1,12 @@
 package io.dnajd.presentation.project_details.components
 
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -32,7 +39,9 @@ import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreenState
 import io.dnajd.presentation.components.BugtrackerExpandableTextField
 import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
-import io.dnajd.presentation.components.ProjectIconFactory
+import io.dnajd.util.MediaType
+import io.dnajd.util.uriToFile
+import java.io.File
 
 @Composable
 fun ProjectDetailsContent(
@@ -41,6 +50,7 @@ fun ProjectDetailsContent(
 
 	onRenameProjectClicked: (String) -> Unit,
 	onDeleteProjectClicked: () -> Unit,
+	onChangeProjectIcon: (File) -> Unit,
 ) {
 	Column(
 		modifier = Modifier.padding(contentPadding),
@@ -51,9 +61,17 @@ fun ProjectDetailsContent(
 				.padding(vertical = 36.dp),
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
+			val launcher = getLauncherForImage(onImagePicked = onChangeProjectIcon)
+
 			Image(
-				modifier = Modifier.size(100.dp),
-				painter = painterResource(ProjectIconFactory.getRandom()),
+				modifier = Modifier
+					.size(100.dp)
+					.clickable {
+						launcher.launch(
+							PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+						)
+					},
+				bitmap = state.projectIconCollected().bitmap.asImageBitmap(),
 				contentDescription = "",
 			)
 			Row(
@@ -108,5 +126,23 @@ fun ProjectDetailsContent(
 				fontWeight = FontWeight.SemiBold,
 			)
 		}
+	}
+}
+
+@Composable
+fun getLauncherForImage(
+	onImagePicked: (File) -> Unit,
+): ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?> {
+	val context = LocalContext.current
+
+	return rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+		if (uri == null) return@rememberLauncherForActivityResult
+
+		val file = context.uriToFile(uri)
+
+		if (MediaType.resolveFrom(file) != MediaType.Image) {
+			throw IllegalStateException("Only picking of images is allowed in this context")
+		}
+		onImagePicked.invoke(file)
 	}
 }

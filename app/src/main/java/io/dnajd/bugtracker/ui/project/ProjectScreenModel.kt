@@ -63,6 +63,12 @@ class ProjectScreenModel(
 			}
 			.getOrThrow()
 
+		ProjectIconRepository.fetchByProjectIdsIfStale(persistedProject.id, forceFetch = true)
+			.onFailureWithStackTrace {
+				_events.emit(ProjectEvent.FailedToCreateProject)
+				return@launchIONoQueue
+			}
+
 		val combinedData = ProjectRepository.combineForUpdate(persistedProject)
 		ProjectRepository.update(combinedData)
 

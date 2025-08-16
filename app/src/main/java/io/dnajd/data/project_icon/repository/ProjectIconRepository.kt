@@ -19,9 +19,12 @@ object ProjectIconRepository :
 	RepositoryBase<ProjectIcon, Long, Date, ProjectIconRepositoryState>(ProjectIconRepositoryState()) {
 	private val api: ProjectIconApiService = Injekt.get()
 
-	suspend fun fetchByProjectIdsIfStale(vararg dataById: Long): Result<Set<ProjectIcon>> {
+	suspend fun fetchByProjectIdsIfStale(
+		vararg dataById: Long,
+		forceFetch: Boolean = false,
+	): Result<Set<ProjectIcon>> {
 		val previousDataKeyIds = state.value.data.keys.map { it.projectId }
-		val dataNeedingUpdate = dataById.subtract(previousDataKeyIds)
+		val dataNeedingUpdate = if (!forceFetch) dataById.subtract(previousDataKeyIds) else dataById.toSet()
 
 		return coroutineScope {
 			val tasks = dataNeedingUpdate.map { id ->

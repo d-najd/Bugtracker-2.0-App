@@ -119,5 +119,6 @@
 	<string name="field_role_manager">Role Manager</string>
 	<string name="field_role_editor">Role Editor</string>
 	<string name="field_role_viewer">Role Viewer</string>
+	<string name="error_failed_to_update_project_icon">Failed to update project icon</string>
 
 </resources>

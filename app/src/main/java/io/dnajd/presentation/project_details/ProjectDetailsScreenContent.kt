@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.project_details.ProjectDetailsScreenState
 import io.dnajd.presentation.project_details.components.ProjectDetailsContent
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +27,7 @@ fun ProjectDetailsScreenContent(
 
 	onRenameProjectClicked: (String) -> Unit,
 	onDeleteProjectClicked: () -> Unit,
+	onChangeProjectIcon: (File) -> Unit,
 ) {
 	Scaffold(
 		topBar = {
@@ -54,6 +56,7 @@ fun ProjectDetailsScreenContent(
 			contentPadding = contentPadding,
 			onRenameProjectClicked = onRenameProjectClicked,
 			onDeleteProjectClicked = onDeleteProjectClicked,
+			onChangeProjectIcon = onChangeProjectIcon,
 		)
 	}
 }

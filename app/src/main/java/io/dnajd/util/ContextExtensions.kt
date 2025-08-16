@@ -3,9 +3,12 @@
 package io.dnajd.util
 
 import android.content.Context
+import android.net.Uri
 import android.util.DisplayMetrics
 import android.widget.Toast
 import androidx.annotation.StringRes
+import java.io.File
+import java.io.FileOutputStream
 
 /** gets app context *//*
 fun mAppContext(): Context {
@@ -72,4 +75,22 @@ fun Context.toast(
 			block(it)
 			it.show()
 		}
+}
+
+
+fun Context.uriToFile(
+	uri: Uri,
+): File {
+	val fileName = "media_${System.currentTimeMillis()}"
+	val fileExtension = this.contentResolver.getFileExtension(uri)
+	val outputFile = File(this.cacheDir, "$fileName.$fileExtension")
+
+	this.contentResolver.openInputStream(uri)
+		?.use { inputStream ->
+			FileOutputStream(outputFile).use { outputStream ->
+				inputStream.copyTo(outputStream) // Copy data
+			}
+		}
+
+	return outputFile
 }

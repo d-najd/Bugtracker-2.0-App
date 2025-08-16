@@ -58,6 +58,7 @@ class ProjectDetailsScreen(
 			onBackClicked = navigator::pop,
 			onRenameProjectClicked = screenModel::renameProject,
 			onDeleteProjectClicked = screenModel::deleteProject,
+			onChangeProjectIcon = screenModel::changeProjectIcon
 		)
 	}
 }
