@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
 		setContent {
 			BugtrackerTheme {
-				var checkingTokens by remember { mutableStateOf(CheckingTokensState.LOADING) }
+				var checkingTokens by remember { mutableStateOf(CheckingTokensState.CHECKING_TOKENS) }
 				var checkingTokensStarted by rememberSaveable { mutableStateOf(false) }
 
 				// Prevent re-invoking of checking token validity
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 				}
 
 				when (checkingTokens) {
-					CheckingTokensState.LOADING -> {
+					CheckingTokensState.CHECKING_TOKENS -> {
 						LoadingScreen()
 					}
 
@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
 	}
 
 	enum class CheckingTokensState {
-		LOADING, // The tokens are checked
+		CHECKING_TOKENS,
 		REFRESH_VALID,
 		REFRESH_INVALID,
 	}
