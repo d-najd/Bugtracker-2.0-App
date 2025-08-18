@@ -12,7 +12,7 @@ import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.navigator.Navigator
 import io.dnajd.bugtracker.theme.BugtrackerTheme
 import io.dnajd.bugtracker.ui.auth.AuthScreen
-import io.dnajd.bugtracker.ui.project.ProjectScreen
+import io.dnajd.bugtracker.ui.table_task.TableTaskScreen
 import io.dnajd.data.utils.JwtTokenRefresher
 import io.dnajd.domain.DomainModule
 import io.dnajd.presentation.components.LoadingScreen
@@ -55,7 +55,8 @@ class MainActivity : ComponentActivity() {
 					}
 
 					CheckingTokensState.REFRESH_VALID -> {
-						Navigator(ProjectScreen())
+						Navigator(TableTaskScreen(62))
+						// Navigator(ProjectScreen())
 						// Navigator(TableTaskScreen(13))
 					}
 
