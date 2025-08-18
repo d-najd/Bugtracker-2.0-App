@@ -58,7 +58,7 @@ class TableTaskStateScreenModel(
 				fetchTasks = true,
 			)
 			.onFailureWithStackTrace {
-				_events.emit(TableTaskEvent.FailedToRetrieveTask)
+				_events.emit(TableTaskEvent.FailedToRetrieveTable)
 				return@launchIONoQueue
 			}
 
@@ -123,12 +123,11 @@ class TableTaskStateScreenModel(
 	}
 
 	fun sendComment(comment: String) = mutex.launchIONoQueue(coroutineScope) {
-		val curTask = successState().taskCurrent()
 		val taskComment = TaskComment(message = comment)
 
 		val persistedComment = commentApiService
 			.create(
-				taskId = curTask.id,
+				taskId = taskId,
 				comment = taskComment,
 			)
 			.onFailureWithStackTrace {
@@ -138,7 +137,23 @@ class TableTaskStateScreenModel(
 			.getOrThrow()
 
 		TaskCommentRepository.update(TaskCommentRepository.combineForUpdate(persistedComment))
-		_events.emit(TableTaskEvent.CommentSuccessfullyCreated)
+		_events.emit(TableTaskEvent.CommentCreated)
+	}
+
+	fun deleteTask() = mutex.launchIONoQueue(coroutineScope) {
+		val otherModifiedTasks = apiService
+			.delete(taskId)
+			.onFailureWithStackTrace {
+				_events.emit(TableTaskEvent.FailedToDeleteTask)
+				return@launchIONoQueue
+			}
+			.getOrThrow().data
+
+		_events.emit(TableTaskEvent.TaskDeleted)
+
+		TableTaskRepository.delete(taskId)
+		val combinedData = TableTaskRepository.combineForUpdate(newData = otherModifiedTasks.toTypedArray())
+		TableTaskRepository.update(combinedData)
 	}
 
 	fun showSheet(sheet: TableTaskSheet) = mutex.launchIONoQueue(coroutineScope) {
@@ -182,19 +197,21 @@ sealed class TableTaskSheet {
 }
 
 sealed class TableTaskEvent {
-	data object CommentSuccessfullyCreated : TableTaskEvent()
+	data object CommentCreated : TableTaskEvent()
+	data object TaskDeleted : TableTaskEvent()
 
 	sealed class LocalizedMessage(@StringRes val stringRes: Int) : TableTaskEvent()
 
 	data object FailedToRenameTask : LocalizedMessage(R.string.error_failed_to_rename_task)
 	data object FailedToLeaveComment : LocalizedMessage(R.string.error_failed_to_leave_comment)
+	data object FailedToDeleteTask : LocalizedMessage(R.string.error_failed_to_remove_task)
 
+	data object FailedToRetrieveTask : LocalizedMessage(R.string.error_failed_to_retrieve_task)
+	data object FailedToRetrieveTable : LocalizedMessage(R.string.error_failed_to_retrieve_table)
 	data object FailedToSwapTable : LocalizedMessage(R.string.error_failed_table_swap)
 	data object FailedToUpdateTaskDescription :
 		LocalizedMessage(R.string.error_failed_to_update_task_description)
 
-	data object FailedToRetrieveTask : LocalizedMessage(R.string.error_failed_to_retrieve_task)
-	data object FailedToRetrieveTable : LocalizedMessage(R.string.error_failed_to_retrieve_table)
 	data object FailedToShowSheet : LocalizedMessage(R.string.error_failed_to_show_sheet)
 }
 
@@ -210,6 +227,7 @@ sealed class TableTaskScreenState(open val taskId: Long) {
 	data class Success(
 		override val taskId: Long,
 		val events: Flow<TableTaskEvent>,
+		val dropdownMenuEnabled: Boolean = false,
 		val sheet: TableTaskSheet? = null,
 	) : TableTaskScreenState(taskId) {
 		@Composable

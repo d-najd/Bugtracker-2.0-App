@@ -227,8 +227,6 @@ class ProjectTableScreenModel(
 	}
 
 	fun deleteTable(tableId: Long) = mutex.launchIONoQueue(coroutineScope) {
-		mutableState.value as ProjectTableScreenState.Success
-
 		val otherModifiedTables = projectTableApiService
 			.deleteById(tableId)
 			.onFailureWithStackTrace {

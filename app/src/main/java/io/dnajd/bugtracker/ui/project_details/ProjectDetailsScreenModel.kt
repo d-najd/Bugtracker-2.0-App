@@ -66,7 +66,7 @@ class ProjectDetailsScreenModel(
 			}
 			.getOrThrow()
 
-		_events.emit(ProjectDetailsEvent.DeleteProject(projectId = successState.projectId))
+		_events.emit(ProjectDetailsEvent.DeleteProject)
 		ProjectRepository.delete(projectId)
 	}
 
@@ -142,5 +142,5 @@ sealed class ProjectDetailsEvent {
 
 	data object FailedToRenameProject : LocalizedMessage(R.string.error_failed_to_rename_project)
 
-	data class DeleteProject(val projectId: Long) : ProjectDetailsEvent()
+	data object DeleteProject : ProjectDetailsEvent()
 }

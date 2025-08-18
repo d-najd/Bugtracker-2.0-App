@@ -27,19 +27,6 @@ class ProjectTableScreen(
 		val context = LocalContext.current
 		val screenModel = rememberScreenModel { ProjectTableScreenModel(projectId) }
 
-		/*
-		LaunchedEffect(ProjectTableSharedState.events) {
-			ProjectTableSharedState.events.collectLatest {
-				if (it == ProjectTableSharedState.Event.TableOrTaskAltered) {
-					screenModel.reFetchTableData()
-
-					// Already re-fetched data
-					return@collectLatest
-				}
-			}
-		}
-		 */
-
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				when (event) {

@@ -69,7 +69,7 @@ fun TableTaskLeaveComment(
 
 			LaunchedEffect(state.events) {
 				state.events.collectLatest {
-					if (it is TableTaskEvent.CommentSuccessfullyCreated && isFocused) {
+					if (it is TableTaskEvent.CommentCreated && isFocused) {
 						focusManager.clearFocus()
 						commentText = ""
 					}

@@ -120,5 +120,7 @@
 	<string name="field_role_editor">Role Editor</string>
 	<string name="field_role_viewer">Role Viewer</string>
 	<string name="error_failed_to_update_project_icon">Failed to update project icon</string>
+	<string name="action_remove_table_task">Remove Task</string>
+	<string name="error_failed_to_remove_task">Failed to remove task</string>
 
 </resources>

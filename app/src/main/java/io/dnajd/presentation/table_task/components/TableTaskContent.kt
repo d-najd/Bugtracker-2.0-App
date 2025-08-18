@@ -1,6 +1,7 @@
 package io.dnajd.presentation.table_task.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,10 +13,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +55,7 @@ fun TableTaskContent(
 	onRenameTaskClicked: (String) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
+	onDeleteTaskClicked: () -> Unit,
 ) {
 	Box(
 		modifier = Modifier.padding(contentPadding),
@@ -78,12 +86,44 @@ fun TableTaskContent(
 				)
 				Text(
 					modifier = Modifier
-						.padding(start = 12.dp)
-						.fillMaxWidth(),
+						.padding(start = 12.dp),
 					text = "${stringResource(R.string.field_task).uppercase()}-${state.taskCollected().id}",
 					fontSize = 14.sp,
 					color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
 				)
+
+				Column(
+					modifier = Modifier.fillMaxWidth(),
+					verticalArrangement = Arrangement.Top,
+					horizontalAlignment = Alignment.End,
+				) {
+					var dropdownExpanded by remember { mutableStateOf(false) }
+
+					IconButton(
+						onClick = {
+							dropdownExpanded = !dropdownExpanded
+						},
+					) {
+						Icon(
+							imageVector = Icons.Default.MoreVert,
+							contentDescription = null,
+						)
+					}
+
+					DropdownMenu(
+						expanded = dropdownExpanded,
+						onDismissRequest = {
+							dropdownExpanded = false
+						},
+					) {
+						DropdownMenuItem(
+							text = { Text(stringResource(R.string.action_remove_table_task)) },
+							onClick = {
+								onDeleteTaskClicked.invoke()
+							},
+						)
+					}
+				}
 			}
 
 			var expanded by remember { mutableStateOf(false) }

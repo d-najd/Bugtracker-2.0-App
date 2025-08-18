@@ -33,6 +33,7 @@ fun TableTaskScreenContent(
 	onChangeTableClicked: (Long) -> Unit,
 	onChangeTableSheetClicked: () -> Unit,
 	onAlterDescriptionSheetClicked: () -> Unit,
+	onDeleteTaskClicked: () -> Unit,
 	onCommentSend: (String) -> Unit,
 	onBottomSheetDismissed: () -> Unit,
 ) {
@@ -52,6 +53,7 @@ fun TableTaskScreenContent(
 			onRenameTaskClicked = onRenameTaskClicked,
 			onChangeTableSheetClicked = onChangeTableSheetClicked,
 			onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
+			onDeleteTaskClicked = onDeleteTaskClicked,
 		)
 	}
 

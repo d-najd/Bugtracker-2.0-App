@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.dnajd.bugtracker.ui.auth.AuthScreen
 import io.dnajd.bugtracker.ui.project.ProjectScreen
 import io.dnajd.bugtracker.ui.util.ScreenFixed
 import io.dnajd.presentation.components.LoadingScreen
@@ -28,7 +29,7 @@ class ProjectDetailsScreen(
 			screenModel.events.collectLatest { event ->
 				when (event) {
 					is ProjectDetailsEvent.DeleteProject -> {
-						navigator.popUntil { it is ProjectScreen }
+						navigator.popUntil { it is ProjectScreen || it is AuthScreen }
 					}
 
 					is ProjectDetailsEvent.FailedToRetrieveProjectData -> {
@@ -58,7 +59,7 @@ class ProjectDetailsScreen(
 			onBackClicked = navigator::pop,
 			onRenameProjectClicked = screenModel::renameProject,
 			onDeleteProjectClicked = screenModel::deleteProject,
-			onChangeProjectIcon = screenModel::changeProjectIcon
+			onChangeProjectIcon = screenModel::changeProjectIcon,
 		)
 	}
 }

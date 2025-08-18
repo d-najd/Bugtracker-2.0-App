@@ -31,10 +31,7 @@ class TableTaskScreen(
 		LaunchedEffect(screenModel.events) {
 			screenModel.events.collectLatest { event ->
 				when (event) {
-					is TableTaskEvent.FailedToRetrieveTable,
-					is TableTaskEvent.FailedToRetrieveTask,
-						-> {
-						context.toast(event.stringRes)
+					is TableTaskEvent.TaskDeleted -> {
 						navigator.pop()
 					}
 
@@ -42,7 +39,7 @@ class TableTaskScreen(
 						context.toast(event.stringRes)
 					}
 
-					else -> {}
+					TableTaskEvent.CommentCreated -> {}
 				}
 			}
 		}
@@ -98,6 +95,7 @@ class TableTaskScreen(
 					onBottomSheetDismissed = {
 						screenModel.dismissSheet()
 					},
+					onDeleteTaskClicked = screenModel::deleteTask,
 				)
 			}
 

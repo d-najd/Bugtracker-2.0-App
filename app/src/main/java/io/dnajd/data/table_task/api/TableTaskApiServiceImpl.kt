@@ -7,6 +7,7 @@ import io.dnajd.domain.table_task.model.TableTaskListResponse
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import retrofit2.Retrofit
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -71,6 +72,8 @@ object TableTaskApiServiceImpl : TableTaskApiService {
 		id,
 		tableId,
 	)
+
+	override suspend fun delete(id: Long): Result<TableTaskListResponse> = factory.delete(id)
 }
 
 private interface TableTaskApi {
@@ -117,5 +120,10 @@ private interface TableTaskApi {
 	suspend fun moveToTable(
 		@Path("id") id: Long,
 		@Path("tableId") tableId: Long,
+	): Result<TableTaskListResponse>
+
+	@DELETE("{id}")
+	suspend fun delete(
+		@Path("id") id: Long,
 	): Result<TableTaskListResponse>
 }

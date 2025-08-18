@@ -65,4 +65,7 @@ interface TableTaskApiService {
 		tableId: Long,
 	): Result<TableTaskListResponse>
 
+	suspend fun delete(
+		id: Long,
+	): Result<TableTaskListResponse>
 }

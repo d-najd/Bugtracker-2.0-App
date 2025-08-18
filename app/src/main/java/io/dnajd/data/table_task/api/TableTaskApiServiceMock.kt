@@ -38,6 +38,10 @@ object TableTaskApiServiceMock : TableTaskApiService {
 		tableId: Long,
 	): Result<TableTaskListResponse> = Result.success(TODO())
 
+	override suspend fun delete(id: Long): Result<TableTaskListResponse> {
+		TODO("Not yet implemented")
+	}
+
 	private fun mockData() = TableTask(
 		id = 1L,
 		title = "Example Title",
