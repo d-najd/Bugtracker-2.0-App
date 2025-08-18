@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,7 @@ import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.bugtracker.ui.table_task.TableTaskSheet
 import io.dnajd.presentation.table_task.components.TableTaskContent
 import io.dnajd.presentation.table_task.components.TableTaskLeaveComment
+import io.dnajd.presentation.table_task.components.TableTaskTopAppBar
 import io.dnajd.presentation.table_task.sheets.TableTaskBottomSheetContent
 
 @OptIn(
@@ -38,10 +40,17 @@ fun TableTaskScreenContent(
 	onBottomSheetDismissed: () -> Unit,
 ) {
 	Scaffold(
+		modifier = Modifier.padding(horizontal = 12.dp),
 		bottomBar = {
 			TableTaskLeaveComment(
 				state = state,
 				onCommentSend = onCommentSend,
+			)
+		},
+		topBar = {
+			TableTaskTopAppBar(
+				state = state,
+				onDeleteTaskClicked = onDeleteTaskClicked,
 			)
 		},
 	) { contentPadding ->

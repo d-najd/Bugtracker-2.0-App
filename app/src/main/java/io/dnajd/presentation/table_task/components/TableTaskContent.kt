@@ -1,30 +1,16 @@
 package io.dnajd.presentation.table_task.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,16 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.dnajd.bugtracker.R
 import io.dnajd.bugtracker.ui.table_task.TableTaskScreenState
 import io.dnajd.presentation.components.BugtrackerExpandableTextField
 import io.dnajd.presentation.components.BugtrackerExpandableTextFieldDefaults
@@ -59,158 +41,84 @@ fun TableTaskContent(
 	onAlterDescriptionSheetClicked: () -> Unit,
 	onDeleteTaskClicked: () -> Unit,
 ) {
-	Box(
-		modifier = Modifier.padding(contentPadding),
+	Column(
+		modifier = Modifier
+			.padding(contentPadding)
+			.fillMaxSize()
+			.verticalScroll(rememberScrollState()),
 	) {
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-				.verticalScroll(rememberScrollState())
-				.padding(
-					horizontal = 12.dp,
-					vertical = 12.dp,
-				),
-		) {
-			Row(
-				modifier = Modifier.fillMaxWidth(),
-				verticalAlignment = Alignment.CenterVertically,
-			) {
-				Checkbox(
-					modifier = Modifier.size(16.dp),
-					checked = true,
-					enabled = false,
-					colors = CheckboxDefaults.colors()
-						.copy(
-							disabledCheckedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
-							disabledBorderColor = CheckboxDefaults.colors().checkedBorderColor,
-						),
-					onCheckedChange = { },
-				)
-				Text(
-					modifier = Modifier
-						.padding(start = 12.dp),
-					text = "${stringResource(R.string.field_task).uppercase()}-${state.taskCollected().id}",
-					fontSize = 14.sp,
-					color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
-				)
+		var expanded by remember { mutableStateOf(false) }
 
-				Column(
-					modifier = Modifier
-						.fillMaxWidth(),
-					horizontalAlignment = Alignment.End,
-				) {
-					var dropdownExpanded by remember { mutableStateOf(false) }
-
-					IconButton(
-						onClick = {
-							dropdownExpanded = !dropdownExpanded
-						},
-					) {
-						Icon(
-							imageVector = Icons.Default.MoreVert,
-							contentDescription = null,
-						)
-					}
-
-					Spacer(Modifier.weight(1f))
-
-					Column(
-						modifier = Modifier
-							.background(Color.Yellow),
-						horizontalAlignment = Alignment.End,
-					) {
-						DropdownMenu(
-							expanded = dropdownExpanded,
-							onDismissRequest = {
-								dropdownExpanded = false
-							},
-						) {
-							DropdownMenuItem(
-								text = { Text(stringResource(R.string.action_remove_table_task)) },
-								onClick = {
-									onDeleteTaskClicked.invoke()
-								},
-							)
-						}
-					}
-				}
-
-			}
-
-			var expanded by remember { mutableStateOf(false) }
-
-			var taskTitle by remember { mutableStateOf(state.taskCurrent().title) }
-			val taskCollected = state.taskCollected()
-			LaunchedEffect(taskCollected.title) {
-				taskTitle = taskCollected.title
-			}
-
-			BugtrackerExpandableTextField(
-				modifier = Modifier
-					.padding(top = 13.dp)
-					.fillMaxWidth()
-					.onFocusChanged { expanded = it.isFocused },
-				value = taskTitle,
-				onValueChange = { taskTitle = it },
-				expanded = expanded,
-				textStyle = TextStyle(
-					fontSize = 22.sp,
-					fontWeight = FontWeight.Thin,
-				),
-				includeDivider = false,
-			) {
-				BugtrackerExpandableTextFieldDefaults.Content(
-					onCancelClicked = {
-						expanded = false
-						taskTitle = taskCollected.title
-					},
-					onConfirmClicked = {
-						onRenameTaskClicked(taskTitle)
-					},
-					confirmEnabled = taskTitle != taskCollected.title && taskTitle.isNotEmpty(),
-				)
-			}
-
-			Card(
-				modifier = Modifier
-					.padding(top = 18.dp)
-					.clickable { onChangeTableSheetClicked() },
-				shape = RoundedCornerShape(6.dp),
-			) {
-				BugtrackerMultipurposeMenu(
-					modifier = Modifier.padding(
-						top = 8.dp,
-						bottom = 8.dp,
-						start = 4.dp,
-						end = 2.dp,
-					),
-					text = {
-						Text(
-							modifier = Modifier.padding(start = 3.5.dp),
-							fontWeight = FontWeight.Bold,
-							fontSize = 16.sp,
-							text = state.parentTableCollected().title,
-						)
-					},
-					includeDropdownArrow = true,
-					includeDivider = false,
-				)
-			}
-
-			TableTaskDescriptionField(
-				state = state,
-				onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
-			)
-
-			/* TODO finish this
-			TableTaskChildIssuesField(state = state)
-
-			TableTaskAssignedField(state = state)
-			 */
-
-			TableTaskIconPairFields(state = state)
-
-			TableTaskActivityContent(state = state)
+		var taskTitle by remember { mutableStateOf(state.taskCurrent().title) }
+		val taskCollected = state.taskCollected()
+		LaunchedEffect(taskCollected.title) {
+			taskTitle = taskCollected.title
 		}
+
+		BugtrackerExpandableTextField(
+			modifier = Modifier
+				.fillMaxWidth()
+				.onFocusChanged { expanded = it.isFocused },
+			value = taskTitle,
+			onValueChange = { taskTitle = it },
+			expanded = expanded,
+			textStyle = TextStyle(
+				fontSize = 22.sp,
+				fontWeight = FontWeight.Thin,
+			),
+			includeDivider = false,
+		) {
+			BugtrackerExpandableTextFieldDefaults.Content(
+				onCancelClicked = {
+					expanded = false
+					taskTitle = taskCollected.title
+				},
+				onConfirmClicked = {
+					onRenameTaskClicked(taskTitle)
+				},
+				confirmEnabled = taskTitle != taskCollected.title && taskTitle.isNotEmpty(),
+			)
+		}
+
+		Card(
+			modifier = Modifier
+				.padding(top = 18.dp)
+				.clickable { onChangeTableSheetClicked() },
+			shape = RoundedCornerShape(6.dp),
+		) {
+			BugtrackerMultipurposeMenu(
+				modifier = Modifier.padding(
+					top = 8.dp,
+					bottom = 8.dp,
+					start = 4.dp,
+					end = 2.dp,
+				),
+				text = {
+					Text(
+						modifier = Modifier.padding(start = 3.5.dp),
+						fontWeight = FontWeight.Bold,
+						fontSize = 16.sp,
+						text = state.parentTableCollected().title,
+					)
+				},
+				includeDropdownArrow = true,
+				includeDivider = false,
+			)
+		}
+
+		TableTaskDescriptionField(
+			state = state,
+			onAlterDescriptionSheetClicked = onAlterDescriptionSheetClicked,
+		)
+
+		/* TODO finish this
+		TableTaskChildIssuesField(state = state)
+
+		TableTaskAssignedField(state = state)
+		 */
+
+		TableTaskIconPairFields(state = state)
+
+		TableTaskActivityContent(state = state)
 	}
 }
