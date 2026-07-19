@@ -79,11 +79,12 @@ fun AuthContentOAuth(
 		LaunchedEffect(Unit) {
 			GoogleAuthProvider.create(
 				credentials = GoogleAuthCredentials(
-					serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com",
+					serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com", // TODO move outside!!!!
 				),
 			)
 			authReady = true
 		}
+
 
 		if (authReady) {
 			GoogleButtonUiContainer(
@@ -92,6 +93,8 @@ fun AuthContentOAuth(
 					.padding(top = 36.dp)
 					.height(52.dp)
 					.fillMaxWidth(),
+				filterByAuthorizedAccounts = true,
+				// isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
 				onGoogleSignInResult = { googleUser ->
 					if (googleUser == null) {
 						return@GoogleButtonUiContainer

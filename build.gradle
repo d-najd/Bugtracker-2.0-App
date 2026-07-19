@@ -13,7 +13,7 @@ buildscript {
 		app_compat_version = '1.5.1'
 		junit_version = '4.13.2'
 		espresso_version = '3.5.1'
-		kmpauth_version = '2.0.0'
+		kmpauth_version = '2.3.1'
 		material_version = '1.7.0'
 	}
 

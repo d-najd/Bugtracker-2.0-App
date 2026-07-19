@@ -88,3 +88,8 @@ lint/tmp/
 /.idea/material_theme_project_new.xml
 /.idea/appInsightsSettings.xml
 /.kotlin/sessions/
+/app/.classpath
+/app/.project
+/.project
+/.settings/org.eclipse.buildship.core.prefs
+/app/.settings/org.eclipse.buildship.core.prefs

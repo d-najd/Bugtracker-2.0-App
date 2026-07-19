@@ -36,13 +36,6 @@ fun ProjectScreenContent(
 			)
 		},
 	) { contentPadding ->
-
-		val test = rememberPullToRefreshState()
-
-		PullToRefreshBox() { }
-
-		PullToRefreshDefaults.Indicator(test, isRefreshing = false)
-
 		ProjectContent(
 			state = state,
 			projectFilterString = projectFilterString,
