@@ -91,10 +91,13 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'org.burnoutcrew.composereorderable:reorderable:0.9.6'
 
+	// TODO remove these, no longer used
 	implementation "io.github.mirzemehdi:kmpauth-google:$kmpauth_version"
 	implementation "io.github.mirzemehdi:kmpauth-uihelper:$kmpauth_version"
 	implementation "io.github.mirzemehdi:kmpauth-core:$kmpauth_version"
-	implementation("io.github.sunildhiman90:kmauth-google:0.3.8")
+
+	implementation "io.github.sunildhiman90:kmauth-google:0.3.8"
+	api "io.github.sunildhiman90:kmauth-google:0.3.8"
 
 	implementation "com.squareup.logcat:logcat:0.1"
 	implementation "com.github.skydoves:retrofit-adapters-result:1.0.13"

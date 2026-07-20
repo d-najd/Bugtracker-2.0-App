@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,11 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mmk.kmpauth.google.GoogleAuthCredentials
-import com.mmk.kmpauth.google.GoogleAuthProvider
-import com.mmk.kmpauth.google.rememberGoogleSignInState
+import com.sunildhiman90.kmauth.core.KMAuthConfig
+import com.sunildhiman90.kmauth.core.KMAuthInitializer
+import com.sunildhiman90.kmauth.core.KMAuthPlatformContext
+import com.sunildhiman90.kmauth.google.KMAuthGoogle
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.google_auth.model.CreateUser
+import io.dnajd.util.toast
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthContentOAuth(
@@ -70,53 +74,43 @@ fun AuthContentOAuth(
 			},
 		)
 
-		var authMode by remember { mutableStateOf(AuthMode.SIGN_IN) }
+		KMAuthInitializer.initContext(
+			kmAuthPlatformContext = KMAuthPlatformContext(context),
+		)
 
-		GoogleAuthProvider.create(
-			credentials = GoogleAuthCredentials(
-				serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com", // TODO move outside!!!!
+		KMAuthInitializer.initialize(
+			KMAuthConfig.forGoogle(
+				webClientId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com",
 			),
 		)
 
-		val googleSigninState = rememberGoogleSignInState(
-			filterByAuthorizedAccounts = false,
-			isAutoSelectEnabled = false,
-			onResult = { googleUser ->
-				if (googleUser == null) {
-					return@rememberGoogleSignInState
+		val scope = rememberCoroutineScope()
+		val googleAuthManager = KMAuthGoogle.googleAuthManager
+
+		GoogleSignInButton(
+			modifier = Modifier
+				.align(Alignment.CenterHorizontally)
+				.padding(top = 36.dp)
+				.height(52.dp)
+				.fillMaxWidth(),
+			mode = GoogleButtonMode.Dark,
+			text = stringResource(R.string.field_sign_up_google),
+			onClick = {
+				if (username.isBlank()) {
+					context.toast(R.string.info_pick_username)
+					return@GoogleSignInButton
 				}
-				if (authMode == AuthMode.SIGN_UP) {
-					onSignUpClicked(
-						googleUser.idToken,
-						CreateUser(username),
-					)
-				} else {
-					onSignInClicked(googleUser.idToken)
+				scope.launch {
+					val result = googleAuthManager.signIn()
+					if (result.isSuccess) {
+						onSignUpClicked(
+							result.getOrThrow()!!.idToken!!,
+							CreateUser(username),
+						)
+					}
 				}
 			},
 		)
-
-//		GoogleSignInButton(
-//			modifier = Modifier
-//				.align(Alignment.CenterHorizontally)
-//				.padding(top = 36.dp)
-//				.height(52.dp)
-//				.fillMaxWidth(),
-//			mode = GoogleButtonMode.Dark,
-//			text = stringResource(R.string.field_sign_up_google),
-//			onClick = {
-//				if (googleSigninState.isInProgress) {
-//					return@GoogleSignInButton
-//				}
-//
-//				if (username.isBlank()) {
-//					context.toast(R.string.info_pick_username)
-//					return@GoogleSignInButton
-//				}
-//
-//				authMode = AuthMode.SIGN_UP
-//			},
-//		)
 
 		Box(
 			modifier = Modifier
@@ -146,36 +140,12 @@ fun AuthContentOAuth(
 			mode = GoogleButtonMode.Light,
 			text = stringResource(R.string.field_sign_in_google),
 		) {
-			if (googleSigninState.isInProgress) {
-				return@GoogleSignInButton
+			scope.launch {
+				val result = googleAuthManager.signIn()
+				if (result.isSuccess) {
+					onSignInClicked(result.getOrThrow()!!.idToken!!)
+				}
 			}
-
-
-			authMode = AuthMode.SIGN_IN
-			googleSigninState.launch()
 		}
-
-//		GoogleSignInButton(
-//			modifier = Modifier
-//				.align(Alignment.CenterHorizontally)
-//				.padding(top = 36.dp)
-//				.height(52.dp)
-//				.fillMaxWidth(),
-//			mode = GoogleButtonMode.Light,
-//			text = stringResource(R.string.field_sign_in_google),
-//			onClick = {
-//				if (googleSigninState.isInProgress) {
-//					return@GoogleSignInButton
-//				}
-//
-//				authMode = AuthMode.SIGN_IN
-//				googleSigninState.launch()
-//			},
-//		)
 	}
-}
-
-object AuthMode {
-	const val SIGN_IN = "signin"
-	const val SIGN_UP = "signup"
 }
