@@ -94,7 +94,7 @@ fun AuthContentOAuth(
 					.height(52.dp)
 					.fillMaxWidth(),
 				filterByAuthorizedAccounts = true,
-				// isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
+				isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
 				onGoogleSignInResult = { googleUser ->
 					if (googleUser == null) {
 						return@GoogleButtonUiContainer
