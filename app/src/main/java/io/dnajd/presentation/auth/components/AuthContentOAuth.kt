@@ -1,11 +1,9 @@
 package io.dnajd.presentation.auth.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,14 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
-import com.mmk.kmpauth.google.GoogleAuthUiProvider
-import com.mmk.kmpauth.google.GoogleButtonUiContainer
-import com.mmk.kmpauth.uihelper.google.GoogleButtonMode
-import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
+import com.mmk.kmpauth.google.rememberGoogleSignInState
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.google_auth.model.CreateUser
-import io.dnajd.util.toast
-import logcat.logcat
 
 @Composable
 fun AuthContentOAuth(
@@ -78,59 +70,53 @@ fun AuthContentOAuth(
 			},
 		)
 
-		var authReady by remember { mutableStateOf(false) }
-		LaunchedEffect(Unit) {
-			GoogleAuthProvider.create(
-				credentials = GoogleAuthCredentials(
-					serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com", // TODO move outside!!!!
-				),
-			)
-			authReady = true
-		}
+		var authMode by remember { mutableStateOf(AuthMode.SIGN_IN) }
 
+		GoogleAuthProvider.create(
+			credentials = GoogleAuthCredentials(
+				serverId = "523144607813-ccib1llvilpg1e6httmo9a0d839bhh9h.apps.googleusercontent.com", // TODO move outside!!!!
+			),
+		)
 
-		if (authReady) {
-			GoogleButtonUiContainer(
-				modifier = Modifier
-					.align(Alignment.CenterHorizontally)
-					.padding(top = 36.dp)
-					.height(52.dp)
-					.fillMaxWidth(),
-				filterByAuthorizedAccounts = true,
-				isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
-				onGoogleSignInResult = { googleUser ->
-					Log.e("HELLO", "HELLO")
-					Log.e("HELLO", googleUser.toString() )
-					if (googleUser == null) {
-						return@GoogleButtonUiContainer
-					}
-
+		val googleSigninState = rememberGoogleSignInState(
+			filterByAuthorizedAccounts = false,
+			isAutoSelectEnabled = false,
+			onResult = { googleUser ->
+				if (googleUser == null) {
+					return@rememberGoogleSignInState
+				}
+				if (authMode == AuthMode.SIGN_UP) {
 					onSignUpClicked(
 						googleUser.idToken,
 						CreateUser(username),
 					)
-				},
-			) {
-				GoogleSignInButton(
-					modifier = Modifier.fillMaxSize(),
-					mode = GoogleButtonMode.Dark,
-					text = stringResource(R.string.field_sign_up_google),
-					onClick = {
-						Log.e("HELLO", "HELLO2")
-						if (!authReady) {
-							return@GoogleSignInButton
-						}
+				} else {
+					onSignInClicked(googleUser.idToken)
+				}
+			},
+		)
 
-						if (username.isBlank()) {
-							context.toast(R.string.info_pick_username)
-							return@GoogleSignInButton
-						}
-
-						this.onClick()
-					},
-				)
-			}
-		}
+//		GoogleSignInButton(
+//			modifier = Modifier
+//				.align(Alignment.CenterHorizontally)
+//				.padding(top = 36.dp)
+//				.height(52.dp)
+//				.fillMaxWidth(),
+//			mode = GoogleButtonMode.Dark,
+//			text = stringResource(R.string.field_sign_up_google),
+//			onClick = {
+//				if (googleSigninState.isInProgress) {
+//					return@GoogleSignInButton
+//				}
+//
+//				if (username.isBlank()) {
+//					context.toast(R.string.info_pick_username)
+//					return@GoogleSignInButton
+//				}
+//
+//				authMode = AuthMode.SIGN_UP
+//			},
+//		)
 
 		Box(
 			modifier = Modifier
@@ -150,36 +136,46 @@ fun AuthContentOAuth(
 			)
 		}
 
-		if (authReady) {
-			GoogleButtonUiContainer(
-				modifier = Modifier
-					.align(Alignment.CenterHorizontally)
-					.padding(top = 36.dp)
-					.height(52.dp)
-					.fillMaxWidth(),
-				filterByAuthorizedAccounts = true,
-				isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
-				onGoogleSignInResult = { googleUser ->
-					if (googleUser == null) {
-						return@GoogleButtonUiContainer
-					}
+		GoogleSignInButton(
+			modifier = Modifier
+				.align(Alignment.CenterHorizontally)
+				.padding(top = 36.dp)
+				.height(52.dp)
+				.fillMaxWidth(),
 
-					onSignInClicked(googleUser.idToken)
-				},
-			) {
-				GoogleSignInButton(
-					modifier = Modifier.fillMaxSize(),
-					mode = GoogleButtonMode.Light,
-					text = stringResource(R.string.field_sign_in_google),
-					onClick = {
-						if (!authReady) {
-							return@GoogleSignInButton
-						}
-
-						this.onClick()
-					},
-				)
+			mode = GoogleButtonMode.Light,
+			text = stringResource(R.string.field_sign_in_google),
+		) {
+			if (googleSigninState.isInProgress) {
+				return@GoogleSignInButton
 			}
+
+
+			authMode = AuthMode.SIGN_IN
+			googleSigninState.launch()
 		}
+
+//		GoogleSignInButton(
+//			modifier = Modifier
+//				.align(Alignment.CenterHorizontally)
+//				.padding(top = 36.dp)
+//				.height(52.dp)
+//				.fillMaxWidth(),
+//			mode = GoogleButtonMode.Light,
+//			text = stringResource(R.string.field_sign_in_google),
+//			onClick = {
+//				if (googleSigninState.isInProgress) {
+//					return@GoogleSignInButton
+//				}
+//
+//				authMode = AuthMode.SIGN_IN
+//				googleSigninState.launch()
+//			},
+//		)
 	}
+}
+
+object AuthMode {
+	const val SIGN_IN = "signin"
+	const val SIGN_UP = "signup"
 }
