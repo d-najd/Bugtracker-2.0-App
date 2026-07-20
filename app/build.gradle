@@ -6,7 +6,7 @@ plugins {
 
 android {
 	namespace 'io.dnajd.bugtracker'
-	compileSdk 34
+	compileSdk 36
 
 	defaultConfig {
 		applicationId "io.dnajd.bugtracker"
