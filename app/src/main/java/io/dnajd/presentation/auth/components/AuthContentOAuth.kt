@@ -1,5 +1,6 @@
 package io.dnajd.presentation.auth.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,12 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
+import com.mmk.kmpauth.google.GoogleAuthUiProvider
 import com.mmk.kmpauth.google.GoogleButtonUiContainer
 import com.mmk.kmpauth.uihelper.google.GoogleButtonMode
 import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import io.dnajd.bugtracker.R
 import io.dnajd.domain.google_auth.model.CreateUser
 import io.dnajd.util.toast
+import logcat.logcat
 
 @Composable
 fun AuthContentOAuth(
@@ -96,6 +99,8 @@ fun AuthContentOAuth(
 				filterByAuthorizedAccounts = true,
 				isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
 				onGoogleSignInResult = { googleUser ->
+					Log.e("HELLO", "HELLO")
+					Log.e("HELLO", googleUser.toString() )
 					if (googleUser == null) {
 						return@GoogleButtonUiContainer
 					}
@@ -111,6 +116,7 @@ fun AuthContentOAuth(
 					mode = GoogleButtonMode.Dark,
 					text = stringResource(R.string.field_sign_up_google),
 					onClick = {
+						Log.e("HELLO", "HELLO2")
 						if (!authReady) {
 							return@GoogleSignInButton
 						}
@@ -151,6 +157,8 @@ fun AuthContentOAuth(
 					.padding(top = 36.dp)
 					.height(52.dp)
 					.fillMaxWidth(),
+				filterByAuthorizedAccounts = true,
+				isAutoSelectEnabled = false, // I wonder what kind of drugs were google developers on when they decided to make this default behaviour wtf
 				onGoogleSignInResult = { googleUser ->
 					if (googleUser == null) {
 						return@GoogleButtonUiContainer
