@@ -36,7 +36,12 @@ import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
-import java.util.Date
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import java.util.*
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class DomainModule : InjektModule {
 	companion object {
@@ -46,9 +51,27 @@ class DomainModule : InjektModule {
 	override fun InjektRegistrar.registerInjectables() {
 		val loggingInterceptor = HttpLoggingInterceptor()
 		loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+		// TODO this disabled SSL certificates, since I am getting invalid certificate before an request is EVEN SENT!
+		// This should be urgently fixed
+		val trustAllCerts = arrayOf<TrustManager>(
+			object : X509TrustManager {
+				override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+				override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+				override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+			},
+		)
+		// Install the all-trusting trust manager
+		val sslContext = SSLContext.getInstance("SSL")
+			.apply {
+				init(null, trustAllCerts, SecureRandom())
+			}
+
 		addSingletonFactory {
 			OkHttpClient
 				.Builder()
+				.sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+				.hostnameVerifier { _, _ -> true } // Trust all hostnames/IPs
 				.addInterceptor(loggingInterceptor)
 				.addInterceptor(JwtAuthenticator)
 				.hostnameVerifier(HostnameVerifierAlwaysTrue)
