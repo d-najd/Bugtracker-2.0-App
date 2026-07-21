@@ -32,26 +32,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.dnajd.presentation.util.rememberKeyboardState
-import org.burnoutcrew.reorderable.ReorderableLazyListState
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import sh.calvin.reorderable.ReorderableCollectionItemScope
 
 @Composable
-fun ProjectTableCardContent(
+fun ReorderableCollectionItemScope.ProjectTableCardContent(
 	value: String,
 	labels: List<String> = emptyList(),
 	taskId: Long,
-	reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(onMove = { _, _ -> }),
 	isDragging: Boolean = false,
 	onTaskClicked: (Long) -> Unit,
+	onTaskDraggedStateChange: (Boolean) -> Unit,
 ) {
 	ProjectTableCardContentLocal(
 		value = value,
 		labels = labels,
 		taskId = taskId,
-		reorderableState = reorderableState,
 		isDragging = isDragging,
+		reorderableScope = this,
 		onTaskClicked = onTaskClicked,
+		onTaskDraggedStateChange = onTaskDraggedStateChange,
 	)
 }
 
@@ -85,9 +84,10 @@ private fun ProjectTableCardContentLocal(
 	keyboardActions: KeyboardActions = KeyboardActions.Default,
 	labels: List<String> = emptyList(),
 	taskId: Long? = null,
-	reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(onMove = { _, _ -> }),
 	isDragging: Boolean = false,
+	reorderableScope: ReorderableCollectionItemScope? = null,
 	onTaskClicked: ((Long) -> Unit)? = null,
+	onTaskDraggedStateChange: ((Boolean) -> Unit)? = null,
 ) {
 	val elevation = animateDpAsState(if (isDragging) 4.dp else 0.dp)
 	val isKeyboardOpen by rememberKeyboardState()
@@ -110,7 +110,19 @@ private fun ProjectTableCardContentLocal(
 		var cardModifier = Modifier
 			.fillMaxSize()
 			.shadow(elevation.value)
-			.detectReorderAfterLongPress(reorderableState)
+
+		if (reorderableScope != null && onTaskDraggedStateChange != null) {
+			with(reorderableScope) {
+				cardModifier = cardModifier.draggableHandle(
+					onDragStarted = {
+						onTaskDraggedStateChange.invoke(true)
+					},
+					onDragStopped = {
+						onTaskDraggedStateChange.invoke(false)
+					},
+				)
+			}
+		}
 		if (onTaskClicked != null) {
 			if (taskId != null) {
 				cardModifier = cardModifier.clickable {

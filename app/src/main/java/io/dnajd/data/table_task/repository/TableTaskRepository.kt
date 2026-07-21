@@ -12,7 +12,7 @@ import io.dnajd.domain.table_task.model.TableTask
 import io.dnajd.domain.table_task.service.TableTaskApiService
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
+import java.util.*
 
 data class TableTaskRepositoryState(
 	override val data: Map<TableTask, Date> = emptyMap(),
@@ -168,6 +168,11 @@ object TableTaskRepository :
 				.filter { it.tableId == tableId }
 				.toSet()
 		}
+	}
+
+	fun dataKeysByTableId(tableId: Long): Set<TableTask> {
+		return data().keys.filter { it.tableId == tableId }
+			.toSet()
 	}
 
 	fun dataByTableIds(vararg tableIds: Long): Map<TableTask, Date> {

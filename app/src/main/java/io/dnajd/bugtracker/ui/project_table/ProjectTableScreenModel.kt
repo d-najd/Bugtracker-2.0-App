@@ -313,6 +313,9 @@ sealed class ProjectTableScreenState(open val projectId: Long) {
 		fun tablesCollected(): Set<ProjectTable> =
 			ProjectTableRepository.dataKeysCollectedByProjectId(projectId)
 
+		fun tasksCurrentByTableId(tableId: Long): Set<TableTask> =
+			TableTaskRepository.dataKeysByTableId(tableId)
+
 		@Composable
 		fun tasksCollectedByTableId(tableId: Long): Set<TableTask> =
 			TableTaskRepository.dataKeysCollectedByTableId(tableId)

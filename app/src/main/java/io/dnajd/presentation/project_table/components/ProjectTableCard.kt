@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -42,10 +43,8 @@ import io.dnajd.bugtracker.ui.project_table.ProjectTableEvent
 import io.dnajd.bugtracker.ui.project_table.ProjectTableScreenState
 import io.dnajd.domain.project_table.model.ProjectTable
 import io.dnajd.domain.table_task.model.TableTask
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.ReorderableLazyListState
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun ProjectTableCard(
@@ -74,50 +73,50 @@ fun ProjectTableCard(
 			),
 	) {
 		val tasks = state
-			.tasksCollectedByTableId(table.id)
+			.tasksCurrentByTableId(table.id)
 			.filterAndSort(taskFilterString)
 
+		var fromIndex by remember { mutableStateOf<Int?>(null) }
+		var toIndex by remember { mutableStateOf<Int?>(null) }
+
 		var reorderableList by remember { mutableStateOf(tasks) }
-
-		/**
-		 * for some reason [taskFilterString] is not passed correctly in [ReorderableLazyListState.onDragEnd]
-		 * and [reorderableList] is not reliable due to [ReorderableLazyListState.onMove] being called before
-		 * [ReorderableLazyListState.onDragEnd] so I do this to determine the index of the correct item instead
-		 */
 		var preOnMoveReorderableList by remember { mutableStateOf<List<TableTask>?>(null) }
+		val lazyListState = rememberLazyListState()
+		val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+			if (fromIndex == null) {
+				fromIndex = from.index
+			}
+			if (preOnMoveReorderableList == null) {
+				preOnMoveReorderableList = reorderableList
+			}
 
-		val reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(
-			onMove = { from, to ->
-				if (preOnMoveReorderableList == null) {
-					onTaskDraggedStateChange.invoke(true)
-					preOnMoveReorderableList = reorderableList
+			toIndex = to.index
+
+//			onMoveTableTasks(
+//				reorderableList[from.index].id,
+//				reorderableList[to.index].id,
+//			)
+
+			reorderableList = reorderableList.toMutableList()
+				.apply {
+					add(to.index, removeAt(from.index))
+				}
+		}
+
+		LaunchedEffect(reorderableLazyListState.isAnyItemDragging) {
+			if (!reorderableLazyListState.isAnyItemDragging) {
+				if (fromIndex != null && toIndex != null && fromIndex != toIndex && preOnMoveReorderableList != null) {
+					val movedTask = preOnMoveReorderableList!![fromIndex!!]
+					val targetTask = preOnMoveReorderableList!![toIndex!!]
+
+					onMoveTableTasks(movedTask.id, targetTask.id)
 				}
 
-				reorderableList = reorderableList
-					.toMutableList()
-					.apply {
-						add(
-							to.index,
-							removeAt(from.index),
-						)
-					}
-			},
-			onDragEnd = { from, to ->
-				if (from != to) {
-					val tasksInCurTable = preOnMoveReorderableList!!
-					val fTask = tasksInCurTable[from]
-					val sTask = tasksInCurTable[to]
-
-					onMoveTableTasks(
-						fTask.id,
-						sTask.id,
-					)
-				}
-
+				fromIndex = null
+				toIndex = null
 				preOnMoveReorderableList = null
-				onTaskDraggedStateChange.invoke(false)
-			},
-		)
+			}
+		}
 
 		// Tasks are moved using reorderable state, the thing is this component will move the tasks
 		// in the ui during the request for moving is sent to the server, because no data will be
@@ -148,31 +147,127 @@ fun ProjectTableCard(
 		)
 
 		LazyColumn(
-			state = reorderableState.listState,
+			state = lazyListState,
 			modifier = Modifier
 				.fillMaxWidth()
-				.reorderable(reorderableState)
+				// .reorderable(reorderableState)
 				.heightIn(max = 2000.dp),
 		) {
 			items(
 				reorderableList,
 				{ task -> task.id },
 			) { task ->
-				ReorderableItem(
-					reorderableState = reorderableState,
-					key = task.id,
-				) { isDragging ->
+				ReorderableItem(reorderableLazyListState, key = task.id) { isDragging ->
 					ProjectTableCardContent(
 						value = task.title,
 						labels = task.labels.map { it.label },
 						taskId = task.id,
-						reorderableState = reorderableState,
 						isDragging = isDragging,
 						onTaskClicked = onTaskClicked,
+						onTaskDraggedStateChange = onTaskDraggedStateChange,
 					)
 				}
 			}
 		}
+
+		// TODO oonTaskDraggedStateChange
+//
+//		var reorderableList by remember { mutableStateOf(tasks) }
+//
+//		/**
+//		 * for some reason [taskFilterString] is not passed correctly in [ReorderableLazyListState.onDragEnd]
+//		 * and [reorderableList] is not reliable due to [ReorderableLazyListState.onMove] being called before
+//		 * [ReorderableLazyListState.onDragEnd] so I do this to determine the index of the correct item instead
+//		 */
+//		var preOnMoveReorderableList by remember { mutableStateOf<List<TableTask>?>(null) }
+//
+//		val reorderableState: ReorderableLazyListState = rememberReorderableLazyListState(
+//			onMove = { from, to ->
+//				if (preOnMoveReorderableList == null) {
+//					onTaskDraggedStateChange.invoke(true)
+//					preOnMoveReorderableList = reorderableList
+//				}
+//
+//				reorderableList = reorderableList
+//					.toMutableList()
+//					.apply {
+//						add(
+//							to.index,
+//							removeAt(from.index),
+//						)
+//					}
+//			},
+//			onDragEnd = { from, to ->
+//				if (from != to) {
+//					val tasksInCurTable = preOnMoveReorderableList!!
+//					val fTask = tasksInCurTable[from]
+//					val sTask = tasksInCurTable[to]
+//
+//					onMoveTableTasks(
+//						fTask.id,
+//						sTask.id,
+//					)
+//				}
+//
+//				preOnMoveReorderableList = null
+//				onTaskDraggedStateChange.invoke(false)
+//			},
+//		)
+//
+//		// Tasks are moved using reorderable state, the thing is this component will move the tasks
+//		// in the ui during the request for moving is sent to the server, because no data will be
+//		// changed if this request fails we don't have anything to update the tasks so we add an
+//		// listener instead, if there are more cases consider an alternative system.
+//		LaunchedEffect(state.events) {
+//			state.events.collect { event ->
+//				if (event is ProjectTableEvent.FailedToMoveTableTasks) {
+//					reorderableList = tasks.filterAndSort(taskFilterString)
+//				}
+//			}
+//		}
+//
+//		LaunchedEffect(tasks, taskFilterString) {
+//			reorderableList = tasks.filterAndSort(taskFilterString)
+//		}
+//
+//		ProjectTableCardTop(
+//			modifier = Modifier.fillMaxWidth(),
+//			state = state,
+//			table = table,
+//			index = index,
+//			tasksWithFilter = tasks,
+//			onTableRename = onTableRename,
+//			onDeleteTableClicked = onDeleteTableClicked,
+//			onSwapTablePositionsClicked = onSwapTablePositionsClicked,
+//			onSwitchDropdownMenuClicked = onSwitchDropdownMenuClicked,
+//		)
+//
+//		LazyColumn(
+//			state = reorderableState.listState,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.reorderable(reorderableState)
+//				.heightIn(max = 2000.dp),
+//		) {
+//			items(
+//				reorderableList,
+//				{ task -> task.id },
+//			) { task ->
+//				ReorderableItem(
+//					reorderableState = reorderableState,
+//					key = task.id,
+//				) { isDragging ->
+//					ProjectTableCardContent(
+//						value = task.title,
+//						labels = task.labels.map { it.label },
+//						taskId = task.id,
+//						reorderableState = reorderableState,
+//						isDragging = isDragging,
+//						onTaskClicked = onTaskClicked,
+//					)
+//				}
+//			}
+//		}
 
 		ProjectTableCardBottom(
 			modifier = Modifier
